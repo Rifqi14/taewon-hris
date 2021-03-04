@@ -724,6 +724,7 @@ class EmployeesController extends Controller
             'join' => $request->join,
             'outsourcing_id' => $request->outsourcing_id ? $request->outsourcing_id : null,
             'overtime' => $request->overtime,
+            'spl' => $request->spl,
             'timeout' => $request->timeout,
             'join_date' => $request->join_date ? dbDate($request->join_date) : null,
             'resign_date' => $request->resign_date ? dbDate($request->resign_date) : null,
@@ -1011,6 +1012,7 @@ class EmployeesController extends Controller
         $employee->resign_date = $request->resign_date ? dbDate($request->resign_date) : null;
         $employee->overtime = $request->overtime;
         $employee->timeout = $request->timeout;
+        $employee->spl = $request->spl;
         $employee->save();
 
         if (!$employee) {
@@ -1131,6 +1133,7 @@ class EmployeesController extends Controller
                 $tax_calculation = $sheet->getCellByColumnAndRow(33, $row)->getValue();
                 $basic_salary = $sheet->getCellByColumnAndRow(34, $row)->getValue();
                 $grade_name = strtoupper($sheet->getCellByColumnAndRow(35, $row)->getValue());
+                $spl = strtolower($sheet->getCellByColumnAndRow(36, $row)->getValue());
                 $calendar = Calendar::whereRaw("upper(name) like '%$calendar_name%'")->first();
                 $workingtime = Workingtime::whereRaw("upper(description) = '$working_time_name'")->first();
                 $province = Province::whereRaw("upper(name) like '%$province_name%'")->first();
@@ -1210,6 +1213,7 @@ class EmployeesController extends Controller
                     'overtime' => $overtime,
                     'timeout' => $timeout,
                     'join' => $join,
+                    'spl' => $spl,
                     'calendar_id' => $calendar ? $calendar->id : null,
                     'tax_calculation' => $tax_calculation,
                     'basic_salary' => $basic_salary,
@@ -1266,6 +1270,7 @@ class EmployeesController extends Controller
                     'emergency_contact_name' => $employee->emergency_contact_name,
                     'working_time_type' => $employee->working_time_type,
                     'join' => $employee->join,
+                    'spl' => $employee->spl,
                     'calendar_id' => $employee->calendar_id,
                     'join_date' => $employee->join_date,
                     'ptkp' => $employee->ptkp,

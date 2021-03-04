@@ -392,6 +392,17 @@
 											</div>
 											<div class="col-sm-12">
 												<div class="form-group">
+													<label>SPL <b class="text-danger">*</b></label>
+													<select id="spl" class="form-control select2" name="spl"
+														data-placeholder="Select SPL" required>
+														<option value=""></option>
+														<option @if($employee->spl == "yes") selected @endif value="yes">Yes</option>
+														<option @if($employee->spl == "no") selected @endif value="no">No</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-12">
+												<div class="form-group">
 													<label>Join Date <b class="text-danger">*</b></label>
 													<div class="input-group">
 														<div class="input-group-prepend">

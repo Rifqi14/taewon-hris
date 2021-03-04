@@ -45,7 +45,7 @@
                                     <div class="col-sm-6">
                                         <!-- text input -->
                                         <div class="form-group">
-                                            <label>NIK Bosung <b class="text-danger">*</b></label>
+                                            <label>NIK Taewon <b class="text-danger">*</b></label>
                                             <input type="text" class="form-control" placeholder="NIK"
                                                 name="nid" required>
                                         </div>
@@ -403,6 +403,17 @@
                             </div>
                             <div class="col-sm-12">
                                 <div class="form-group">
+                                    <label>SPL <b class="text-danger">*</b></label>
+                                    <select id="spl" class="form-control select2" name="spl"
+                                        data-placeholder="Select SPL" required>
+                                        <option value=""></option>
+                                        <option value="yes" selected>Yes</option>
+                                        <option value="no">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
                                     <label>Join Date <b class="text-danger">*</b></label>
                                     <!-- <input type="date" class="form-control select2" name="join_date" id="join_date"> -->
 									<div class="input-group">
@@ -435,7 +446,7 @@
                                 <small>Note : <b class="text-danger">*</b> data wajib diisi</small>
                             </div>
                         </div>
-                        <div style="height: 205px;"></div>
+                        <div style="height: 120px;"></div>
                     </div>
                     <div class="overlay d-none">
                         <i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -461,6 +472,7 @@
             $("#overtime").select2();
             $("#ptkp").select2();
             $("#timeout").select2();
+            $("#spl").select2();
             $("#picture").fileinput({
             browseClass: "btn btn-{{config('configs.app_theme')}}",
                 showRemove: false,

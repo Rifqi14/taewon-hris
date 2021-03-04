@@ -40,7 +40,7 @@
         <table class="table table-striped table-bordered" style="width:100%" id="table-item">
           <thead>
             <tr>
-              <th width="100">NID</th>
+              <th width="100">NIK Taewon</th>
               <th width="100">Employee Name</th>
               <th width="100">Position</th>
               <th width="50">Workgroup</th>
@@ -48,6 +48,7 @@
               <th width="100">PTKP</th>
               <th width="100">Calendar</th>
               <th width="50">Working Time</th>
+              <th width="50">SPL</th>
               <th width="50">Error Message</th>
               <th width="50">#</th>
             </tr>
@@ -121,6 +122,7 @@
             this.ptkp,
             this.calendar_name,
             this.working_time_name,
+            this.spl,
             this.error_message,
             this.status,
           ]).draw(false);
@@ -154,12 +156,12 @@
                   orderable: false,targets:[0,1,2,3,4,5,6,7,8,9]
               },
               { render: function ( data, type, row ) {
-                  if (row[9] == 1) {
+                  if (row[10] == 1) {
                     return '<span class="badge badge-success"><i class="fa fa-check"></i></span>';
                   } else {
                     return '<span class="badge badge-danger"><i class="fa fa-times"></i></span>';
                   }
-                },targets: [9]
+                },targets: [10]
               },
               { className: "text-center", targets: [8] },
           ],
