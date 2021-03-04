@@ -1,0 +1,98 @@
+/*Custom Danger*/
+.accent-danger .btn-danger{
+    color:#fff !important;
+}
+.accent-danger .page-item.active .page-link{
+    color:#fff !important;
+}
+.accent-danger .select2-choice{
+    color:#495057 !important;
+}
+
+.accent-danger .select2-default{
+    color:#999 !important;
+}
+.nav-pills-danger .nav-link.active, .nav-pills-danger .show > .nav-link {
+    background-color: #dc3545 !important;
+}
+
+/*Custom Success*/
+.accent-success .btn-success{
+    color:#fff !important;
+}
+.accent-success .page-item.active .page-link{
+    color:#fff !important;
+}
+.accent-success .select2-choice{
+    color:#495057 !important;
+}
+
+.accent-success .select2-default{
+    color:#999 !important;
+}
+.nav-pills-success .nav-link.active, .nav-pills-success .show > .nav-link {
+    background-color: #28a745 !important;
+}
+
+/*Custom Primary*/
+.accent-primary .btn-primary{
+    color:#fff !important;
+}
+.accent-primary .page-item.active .page-link{
+    color:#fff !important;
+}
+.accent-primary .select2-choice{
+    color:#495057 !important;
+}
+
+.accent-primary .select2-default{
+    color:#999 !important;
+}
+.nav-pills-primary .nav-link.active, .nav-pills-primary .show > .nav-link {
+    background-color: #007bff !important;
+}
+
+/*Custom Info*/
+.accent-info .btn-info{
+    color:#fff !important;
+}
+.accent-info .page-item.active .page-link{
+    color:#fff !important;
+}
+.accent-info .select2-choice{
+    color:#495057 !important;
+}
+
+.accent-info .select2-default{
+    color:#999 !important;
+}
+.nav-pills-info .nav-link.active, .nav-pills-info .show > .nav-link {
+    background-color: #17a2b8 !important;
+}
+
+
+/*Custom Navy*/
+.btn-navy{
+    background-color: #001f3f;
+    color:#fff;
+}
+.btn-navy:hover,btn-navy:focus{
+    background-color: #00152b;
+    color:#fff;
+}
+.accent-navy .btn-navy{
+    color:#fff !important;
+}
+.accent-navy .page-item.active .page-link{
+    color:#fff !important;
+}
+.accent-navy .select2-choice{
+    color:#495057 !important;
+}
+
+.accent-navy .select2-default{
+    color:#999 !important;
+}
+.nav-pills-navy .nav-link.active, .nav-pills-navy .show > .nav-link {
+    background-color: #001f3f !important;
+}

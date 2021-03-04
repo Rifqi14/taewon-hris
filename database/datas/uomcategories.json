@@ -1,0 +1,42 @@
+[
+    {
+        "code":"unit",
+        "name": "Unit"
+    },
+    {
+        "code":"weight",
+        "name": "Weight"
+    },
+    {
+        "code":"workingtime",
+        "name": "Working Time"
+    },
+    {
+        "code":"lengthdistance",
+        "name": "Length / Distance"
+    },
+    {
+        "code":"volume",
+        "name": "Volume"
+    },
+    {
+        "code":"temperature",
+        "name": "Temperature"
+    },
+    {
+        "code":"power",
+        "name": "Power"
+    },
+    {
+        "code":"speed",
+        "name": "Speed"
+    },
+    {
+        "code":"pressure",
+        "name": "Presurre"
+    },
+    {
+        "code":"other",
+        "name": "Other"
+    }
+]

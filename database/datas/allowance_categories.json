@@ -1,0 +1,57 @@
+[
+  {
+    "key": "gajiUpah",
+    "value": "Gaji dan Upah",
+    "type": "additional"
+  },
+  {
+    "key": "tunjanganLain",
+    "value": "Tunjangan lainnya, uang lembur, dsb.",
+    "type": "additional"
+  },
+  {
+    "key": "tunjanganJkkJkm",
+    "value": "Tunjangan JKK, JKM",
+    "type": "additional"
+  },
+  {
+    "key": "tunjanganKehadiran",
+    "value": "Tunjangan kehadiran",
+    "type": "additional"
+  },
+  {
+    "key": "pensiunPekerja",
+    "value": "Iuran Pensiun/THT/JHT dibayar pekerja",
+    "type": "deduction"
+  },
+  {
+    "key": "pensiunPemberi",
+    "value": "Tunjangan iuran Pensiun/THT/JHT dibayar pemberi kerja",
+    "type": "additional"
+  },
+  {
+    "key": "premiPekerja",
+    "value": "Premi asuransi kesehatan dibayar pekerja",
+    "type": "deduction"
+  },
+  {
+    "key": "premiPemberi",
+    "value": "Premi asuransi kesehatan dibayar pemberi kerja",
+    "type": "additional"
+  },
+  {
+    "key": "thr",
+    "value": "Tatiem, Bonus, Rapel dan THR",
+    "type": "additional"
+  },
+  {
+    "key": "tunjanganPph",
+    "value": "Tunjangan PPh",
+    "type": "additional"
+  },
+  {
+    "key": "potonganPph",
+    "value": "Potongan PPh 21",
+    "type": "deduction"
+  }
+]

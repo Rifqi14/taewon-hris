@@ -1,0 +1,254 @@
+[
+    {
+        "parent_name":"",
+        "menu_name": "Dashboard",
+        "menu_route": "dashboard",
+        "menu_icon": "fa fa-home"
+    },
+    {
+        "parent_name":"",
+        "menu_name": "POS",
+        "menu_route": "pos",
+        "menu_icon": "fa fa-th"
+    },
+    {
+        "parent_name": "",
+        "menu_name": "Bidang",
+        "menu_route": "department",
+        "menu_icon": "fas fa-outdent"
+    },
+    {
+        "parent_name": "Bidang",
+        "menu_name": "Tambah Bidang",
+        "menu_route": "department/create",
+        "menu_icon": ""
+    },
+    {
+        "parent_name": "Bidang",
+        "menu_name": "Semua Bidang",
+        "menu_route": "department",
+        "menu_icon": ""
+    },
+    {
+        "parent_name": "",
+        "menu_name": "Jabatan",
+        "menu_route": "title",
+        "menu_icon": "fas fa-atom"
+    },
+    {
+        "parent_name": "Jabatan",
+        "menu_name": "Tambah Jabatan",
+        "menu_route": "title/create",
+        "menu_icon": ""
+    },
+    {
+        "parent_name": "Jabatan",
+        "menu_name": "Semua Jabatan",
+        "menu_route": "title",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"",
+        "menu_name": "Pegawai",
+        "menu_route": "employee",
+        "menu_icon": "fas fa-user-tie"
+    },
+    {
+        "parent_name":"Pegawai",
+        "menu_name": "Tambah Pegawai",
+        "menu_route": "employee/create",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Pegawai",
+        "menu_name": "Semua Pegawai",
+        "menu_route": "employee",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"",
+        "menu_name": "Pelanggan",
+        "menu_route": "customer",
+        "menu_icon": "fas fa-user"
+    },
+    {
+        "parent_name":"Pelanggan",
+        "menu_name": "Grup Pelanggan",
+        "menu_route": "customergroup",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Pelanggan",
+        "menu_name": "Tambah Pelanggan",
+        "menu_route": "customer/create",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Pelanggan",
+        "menu_name": "Semua Pelanggan",
+        "menu_route": "customer",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"",
+        "menu_name": "Principle",
+        "menu_route": "principle",
+        "menu_icon": "fas fa-user-ninja"
+    },
+    {
+        "parent_name":"Principle",
+        "menu_name": "Tambah Principle",
+        "menu_route": "principle/create",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Principle",
+        "menu_name": "Semua Principle",
+        "menu_route": "principle",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"",
+        "menu_name": "Supplier",
+        "menu_route": "supplier",
+        "menu_icon": "fas fa-user-circle"
+    },
+    {
+        "parent_name":"Supplier",
+        "menu_name": "Tambah Supplier",
+        "menu_route": "supplier/create",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Supplier",
+        "menu_name": "Semua Supplier",
+        "menu_route": "supplier",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"",
+        "menu_name": "Produk",
+        "menu_route": "product",
+        "menu_icon": "fa fa-shopping-bag"
+    },
+    {
+        "parent_name":"Produk",
+        "menu_name": "Tambah Produk",
+        "menu_route": "product/draft",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Produk",
+        "menu_name": "Semua Produk",
+        "menu_route": "product",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Produk",
+        "menu_name": "Kategori Produk",
+        "menu_route": "productcategory",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"",
+        "menu_name": "Inventory",
+        "menu_route": "inventory",
+        "menu_icon": "fa fa-server"
+    },
+    {
+        "parent_name":"Inventory",
+        "menu_name": "Penyesuaian Stok",
+        "menu_route": "adjustment",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Inventory",
+        "menu_name": "Perpindahan Barang",
+        "menu_route": "stockmovement",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"",
+        "menu_name": "Pengiriman",
+        "menu_route": "shipping",
+        "menu_icon": "fas fa-shipping-fast"
+    },
+    {
+        "parent_name":"Pengiriman",
+        "menu_name": "Provinsi",
+        "menu_route": "province",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Pengiriman",
+        "menu_name": "Kota",
+        "menu_route": "region",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Pengiriman",
+        "menu_name": "Kecamatan",
+        "menu_route": "district",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Pengiriman",
+        "menu_name": "Kurir",
+        "menu_route": "expedition",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"",
+        "menu_name": "Data",
+        "menu_route": "data",
+        "menu_icon": "fa fa-database"
+    },
+    {
+        "parent_name":"Data",
+        "menu_name": "Kategori UOM",
+        "menu_route": "uomcategory",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Data",
+        "menu_name": "UOM",
+        "menu_route": "uom",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"",
+        "menu_name": "Pengaturan",
+        "menu_route": "setting",
+        "menu_icon": "fa fa-cog"
+    },
+    {
+        "parent_name":"Pengaturan",
+        "menu_name": "Aplikasi",
+        "menu_route": "config",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Pengaturan",
+        "menu_name": "Toko",
+        "menu_route": "site",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Pengaturan",
+        "menu_name": "Menu",
+        "menu_route": "menu",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Pengaturan",
+        "menu_name": "Role",
+        "menu_route": "role",
+        "menu_icon": ""
+    },
+    {
+        "parent_name":"Pengaturan",
+        "menu_name": "User",
+        "menu_route": "user",
+        "menu_icon": ""
+    }
+]

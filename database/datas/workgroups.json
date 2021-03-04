@@ -1,0 +1,31 @@
+[{
+        "code": "outsource",
+        "name": "Outsource",
+        "can_edit": 0,
+        "can_delete": 0
+    },
+    {
+        "code": "permanent",
+        "name": "Pegawai Tetap",
+        "can_edit": 0,
+        "can_delete": 0
+    },
+    {
+        "code": "pkwt1",
+        "name": "PKWT 1",
+        "can_edit": 0,
+        "can_delete": 0
+    },
+    {
+        "code": "pkwt2",
+        "name": "PKWT 2",
+        "can_edit": 0,
+        "can_delete": 0
+    },
+    {
+        "code": "internship",
+        "name": "Internship",
+        "can_edit": 0,
+        "can_delete": 0
+    }
+]

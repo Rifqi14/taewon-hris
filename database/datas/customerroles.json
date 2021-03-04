@@ -1,0 +1,12 @@
+[
+    {
+        "name": "basic",
+        "display_name": "Basic",
+        "description": "Basic Customer"
+    },
+    {
+        "name": "reseller",
+        "display_name": "Reseller",
+        "description": "Reseller Customer"
+    }
+]

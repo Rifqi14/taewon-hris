@@ -1,0 +1,110 @@
+[
+    {
+        "code":"other",
+        "name": "Unmeasurement",
+        "type": "reference",
+        "ratio": "1"
+    },
+    {
+        "code":"lengthdistance",
+        "name": "m",
+        "type": "reference",
+        "ratio": "1"
+    },
+    {
+        "code":"lengthdistance",
+        "name": "cm",
+        "type": "smallerthan",
+        "ratio": "100"
+    },
+    {
+        "code":"lengthdistance",
+        "name": "km",
+        "type": "biggerthan",
+        "ratio": "1000"
+    },
+    {
+        "code":"weight",
+        "name": "kg",
+        "type": "reference",
+        "ratio": "1"
+    },
+    {
+        "code":"weight",
+        "name": "g",
+        "type": "smallerthan",
+        "ratio": "1000"
+    },
+    {
+        "code":"weight",
+        "name": "t",
+        "type": "biggerthan",
+        "ratio": "1000"
+    },
+    {
+        "code":"temperature",
+        "name": "°C",
+        "type": "reference",
+        "ratio": "1"
+    },
+    {
+        "code":"temperature",
+        "name": "°F",
+        "type": "biggerthan",
+        "ratio": "33.8"
+    },
+    {
+        "code":"workingtime",
+        "name": "Day (s)",
+        "type": "reference",
+        "ratio": "1"
+    },
+    {
+        "code":"workingtime",
+        "name": "Hour (s)",
+        "type": "smallerthan",
+        "ratio": "8"
+    },
+    {
+        "code":"volume",
+        "name": "Litter (s)",
+        "type": "reference",
+        "ratio": "1"
+    },
+    {
+        "code":"workingtime",
+        "name": "gal (s)",
+        "type": "biggerthan",
+        "ratio": "3.78541"
+    },
+    {
+        "code":"workingtime",
+        "name": "qt",
+        "type": "smallerthan",
+        "ratio": "1.05669"
+    },
+    {
+        "code":"pressure",
+        "name": "bar",
+        "type": "reference",
+        "ratio": "1"
+    },
+    {
+        "code":"pressure",
+        "name": "Pa",
+        "type": "smallerthan",
+        "ratio": "100000"
+    },
+    {
+        "code":"power",
+        "name": "bar",
+        "type": "reference",
+        "ratio": "1"
+    },
+    {
+        "code":"pressure",
+        "name": "Pa",
+        "type": "smallerthan",
+        "ratio": "100000"
+    }
+]

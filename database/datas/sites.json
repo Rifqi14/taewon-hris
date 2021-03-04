@@ -1,0 +1,17 @@
+[
+    {
+        "code": "mainstore",
+        "name": "Main Store",
+        "phone": "085655727661",
+        "email": "085655727661",
+        "province_id": 35,
+        "region_id": 3578,
+        "district_id": 3578240,
+        "village_id": 3578240005,
+        "address": "Jl Teluk Kumai Barat No 113/16",
+        "postal_code": 64171,
+        "logo":"assets/site/mainstore.png",
+        "receipt_header":"<p>MAINSTORE<br></p>",
+        "receipt_footer":"<p>Terimakasih telah berbelaja di toko kami.* Barang yang telah dibeli tidak boleh dikembalikan/ditukarkan.</p><p>* Syarat dan ketentuan berlaku<br></p>"
+    }
+]

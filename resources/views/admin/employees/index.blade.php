@@ -1,0 +1,572 @@
+@extends('admin.layouts.app')
+
+@section('title', 'Employee')
+@section('stylesheets')
+<link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
+<link rel="stylesheet" href="{{asset('adminlte/component/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}">
+<link href="{{asset('adminlte/component/jquery-ui/jquery-ui.min.css')}}" rel="stylesheet">
+<style type="text/css">
+	.ui-state-active{
+        background: #28a745 !important;
+        border-color: #28a745 !important;
+    }
+    .ui-menu {
+        overflow: auto;
+        height:200px;
+    }
+</style>
+@endsection
+
+@push('breadcrump')
+<li class="breadcrumb-item active">Employee</li>
+@endpush
+
+@section('content')
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card card-{{ config('configs.app_theme') }} card-outline">
+				<div class="card-header">
+					<h3 class="card-title">Employee List</h3>
+					<!-- tools box -->
+					<div class="pull-right card-tools">
+						<!-- <a href="{{route('employees.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip"
+							title="Tambah">
+							<i class="fa fa-file-import"></i>
+						</a> -->
+						<a href="{{route('employees.create')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="Tambah"><i class="fa fa-plus"></i></a>
+
+					<a href="{{route('employees.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="Import" style="cursor: pointer;"><i class="fa fa-file-import"></i></a>
+					<a href="javascript:void(0)" onclick="exportemployee()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="Export" style="cursor: pointer;"><i class="fa fa-download"></i></a>
+					<!-- <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
+						<i class="fa fa-search"></i>
+					</a> -->
+				</div>
+				<!-- /. tools -->
+			</div>
+			<div class="card-body">
+			<form id="form" action="{{ route('salaryreport.store') }}" class="form-horizontal" method="post">
+          {{ csrf_field() }}
+            <div class="row">
+              <input type="hidden" name="user" value="{{ Auth::guard('admin')->user()->id }}">
+              <div class="col-md-4">
+                <div class="col-md-12">
+                  <div class="form-group">
+					<label class="control-label" for="employee_name">Searching For</label>
+					<input type="text" name="employee_name" id="employee_name" class="form-control filter" placeholder="Searching For">
+					{{-- <select name="employee_name" id="employee_name" class="form-control select2" style="width: 100%" aria-hidden="true" data-placeholder="Employee Name">
+						<option value=""></option>
+						@foreach ($employees as $employee)
+						<option value="{{ $employee->id }}">{{ $employee->name }}</option>
+						@endforeach
+					  </select> --}}
+				  </div>
+				  <div id="employee-container"></div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="control-label" for="nid">NIK</label>
+                    <input type="text" class="form-control" placeholder="Searching For" name="nid" id="nid">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="control-label" for="birthday">Birthday</label>
+                    <div class="form-row">
+                      <div class="col-sm-4">
+                          <select class="form-control select2" onclick="" placeholder="Month" multiple name="month" id="month">
+						  	<option value=""></option>
+                            <option value="01" >Jan</option>
+                            <option value="02" >Feb</option>
+                            <option value="03" >Mar</option>
+                            <option value="04" >Apr</option>
+                            <option value="05" >May</option>
+                            <option value="06" >Jun</option>
+                            <option value="07" >July</option>
+                            <option value="08" >Aug</option>
+                            <option value="09" >Sep</option>
+                            <option value="10" >Oct</option>
+                            <option value="11" >Nov</option>
+                            <option value="12" >Dec</option>
+                          </select>
+                      </div>
+					  <div class="col-sm-4">
+                          <select class="form-control select2" placeholder="Day" multiple name="day" id="day">
+						  		<option value=""></option>
+                                @for ($i = 1; $i <= 31; $i++)
+                                <option value="{{ $i }}">{{ $i }}</option>
+                                @endfor
+                          </select>
+                      </div>
+                      <div class="col-sm-4">
+                          <div class="input-group">
+                              <select name="year" placeholder="Year" class="form-control select2" multiple id="year">
+							  	<option value=""></option>
+                                @php
+                                    $thn_skr = date('Y');
+                                @endphp
+                                @for ($i = $thn_skr; $i >= 1945; $i--)
+                                <option value="{{ $i }}">{{ $i }}</option>
+                                @endfor
+                              </select>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="col-md-12">
+                  <div class="form-group">
+					<label class="control-label" for="department">Department</label>
+					<select name="department" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Department">
+						@foreach ($departments as $department)
+						<option value="{{ $department->name }}">{{ $department->path }}</option>
+						@endforeach
+					  </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="control-label" for="type">Position</label>
+					<select name="position" id="position" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Position">
+						@foreach ($titles as $title)
+						<option value="{{ $title->id }}">{{ $title->name }}</option>
+						@endforeach
+					  </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="control-label" for="workgroup">Workgroup Combination</label>
+					<select name="workgroup" id="workgroup" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Workgroup Combination">
+						@foreach ($workgroups as $workgroup)
+						<option value="{{ $workgroup->id }}">{{ $workgroup->name }}</option>
+						@endforeach
+					  </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="control-label" for="workgroup">Status</label>
+					<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Status">
+						<option value=""></option>
+						<option value="1" selected>Active</option>
+						<option value="0">Non Active</option>
+					  </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+				<table class="table table-striped table-bordered datatable" style="width:100%">
+					<thead>
+						<tr>
+							<th width="10">#</th>
+							<th width="100">NIK</th>
+							<th width="250">Employee Name</th>
+							<th width="150">Department</th>
+							<th width="200">Position</th>
+							<th width="250">Workgroup Combination</th>
+							<th width="100">Action</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="overlay d-none">
+				<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+			</div>
+		</div>
+	</div>
+
+</div>
+</div>
+<div class="modal fade" id="add-filter" tabindex="-1" role="dialog"  aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Filter</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			</div>
+			<div class="modal-body">
+				<form id="form-search" autocomplete="off">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label class="control-label" for="name">Employee Nama</label>
+								<input type="text" name="name" class="form-control" placeholder="Nama">
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label class="control-label" for="name">NIK</label>
+								<input type="text" name="name" class="form-control" placeholder="Nama">
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label class="control-label" for="name">Birth Date</label>
+								<input type="text" name="name" class="form-control" placeholder="Nama">
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button form="form-search" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i class="fa fa-search"></i></button>
+			</div>
+		</div>
+	</div>
+</div>
+@endsection
+
+@push('scripts')
+<script src="{{asset('adminlte/component/jquery-ui/jquery-ui.min.js')}}"></script>
+<script src="{{asset('adminlte/component/dataTables/js/datatables.min.js')}}"></script>
+<script src="{{asset('adminlte/component/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
+<script type="text/javascript">
+	// function filter(){
+	// 	$('#add-filter').modal('show');
+	// }
+	// $("#day").select2({
+	// 	allowClear: true
+	// });
+	// $("#month").select2();
+	// $("#year").select2();
+	function exportemployee() {
+    $.ajax({
+        url: "{{ route('employees.export') }}",
+        type: 'POST',
+        dataType: 'JSON',
+        data: $("#form").serialize(),
+        beforeSend:function(){
+			// $('.overlay').removeClass('d-none');
+			waitingDialog.show('Loading...');
+        }
+    }).done(function(response){
+		waitingDialog.hide();
+        if(response.status){
+          $('.overlay').addClass('d-none');
+          $.gritter.add({
+              title: 'Success!',
+              text: response.message,
+              class_name: 'gritter-success',
+              time: 1000,
+          });
+          let download = document.createElement("a");
+          download.href = response.file;
+          document.body.appendChild(download);
+          download.download = response.name;
+          download.click();
+          download.remove();
+        }
+        else{
+          $.gritter.add({
+              title: 'Warning!',
+              text: response.message,
+              class_name: 'gritter-warning',
+              time: 1000,
+          });
+        }
+    }).fail(function(response){
+		waitingDialog.hide();
+        var response = response.responseJSON;
+        $('.overlay').addClass('d-none');
+        $.gritter.add({
+            title: 'Error!',
+            text: response.message,
+            class_name: 'gritter-error',
+            time: 1000,
+        });
+    });
+  }
+	$(function(){
+		dataTable = $('.datatable').DataTable( {
+			stateSave:true,
+			processing: true,
+			serverSide: true,
+			filter:false,
+			info:false,
+			lengthChange:true,
+			responsive: true,
+			order: [[ 6, "asc" ]],
+			lengthMenu: [ 100, 250, 500, 1000, 2000 ],
+      		pageLength: 100,
+			ajax: {
+				url: "{{route('employees.read')}}",
+				type: "GET",
+				data:function(data){
+					var employee_id = $('input[name=employee_name]').val();
+					var nid = $('input[name=nid]').val();
+					var date = $('input[name=birthday]').val();
+					var department = $('select[name=department]').val();
+					var position = $('select[name=position]').val();
+					var workgroup = $('select[name=workgroup]').val();
+					var day = $('select[name=day]').val()
+					var month = $('select[name=month]').val();
+					var year = $('select[name=year]').val();
+					var status = $('select[name=status]').val();
+					data.employee_id = employee_id;
+					data.nid = nid;
+					data.date = date;
+					data.department = department;
+					data.workgroup = workgroup;
+					data.position = position;
+					data.day = day;
+					data.month = month;
+					data.year = year;
+					data.status = status;
+				}
+			},
+			columnDefs:[
+			{
+				orderable: false,targets:[0]
+			},
+			{ className: "text-right", targets: [0] },
+			{ className: "text-center", targets: [6] },
+			{
+				render: function ( data, type, row ) {
+					if (row.status == 1) {
+						return `<p>${row.nid}</p>`;
+					}else if(row.status == 0 && row.nid == null){
+						return `<p style="color: red;">-</p>`
+					}
+					else{
+						return `<p style="color: red;">${row.nid}</p>`;
+					}
+				},targets: [1]
+			},
+			{
+				render: function ( data, type, row ) {
+				return `<a href="{{url('admin/employees')}}/${row.id}/">${row.name}</a>`;
+				},targets: [2]
+			},
+			{ render: function ( data, type, row ) {
+				return `<div class="dropdown">
+				<button class="btn  btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+				<i class="fa fa-bars"></i>
+				</button>
+				<ul class="dropdown-menu dropdown-menu-right">
+				<li><a class="dropdown-item edit" href="javascript:void(0)" data-id="${row.id}"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
+				<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+				</ul></div>`
+			},targets: [6]
+		}
+		],
+		columns: [
+		{ 
+			data: "no" 
+		},
+		{ 
+			data: "nid" 
+		},
+		{ 
+			data: "name" 
+		},
+		{ 
+			data: "department_name" 
+		},
+		{ 
+			data: "title_name" 
+		},
+		{ 
+			data: "workgroup_name" 
+		},
+		{ 
+			data: "id" 
+		},
+		]
+	});
+		$(".select2").select2({
+			allowClear: true
+		});
+		$('#form-search').submit(function(e){
+			e.preventDefault();
+			dataTable.draw();
+			$('#add-filter').modal('hide');
+		})
+		$(document).ready(function(){
+			var employees = [
+				@foreach($employees as $employee)
+                	"{!!$employee->name!!}",
+            	@endforeach
+			];
+			$( "input[name=employee_name]" ).autocomplete({
+			source: employees,
+			minLength:0,
+			appendTo: '#employee-container',
+			select: function(event, response) {
+				if(event.preventDefault(), 0 !== response.item.id){
+					$(this).val(response.item.value);
+					dataTable.draw();
+				}
+			}
+			}).focus(function () {
+				$(this).autocomplete("search");
+			});
+			$("input[name=employee_name]").keydown(function(event){
+				if(event.keyCode == 13) {
+					event.preventDefault();
+					$('input[name=employee_name]').autocomplete('close');
+					return false;
+				}
+			});
+			var employees = [
+				@foreach($employees as $nik)
+                	"{!!$nik->nid!!}",
+            	@endforeach
+			];
+			$( "input[name=nid]" ).autocomplete({
+			source: employees,
+			minLength:0,
+			appendTo: '#employee-container',
+			select: function(event, response) {
+				if(event.preventDefault(), 0 !== response.item.id){
+					$(this).val(response.item.value);
+					dataTable.draw();
+				}
+			}
+			}).focus(function () {
+				$(this).autocomplete("search");
+			});
+			$("input[name=nid]").keydown(function(event){
+				if(event.keyCode == 13) {
+					event.preventDefault();
+					$('input[name=nid]').autocomplete('close');
+					return false;
+				}
+			});
+			$(document).on('keyup', '#employee_name', function() {
+				dataTable.draw();
+			});
+			$(document).on('keyup', '#nid', function() {
+				dataTable.draw();
+			});
+			$(document).on('change', '#department', function() {
+				dataTable.draw();
+			});
+			$(document).on('change', '#workgroup', function() {
+				dataTable.draw();
+			});
+			$(document).on('change', '#position', function() {
+				dataTable.draw();
+			});
+			$(document).on('change', '#day', function() {
+				dataTable.draw();
+			});
+			$(document).on('change', '#month', function() {
+				dataTable.draw();
+			});
+			$(document).on('change', '#year', function() {
+				dataTable.draw();
+			});
+			$(document).on('change', '#status', function() {
+				dataTable.draw();
+			});
+		});
+		
+		$('input[name=birthday]').datepicker({
+			autoclose: true,
+			format: 'yyyy-mm-dd'
+		})
+		$('input[name=birthday]').on('change', function(){
+			if (!$.isEmptyObject($(this).closest("form").validate())) {
+				$(this).closest("form").validate().form();
+			}
+		});
+		$(document).on('click','.delete',function(){
+			var id = $(this).data('id');
+			bootbox.confirm({
+				buttons: {
+					confirm: {
+						label: '<i class="fa fa-check"></i>',
+						className: 'btn-primary'
+					},
+					cancel: {
+						label: '<i class="fa fa-undo"></i>',
+						className: 'btn-default'
+					},
+				},
+				title:'Menghapus Employee?',
+				message:'Data yang telah dihapus tidak dapat dikembalikan',
+				callback: function(result) {
+					if(result) {
+						var data = {
+							_token: "{{ csrf_token() }}"
+						};
+						$.ajax({
+							url: `{{url('admin/employees')}}/${id}`,
+							dataType: 'json',
+							data:data,
+							type:'DELETE',
+							beforeSend:function(){
+								$('.overlay').removeClass('hidden');
+							}
+						}).done(function(response){
+							if(response.status){
+								$('.overlay').addClass('hidden');
+								$.gritter.add({
+									title: 'Success!',
+									text: response.message,
+									class_name: 'gritter-success',
+									time: 1000,
+								});
+								dataTable.ajax.reload( null, false );
+							}
+							else{
+								$.gritter.add({
+									title: 'Warning!',
+									text: response.message,
+									class_name: 'gritter-warning',
+									time: 1000,
+								});
+							}
+						}).fail(function(response){
+							var response = response.responseJSON;
+							$('.overlay').addClass('hidden');
+							$.gritter.add({
+								title: 'Error!',
+								text: response.message,
+								class_name: 'gritter-error',
+								time: 1000,
+							});
+						})
+					}
+				}
+			});
+		});
+		$(document).on('click','.edit',function(){
+			var id = $(this).data('id');
+			bootbox.confirm({
+				buttons: {
+					confirm: {
+						label: '<i class="fa fa-check"></i>',
+						className: 'btn-primary'
+					},
+					cancel: {
+						label: '<i class="fa fa-undo"></i>',
+						className: 'btn-default'
+					},
+				},
+				title:'Edit Employee?',
+				message:'You will be redirect to employee edit page, are you sure?',
+				callback: function(result) {
+					if(result) {
+						document.location = "{{url('admin/employees')}}/"+id+"/edit";
+					}
+				}
+			});
+		});
+	})
+</script>
+@endpush

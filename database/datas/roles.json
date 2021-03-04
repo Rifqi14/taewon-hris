@@ -1,0 +1,12 @@
+[
+    {
+        "name": "webmaster",
+        "display_name": "Webmaster",
+        "description": "Role For Webmaster"
+    },
+    {
+        "name": "administrator",
+        "display_name": "Administrator",
+        "description": "Role For Administrator"
+    }
+]

@@ -1,0 +1,30 @@
+[
+    {
+        "option": "app_name",
+        "value": "POS"
+    },
+    {
+        "option": "app_copyright",
+        "value": "2019 - 2020"
+    },
+    {
+        "option": "app_logo",
+        "value": "landing/images/logo.png"
+    },
+    {
+        "option": "company_name",
+        "value": "Enviostore"
+    },
+    {
+        "option": "company_email",
+        "value": "admin@enviostore.com"
+    },
+    {
+        "option": "company_phone",
+        "value": "0895-0111-9666"
+    },
+    {
+        "option": "company_address",
+        "value": "Kompleks Pertokoan Permata, Rungkut Lor Ykp Jl. Rungkut Asri Utara No.Kav.09-16, Rungkut Kidul, Kec. Rungkut, Kota SBY, Jawa Timur 60293"
+    }
+]

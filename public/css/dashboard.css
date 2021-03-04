@@ -1,0 +1,340 @@
+.nunito {
+    font-family: 'Nunito', sans-serif;
+}
+
+.background-dashboard {
+    background: url(https://image.freepik.com/free-photo/close-up-worker-explaining-graph_1098-3032.jpg) rgba(51, 51, 51, 0.68);
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 200px;
+    background-blend-mode: multiply;
+}
+
+.welcome-text {
+    font-weight: 700;
+}
+
+.welcome-date {
+    font-weight: 600;
+}
+
+.custom-title {
+    font-weight: 700;
+    color: #515365;
+}
+
+.infobox-3 {
+    position: relative;
+    border: 1px solid #e0e6ed;
+    /*width: 50%;*/
+    margin: 25px 0px 17px 0px;
+    padding: 10px 25px 10px 25px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0px 2px 10px 1px rgba(31, 45, 61, 0.1);
+    box-shadow: 0px 2px 10px 1px rgba(31, 45, 61, 0.1);
+    margin-right: auto;
+    margin-left: auto;
+    background-color: #fff;
+    /*background: url(https://preview.keenthemes.com/metronic/theme/html/demo1/dist/assets/media/svg/shapes/abstract-1.svg) #fff;
+  background-blend-mode: multiply;
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 30% auto;*/
+}
+
+.infobox-3 .info-heading-count {
+    font-weight: 700;
+    font-size: 55px;
+    color: #333333;
+    letter-spacing: 2px;
+}
+
+.infobox-3 .info-plus {
+    font-weight: 700;
+    font-size: 27px;
+    color: #1e9dfc;
+}
+
+.infobox-3 .info-min {
+    font-weight: 700;
+    font-size: 27px;
+    color: #ec0101;
+}
+
+.infobox-3 .info-icon {
+    position: absolute;
+    margin-bottom: 20px;
+    background: #28a745;
+    display: inline-block;
+    top: -30px;
+    padding: 14px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0px 2px 10px 1px rgba(31, 45, 61, 0.1);
+    box-shadow: 0px 2px 10px 1px rgba(31, 45, 61, 0.1);
+}
+
+.infobox-3 .info-icon svg {
+    width: 45px;
+    height: 45px;
+    stroke-width: 1px;
+    color: #fff;
+}
+
+.infobox-3 .info-heading {
+    font-weight: 600;
+    font-size: 2rem;
+    letter-spacing: 2px;
+}
+
+.infobox-3 .info-text {
+    font-size: 14px;
+    color: #888888;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.infobox-3 .info-link {
+    color: #1b55e2;
+    font-size: 12.3px !important;
+    font-weight: 600;
+}
+
+.infobox-3 .info-link svg {
+    width: 15px;
+    height: 15px;
+}
+
+
+.widget-dashboard {
+    padding: 2rem;
+    flex: 1;
+    overflow: hidden;
+    background-color: white;
+    margin: 0.3rem;
+    box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.06);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.bg-dark-green {
+    background-color: #28a745 !important;
+    color: #fff;
+}
+
+.icon>svg {
+    margin-left: -4px;
+    width: 38px;
+    height: 38px;
+}
+
+.subtitle {
+    display: block;
+    margin-top: 0.75rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #595d6e;
+}
+
+.desc {
+    display: block;
+    font-size: 1rem;
+    color: #74788d;
+}
+
+span.text-count {
+    position: absolute;
+    font-size: 90px;
+    top: 0;
+    bottom: 0;
+    right: 15px;
+    color: #343a408c;
+}
+
+.card-dashboard {
+    max-height: 318px;
+    overflow-x: auto;
+}
+
+.dashed-right {
+    border-right: 1px dashed #e0e6ed;
+}
+
+.dashed-top {
+    border-top: 1px dashed #e0e6ed;
+}
+
+.mt-30 {
+    margin-top: -30px;
+}
+
+.container-dashboard {
+    padding: 10px;
+    margin-top: -90px;
+}
+
+*::-webkit-scrollbar {
+    width: 6px;
+    /* width of the entire scrollbar */
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+    /* color of the tracking area */
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    /* color of the scroll thumb */
+    border-radius: 20px;
+    /* roundness of the scroll thumb */
+    border: 1px solid #c1c1c1;
+    /* creates padding around scroll thumb */
+}
+
+table.scrollable tbody {
+    height: 226px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+table.scrollable tbody.depart {
+    height: 382px;
+}
+
+table.scrollable thead,
+table.scrollable tbody,
+table.scrollable tr,
+table.scrollable td,
+table.scrollable th {
+    display: inline-block;
+    width: 100%;
+}
+
+table.scrollable tbody td,
+table.scrollable tbody th,
+table.scrollable thead>tr>th {
+    width: 33.3%;
+    float: left;
+    /*position: relative;*/
+
+    &::after {
+        content: '';
+        clear: both;
+        display: block;
+    }
+}
+
+.card-header-actions {
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.5625rem;
+    padding-bottom: 0.5625rem;
+}
+
+.infobox-2 {
+    position: relative;
+    border: 1px solid #e0e6ed;
+    /*width: 50%;*/
+    /* margin: 25px 0px 17px 0px; */
+    padding: 10px 25px 10px 25px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0px 2px 10px 1px rgba(31, 45, 61, 0.1);
+    box-shadow: 0px 2px 10px 1px rgba(31, 45, 61, 0.1);
+    margin-right: auto;
+    margin-left: auto;
+    background-color: #fff;
+    /*background: url(https://preview.keenthemes.com/metronic/theme/html/demo1/dist/assets/media/svg/shapes/abstract-1.svg) #fff;
+  background-blend-mode: multiply;
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 30% auto;*/
+}
+
+.infobox-2 .info-icon {
+    position: absolute;
+    border-radius: 50%;
+    background: #28a745;
+    display: inline-block;
+    padding: 10px;
+    margin-bottom: 20px;
+    -webkit-box-shadow: 0px 2px 10px 1px rgba(31, 45, 61, 0.1);
+    box-shadow: 0px 2px 10px 1px rgba(31, 45, 61, 0.1);
+}
+
+.infobox-2 .info-icon svg {
+    width: 25px;
+    height: 25px;
+    stroke-width: 1px;
+    color: #fff;
+}
+
+.infobox-2 .info-heading {
+    font-weight: 700;
+    font-size: 2rem;
+    margin-top: 13px;
+    line-height: 35px;
+    width: 100%;
+}
+
+.infobox-2 .info-text {
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 22px;
+    padding: 0px !important;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 0px;
+}
+
+.card {
+    -webkit-box-shadow: 0px 2px 10px 1px rgba(31, 45, 61, 0.1);
+    box-shadow: 0px 2px 10px 1px rgba(31, 45, 61, 0.1);
+}
+
+.min-20 {
+    margin-top: -20px;
+}
+
+@media (max-width: 575px) {
+    .infobox-3 {
+        width: auto;
+        margin: 42px 0px 17px 0px;
+    }
+
+    .infobox-3 .info-text {
+        font-size: 12px;
+        letter-spacing: normal;
+    }
+
+    .infobox-2 {
+        padding: 10px 0px 10px 25px;
+        margin-top: 10px;
+    }
+
+    .infobox-2 .info-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .infobox-2 .info-icon {
+        padding: 10px;
+    }
+
+    .infobox-2 .info-heading {
+        font-size: 28px;
+        margin: 0px;
+        width: 100%;
+    }
+
+    .infobox-2 .info-text {
+        margin-top: 0px;
+    }
+
+    .info-link {
+        font-size: 10px;
+    }
+}
