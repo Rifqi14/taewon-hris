@@ -22,6 +22,7 @@ class AddColumnToTitles extends Migration
             $table->text('path')->nullable();
             $table->string('code_system')->nullable();
             $table->string('status', 200);
+            
         });
     }
 

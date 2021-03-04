@@ -14,6 +14,12 @@ class AddPeriodIdToEmployeeAllowances extends Migration
     public function up()
     {
         Schema::table('employee_allowances', function (Blueprint $table) {
+            $table->dropColumn('factor');
+            $table->dropColumn('year');
+            $table->dropColumn('month');
+        });
+
+        Schema::table('employee_allowances', function (Blueprint $table) {
             $table->decimal('factor', 8,3)->nullable();
             $table->year('year')->nullable();
             $table->string('month',2)->nullable();
@@ -27,6 +33,12 @@ class AddPeriodIdToEmployeeAllowances extends Migration
      */
     public function down()
     {
+        Schema::table('employee_allowances', function (Blueprint $table) {
+            $table->decimal('factor', 8,3)->nullable();
+            $table->year('year')->nullable();
+            $table->string('month',2)->nullable();
+        });
+        
         Schema::table('employee_allowances', function (Blueprint $table) {
             $table->dropColumn('factor');
             $table->dropColumn('year');

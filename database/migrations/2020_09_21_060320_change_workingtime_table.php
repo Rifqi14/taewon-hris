@@ -14,6 +14,10 @@ class ChangeWorkingtimeTable extends Migration
     public function up()
     {
         Schema::table('employees', function (Blueprint $table) {
+            $table->dropColumn('working_time');
+        });
+
+        Schema::table('employees', function (Blueprint $table) {
             $table->integer('working_time')->nullable();
         });
     }
@@ -25,6 +29,10 @@ class ChangeWorkingtimeTable extends Migration
      */
     public function down()
     {
+        Schema::table('employees', function (Blueprint $table) {
+            $table->string('working_time');
+        });
+
         Schema::table('employees', function (Blueprint $table) {
             $table->dropColumn('working_time');
         });

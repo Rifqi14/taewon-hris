@@ -14,6 +14,10 @@ class AddOutsourcingToEmployees extends Migration
     public function up()
     {
         Schema::table('employees', function (Blueprint $table) {
+            $table->dropColumn('outsourcing_id');
+        });
+        
+        Schema::table('employees', function (Blueprint $table) {
             $table->unsignedBigInteger('outsourcing_id')->nullable();
             $table->foreign('outsourcing_id')->references('id')->on('outsourcings')
                   ->onUpdate('cascade');
@@ -27,6 +31,10 @@ class AddOutsourcingToEmployees extends Migration
      */
     public function down()
     {
+        Schema::table('employees', function (Blueprint $table) {
+            $table->unsignedBigInteger('outsourcing_id')->nullable();
+        });
+
         Schema::table('employees', function (Blueprint $table) {
             $table->dropForeign('outsourcing_id');
             $table->dropColumn('outsourcing_id');

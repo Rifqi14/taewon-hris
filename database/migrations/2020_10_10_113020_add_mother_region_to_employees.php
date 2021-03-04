@@ -14,6 +14,10 @@ class AddMotherRegionToEmployees extends Migration
     public function up()
     {
         Schema::table('employees', function (Blueprint $table) {
+            $table->dropColumn('mother_name');
+        });
+
+        Schema::table('employees', function (Blueprint $table) {
             $table->string('mother_name')->nullable();
             $table->unsignedBigInteger('region_id')->nullable();
             $table->foreign('region_id')->references('id')->on('regions')
@@ -28,6 +32,10 @@ class AddMotherRegionToEmployees extends Migration
      */
     public function down()
     {
+        Schema::table('employees', function (Blueprint $table) {
+            $table->string('mother_name')->nullable();
+        });
+        
         Schema::table('employees', function (Blueprint $table) {
             $table->dropColumn('mother_name');
             $table->dropForeign('region_id');

@@ -14,6 +14,10 @@ class AddCalendarWorkgroupToEmployees extends Migration
     public function up()
     {
         Schema::table('employees', function (Blueprint $table) {
+            $table->dropColumn('workgroup_id');
+        });
+
+        Schema::table('employees', function (Blueprint $table) {
             $table->unsignedBigInteger('calendar_id')->nullable();
             $table->unsignedBigInteger('workgroup_id')->nullable();
             $table->foreign('calendar_id')->references('id')->on('calendars')
@@ -30,6 +34,10 @@ class AddCalendarWorkgroupToEmployees extends Migration
      */
     public function down()
     {
+        Schema::table('employees', function (Blueprint $table) {
+            $table->unsignedBigInteger('workgroup_id')->nullable();
+        });
+        
         Schema::table('employees', function (Blueprint $table) {
             $table->dropColumn('calendar_id');
             $table->dropColumn('workgroup_id');
