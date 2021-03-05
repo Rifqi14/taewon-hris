@@ -75,11 +75,15 @@ class DepartmentController extends Controller
         $parent_id = $request->parent_id;
         $name = strtoupper($request->name);
         $title_id = $request->title_id;
+        $level = $request->level;
 
         //Count Data
         $query = DB::table('departments');
         $query->select('departments.*');
         $query->whereRaw("upper(path) like '%$name%'");
+        if ($level) {
+            $query->where('level', $level);
+        }
         if ($parent_id!='') {
             $query->where('parent_id', $parent_id);
         }
@@ -89,6 +93,9 @@ class DepartmentController extends Controller
         $query = DB::table('departments');
         $query->select('departments.*');
         $query->whereRaw("upper(path) like '%$name%'");
+        if ($level) {
+            $query->where('level', $level);
+        }
         if ($department_id) {
             $query->where('id', $department_id);
         }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Workingtime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\DepartmentShift;
 use App\Models\WorkingtimeDetail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -151,6 +152,20 @@ class WorkingTimeController extends Controller
             'notes'             => $request->notes
         ]);
         if ($workingtime) {
+            $department_id = explode(",", $request->department_id);
+            foreach ($department_id as $key => $value) {
+                $departmentShift = DepartmentShift::create([
+                    'workingtime_id'    => $workingtime->id,
+                    'department_id'     => $value
+                ]);
+                if (!$departmentShift) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status'    => false,
+                        'message'   => $departmentShift
+                    ], 400);
+                }
+            }
             foreach ($request->start as $key => $value) {
                 if ($request->start[$key] > $request->finish[$key]) {
                     $start = changeDateFormat('Y-m-d H:i:s', date('Y-m-d', time()) . ' ' . $request->start[$key]);
@@ -214,8 +229,9 @@ class WorkingTimeController extends Controller
         $workingtime = Workingtime::with(array('detail' => function ($query) {
             $query->orderBy('id', 'asc');
         }))->find($id);
+        $departmentShift = DepartmentShift::where('workingtime_id', $id)->get();
         if ($workingtime) {
-            return view('admin.workingtime.edit', compact('workingtime'));
+            return view('admin.workingtime.edit', compact('workingtime', 'departmentShift'));
         } else {
             abort(404);
         }
@@ -249,8 +265,24 @@ class WorkingTimeController extends Controller
         $workingtime->save();
 
         if ($workingtime) {
+            $deleteDepartment = DepartmentShift::where('workingtime_id', $id);
+            $deleteDepartment->delete();
             $delete = WorkingtimeDetail::where('workingtime_id', $id);
             $delete->delete();
+            $department_id = explode(",", $request->department_id);
+            foreach ($department_id as $key => $value) {
+                $departmentShift = DepartmentShift::create([
+                    'department_id'     => $value,
+                    'workingtime_id'    => $workingtime->id,
+                ]);
+                if (!$departmentShift) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status'    => false,
+                        'message'   => $departmentShift
+                    ], 400);
+                }
+            }
             foreach ($request->start as $key => $value) {
                 if ($request->start[$key] > $request->finish[$key]) {
                     $start = changeDateFormat('Y-m-d H:i:s', date('Y-m-d', time()) . ' ' . $request->start[$key]);
