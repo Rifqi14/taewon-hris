@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Config;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Validator;
 
@@ -22,7 +24,7 @@ class ConfigController extends Controller
     public function update(Request $request)
     {
         $fields = [
-            'app_name', 'app_copyright', 'app_logo', 'app_icon', 'app_theme', 'company_name', 'company_email', 'company_phone', 'company_address', 'email_push'
+            'app_name', 'app_copyright', 'app_logo', 'app_icon', 'app_theme', 'company_name', 'company_email', 'company_phone', 'company_address', 'email_push', 'language'
         ];
         $validator = Validator::make($request->all(), [
             'app_name'     => 'required',
@@ -99,6 +101,8 @@ class ConfigController extends Controller
                     break;
             }
         }
+        $language = Config::where('option', 'language')->first();
+        $request->session()->put('locale', $language->value);
         return response()->json([
             'status'     => true,
             'results'     => route('config.index'),

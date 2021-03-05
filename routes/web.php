@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('/admin');
 });
+Route::get('lang/{language}', 'LocalizationController@switch')->name('localization.switch');
 Auth::routes();
 Route::get('/overtimescheme/approved/{from}/{to}', 'Admin\CronController@generateOvertimeApprove')->name('overtime.approved');
 Route::get('/overtimescheme/date', 'Admin\CronController@generateOvertimeScheme')->name('overtime.date');

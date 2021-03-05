@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Calendar;
 use App\Models\CalendarException;
+use App\Models\Workingtime;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
@@ -210,8 +211,10 @@ class CalendarController extends Controller
             $data[] = $cal;
         }
         $exception = $data;
+
+        $shift = Workingtime::all();
         if ($calendar) {
-            return view('admin.calendar.edit', compact('calendar', 'exception'));
+            return view('admin.calendar.edit', compact('calendar', 'exception', 'shift'));
         } else {
             abort(404);
         }

@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\CalendarException;
+use App\Models\CalendarShiftSwitch;
+use App\Models\Workingtime;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
@@ -61,12 +64,13 @@ class CalendarExcController extends Controller
     public function calendar($id)
     {
         $query = DB::table('calendar_exceptions');
-        $query->select('calendar_exceptions.description as title', 'calendar_exceptions.date_exception as start', 'calendar_exceptions.label_color as color', 'calendar_exceptions.text_color as textColor');
+        $query->select('calendar_exceptions.description as description', 'calendar_exceptions.is_switch_day as switch_day', 'calendar_exceptions.date_exception as start', 'calendar_exceptions.label_color as color', 'calendar_exceptions.text_color as textColor');
         $query->where('calendar_exceptions.calendar_id', '=', $id);
         $calendars = $query->get();
 
         $data = [];
         foreach ($calendars as $cal) {
+            $cal->title = $cal->description;
             $data[] = $cal;
         }
         return response()->json($data);
@@ -217,12 +221,12 @@ class CalendarExcController extends Controller
                             return response()->json($results, 400);
                         } elseif (!$cal_exc) {
                             $exception = CalendarException::create([
-                                'calendar_id'   => $request->calendar_id,
-                                'date_exception' => $newdate,
-                                'description'   => $request->description,
-                                'label_color'      => $request->label_exception,
-                                'text_color'       => $request->text_color,
-                                'day'           => date('D', strtotime($newdate))
+                                'calendar_id'       => $request->calendar_id,
+                                'date_exception'    => $newdate,
+                                'description'       => $request->description,
+                                'label_color'       => $request->label_exception,
+                                'text_color'        => $request->text_color,
+                                'day'               => date('D', strtotime($newdate))
                             ]);
 
                             if (!$exception) {
@@ -303,20 +307,47 @@ class CalendarExcController extends Controller
                 'message'   => $validator->errors()->first()
             ], 400);
         }
+        DB::beginTransaction();
         $calendar = CalendarException::create([
             'calendar_id'       => $request->id_calendar,
             'date_exception'    => dbDate($request->calendar_date),
             'description'       => $request->calendar_desc_add,
             'day'               => changeDateFormat('D', $request->calendar_date),
             'label_color'       => $request->calendar_label,
-            'text_color'        => $request->calendar_text
+            'text_color'        => $request->calendar_text,
+            'is_switch_day'     => isset($request->is_switch_day) ? 'YES' : 'NO'
         ]);
         if (!$calendar) {
+            DB::rollBack();
             return response()->json([
                 'status'    => false,
                 'message'   => $calendar
             ], 400);
+        } else {
+            if ($calendar->is_switch_day == 'YES') {
+                foreach ($request->workingtime_id as $key => $value) {
+                    $workingshift = CalendarShiftSwitch::create([
+                        'calendar_exceptions_id'    => $calendar->id,
+                        'workingtime_id'            => $value,
+                        'start'                     => $request->start[$key],
+                        'finish'                    => $request->finish[$key],
+                        'min_in'                    => $request->min_in[$key],
+                        'max_out'                   => $request->max_out[$key],
+                        'workhour'                  => $request->start[$key] > $request->finish[$key] ? Carbon::parse($request->start[$key])->diffInHours(Carbon::parse($request->finish[$key])) : Carbon::parse($request->start[$key])->diffInHours(Carbon::parse($request->finish[$key])->addDay()),
+                        'day'                       => $calendar->day,
+                        'min_workhour'              => $request->min_wt[$key],
+                    ]);
+                    if (!$workingshift) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'    => false,
+                            'message'   => $workingshift
+                        ], 400);
+                    }
+                }
+            }
         }
+        DB::commit();
         return response()->json([
             'status'    => true,
             'message'   => 'Success add data'

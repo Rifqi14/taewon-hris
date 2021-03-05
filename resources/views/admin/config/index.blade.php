@@ -1,8 +1,8 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Aplikasi')
+@section('title', __('config.title'))
 @push('breadcrump')
-<li class="breadcrumb-item active">Application</li>
+<li class="breadcrumb-item active">{{ __('config.title') }}</li>
 @endpush
 @section('stylesheets')
 <link href="{{asset('bootstrap-taginput/tagsinput.css')}}" rel="stylesheet">
@@ -12,7 +12,7 @@
 @section('content')
 <div class="card card-{{config('configs.app_theme')}} card-outline">
   <div class="card-header">
-    <h3 class="card-title">Setting Application</h3>
+    <h3 class="card-title">{{ __('config.subtitle') }}</h3>
     <!-- tools box -->
     <div class="pull-right card-tools">
       <button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}}" title="Simpan"><i class="fa fa-save"></i></button>
@@ -20,84 +20,92 @@
     <!-- /. tools -->
   </div>
   <div class="card-body">
-    <form id="form" action="{{route('config.update')}}"  enctype="multipart/form-data" method="post" accept-charset="utf-8">
+    <form id="form" action="{{route('config.update')}}" enctype="multipart/form-data" method="post" accept-charset="utf-8">
       {{ csrf_field() }}
       <input type="hidden" name="_method" value="put">
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
-            <label for="app_name">Application Name</label>
-            <input type="text" name="app_name" value="{{config('configs.app_name')}}"  class="form-control" id="app_name" required />
+            <label for="app_name">{{ __('config.app_name') }}</label>
+            <input type="text" name="app_name" value="{{config('configs.app_name')}}" class="form-control" id="app_name" required />
           </div>
           <div class="form-group">
-            <label for="app_name">Copyright</label>
-            <input type="text" name="app_copyright" value="{{config('configs.company_name')}}"  class="form-control" id="app_copyright" required />
+            <label for="app_name">{{ __('config.copyright') }}</label>
+            <input type="text" name="app_copyright" value="{{config('configs.company_name')}}" class="form-control" id="app_copyright" required />
           </div>
           <div class="form-group">
-            <label for="app_logo">Login Icon </label>
-            <input type="file" class="form-control" name="app_logo" id="app_logo" accept="image/*"/>
+            <label for="app_logo">{{ __('config.login_icon') }}</label>
+            <input type="file" class="form-control" name="app_logo" id="app_logo" accept="image/*" />
           </div>
           <div class="form-group">
-            <label for="app_icon">Icon </label>
-            <input type="file" class="form-control" name="app_icon" id="app_icon" accept="image/*"/>
+            <label for="app_icon">{{ __('config.icon') }}</label>
+            <input type="file" class="form-control" name="app_icon" id="app_icon" accept="image/*" />
           </div>
           <div class="form-group">
-            <label for="app_theme">Tema</label>
+            <label for="app_theme">{{ __('config.theme') }}</label>
             <select name="app_theme" class="form-control select2" placeholder="Pilih Tema" required>
-              <option value="primary" @if(config('configs.app_theme') == 'primary') selected @endif>Primary</option>
-              <option value="danger" @if(config('configs.app_theme') == 'danger') selected @endif>Danger</option>
-              <option value="info" @if(config('configs.app_theme') == 'info') selected @endif>Info</option>
-              <option value="success" @if(config('configs.app_theme') == 'success') selected @endif>Success</option>
-              <option value="navy" @if(config('configs.app_theme') == 'navy') selected @endif>Navy</option>
+              <option value="primary" @if(config('configs.app_theme')=='primary' ) selected @endif>Primary</option>
+              <option value="danger" @if(config('configs.app_theme')=='danger' ) selected @endif>Danger</option>
+              <option value="info" @if(config('configs.app_theme')=='info' ) selected @endif>Info</option>
+              <option value="success" @if(config('configs.app_theme')=='success' ) selected @endif>Success</option>
+              <option value="navy" @if(config('configs.app_theme')=='navy' ) selected @endif>Navy</option>
             </select>
           </div>
         </div>
         <div class="col-md-6">
           {{-- <div class="form-group">
             <label for="expired_contract">Expired Contract</label>
-            <input type="text" name="expired_contract" value="{{config('configs.expired_contract')}} Days"  class="form-control" id="expired_contract" required />
-          </div> --}}
-          {{-- <div class="form-group">
+            <input type="text" name="expired_contract" value="{{config('configs.expired_contract')}} Days" class="form-control" id="expired_contract" required />
+        </div> --}}
+        {{-- <div class="form-group">
             <label for="expired_document">Expired Document</label>
-            <input type="text" name="expired_document" value="{{config('configs.expired_document')}} Days"  class="form-control" id="expired_document" required />
-          </div> --}}
-          <div class="form-group">
-            <label for="company_name">Company Name</label>
-            <input type="text" name="company_name" value="{{config('configs.company_name')}}"  class="form-control" id="company_name" required />
+            <input type="text" name="expired_document" value="{{config('configs.expired_document')}} Days" class="form-control" id="expired_document" required />
+      </div> --}}
+      <div class="form-group">
+        <label for="company_name">{{ __('config.company_name') }}</label>
+        <input type="text" name="company_name" value="{{config('configs.company_name')}}" class="form-control" id="company_name" required />
+      </div>
+      <div class="form-group">
+        <label for="company_email">{{ __('config.company_email') }}</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fa fa-envelope"></i></span>
           </div>
-          <div class="form-group">
-            <label for="company_email">Company Email</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fa fa-envelope"></i></span>
-              </div>
-              <input type="email" name="company_email" value="{{config('configs.company_email')}}"  class="form-control" id="company_email" required />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="company_phone">Company Phone</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fa fa-phone"></i></span>
-              </div>
-              <input type="text" name="company_phone" value="{{config('configs.company_phone')}}"  class="form-control" id="company_phone" required />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="company_address">Address</label>
-            <textarea class="form-control" id="company_address" name="company_address" placeholder="Alamat" required>{{config('configs.company_address')}}</textarea>
-          </div>
-          <div class="form-group">
-            <label for="email_push">Email Push Notification</label>
-            <input type="text" name="email_push" value="{{config('configs.email_push')}}" class="form-control" id="email_push" data-role="tagsinput"/>
-          </div>
+          <input type="email" name="company_email" value="{{config('configs.company_email')}}" class="form-control" id="company_email" required />
         </div>
       </div>
-    </form>
+      <div class="form-group">
+        <label for="company_phone">{{ __('config.company_phone') }}</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fa fa-phone"></i></span>
+          </div>
+          <input type="text" name="company_phone" value="{{config('configs.company_phone')}}" class="form-control" id="company_phone" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="company_address">{{ __('config.address') }}</label>
+        <textarea class="form-control" id="company_address" name="company_address" placeholder="Alamat" required>{{config('configs.company_address')}}</textarea>
+      </div>
+      <div class="form-group">
+        <label for="email_push">{{ __('config.push_notif') }}</label>
+        <input type="text" name="email_push" value="{{config('configs.email_push')}}" class="form-control" id="email_push" data-role="tagsinput" />
+      </div>
+      <div class="form-group">
+        <label for="language">{{ __('config.language') }}</label>
+        <select name="language" id="language" class="form-control select2" placeholder="Choose Language">
+          @foreach (config('enums.languages') as $key => $item)
+          <option value="{{ $key }}" @if (config('configs.language')==$key) selected @endif>{{ $item }}</option>
+          @endforeach
+        </select>
+      </div>
   </div>
-  <div class="overlay d-none">
-    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-  </div>
+</div>
+</form>
+</div>
+<div class="overlay d-none">
+  <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+</div>
 </div>
 @endsection
 
