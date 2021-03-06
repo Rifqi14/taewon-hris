@@ -15,13 +15,13 @@
 @section('content')
 <form id="form" action="{{ route('workingtime.update',['id'=>$workingtime->id])}}" method="post">
 	{{ csrf_field() }}
-<div class="row">
-	<div class="col-lg-8">
-		<div class="card card-{{ config('configs.app_theme')}} card-outline">
-			<div class="card-header" style="height: 55px;">
-				<h3 class="card-title">Update Working Shift</h3>
-			</div>
-			<div class="card-body">
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card card-{{ config('configs.app_theme')}} card-outline">
+				<div class="card-header" style="height: 55px;">
+					<h3 class="card-title">Update Working Shift</h3>
+				</div>
+				<div class="card-body">
 					@method('put')
 					<div class="row">
 						<div class="col-sm-6">
@@ -41,89 +41,95 @@
 								<input type="text" value="{{ $workingtime->description }}" name="description" class="form-control" placeholder="Description" required>
 							</div>
 						</div>
-					</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-lg-4">
-		<div class="card card-{{ config('configs.app_theme')}} card-outline">
-			<div class="card-header">
-				<h3 class="card-title">Other</h3>
-				<div class="pull-right card-tools">
-					<button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
-					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
-				</div>
-			</div>
-			<div class="card-body">
-				<div class="row">
-					<div class="col-sm-12">
-						<!-- text input -->
-						<div class="form-group">
-							<label>Notes</label>
-							<textarea style="height: 120px;" class="form-control" name="notes" placeholder="Notes">{{ $workingtime->notes }}</textarea>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="department_id">Department <b class="text-danger">*</b></label>
+								<input type="text" name="department_id" id="department_id" class="form-control" placeholder="Department" required>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="overlay d-none">
-				<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+		</div>
+		<div class="col-lg-4">
+			<div class="card card-{{ config('configs.app_theme')}} card-outline">
+				<div class="card-header">
+					<h3 class="card-title">Other</h3>
+					<div class="pull-right card-tools">
+						<button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+						<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-sm-12">
+							<!-- text input -->
+							<div class="form-group">
+								<label>Notes</label>
+								<textarea style="height: 120px;" class="form-control" name="notes" placeholder="Notes">{{ $workingtime->notes }}</textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="overlay d-none">
+					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-12">
+			<div class="card card-{{ config('configs.app_theme') }} card-outline">
+				<div class="card-header">
+					<h3 class="card-title">Working Shift Rule</h3>
+				</div>
+				<div class="card-body">
+					<table class="table table-striped table-bordered datatable" id="shift-table" style="width: 100%">
+						<thead>
+							<tr>
+								<th width="10" class="text-center align-middle">No</th>
+								<th width="50">Day</th>
+								<th width="25" class="text-center align-middle">Start Time</th>
+								<th width="25" class="text-center align-middle">Finish Time</th>
+								<th width="25" class="text-center align-middle">Min Time In</th>
+								<th width="25" class="text-center align-middle">Max Time Out</th>
+								<th width="25" class="text-center align-middle">Min Workingtime</th>
+								<th width="50" class="text-center align-middle">Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach ($workingtime->detail as $key => $item)
+							<tr>
+								<td class="text-center align-middle">{{ ++$key }}</td>
+								<td class="align-middle">
+									<input type="hidden" name="day[]" value="{{ $item->day }}" />
+									{{ $item->day }}
+								</td>
+								<td class="text-center align-middle">
+									<div class="form-group mb-0"><input placeholder="Start Time" name="start[]" class="form-control timepicker" value="{{ $item->start }}" /></div>
+								</td>
+								<td class="text-center align-middle">
+									<div class="form-group mb-0"><input placeholder="Finish Time" name="finish[]" class="form-control timepicker" value="{{ $item->finish }}" /></div>
+								</td>
+								<td class="text-center align-middle">
+									<div class="form-group mb-0"><input placeholder="Minimum time In" name="min_in[]" class="form-control timepicker" value="{{ $item->min_in }}" /></div>
+								</td>
+								<td class="text-center align-middle">
+									<div class="form-group mb-0"><input placeholder="Maximum time Out" name="max_out[]" class="form-control timepicker" value="{{ $item->max_out }}" /></div>
+								</td>
+								<td class="text-center align-middle">
+									<div class="form-group mb-0"><input type="number" placeholder="Minimum Workingtime" name="min_wt[]" class="form-control" value="{{ $item->min_workhour }}" /></div>
+								</td>
+								<td class="text-center align-middle"><input type="checkbox" name="save[]" class="i-checks" @if ($item->status == 1) checked @endif/></td>
+							</tr>
+							@endforeach
+						</tbody>
+					</table>
+				</div>
+				<div class="overlay d-none">
+					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+				</div>
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-12">
-		<div class="card card-{{ config('configs.app_theme') }} card-outline">
-			<div class="card-header">
-				<h3 class="card-title">Working Shift Rule</h3>
-			</div>
-			<div class="card-body">
-				<table class="table table-striped table-bordered datatable" id="shift-table" style="width: 100%">
-					<thead>
-						<tr>
-							<th width="10" class="text-center align-middle">No</th>
-							<th width="50">Day</th>
-							<th width="25" class="text-center align-middle">Start Time</th>
-							<th width="25" class="text-center align-middle">Finish Time</th>
-							<th width="25" class="text-center align-middle">Min Time In</th>
-							<th width="25" class="text-center align-middle">Max Time Out</th>
-							<th width="25" class="text-center align-middle">Min Workingtime</th>
-							<th width="50" class="text-center align-middle">Status</th>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach ($workingtime->detail as $key => $item)		
-						<tr>
-							<td class="text-center align-middle">{{ ++$key }}</td>
-							<td class="align-middle">
-								<input type="hidden" name="day[]" value="{{ $item->day }}"/>
-								{{ $item->day }}
-							</td>
-							<td class="text-center align-middle">
-								<div class="form-group mb-0"><input placeholder="Start Time" name="start[]" class="form-control timepicker" value="{{ $item->start }}"/></div>
-							</td>
-							<td class="text-center align-middle">
-								<div class="form-group mb-0"><input placeholder="Finish Time" name="finish[]" class="form-control timepicker" value="{{ $item->finish }}"/></div>
-							</td>
-							<td class="text-center align-middle">
-								<div class="form-group mb-0"><input placeholder="Minimum time In" name="min_in[]" class="form-control timepicker" value="{{ $item->min_in }}"/></div>
-							</td>
-							<td class="text-center align-middle">
-								<div class="form-group mb-0"><input placeholder="Maximum time Out" name="max_out[]" class="form-control timepicker" value="{{ $item->max_out }}"/></div>
-							</td>
-							<td class="text-center align-middle">
-								<div class="form-group mb-0"><input type="number" placeholder="Minimum Workingtime" name="min_wt[]" class="form-control" value="{{ $item->min_workhour }}"/></div>
-							</td>
-							<td class="text-center align-middle"><input type="checkbox" name="save[]" class="i-checks" @if ($item->status == 1) checked @endif/></td>
-						</tr>
-						@endforeach
-					</tbody>
-				</table>
-			</div>
-			<div class="overlay d-none">
-				<i class="fa fa-2x fa-sync-alt fa-spin"></i>
-			</div>
-		</div>
-	</div>
-</div>
 </form>
 @endsection
 @push('scripts')
@@ -136,6 +142,40 @@
 			checkboxClass: 'icheckbox_square-green',
 			radioClass: 'iradio_square-green',
 		});
+		var data = [];
+		@foreach ($departmentShift as $value)
+			data.push({id: `{{ $value->department->id }}`, text: `{!! $value->department->name !!}`});
+		@endforeach
+		$('#department_id').select2({
+      multiple: true,
+      ajax: {
+				url: "{{route('department.select')}}",
+				type:'GET',
+				dataType: 'json',
+				data: function (term,page) {
+					return {
+						name:term,
+						page:page,
+						limit:30,
+						level: 1,
+					};
+				},
+				results: function (data,page) {
+					var more = (page * 30) < data.total;
+					var option = [];
+					$.each(data.rows,function(index,item){
+						option.push({
+							id:item.id,
+							text: `${item.name}`
+						});
+					});
+					return {
+						results: option, more: more,
+					};
+				},
+			},
+    });
+		$("#department_id").select2('data', data).trigger('change');
 		$("#working_time_type").select2();
 		$('.timepicker').daterangepicker({
 			singleDatePicker: true,

@@ -173,7 +173,7 @@ class OvertimeReportController extends Controller
     }
 
     /**
-     * Export data to excel
+     * Undocumented function
      *
      * @param Request $request
      * @return void

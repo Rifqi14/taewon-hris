@@ -1,6 +1,10 @@
 <?php
 /* Config For Statis Enum Type */
 return [
+    'languages' => [
+        'en'    => "English",
+        'id'    => "Indonesia",
+    ],
     'equipment_types' => [
         'equipment' => "Equipment",
         'parent' => "Parent"

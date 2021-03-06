@@ -13,16 +13,17 @@
   .colorpicker {
     z-index: 9999 !important;
   }
+
   .fc-daygrid-day {
     cursor: pointer;
     transition: .5s;
   }
+
   .fc-daygrid-day:hover {
     cursor: pointer;
     background: rgba(199, 234, 70, 0.2) !important;
     transition: .5s;
   }
-
 </style>
 @endsection
 
@@ -39,39 +40,31 @@
       <div class="card-header">
         <h3 class="card-title">Create Calendar</h3>
         <div class="pull-right card-tools">
-          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i
-              class="fa fa-save"></i></button>
-          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
-              class="fa fa-reply"></i></a>
+          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i class="fa fa-save"></i></button>
+          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
         </div>
       </div>
       <div class="card-body">
-        <form id="form" action="{{ route('calendar.update',['id'=>$calendar->id]) }}" class="form-horizontal"
-          method="post" autocomplete="off">
+        <form id="form" action="{{ route('calendar.update',['id'=>$calendar->id]) }}" class="form-horizontal" method="post" autocomplete="off">
           {{ csrf_field() }}
           {{ method_field('put') }}
           <div class="form-group row">
-            <label class="col-md-2 col-xs-12 control-label" for="code">Calendar Code <span
-                class="text-red">*</span></label>
+            <label class="col-md-2 col-xs-12 control-label" for="code">Calendar Code <span class="text-red">*</span></label>
             <div class="col-sm-6 controls">
-              <input type="text" class="form-control" id="code" name="code" placeholder="Calendar Code"
-                value="{{ $calendar->code }}" required>
+              <input type="text" class="form-control" id="code" name="code" placeholder="Calendar Code" value="{{ $calendar->code }}" required>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-2 col-xs-12 control-label" for="calendar_name">Calendar Name <span
-                class="text-red">*</span></label>
+            <label class="col-md-2 col-xs-12 control-label" for="calendar_name">Calendar Name <span class="text-red">*</span></label>
             <div class="col-sm-6 controls">
-              <input type="text" class="form-control" id="calendar_name" name="calendar_name"
-                placeholder="Calendar Name" value="{{ $calendar->name }}" required>
+              <input type="text" class="form-control" id="calendar_name" name="calendar_name" placeholder="Calendar Name" value="{{ $calendar->name }}" required>
             </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-2 col-xs-12 col-form-label" for="label_color">Label Color</label>
             <div class="col-sm-6">
               <div class="input-group my-colorpicker2">
-                <input type="text" class="form-control" value="{{ $calendar->label_color }}" name="label_color"
-                  id="label_color">
+                <input type="text" class="form-control" value="{{ $calendar->label_color }}" name="label_color" id="label_color">
                 <div class="input-group-append">
                   <span class="input-group-text input-group-addon">
                     <i></i>
@@ -83,8 +76,7 @@
           <div class="form-group row">
             <label class="col-md-2 col-xs-12 control-label" for="calendar_desc">Calendar Description</label>
             <div class="col-sm-6 controls">
-              <textarea class="form-control" id="calendar_desc" name="calendar_desc"
-                placeholder="Calendar Description">{{ $calendar->description }}</textarea>
+              <textarea class="form-control" id="calendar_desc" name="calendar_desc" placeholder="Calendar Description">{{ $calendar->description }}</textarea>
             </div>
           </div>
           <div class="form-group row">
@@ -116,8 +108,7 @@
         <div class="tab-pane active" id="exception">
           <div class="card-header">
             <div class="pull-right card-tools">
-              <a href="#" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white add_exception"
-                data-toggle="tooltip" title="Tambah">
+              <a href="#" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white add_exception" data-toggle="tooltip" title="Tambah">
                 <i class="fa fa-plus"></i>
               </a>
             </div>
@@ -158,8 +149,7 @@
 {{-- End of Table List Exception --}}
 
 {{-- Modal Add Exception --}}
-<div class="modal fade" id="add_exception" tabindex="-1" role="dialog" aria-hidden="true" role="dialog"
-  aria-hidden="true">
+<div class="modal fade" id="add_exception" tabindex="-1" role="dialog" aria-hidden="true" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="overlay-wrapper">
@@ -179,8 +169,7 @@
             <div class="form-group row">
               <label for="description" class="col-sm-3 col-form-label">Description</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" id="description" name="description" placeholder="Description"
-                  required>
+                <input type="text" class="form-control" id="description" name="description" placeholder="Description" required>
               </div>
             </div>
             {{-- .Description --}}
@@ -213,8 +202,7 @@
             <hr>
             {{-- Reccurence Radio --}}
             <div class="form-check">
-              <input class="form-check-input" type="radio" name="reccurence_day" id="reccurence_day"
-                value="reccurence_day" onclick="reccurence_pattern()">
+              <input class="form-check-input" type="radio" name="reccurence_day" id="reccurence_day" value="reccurence_day" onclick="reccurence_pattern()">
               <label class="form-check-label" for="reccurence_day">
                 <b>Reccurence Day</b>
               </label>
@@ -236,8 +224,7 @@
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input check-day" type="checkbox" value="wednesday" id="wednesday"
-                    name="day[]">
+                  <input class="form-check-input check-day" type="checkbox" value="wednesday" id="wednesday" name="day[]">
                   <label class="form-check-label" for="day">
                     <b>Wednesday</b>
                   </label>
@@ -285,8 +272,7 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
                     </div>
-                    <input type="text" name="start_range" id="start_range" class="form-control datepicker"
-                      placeholder="Start Date">
+                    <input type="text" name="start_range" id="start_range" class="form-control datepicker" placeholder="Start Date">
                   </div>
                 </div>
               </div>
@@ -299,8 +285,7 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
                     </div>
-                    <input type="text" name="finish_range" id="finish_range" class="form-control datepicker"
-                      placeholder="Finish Date">
+                    <input type="text" name="finish_range" id="finish_range" class="form-control datepicker" placeholder="Finish Date">
                   </div>
                 </div>
               </div>
@@ -309,8 +294,7 @@
             <hr>
             {{-- Specific Day Radio --}}
             <div class="form-check">
-              <input class="form-check-input" type="radio" name="reccurence_day" id="specific_day" value="specific_day"
-                onclick="reccurence_pattern()">
+              <input class="form-check-input" type="radio" name="reccurence_day" id="specific_day" value="specific_day" onclick="reccurence_pattern()">
               <label class="form-check-label" for="reccurence_day">
                 <b>Specific Day</b>
               </label>
@@ -326,8 +310,7 @@
                       <i class="far fa-calendar-alt"></i>
                     </span>
                   </div>
-                  <input type="text" name="specific_date" class="form-control datepicker" id="specific_date"
-                    placeholder="Date">
+                  <input type="text" name="specific_date" class="form-control datepicker" id="specific_date" placeholder="Date">
                 </div>
               </div>
             </div>
@@ -346,8 +329,7 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
                     </div>
-                    <input type="text" name="start_specific" id="start_specific" class="form-control datepicker"
-                      placeholder="Start Date">
+                    <input type="text" name="start_specific" id="start_specific" class="form-control datepicker" placeholder="Start Date">
                   </div>
                 </div>
               </div>
@@ -360,8 +342,7 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
                     </div>
-                    <input type="text" name="finish_specific" id="finish_specific" class="form-control datepicker"
-                      placeholder="Finish Date">
+                    <input type="text" name="finish_specific" id="finish_specific" class="form-control datepicker" placeholder="Finish Date">
                   </div>
                 </div>
               </div>
@@ -373,9 +354,7 @@
           {{-- End of Form Add Exception --}}
         </div>
         <div class="modal-footer">
-          <button form="form_exception" type="submit"
-            class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="Simpan"><i
-              class="fa fa-save"></i></button>
+          <button form="form_exception" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="Simpan"><i class="fa fa-save"></i></button>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -386,8 +365,7 @@
 </div>
 {{-- End of Modal Add Exception --}}
 {{-- Modal Edit Exception --}}
-<div class="modal fade modal-allow-overflow" id="edit-exception" tabindex="-1" role="dialog" aria-hidden="true"
-  data-backdrop="static">
+<div class="modal fade modal-allow-overflow" id="edit-exception" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -410,8 +388,7 @@
                       <i class="far fa-calendar-alt"></i>
                     </span>
                   </div>
-                  <input type="text" name="exception_date" id="exception_date" class="form-control datepicker2"
-                    placeholder="Date" required />
+                  <input type="text" name="exception_date" id="exception_date" class="form-control datepicker2" placeholder="Date" required />
                 </div>
               </div>
             </div>
@@ -420,8 +397,7 @@
             <div class="form-group row col-12">
               <label class="col-sm-3 control-label" for="exception_desc">Description</label>
               <div class="col-sm-9 controls">
-                <input type="text" class="form-control" name="exception_desc" id="exception_desc"
-                  placeholder="Description" required>
+                <input type="text" class="form-control" name="exception_desc" id="exception_desc" placeholder="Description" required>
               </div>
             </div>
           </div>
@@ -456,17 +432,15 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button form="form-edit" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white"
-          title="Simpan"><i class="fa fa-save"></i></button>
+        <button form="form-edit" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="Simpan"><i class="fa fa-save"></i></button>
       </div>
     </div>
   </div>
 </div>
 {{-- End of Modal Edit Exception --}}
 {{-- Modal Add Calendar --}}
-<div class="modal fade modal-allow-overflow" id="add-calendar" tabindex="-1" role="dialog" aria-hidden="true"
-  data-backdrop="static">
-  <div class="modal-dialog">
+<div class="modal fade modal-allow-overflow" id="add-calendar" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add Calendar</h5>
@@ -486,16 +460,14 @@
                     <i class="far fa-calendar-alt"></i>
                   </span>
                 </div>
-                <input type="text" name="calendar_date" id="calendar_date" class="form-control" placeholder="Date"
-                  readonly required />
+                <input type="text" name="calendar_date" id="calendar_date" class="form-control" placeholder="Date" readonly required />
               </div>
             </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-3 control-label" for="calendar_desc_add">Description</label>
             <div class="col-sm-9 controls">
-              <input type="text" class="form-control" name="calendar_desc_add" id="calendar_desc_add"
-                placeholder="Description" required>
+              <input type="text" class="form-control" name="calendar_desc_add" id="calendar_desc_add" placeholder="Description" required>
             </div>
           </div>
           <div class="form-group row">
@@ -524,12 +496,59 @@
               </div>
             </div>
           </div>
+          <div class="form-group row">
+            <label for="is_switch_day" class="col-sm-3 col-form-label">Is Switch Day</label>
+            <div class="col-sm-9" style="padding-top: 6.5px">
+              <input type="checkbox" class="custom-control-input i-checks" name="is_switch_day" id="is_switch_day">
+            </div>
+          </div>
+          <div class="form-group row shift d-none">
+            <label for="shift" class="col-sm-3 col-form-label">Shift</label>
+            <div class="col-sm-12">
+              <table class="table table-striped table-bordered datatable" id="shift-table" style="width: 100%">
+                <thead>
+                  <tr>
+                    <th width="10" class="text-center align-middle">Shift</th>
+                    <th width="25" class="text-center align-middle">Start Time</th>
+                    <th width="25" class="text-center align-middle">Finish Time</th>
+                    <th width="25" class="text-center align-middle">Min Time In</th>
+                    <th width="25" class="text-center align-middle">Max Time Out</th>
+                    <th width="25" class="text-center align-middle">Min Workingtime</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach ($shift as $key => $item)
+                  <tr>
+                    <td class="text-center align-middle">
+                      {{ $item->description }}
+                      <input type="hidden" class="form-control" name="workingtime_id[]" value="{{ $item->id }}" />
+                    </td>
+                    <td class="text-center align-middle">
+                      <div class="form-group mb-0"><input placeholder="Start Time" name="start[]" class="form-control timepicker" /></div>
+                    </td>
+                    <td class="text-center align-middle">
+                      <div class="form-group mb-0"><input placeholder="Finish Time" name="finish[]" class="form-control timepicker" /></div>
+                    </td>
+                    <td class="text-center align-middle">
+                      <div class="form-group mb-0"><input placeholder="Minimum time In" name="min_in[]" class="form-control timepicker" /></div>
+                    </td>
+                    <td class="text-center align-middle">
+                      <div class="form-group mb-0"><input placeholder="Maximum time Out" name="max_out[]" class="form-control timepicker" /></div>
+                    </td>
+                    <td class="text-center align-middle">
+                      <div class="form-group mb-0"><input type="number" placeholder="Minimum Workingtime" name="min_wt[]" class="form-control" /></div>
+                    </td>
+                  </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+          </div>
           <input type="hidden" name="id_calendar">
         </form>
       </div>
       <div class="modal-footer">
-        <button form="form-calendar" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white"
-          title="Add"><i class="fa fa-save"></i></button>
+        <button form="form-calendar" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="Add"><i class="fa fa-save"></i></button>
       </div>
     </div>
   </div>
@@ -602,11 +621,41 @@
         format: 'DD/MM/YYYY'
         }
     });
+    $('.timepicker').daterangepicker({
+			singleDatePicker: true,
+			timePicker: true,
+			timePicker24Hour: true,
+			timePickerIncrement: 1,
+			timePickerSeconds: false,
+			locale: {
+				format: 'HH:mm'
+			}
+		}).on('show.daterangepicker', function(ev, picker) {
+			picker.container.find('.calendar-table').hide();
+    });
   });
   $(document).ready(function() {
     $('.i-checks').iCheck({
       checkboxClass: 'icheckbox_square-green',
       radioClass: 'iradio_square-green',
+    });
+    $("#is_switch_day").on('ifChecked', function(event){
+      $('.shift').removeClass('d-none');
+      $('.timepicker').daterangepicker({
+        singleDatePicker: true,
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerIncrement: 1,
+        timePickerSeconds: false,
+        locale: {
+          format: 'HH:mm'
+        }
+      }).on('show.daterangepicker', function(ev, picker) {
+        picker.container.find('.calendar-table').hide();
+      });
+    });
+    $("#is_switch_day").on('ifUnchecked', function(event){
+      $('.shift').addClass('d-none');
     });
     var calendarEl = document.getElementById('calendar_exception');
     var id = {!! $calendar->id !!};
@@ -616,6 +665,11 @@
         start: 'prev,today',
         center: 'title',
         end: 'today,next'
+      },
+      eventContent: function(arg) {
+        return {
+          html: arg.event.extendedProps.switch_day == "YES" ? arg.event.title + ' <i><br>(Switch Day)</i>' : arg.event.title
+        }
       },
       events: `{{url('admin/calendarexc')}}/${id}/calendar`,
       firstDay: 1,
@@ -630,6 +684,9 @@
         $('#form-calendar input[name=calendar_desc_add]').attr('placeholder', 'Description');
         $('#form-calendar input[name=calendar_label]').attr('value', '#000');
         $('#form-calendar input[name=calendar_text]').attr('value', '#fff');
+        $('#form-calendar input[name=is_switch_day]').removeAttr('checked');
+        $('#form-calendar .shift').addClass('d-none');
+        $('#form-calendar .icheckbox_square-green').removeClass('checked');
         $('#form-calendar #label_span').css('background-color', '#000');
         $('#form-calendar #text_span').css('background-color', '#fff');
         $('#form-calendar').attr('action',"{{ route('calendarexc.addcalendar') }}");
