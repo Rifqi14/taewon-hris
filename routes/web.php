@@ -505,5 +505,13 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/overtimereport/export1', 'Admin\OvertimeReportController@export1')->name('overtimereport.export1');
         Route::post('/overtimereport/export2', 'Admin\OvertimeReportController@export2')->name('overtimereport.export2');
         Route::resource('/overtimereport', 'Admin\OvertimeReportController');
+        
+        // Route SPL
+        Route::get('/spl/selectemployee', 'Admin\SPLController@selectemployee')->name('spl.selectemployee');
+        Route::get('spl/read', 'Admin\SPLController@read')->name('spl.read');
+        Route::get('/spl/import', 'Admin\SPLController@import')->name('spl.import');
+        Route::post('/spl/preview', 'Admin\SPLController@preview')->name('spl.preview');
+        Route::post('/spl/storemass', 'Admin\SPLController@storemass')->name('spl.storemass');
+        Route::resource('/spl', 'Admin\SPLController');
     });
 });

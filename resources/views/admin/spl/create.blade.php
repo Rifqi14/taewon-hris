@@ -1,0 +1,233 @@
+@extends('admin.layouts.app')
+
+@section('title', 'SPL | Surat Pengajuan Lembur')
+@section('stylesheets')
+<link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
+<link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
+@endsection
+
+@push('breadcrump')
+<li class="breadcrumb-item active"><a href="{{route('spl.index')}}">Surat Pengajuan Lembur</a></li>
+<li class="breadcrumb-item active">Create</li>
+@endpush
+
+
+@section('content')
+<form id="form" action="{{ route('spl.store')}}" autocomplete="off" method="post">
+<div class="row">
+	<div class="col-lg-8">
+		<div class="card card-{{ config('configs.app_theme') }} card-outline">
+			<div class="card-header" style="height: 55px;">
+				<h3 class="card-title">Surat Pengajuan Lembur Data</h3>
+			</div>
+			<div class="card-body">
+                {{ csrf_field() }}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Employee Name <b class="text-danger">*</b></label>
+                            <input type="text" name="employee_name" id="employee_name" class="form-control" placeholder="Employee Name" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>NIK <b class="text-danger">*</b></label>
+                            <input type="text" name="nik" class="form-control" placeholder="NIK" id="nik" required readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Start Overtime <b class="text-danger">*</b></label>
+                            <input placeholder="Start Overtime" name="start_overtime" class="form-control timepicker"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Finish Overtime <b class="text-danger">*</b></label>
+                            <input placeholder="Finish Overtime" name="finish_overtime" class="form-control timepicker"/>
+                        </div>
+                    </div>
+                </div>
+			</div>
+			<div class="overlay d-none">
+				<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-4">
+		<div class="card card-{{ config('configs.app_theme') }} card-outline">
+			<div class="card-header">
+				<h3 class="card-title">Other</h3>
+				<div class="pull-right card-tools">
+					<button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-sm-12">
+						<!-- text input -->
+						<div class="form-group">
+							<label>Notes</label>
+							<textarea style="height: 120px;" class="form-control" name="notes" placeholder="Notes"></textarea>
+						</div>
+					</div>
+                    <div class="col-sm-12">
+                        <!-- text input -->
+                        <div class="form-group">
+                            <label>Status <b class="text-danger">*</b></label>
+                            <select name="status" id="status" class="form-control select2"
+                                data-placeholder="Select Status" required>
+                                <option value="1">Active</option>
+                                <option value="0">Non Active</option>
+                            </select>
+                        </div>
+                    </div>
+				</div>
+			</div>
+			<div class="overlay d-none">
+				<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+			</div>
+		</div>
+	</div>
+</div>
+</form>
+@endsection
+@push('scripts')
+<script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
+<script src="{{asset('adminlte/component/daterangepicker/moment.min.js')}}"></script>
+<script src="{{asset('adminlte/component/daterangepicker/daterangepicker.js')}}"></script>
+<script>
+	$(document).ready(function(){
+        $('.datepicker').daterangepicker({
+            singleDatePicker: true,
+            autoUpdateInput: false,
+            timePicker: false,
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+            
+        },
+        function(chosen_date) {
+            $('.datepicker').val(chosen_date.format('DD/MM/YYYY'));
+        });
+        $('.datepicker').on('change', function(){
+            if (!$.isEmptyObject($(this).closest("form").validate())) {
+                $(this).closest("form").validate().form();
+            }
+        })
+		$('.timepicker').daterangepicker({
+			singleDatePicker: true,
+			timePicker: true,
+			timePicker24Hour: true,
+			timePickerIncrement: 1,
+			timePickerSeconds: false,
+			locale: {
+				format: 'MM/DD/YYYY HH:mm:ss'
+			}
+		});
+        $('#employee_name').select2({
+            ajax: {
+                url: "{{route('spl.selectemployee')}}",
+                type:'GET',
+                dataType: 'json',
+                data: function (term,page) {
+                return {
+                    name:term,
+                    page:page,
+                    limit:30,
+                };
+                },
+                results: function (data,page) {
+                var more = (page * 30) < data.total;
+                var option = [];
+                $.each(data.rows,function(index,item){
+                    option.push({
+                    id:item.id,
+                    text: `${item.name}`,
+                    employee_id: `${item.id}`,
+                    nid: `${item.nid}`
+                    });
+                });
+                return {
+                    results: option, more: more,
+                };
+                },
+            },
+        });
+        
+        $(document).on('change', '#employee_name', function () {
+            var employee_id = $('#employee_name').select2('data').id;
+            var nid = $('#employee_name').select2('data').nid;
+            $('#nik').val(`${nid}`);
+            $('#employee_name').val(`${employee_id}`);
+        });
+		$('.select2').select2();
+		$("#form").validate({
+			errorElement: 'div',
+			errorClass: 'invalid-feedback',
+			focusInvalid: false,
+			highlight: function (e) {
+				$(e).closest('.form-group').removeClass('has-success').addClass('was-validated has-error');
+			},
+
+			success: function (e) {
+				$(e).closest('.form-group').removeClass('has-error').addClass('has-success');
+				$(e).remove();
+			},
+			errorPlacement: function (error, element) {
+				if(element.is(':file')) {
+					error.insertAfter(element.parent().parent().parent());
+				}else
+				if(element.parent('.input-group').length) {
+					error.insertAfter(element.parent());
+				}
+				else
+					if (element.attr('type') == 'checkbox') {
+						error.insertAfter(element.parent());
+					}
+					else{
+						error.insertAfter(element);
+					}
+				},
+				submitHandler: function() {
+					$.ajax({
+						url:$('#form').attr('action'),
+						method:'post',
+						data: new FormData($('#form')[0]),
+						processData: false,
+						contentType: false,
+						dataType: 'json',
+						beforeSend:function(){
+							$('.overlay').removeClass('d-none');
+						}
+					}).done(function(response){
+						$('.overlay').addClass('d-none');
+						if(response.status){
+							document.location = response.results;
+						}
+						else{
+							$.gritter.add({
+								title: 'Warning!',
+								text: response.message,
+								class_name: 'gritter-warning',
+								time: 1000,
+							});
+						}
+						return;
+					}).fail(function(response){
+						$('.overlay').addClass('d-none');
+						var response = response.responseJSON;
+						$.gritter.add({
+							title: 'Error!',
+							text: response.message,
+							class_name: 'gritter-error',
+							time: 1000,
+						});
+					});
+				}
+			});
+	});
+
+</script>
+@endpush
