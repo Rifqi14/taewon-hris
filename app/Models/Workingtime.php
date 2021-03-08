@@ -16,4 +16,8 @@ class Workingtime extends Model
     {
         return $this->hasMany('App\Models\WorkingtimeAllowance', 'workingtime_id', 'id');
     }
+    public function workingtimedepartment()
+    {
+        return $this->hasMany(DepartmentShift::class, '');
+    }
 }

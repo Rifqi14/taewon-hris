@@ -8,12 +8,12 @@ class BreakTime extends Model
 {
     protected $guarded = [];
 
-    // public function workgroup()
-    // {
-    //     return $this->hasMany('App\Models\WorkGroup', 'id' ,'workgroup_id');
-    // }
     public function breaktimeline()
     {
         return $this->hasMany('App\Models\BreakTimeLine', 'breaktime_id', 'id');
+    }
+    public function breaktimedepartment()
+    {
+        return $this->hasMany(BreaktimeDepartment::class, 'breaktime_id', 'id');
     }
 }

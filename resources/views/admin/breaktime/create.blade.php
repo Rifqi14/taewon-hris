@@ -49,7 +49,15 @@
                 </div>
               </div>
             </div>
-            <div style="height: 23px;"></div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Department <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" id="department_id" name="department_id" placeholder="Select Department Parent" required>
+                  <small class="form-text text-muted">This department will show only parent department. And create shift will apply to department child too.</small>
+                </div>
+              </div>
+            </div>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-refresh fa-spin"></i>
@@ -61,10 +69,8 @@
         <div class="card-header">
           <h3 class="card-title">Other</h3>
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Save"><i
-                class="fa fa-save"></i></button>
-            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Back"><i
-                class="fa fa-reply"></i></a>
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Save"><i class="fa fa-save"></i></button>
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Back"><i class="fa fa-reply"></i></a>
           </div>
         </div>
         <div class="card-body">
@@ -149,7 +155,41 @@
             },
             allowClear: true,
           });
+          $('#department_id').select2({
+            multiple: true,
+            ajax: {
+              url: "{{route('department.select')}}",
+              type:'GET',
+              dataType: 'json',
+              data: function (term,page) {
+                return {
+                  name:term,
+                  page:page,
+                  limit:30,
+                  level: 1,
+                };
+              },
+              results: function (data,page) {
+                var more = (page * 30) < data.total;
+                var option = [];
+                $.each(data.rows,function(index,item){
+                  option.push({
+                    id:`${item.path}`,
+                    text: `${item.name}`
+                  });
+                });
+                return {
+                  results: option, more: more,
+                };
+              },
+            },
+          });
           $(document).on("change", "#workgroup", function () {
+            if (!$.isEmptyObject($('#form').validate().submitted)) {
+              $('#form').validate().form();
+            }
+          });
+          $(document).on("change", "#department_id", function () {
             if (!$.isEmptyObject($('#form').validate().submitted)) {
               $('#form').validate().form();
             }

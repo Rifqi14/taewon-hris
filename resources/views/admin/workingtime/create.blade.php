@@ -244,7 +244,7 @@
 					var option = [];
 					$.each(data.rows,function(index,item){
 						option.push({
-							id:item.id,
+							id:`${item.path}`,
 							text: `${item.name}`
 						});
 					});

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Workingtime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Department;
 use App\Models\DepartmentShift;
 use App\Models\WorkingtimeDetail;
 use Carbon\Carbon;
@@ -152,18 +153,21 @@ class WorkingTimeController extends Controller
             'notes'             => $request->notes
         ]);
         if ($workingtime) {
-            $department_id = explode(",", $request->department_id);
-            foreach ($department_id as $key => $value) {
-                $departmentShift = DepartmentShift::create([
-                    'workingtime_id'    => $workingtime->id,
-                    'department_id'     => $value
-                ]);
-                if (!$departmentShift) {
-                    DB::rollBack();
-                    return response()->json([
-                        'status'    => false,
-                        'message'   => $departmentShift
-                    ], 400);
+            $departmentPath = explode(",", $request->department_id);
+            foreach ($departmentPath as $key => $path) {
+                $departmentChild = Department::where('path', 'like', "%$path%")->get();
+                foreach ($departmentChild as $key => $department) {
+                    $shiftDepartment = DepartmentShift::create([
+                        'workingtime_id'    => $workingtime->id,
+                        'department_id'     => $department->id
+                    ]);
+                    if (!$shiftDepartment) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'    => false,
+                            'message'   => $shiftDepartment
+                        ], 400);
+                    }
                 }
             }
             foreach ($request->start as $key => $value) {
@@ -231,6 +235,10 @@ class WorkingTimeController extends Controller
         }))->find($id);
         $departmentShift = DepartmentShift::where('workingtime_id', $id)->get();
         if ($workingtime) {
+            $departmentParent = [];
+            foreach ($workingtime as $key => $value) {
+                # code...
+            }
             return view('admin.workingtime.edit', compact('workingtime', 'departmentShift'));
         } else {
             abort(404);
@@ -269,18 +277,21 @@ class WorkingTimeController extends Controller
             $deleteDepartment->delete();
             $delete = WorkingtimeDetail::where('workingtime_id', $id);
             $delete->delete();
-            $department_id = explode(",", $request->department_id);
-            foreach ($department_id as $key => $value) {
-                $departmentShift = DepartmentShift::create([
-                    'department_id'     => $value,
-                    'workingtime_id'    => $workingtime->id,
-                ]);
-                if (!$departmentShift) {
-                    DB::rollBack();
-                    return response()->json([
-                        'status'    => false,
-                        'message'   => $departmentShift
-                    ], 400);
+            $departmentPath = explode(",", $request->department_id);
+            foreach ($departmentPath as $key => $path) {
+                $departmentChild = Department::where('path', 'like', "%$path%")->get();
+                foreach ($departmentChild as $key => $department) {
+                    $departmentShift = DepartmentShift::create([
+                        'department_id'     => $department->id,
+                        'workingtime_id'    => $workingtime->id,
+                    ]);
+                    if (!$departmentShift) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'    => false,
+                            'message'   => $departmentShift
+                        ], 400);
+                    }
                 }
             }
             foreach ($request->start as $key => $value) {

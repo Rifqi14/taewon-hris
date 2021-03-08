@@ -6,6 +6,8 @@ use App\Models\BreakTime;
 use App\Models\BreakTimeLine;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\BreaktimeDepartment;
+use App\Models\Department;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Validator;
@@ -147,7 +149,24 @@ class BreakTimeController extends Controller
             'breaktime' => Carbon::parse($request->start_time)->diff(Carbon::parse($request->finish_time))->format('%h')
         ]);
         if ($breaktime) {
+            $department_id = explode(",", $request->department_id);
             $workgroup = explode(',', $request->workgroup);
+            foreach ($department_id as $key => $value) {
+                $departmentChild = Department::where('path', 'like', "%$value%")->get();
+                foreach ($departmentChild as $key => $department) {
+                    $breaktimeDepartment = BreaktimeDepartment::create([
+                        'breaktime_id'      => $breaktime->id,
+                        'department_id'     => $department->id
+                    ]);
+                    if (!$breaktimeDepartment) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'    => false,
+                            'message'   => $breaktimeDepartment
+                        ], 400);
+                    }
+                }
+            }
             foreach ($workgroup as $key => $value) {
                 $breaktimeline[] = array(
                     'breaktime_id'  => $breaktime->id,
@@ -199,14 +218,20 @@ class BreakTimeController extends Controller
      */
     public function edit($id)
     {
-        $breaktime = BreakTime::with("breaktimeline")->find($id);
+        $breaktime = BreakTime::with(["breaktimeline", "breaktimedepartment", "breaktimedepartment.department"])->find($id);
         if ($breaktime) {
             $workgroup = [];
             foreach ($breaktime->breaktimeline as $brek) {
-             $workgroup[] = $brek->workgroup->name;
+                $workgroup[] = $brek->workgroup->name;
             }
-            // dd($workgroup);
-            return view('admin.breaktime.edit', compact('breaktime','workgroup'));
+            $departmentParent = [];
+            foreach ($breaktime->breaktimedepartment as $key => $value) {
+                $department = Department::find($value->department_id);
+                if ($department->level == 1) {
+                    $departmentParent[] = $value;
+                }
+            }
+            return view('admin.breaktime.edit', compact('breaktime','workgroup', 'departmentParent'));
         } else {
             abort(404);
         }
@@ -252,6 +277,7 @@ class BreakTimeController extends Controller
             ], 400);
         }
 
+        DB::beginTransaction();
         $breaktime = BreakTime::find($id);
         $breaktime->break_time = $request->break_time;
         $breaktime->start_time = $request->start_time;
@@ -260,12 +286,36 @@ class BreakTimeController extends Controller
         $breaktime->status = $request->status;
         $breaktime->save();
 
+        if ($breaktime) {
+            $departmentDelete = BreaktimeDepartment::where('breaktime_id', $id);
+            $departmentDelete->delete();
+            $departmentPath = explode(",", $request->department_id);
+            foreach ($departmentPath as $key => $path) {
+                $departments = Department::where('path', 'like', "%$path%")->get();
+                foreach ($departments as $key => $department) {
+                    $createBreaktimeDepartment = BreaktimeDepartment::create([
+                        'department_id'     => $department->id,
+                        'breaktime_id'      => $breaktime->id,
+                    ]);
+                    if (!$createBreaktimeDepartment) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'    => false,
+                            'message'   => $createBreaktimeDepartment
+                        ], 400);
+                    }
+                }
+            }
+        }
+
         if (!$breaktime) {
+            DB::rollBack();
             return response()->json([
                 'status' => false,
                 'message'     => $breaktime
             ], 400);
         }
+        DB::commit();
         return response()->json([
             'status'     => true,
             'results'     => route('breaktime.index'),
