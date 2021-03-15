@@ -116,5 +116,10 @@ return [
     'penalty_type' => [
         'Basic'   => 'Basic Salary',
         'Gross'   => 'Gross Salary'
-    ]
+    ],
+    'penalty_config_type'   => [
+        'BASIC'             => 'Basic',
+        'BASIC & ALLOWANCE' => 'Basic + Allowance',
+        'ALLOWANCE'         => 'Allowance'
+    ],
 ];

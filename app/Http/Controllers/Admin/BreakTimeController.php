@@ -105,10 +105,17 @@ class BreakTimeController extends Controller
             'data' => $data
         ], 200);
     }
+
+    /**
+     * Show the index page
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         return view('admin.breaktime.index');
     }
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -149,24 +156,20 @@ class BreakTimeController extends Controller
             'breaktime' => Carbon::parse($request->start_time)->diff(Carbon::parse($request->finish_time))->format('%h')
         ]);
         if ($breaktime) {
-            $department_id = explode(",", $request->department_id);
-            $workgroup = explode(',', $request->workgroup);
-            foreach ($department_id as $key => $value) {
-                $departmentChild = Department::where('path', 'like', "%$value%")->get();
-                foreach ($departmentChild as $key => $department) {
-                    $breaktimeDepartment = BreaktimeDepartment::create([
-                        'breaktime_id'      => $breaktime->id,
-                        'department_id'     => $department->id
-                    ]);
-                    if (!$breaktimeDepartment) {
-                        DB::rollBack();
-                        return response()->json([
-                            'status'    => false,
-                            'message'   => $breaktimeDepartment
-                        ], 400);
-                    }
+            foreach ($request->department_id as $key => $department) {
+                $createDepartment = BreaktimeDepartment::create([
+                    'breaktime_id'      => $breaktime->id,
+                    'department_id'     => $department
+                ]);
+                if (!$createDepartment) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status'    => false,
+                        'message'   => $createDepartment
+                    ], 400);
                 }
             }
+            $workgroup = explode(',', $request->workgroup);
             foreach ($workgroup as $key => $value) {
                 $breaktimeline[] = array(
                     'breaktime_id'  => $breaktime->id,
@@ -224,14 +227,7 @@ class BreakTimeController extends Controller
             foreach ($breaktime->breaktimeline as $brek) {
                 $workgroup[] = $brek->workgroup->name;
             }
-            $departmentParent = [];
-            foreach ($breaktime->breaktimedepartment as $key => $value) {
-                $department = Department::find($value->department_id);
-                if ($department->level == 1) {
-                    $departmentParent[] = $value;
-                }
-            }
-            return view('admin.breaktime.edit', compact('breaktime','workgroup', 'departmentParent'));
+            return view('admin.breaktime.edit', compact('breaktime','workgroup'));
         } else {
             abort(404);
         }

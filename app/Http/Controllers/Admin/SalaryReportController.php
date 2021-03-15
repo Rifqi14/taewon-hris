@@ -41,6 +41,17 @@ use PHPExcel_Style;
 use PHPExcel_Style_Alignment;
 use PHPExcel_Style_Font;
 
+const LABEL_BASIC_SALARY          = 'Basic Salary';
+const LABEL_OVERTIME              = 'Overtime';
+const LABEL_SPSI                  = 'Potongan SPSI';
+const LABEL_DRIVER_ALLOWANCE      = 'Driver Allowance';
+const LABEL_ALPHA_PENALTY         = 'Potongan absen';
+const LABEL_ATTENDANCE_ALLOWANCE  = 'Premi Hadir';
+const LABEL_POSITION_ALLOWANCE    = 'Biaya Jabatan';
+const LABEL_NET_SALARY_YEAR       = 'Net Salary (Yearly)';
+const LABEL_PPH_YEARLY            = 'PPh 21 (Yearly)';
+const LABEL_PPH_MONTHLY           = 'Potongan PPh 21';
+
 class SalaryReportController extends Controller
 {
   function __construct()
@@ -421,7 +432,7 @@ class SalaryReportController extends Controller
   {
     $query = DB::table('employee_allowances');
     // $query->select('employee_allowances.*', 'allowances.allowance as description', 'allowances.group_allowance_id');
-    $query->selectRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric else 0 end) as value, sum(case when employee_allowances.factor > 0 then employee_allowances.factor else 0 end) as factor, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id, employee_allowances.type as type");
+    $query->selectRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) as value, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name");
     $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
     $query->leftJoin('allowance_categories', 'allowance_categories.key', '=', 'allowances.category');
     $query->leftJoin('group_allowances', 'group_allowances.id', 'allowances.group_allowance_id');
@@ -432,7 +443,7 @@ class SalaryReportController extends Controller
     $query->where('allowance_categories.type', '=', 'additional');
     $query->where('employee_allowances.type', '!=', 'automatic');
     $query->groupBy('group_allowances.name', 'employee_allowances.is_penalty', 'allowances.group_allowance_id', 'employee_allowances.type');
-    $query->orderByRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric else 0 end) desc");
+    $query->orderByRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) desc");
     $allowances = $query->get();
 
     $data = [];
@@ -455,7 +466,7 @@ class SalaryReportController extends Controller
   {
     $query = DB::table('employee_allowances');
     // $query->select('employee_allowances.*', 'allowances.allowance as description', 'allowances.group_allowance_id');
-    $query->selectRaw("SUM(employee_allowances.value::numeric) as value, SUM(employee_allowances.factor) as factor, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id, employee_allowances.type as type");
+    $query->selectRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) as value, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name");
     $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
     $query->leftJoin('allowance_categories', 'allowance_categories.key', '=', 'allowances.category');
     $query->leftJoin('group_allowances', 'group_allowances.id', 'allowances.group_allowance_id');
@@ -738,7 +749,7 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Basic Salary',
+                'description'       => LABEL_BASIC_SALARY,
                 'total'             => $basesalary->amount,
                 'type'              => 1,
                 'status'            => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
@@ -749,37 +760,53 @@ class SalaryReportController extends Controller
             }
             if ($allowance) {
               foreach ($allowance as $key => $value) {
-                if ($value->value) {
+                if ($value->group_allowance_id) {
                   SalaryReportDetail::create([
                     'salary_report_id'  => $salaryreport->id,
                     'employee_id'       => $employee->id,
                     'description'       => $value->description,
-                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->factor * $value->value,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
                     'type'              => 1,
                     'status'            => 'Additional Allowance',
                     'group_allowance_id'=> $value->group_allowance_id,
                     'is_added'          => 'NO'
                   ]);
                 } else {
-                  continue;
+                  SalaryReportDetail::create([
+                    'salary_report_id'  => $salaryreport->id,
+                    'employee_id'       => $employee->id,
+                    'description'       => $value->allowance_name,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                    'type'              => 1,
+                    'status'            => 'Additional Allowance',
+                    'is_added'          => 'NO'
+                  ]);
                 }
               }
             }
             if ($deduction) {
               foreach ($deduction as $key => $value) {
-                if ($value->value) {
+                if ($value->group_allowance_id) {
                   SalaryReportDetail::create([
                     'salary_report_id'  => $salaryreport->id,
                     'employee_id'       => $employee->id,
                     'description'       => $value->description,
-                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->factor * $value->value,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
                     'type'              => 0,
                     'status'            => 'Deduction Allowance',
                     'group_allowance_id'=> $value->group_allowance_id,
                     'is_added'          => 'NO'
                   ]);
                 } else {
-                  continue;
+                  SalaryReportDetail::create([
+                    'salary_report_id'  => $salaryreport->id,
+                    'employee_id'       => $employee->id,
+                    'description'       => $value->allowance_name,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                    'type'              => 0,
+                    'status'            => 'Deduction Allowance',
+                    'is_added'          => 'NO'
+                  ]);
                 }
               }
             }
@@ -788,7 +815,7 @@ class SalaryReportController extends Controller
                 SalaryReportDetail::create([
                   'salary_report_id'  => $salaryreport->id,
                   'employee_id'       => $employee->id,
-                  'description'       => "Overtime $over->amount",
+                  'description'       => LABEL_OVERTIME . " " . $over->amount * 100 . "%",
                   'total'             => $over->final_salary,
                   'type'              => 1,
                   'status'            => 'Draft',
@@ -800,7 +827,7 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Potongan SPSI',
+                'description'       => LABEL_SPSI,
                 'total'             => 20000,
                 'type'              => 0,
                 'status'            => 'Draft',
@@ -811,7 +838,7 @@ class SalaryReportController extends Controller
               $spsi = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Driver Allowance',
+                'description'       => LABEL_DRIVER_ALLOWANCE,
                 'total'             => $driverallowance,
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -822,7 +849,7 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Premi Hadir',
+                'description'       => LABEL_ATTENDANCE_ALLOWANCE,
                 'total'             => $attendance_allowance,
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -833,7 +860,7 @@ class SalaryReportController extends Controller
               $alpha_penalty = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Potongan absen',
+                'description'       => LABEL_ALPHA_PENALTY,
                 'total'             => -1 * $alphaPenalty->sum('penalty'),
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -848,7 +875,7 @@ class SalaryReportController extends Controller
               $alpha_penalty = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Potongan absen',
+                'description'       => LABEL_ALPHA_PENALTY,
                 'total'             => -1 * ($alphaPenalty->count() * (($salaryreport->gross_salary - $penaltyallowance) / 30)),
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -867,117 +894,17 @@ class SalaryReportController extends Controller
               }
               $gross = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
               $deduction = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
-              $position_allowance = ($gross * (5 / 100) > 500000) ? 500000 : $gross * (5 / 100);
-              $new_net = $gross - $position_allowance;
-              $salary_year = $new_net * 12;
-              $pkp = $salary_year - $ptkp->value;
-              $pkp_left = $pkp;
-              $pph21 = 0;
-              $iteration = 4;
-              if ($employee->npwp) {
-                for ($i = 1; $i <= $iteration; $i++) {
-                  if ($i == 1) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left <= 50000000) {
-                        $pph21 = $pkp_left * (5 / 100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      } else {
-                        $pph21 = 50000000 * (5 / 100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 2) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 250000000) {
-                        $pph21 = $pph21 + (250000000 * (15 / 100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (15 / 100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 3) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 500000000) {
-                        $pph21 = $pph21 + (500000000 * (25 / 100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (25 / 100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 4) {
-                    if ($pkp_left > 0) {
-                      $pph21 = $pph21 + ($pkp_left * (30 / 100));
-                    } else {
-                      break;
-                    }
-                  }
-                }
-              }else{
-                for ($i = 1; $i <= $iteration; $i++) {
-                  if ($i == 1) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left <= 50000000) {
-                        $pph21 = $pkp_left * (5 / 100) * (120/100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      } else {
-                        $pph21 = 50000000 * (5 / 100) * (120/100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 2) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 250000000) {
-                        $pph21 = $pph21 + (250000000 * (15 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (15 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 3) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 500000000) {
-                        $pph21 = $pph21 + (500000000 * (25 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (25 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 4) {
-                    if ($pkp_left > 0) {
-                      $pph21 = $pph21 + ($pkp_left * (30 / 100) * (120/100));
-                    } else {
-                      break;
-                    }
-                  }
-                }
-              }
+              $positionAllowance = getPositionAllowance($gross);
+              $grossSalaryAfterPositionAllowance = getGrossSalaryAfterPositionAllowance($gross, $positionAllowance);
+              $multiplierMonth = getMultiplierMonth($employee->join_date);
+              $grossSalaryPerYear = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
+              $pkps = getPKP($grossSalaryPerYear, $ptkp->value);
+              $pph21Yearly = getPPH21Yearly($pkps, $employee->npwp);
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Biaya Jabatan',
-                'total'             => ($position_allowance) > 0 ? $position_allowance : 0,
+                'description'       => LABEL_POSITION_ALLOWANCE,
+                'total'             => ($positionAllowance) > 0 ? $positionAllowance : 0,
                 'type'              => 2,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -985,8 +912,8 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Net Salary (Yearly)',
-                'total'             => ($salary_year) > 0 ? $salary_year : 0,
+                'description'       => LABEL_NET_SALARY_YEAR,
+                'total'             => ($grossSalaryPerYear) > 0 ? $grossSalaryPerYear : 0,
                 'type'              => 2,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -994,8 +921,8 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'PPh 21 (Yearly)',
-                'total'             => ($pph21) > 0 ? $pph21 : 0,
+                'description'       => LABEL_PPH_YEARLY,
+                'total'             => ($pph21Yearly) > 0 ? $pph21Yearly : 0,
                 'type'              => 2,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -1003,8 +930,8 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Potongan PPh 21',
-                'total'             => ($pph21 / 12) > 0 ? $pph21 / 12 : 0,
+                'description'       => LABEL_PPH_MONTHLY,
+                'total'             => ($pph21Yearly / $multiplierMonth) > 0 ? $pph21Yearly / $multiplierMonth : 0,
                 'type'              => 0,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -1079,7 +1006,7 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Basic Salary',
+                'description'       => LABEL_BASIC_SALARY,
                 'total'             => $basesalary->amount,
                 'type'              => 1,
                 'status'            => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
@@ -1090,37 +1017,53 @@ class SalaryReportController extends Controller
             }
             if ($allowance) {
               foreach ($allowance as $key => $value) {
-                if ($value->value) {
+                if ($value->group_allowance_id) {
                   SalaryReportDetail::create([
                     'salary_report_id'  => $salaryreport->id,
                     'employee_id'       => $employee->id,
                     'description'       => $value->description,
-                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->factor * $value->value,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
                     'type'              => 1,
                     'status'            => 'Additional Allowance',
                     'group_allowance_id'=> $value->group_allowance_id,
                     'is_added'          => 'NO'
                   ]);
                 } else {
-                  continue;
+                  SalaryReportDetail::create([
+                    'salary_report_id'  => $salaryreport->id,
+                    'employee_id'       => $employee->id,
+                    'description'       => $value->allowance_name,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                    'type'              => 1,
+                    'status'            => 'Additional Allowance',
+                    'is_added'          => 'NO'
+                  ]);
                 }
               }
             }
             if ($deduction) {
               foreach ($deduction as $key => $value) {
-                if ($value->value) {
+                if ($value->group_allowance_id) {
                   SalaryReportDetail::create([
                     'salary_report_id'  => $salaryreport->id,
                     'employee_id'       => $employee->id,
                     'description'       => $value->description,
-                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->factor * $value->value,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
                     'type'              => 0,
                     'status'            => 'Deduction Allowance',
                     'group_allowance_id'=> $value->group_allowance_id,
                     'is_added'          => 'NO'
                   ]);
                 } else {
-                  continue;
+                  SalaryReportDetail::create([
+                    'salary_report_id'  => $salaryreport->id,
+                    'employee_id'       => $employee->id,
+                    'description'       => $value->allowance_name,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                    'type'              => 0,
+                    'status'            => 'Deduction Allowance',
+                    'is_added'          => 'NO'
+                  ]);
                 }
               }
             }
@@ -1129,7 +1072,7 @@ class SalaryReportController extends Controller
                 SalaryReportDetail::create([
                   'salary_report_id'  => $salaryreport->id,
                   'employee_id'       => $employee->id,
-                  'description'       => "Overtime $over->amount",
+                  'description'       => LABEL_OVERTIME . " " . $over->amount * 100 . "%",
                   'total'             => $over->final_salary,
                   'type'              => 1,
                   'status'            => 'Draft',
@@ -1141,7 +1084,7 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Potongan SPSI',
+                'description'       => LABEL_SPSI,
                 'total'             => 20000,
                 'type'              => 0,
                 'status'            => 'Draft',
@@ -1152,7 +1095,7 @@ class SalaryReportController extends Controller
               $spsi = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Driver Allowance',
+                'description'       => LABEL_DRIVER_ALLOWANCE,
                 'total'             => $driverallowance,
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -1163,7 +1106,7 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Premi Hadir',
+                'description'       => LABEL_ATTENDANCE_ALLOWANCE,
                 'total'             => $attendance_allowance,
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -1174,7 +1117,7 @@ class SalaryReportController extends Controller
               $alpha_penalty = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Potongan absen',
+                'description'       => LABEL_ALPHA_PENALTY,
                 'total'             => -1 * $alphaPenalty->sum('penalty'),
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -1189,7 +1132,7 @@ class SalaryReportController extends Controller
               $alpha_penalty = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Potongan absen',
+                'description'       => LABEL_ALPHA_PENALTY,
                 'total'             => -1 * ($alphaPenalty->count() * (($salaryreport->gross_salary - $penaltyallowance) / 30)),
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -1208,117 +1151,17 @@ class SalaryReportController extends Controller
               }
               $gross = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
               $deduction = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
-              $position_allowance = ($gross * (5 / 100) > 500000) ? 500000 : $gross * (5 / 100);
-              $new_net = $gross - $position_allowance;
-              $salary_year = $new_net * 12;
-              $pkp = $salary_year - $ptkp->value;
-              $pkp_left = $pkp;
-              $pph21 = 0;
-              $iteration = 4;
-              if ($employee->npwp) {
-                for ($i = 1; $i <= $iteration; $i++) {
-                  if ($i == 1) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left <= 50000000) {
-                        $pph21 = $pkp_left * (5 / 100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      } else {
-                        $pph21 = 50000000 * (5 / 100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 2) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 250000000) {
-                        $pph21 = $pph21 + (250000000 * (15 / 100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (15 / 100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 3) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 500000000) {
-                        $pph21 = $pph21 + (500000000 * (25 / 100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (25 / 100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 4) {
-                    if ($pkp_left > 0) {
-                      $pph21 = $pph21 + ($pkp_left * (30 / 100));
-                    } else {
-                      break;
-                    }
-                  }
-                }
-              }else{
-                for ($i = 1; $i <= $iteration; $i++) {
-                  if ($i == 1) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left <= 50000000) {
-                        $pph21 = $pkp_left * (5 / 100) * (120/100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      } else {
-                        $pph21 = 50000000 * (5 / 100) * (120/100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 2) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 250000000) {
-                        $pph21 = $pph21 + (250000000 * (15 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (15 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 3) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 500000000) {
-                        $pph21 = $pph21 + (500000000 * (25 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (25 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 4) {
-                    if ($pkp_left > 0) {
-                      $pph21 = $pph21 + ($pkp_left * (30 / 100) * (120/100));
-                    } else {
-                      break;
-                    }
-                  }
-                }
-              }
+              $positionAllowance = getPositionAllowance($gross);
+              $grossSalaryAfterPositionAllowance = getGrossSalaryAfterPositionAllowance($gross, $positionAllowance);
+              $multiplierMonth = getMultiplierMonth($employee->join_date);
+              $grossSalaryPerYear = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
+              $pkps = getPKP($grossSalaryPerYear, $ptkp->value);
+              $pph21Yearly = getPPH21Yearly($pkps, $employee->npwp);
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Biaya Jabatan',
-                'total'             => ($position_allowance) > 0 ? $position_allowance : 0,
+                'description'       => LABEL_POSITION_ALLOWANCE,
+                'total'             => ($positionAllowance) > 0 ? $positionAllowance : 0,
                 'type'              => 2,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -1326,8 +1169,8 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Net Salary (Yearly)',
-                'total'             => ($salary_year) > 0 ? $salary_year : 0,
+                'description'       => LABEL_NET_SALARY_YEAR,
+                'total'             => ($grossSalaryPerYear) > 0 ? $grossSalaryPerYear : 0,
                 'type'              => 2,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -1335,8 +1178,8 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'PPh 21 (Yearly)',
-                'total'             => ($pph21) > 0 ? $pph21 : 0,
+                'description'       => LABEL_PPH_YEARLY,
+                'total'             => ($pph21Yearly) > 0 ? $pph21Yearly : 0,
                 'type'              => 2,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -1344,8 +1187,8 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Potongan PPh 21',
-                'total'             => ($pph21 / 12) > 0 ? $pph21 / 12 : 0,
+                'description'       => LABEL_PPH_MONTHLY,
+                'total'             => ($pph21Yearly / $multiplierMonth) > 0 ? $pph21Yearly / $multiplierMonth : 0,
                 'type'              => 0,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -1417,7 +1260,7 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Basic Salary',
+                'description'       => LABEL_BASIC_SALARY,
                 'total'             => $basesalary->amount,
                 'type'              => 1,
                 'status'            => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
@@ -1428,37 +1271,53 @@ class SalaryReportController extends Controller
             }
             if ($allowance) {
               foreach ($allowance as $key => $value) {
-                if ($value->value) {
+                if ($value->group_allowance_id) {
                   SalaryReportDetail::create([
                     'salary_report_id'  => $salaryreport->id,
                     'employee_id'       => $employee->id,
                     'description'       => $value->description,
-                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->factor * $value->value,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
                     'type'              => 1,
                     'status'            => 'Additional Allowance',
                     'group_allowance_id'=> $value->group_allowance_id,
                     'is_added'          => 'NO'
                   ]);
                 } else {
-                  continue;
+                  SalaryReportDetail::create([
+                    'salary_report_id'  => $salaryreport->id,
+                    'employee_id'       => $employee->id,
+                    'description'       => $value->allowance_name,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                    'type'              => 1,
+                    'status'            => 'Additional Allowance',
+                    'is_added'          => 'NO'
+                  ]);
                 }
               }
             }
             if ($deduction) {
               foreach ($deduction as $key => $value) {
-                if ($value->value) {
+                if ($value->group_allowance_id) {
                   SalaryReportDetail::create([
                     'salary_report_id'  => $salaryreport->id,
                     'employee_id'       => $employee->id,
                     'description'       => $value->description,
-                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->factor * $value->value,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
                     'type'              => 0,
                     'status'            => 'Deduction Allowance',
                     'group_allowance_id'=> $value->group_allowance_id,
                     'is_added'          => 'NO'
                   ]);
                 } else {
-                  continue;
+                  SalaryReportDetail::create([
+                    'salary_report_id'  => $salaryreport->id,
+                    'employee_id'       => $employee->id,
+                    'description'       => $value->allowance_name,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                    'type'              => 0,
+                    'status'            => 'Deduction Allowance',
+                    'is_added'          => 'NO'
+                  ]);
                 }
               }
             }
@@ -1467,7 +1326,7 @@ class SalaryReportController extends Controller
                 SalaryReportDetail::create([
                   'salary_report_id'  => $salaryreport->id,
                   'employee_id'       => $employee->id,
-                  'description'       => "Overtime $over->amount",
+                  'description'       => LABEL_OVERTIME . " " . $over->amount * 100 . "%",
                   'total'             => $over->final_salary,
                   'type'              => 1,
                   'status'            => 'Draft',
@@ -1479,7 +1338,7 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Potongan SPSI',
+                'description'       => LABEL_SPSI,
                 'total'             => 20000,
                 'type'              => 0,
                 'status'            => 'Draft',
@@ -1490,7 +1349,7 @@ class SalaryReportController extends Controller
               $spsi = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Driver Allowance',
+                'description'       => LABEL_DRIVER_ALLOWANCE,
                 'total'             => $driverallowance,
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -1501,7 +1360,7 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Premi Hadir',
+                'description'       => LABEL_ATTENDANCE_ALLOWANCE,
                 'total'             => $attendance_allowance,
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -1512,7 +1371,7 @@ class SalaryReportController extends Controller
               $alpha_penalty = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Potongan absen',
+                'description'       => LABEL_ALPHA_PENALTY,
                 'total'             => -1 * $alphaPenalty->sum('penalty'),
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -1527,7 +1386,7 @@ class SalaryReportController extends Controller
               $alpha_penalty = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Potongan absen',
+                'description'       => LABEL_ALPHA_PENALTY,
                 'total'             => -1 * ($alphaPenalty->count() * (($salaryreport->gross_salary - $penaltyallowance) / 30)),
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -1546,117 +1405,17 @@ class SalaryReportController extends Controller
               }
               $gross = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
               $deduction = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
-              $position_allowance = ($gross * (5 / 100) > 500000) ? 500000 : $gross * (5 / 100);
-              $new_net = $gross - $position_allowance;
-              $salary_year = $new_net * 12;
-              $pkp = $salary_year - $ptkp->value;
-              $pkp_left = $pkp;
-              $pph21 = 0;
-              $iteration = 4;
-              if ($employee->npwp) {
-                for ($i = 1; $i <= $iteration; $i++) {
-                  if ($i == 1) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left <= 50000000) {
-                        $pph21 = $pkp_left * (5 / 100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      } else {
-                        $pph21 = 50000000 * (5 / 100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 2) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 250000000) {
-                        $pph21 = $pph21 + (250000000 * (15 / 100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (15 / 100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 3) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 500000000) {
-                        $pph21 = $pph21 + (500000000 * (25 / 100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (25 / 100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 4) {
-                    if ($pkp_left > 0) {
-                      $pph21 = $pph21 + ($pkp_left * (30 / 100));
-                    } else {
-                      break;
-                    }
-                  }
-                }
-              }else{
-                for ($i = 1; $i <= $iteration; $i++) {
-                  if ($i == 1) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left <= 50000000) {
-                        $pph21 = $pkp_left * (5 / 100) * (120/100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      } else {
-                        $pph21 = 50000000 * (5 / 100) * (120/100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 2) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 250000000) {
-                        $pph21 = $pph21 + (250000000 * (15 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (15 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 3) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 500000000) {
-                        $pph21 = $pph21 + (500000000 * (25 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (25 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 4) {
-                    if ($pkp_left > 0) {
-                      $pph21 = $pph21 + ($pkp_left * (30 / 100) * (120/100));
-                    } else {
-                      break;
-                    }
-                  }
-                }
-              }
+              $positionAllowance = getPositionAllowance($gross);
+              $grossSalaryAfterPositionAllowance = getGrossSalaryAfterPositionAllowance($gross, $positionAllowance);
+              $multiplierMonth = getMultiplierMonth($employee->join_date);
+              $grossSalaryPerYear = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
+              $pkps = getPKP($grossSalaryPerYear, $ptkp->value);
+              $pph21Yearly = getPPH21Yearly($pkps, $employee->npwp);
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Biaya Jabatan',
-                'total'             => ($position_allowance) > 0 ? $position_allowance : 0,
+                'description'       => LABEL_POSITION_ALLOWANCE,
+                'total'             => ($positionAllowance) > 0 ? $positionAllowance : 0,
                 'type'              => 2,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -1664,8 +1423,8 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Net Salary (Yearly)',
-                'total'             => ($salary_year) > 0 ? $salary_year : 0,
+                'description'       => LABEL_NET_SALARY_YEAR,
+                'total'             => ($grossSalaryPerYear) > 0 ? $grossSalaryPerYear : 0,
                 'type'              => 2,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -1673,8 +1432,8 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'PPh 21 (Yearly)',
-                'total'             => ($pph21) > 0 ? $pph21 : 0,
+                'description'       => LABEL_PPH_YEARLY,
+                'total'             => ($pph21Yearly) > 0 ? $pph21Yearly : 0,
                 'type'              => 2,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -1682,8 +1441,8 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Potongan PPh 21',
-                'total'             => ($pph21 / 12) > 0 ? $pph21 / 12 : 0,
+                'description'       => LABEL_PPH_MONTHLY,
+                'total'             => ($pph21Yearly / $multiplierMonth) > 0 ? $pph21Yearly / $multiplierMonth : 0,
                 'type'              => 0,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -1766,14 +1525,11 @@ class SalaryReportController extends Controller
         $checkDate = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $request->montly . '-' . $request->year);
         $checkJoinDate = $employees = Employee::select('employees.*')->where('employees.status', 1)->where('employees.join_date', '<=', $checkDate)->find($view_employee);
         $exists = $this->check_periode($request->montly, $request->year, $view_employee);
-        // dd($exists);
         if ($exists) {
           $delete = $exists->delete();
         }
         if ($checkJoinDate) {
-    
           $period = changeDateFormat('Y-m-d', 01 . '-' . $request->montly . '-' . $request->year);
-    
           $id = $this->getLatestId();
           $salaryreport = SalaryReport::create([
             'id'            => $id,
@@ -1805,7 +1561,7 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Basic Salary',
+                'description'       => LABEL_BASIC_SALARY,
                 'total'             => $basesalary->amount,
                 'type'              => 1,
                 'status'            => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
@@ -1822,37 +1578,53 @@ class SalaryReportController extends Controller
             }
             if ($allowance) {
               foreach ($allowance as $key => $value) {
-                if ($value->value && $value->factor) {
+                if ($value->group_allowance_id) {
                   SalaryReportDetail::create([
-                    'salary_report_id'  => $id,
-                    'employee_id'       => $view_employee,
+                    'salary_report_id'  => $salaryreport->id,
+                    'employee_id'       => $employee->id,
                     'description'       => $value->description,
-                    'total'             => $value->factor * $value->value,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
                     'type'              => 1,
                     'status'            => 'Additional Allowance',
                     'group_allowance_id'=> $value->group_allowance_id,
                     'is_added'          => 'NO'
                   ]);
                 } else {
-                  continue;
+                  SalaryReportDetail::create([
+                    'salary_report_id'  => $salaryreport->id,
+                    'employee_id'       => $employee->id,
+                    'description'       => $value->allowance_name,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                    'type'              => 1,
+                    'status'            => 'Additional Allowance',
+                    'is_added'          => 'NO'
+                  ]);
                 }
               }
             }
             if ($deduction) {
               foreach ($deduction as $key => $value) {
-                if ($value->value) {
+                if ($value->group_allowance_id) {
                   SalaryReportDetail::create([
                     'salary_report_id'  => $id,
                     'employee_id'       => $view_employee,
                     'description'       => $value->description,
-                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->factor * $value->value,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
                     'type'              => 0,
                     'status'            => 'Deduction Allowance',
                     'group_allowance_id'=> $value->group_allowance_id,
                     'is_added'          => 'NO'
                   ]);
                 } else {
-                  continue;
+                  SalaryReportDetail::create([
+                    'salary_report_id'  => $id,
+                    'employee_id'       => $view_employee,
+                    'description'       => $value->description,
+                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                    'type'              => 0,
+                    'status'            => 'Deduction Allowance',
+                    'is_added'          => 'NO'
+                  ]);
                 }
               }
             }
@@ -1861,7 +1633,7 @@ class SalaryReportController extends Controller
                 SalaryReportDetail::create([
                   'salary_report_id'  => $id,
                   'employee_id'       => $view_employee,
-                  'description'       => "Overtime $over->amount",
+                  'description'       => LABEL_OVERTIME . " " . $over->amount * 100 . "%",
                   'total'             => $over->final_salary,
                   'type'              => 1,
                   'status'            => 'Draft',
@@ -1873,7 +1645,7 @@ class SalaryReportController extends Controller
               $spsi = SalaryReportDetail::create([
                 'salary_report_id'  => $id,
                 'employee_id'       => $view_employee,
-                'description'       => 'Potongan SPSI',
+                'description'       => LABEL_SPSI,
                 'total'             => 20000,
                 'type'              => 0,
                 'status'            => 'Draft',
@@ -1884,7 +1656,7 @@ class SalaryReportController extends Controller
               $spsi = SalaryReportDetail::create([
                 'salary_report_id'  => $id,
                 'employee_id'       => $view_employee,
-                'description'       => 'Driver Allowance',
+                'description'       => LABEL_DRIVER_ALLOWANCE,
                 'total'             => $driverallowance,
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -1895,7 +1667,7 @@ class SalaryReportController extends Controller
               $alpha_penalty = SalaryReportDetail::create([
                 'salary_report_id'  => $id,
                 'employee_id'       => $view_employee,
-                'description'       => 'Potongan absen',
+                'description'       => LABEL_ALPHA_PENALTY,
                 'total'             => -1 * $alphaPenalty->sum('penalty'),
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -1906,7 +1678,7 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $id,
                 'employee_id'       => $view_employee,
-                'description'       => 'Premi Hadir',
+                'description'       => LABEL_ATTENDANCE_ALLOWANCE,
                 'total'             => $attendance_allowance,
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -1921,7 +1693,7 @@ class SalaryReportController extends Controller
               $alpha_penalty = SalaryReportDetail::create([
                 'salary_report_id'  => $id,
                 'employee_id'       => $view_employee,
-                'description'       => 'Potongan absen',
+                'description'       => LABEL_ALPHA_PENALTY,
                 'total'             => -1 * ($alphaPenalty->count() * (($salaryreport->gross_salary - $penaltyallowance) / 30)),
                 'type'              => 1,
                 'status'            => 'Draft',
@@ -1941,118 +1713,18 @@ class SalaryReportController extends Controller
               }
               $gross = $this->gross_salary($id) ? $this->gross_salary($id) : 0;
               $deduction = $this->deduction_salary($id) ? $this->deduction_salary($id) : 0;
-              $position_allowance = ($gross * (5 / 100) > 500000) ? 500000 : $gross * (5 / 100);
-              $new_net = $gross - $position_allowance;
-              $salary_year = $new_net * 12;
-              $pkp = $salary_year - $ptkp->value;
-              $pkp_left = $pkp;
-              $pph21 = 0;
-              $iteration = 4;
-              if ($employee->npwp) {
-                for ($i = 1; $i <= $iteration; $i++) {
-                  if ($i == 1) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left <= 50000000) {
-                        $pph21 = $pkp_left * (5 / 100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      } else {
-                        $pph21 = 50000000 * (5 / 100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 2) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 250000000) {
-                        $pph21 = $pph21 + (250000000 * (15 / 100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (15 / 100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 3) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 500000000) {
-                        $pph21 = $pph21 + (500000000 * (25 / 100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (25 / 100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 4) {
-                    if ($pkp_left > 0) {
-                      $pph21 = $pph21 + ($pkp_left * (30 / 100));
-                    } else {
-                      break;
-                    }
-                  }
-                }
-              }else{
-                for ($i = 1; $i <= $iteration; $i++) {
-                  if ($i == 1) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left <= 50000000) {
-                        $pph21 = $pkp_left * (5 / 100) * (120/100);
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      } else {
-                        $pph21 = 50000000 * (5 / 100) * (120/100) ;
-                        $pkp_left = ($pkp_left - 50000000) <= 0 ? 0 : $pkp_left - 50000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 2) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 250000000) {
-                        $pph21 = $pph21 + (250000000 * (15 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (15 / 100)* (120/100));
-                        $pkp_left = ($pkp_left - 250000000) <= 0 ? 0 : $pkp_left - 250000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 3) {
-                    if ($pkp_left > 0) {
-                      if ($pkp_left >= 500000000) {
-                        $pph21 = $pph21 + (500000000 * (25 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      } else {
-                        $pph21 = $pph21 + ($pkp_left * (25 / 100) * (120/100));
-                        $pkp_left = ($pkp_left - 500000000) <= 0 ? 0 : $pkp_left - 500000000;
-                      }
-                    } else {
-                      break;
-                    }
-                  }
-                  if ($i == 4) {
-                    if ($pkp_left > 0) {
-                      $pph21 = $pph21 + ($pkp_left * (30 / 100) * (120/100));
-                    } else {
-                      break;
-                    }
-                  }
-                }
-              }
+              $positionAllowance = getPositionAllowance($gross);
+              $grossSalaryAfterPositionAllowance = getGrossSalaryAfterPositionAllowance($gross, $positionAllowance);
+              $multiplierMonth = getMultiplierMonth($employee->join_date);
+              $grossSalaryPerYear = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
+              $pkps = getPKP($grossSalaryPerYear, $ptkp->value);
+              $pph21Yearly = getPPH21Yearly($pkps, $employee->npwp);
     
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Biaya Jabatan',
-                'total'             => $position_allowance > 0 ? $position_allowance : 0,
+                'description'       => LABEL_POSITION_ALLOWANCE,
+                'total'             => $positionAllowance > 0 ? $positionAllowance : 0,
                 'type'              => 2,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -2060,8 +1732,8 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Net Salary (Yearly)',
-                'total'             => $salary_year > 0 ? $salary_year : 0,
+                'description'       => LABEL_NET_SALARY_YEAR,
+                'total'             => $grossSalaryPerYear > 0 ? $grossSalaryPerYear : 0,
                 'type'              => 2,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -2069,8 +1741,8 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'PPh 21 (Yearly)',
-                'total'             => ($pph21) > 0 ? $pph21 : 0,
+                'description'       => LABEL_PPH_YEARLY,
+                'total'             => ($pph21Yearly) > 0 ? $pph21Yearly : 0,
                 'type'              => 2,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -2078,8 +1750,8 @@ class SalaryReportController extends Controller
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
-                'description'       => 'Potongan PPh 21',
-                'total'             => ($pph21 / 12) > 0 ? $pph21 / 12 : 0,
+                'description'       => LABEL_PPH_MONTHLY,
+                'total'             => ($pph21Yearly / $multiplierMonth) > 0 ? $pph21Yearly / $multiplierMonth : 0,
                 'type'              => 0,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -2262,7 +1934,7 @@ class SalaryReportController extends Controller
     $deductions = $this->getGroupAllowance('DEDUCTION');
     
     $select = '';
-    $select .= "employees.nid as nik, employees.name as name, departments.name as department_name,";
+    $select .= "employees.nid as nik, employees.name as name, departments.name as department_name,employees.account_no as account_no,";
     $select .= "max(details.basic_salary) as basic_salary,";
     $select .= "attendances.wt as wt,";
     $select .= "max(details.daily_salary) as daily_salary,";
@@ -2348,7 +2020,7 @@ class SalaryReportController extends Controller
     }
     // $salary->where('salary_reports.id', 27692);
     $salary->orderBy('departments.name', 'asc');
-    $salary->groupBy('employees.nid', 'employees.name', 'departments.name', 'attendances.wt');
+    $salary->groupBy('employees.nid', 'employees.name', 'departments.name', 'attendances.wt', 'employees.account_no');
     $salary_reports = $salary->get();
 
     return $salary_reports;
@@ -2380,6 +2052,7 @@ class SalaryReportController extends Controller
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'NIK')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'Name')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'Department')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'Bank Account Number')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'Basic Salary')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column + 1, $row)->setCellValueByColumnAndRow($column, $row, '100%')->getStyleByColumnAndRow($column, $row, $column + 1, $row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->setCellValueByColumnAndRow($column, $row + 1, 'WT')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -2425,6 +2098,7 @@ class SalaryReportController extends Controller
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->nik);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->name);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->department_name);
+      $sheet->setCellValueExplicitByColumnAndRow(++$column_number, $row_number, $value->account_no, PHPExcel_Cell_DataType::TYPE_STRING);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->basic_salary ? $value->basic_salary : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->wt ? $value->wt : '-');
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->daily_salary ? $value->daily_salary : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
