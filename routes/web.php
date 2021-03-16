@@ -531,5 +531,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/penaltyconfig/updateall', 'Admin\PenaltyConfigController@updateAll')->name('penaltyconfig.updateall');
         Route::post('/penaltyconfig/updateallowance', 'Admin\PenaltyConfigController@updateAllowance')->name('penaltyconfig.updateallowance');
         Route::resource('/penaltyconfig', 'Admin\PenaltyConfigController');
+
+        // Route Attendance Machine
+        Route::get('/attendancemachine/read', 'Admin\AttendanceMachineController@read')->name('attendancemachine.read');
+        Route::resource('/attendancemachine', 'Admin\AttendanceMachineController');
     });
 });
