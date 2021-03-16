@@ -514,5 +514,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/spl/preview', 'Admin\SPLController@preview')->name('spl.preview');
         Route::post('/spl/storemass', 'Admin\SPLController@storemass')->name('spl.storemass');
         Route::resource('/spl', 'Admin\SPLController');
+
+        //Route Partner
+        Route::get('/partner/read', 'Admin\PartnerController@read')->name('partner.read');
+        Route::resource('/partner', 'Admin\PartnerController');
     });
 });

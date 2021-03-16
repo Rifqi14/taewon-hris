@@ -166,12 +166,12 @@
                 <table class="table table-striped table-bordered w-100 datatable" id="contract" style="width:100%">
                     <thead>
                         <tr>
-														<th width="20">#</th>
-                            <th width="100">NIK</th>
+							<th width="20">#</th>
                             <th width="100">Name</th>
                             <th width="100">Department</th>
                             <th width="100">Workgroup Combination</th>
                             <th width="100">End of Contract Date</th>
+                            <th width="100">Description</th>
                         </tr>
                     </thead>
                 </table>
@@ -221,14 +221,14 @@
                 <table class="table table-striped table-bordered w-100 table-document" id="document">
                     <thead>
                         <tr>
-													<th width="10">#</th>
-													<th width="100">No.Document</th>
-													<th width="100">Name</th>
-													<th width="100">Expired Date</th>
-													<th width="100">PIC</th>
-													<th width="50">File</th>
-													<th width="50">Status</th>
-													<th width="10">#</th>
+							<th width="10">#</th>
+							<th width="100">No.Document</th>
+							<th width="100">Name</th>
+							<th width="100">Expired Date</th>
+							<th width="100">PIC</th>
+							<th width="50">File</th>
+							<th width="50">Status</th>
+							<th width="10">#</th>
                         </tr>
                     </thead>
                 </table>
@@ -578,20 +578,17 @@
 					orderable: false,targets:[0]
 				},
 				{ className: "text-right", targets: [0] },
-				{ className: "text-center", targets: [0] },
+				{ className: "text-center", targets: [0,4] },
 				{
 					render: function ( data, type, row ) {
-					return `<a href="{{url('admin/employees')}}/${row.id}/">${row.name}</a>`;
-					},targets: [2]
+					return `<a href="{{url('admin/employees')}}/${row.id}/">${row.name}</a><br>NIK: ${row.nik}`;
+					},targets: [1]
 				}
 				
 			],
 			columns: [
 				{ 
 					data: "no" 
-				},
-				{ 
-					data: "nid" 
 				},
 				{ 
 					data: "name" 
@@ -604,6 +601,9 @@
 				},
 				{ 
 					data: "end_date" 
+				},
+				{ 
+					data: "employee_desc" 
 				},
 			]
 		});
