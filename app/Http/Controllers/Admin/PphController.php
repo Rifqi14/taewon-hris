@@ -1511,8 +1511,10 @@ class PphController extends Controller
     {
         $pph_detail = SalaryReport::with('salarydetail')->with('employee')->find($id);
         $ptkp = PTKP::where('key', $pph_detail->employee->ptkp)->first();
+        $employee = Employee::find($pph_detail->employee->id);
+        $multipleMonth = getMultiplierMonth($employee->join_date);
         if ($pph_detail) {
-            return view('admin.pph.detail', compact('pph_detail', 'ptkp'));
+            return view('admin.pph.detail', compact('pph_detail', 'ptkp', 'multipleMonth'));
         } else {
             abort(404);
         }

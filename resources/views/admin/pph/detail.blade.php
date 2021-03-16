@@ -16,185 +16,185 @@
 
 @section('content')
 <div class="row">
-    <div class="col-lg-12">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="card card-{{ config('configs.app_theme') }} card-outline">
-                    <div class="card-header">
-                        <h3 class="card-title">Employee Data</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                          <input type="hidden" name="report_id" id="report_id" value="{{ $pph_detail->id }}">
-                          <input type="hidden" name="employee_id" value="{{ $pph_detail->employee_id }}">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Employee Name</label>
-                                    <input type="text" class="form-control" placeholder="Employee Name" value="{{ $pph_detail->employee->name }}" readonly>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>NPWP</label>
-                                    <input type="text" class="form-control" placeholder="NPWP" value="{{ $pph_detail->employee->npwp }}" readonly>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Metode</label>
-                                    <input type="text" class="form-control" data-placeholder="Metode" value="{{ $pph_detail->employee->tax_calculation }}" readonly>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>PTKP</label>
-                                    <input type="text" class="form-control" data-placeholder="Department" value="{{ $pph_detail->employee->ptkp }}" readonly>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="overlay d-none">
-                        <i class="fa fa-refresh fa-spin"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card card-{{ config('configs.app_theme') }} card-outline">
-                    <div class="card-header">
-                        <h3 class="card-title">Other</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label>Period</label>
-                                    <input type="text" class="form-control" data-placeholder="Period" value="{{ changeDateFormat('F - Y', $pph_detail->period) }}" readonly>
-                                </div>
-                            </div>
-                            <div style="height: 165px;"></div>
-                        </div>
-                    </div>
-                    <div class="overlay d-none">
-                        <i class="fa fa-2x fa-sync-alt fa-spin"></i>
-                    </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-12">
+  <div class="col-lg-12">
+    <div class="row">
+      <div class="col-lg-8">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
-            <div class="card-header">
-                <h3 class="card-title">Tax Calculation Detail</h3>
+          <div class="card-header">
+            <h3 class="card-title">Employee Data</h3>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <input type="hidden" name="report_id" id="report_id" value="{{ $pph_detail->id }}">
+              <input type="hidden" name="employee_id" value="{{ $pph_detail->employee_id }}">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Employee Name</label>
+                  <input type="text" class="form-control" placeholder="Employee Name" value="{{ $pph_detail->employee->name }}" readonly>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>NPWP</label>
+                  <input type="text" class="form-control" placeholder="NPWP" value="{{ $pph_detail->employee->npwp }}" readonly>
+                </div>
+              </div>
             </div>
-            <div class="card-body">
-                <table class="table table-striped table-bordered datatable" id="gross-table" style="width: 100%">
-                    <thead>
-                        <tr>
-                            <th width="10">No</th>
-                            <th width="600">Description</th>
-                            <th width="200" class="text-right">Total</th>
-                        </tr>
-                    </thead>
-                    <Tbody>
-                      @if ($pph_detail->salarydetail)
-                        @foreach ($pph_detail->salarydetail as $key => $value)
-                          @if ($value->description == 'Basic Salary')
-                          <tr>
-                            <td>1</td>
-                            <td>{{ $value->description }}</td>
-                            <td class="text-right">{{ 'Rp. ' . number_format($value->total,0,",",".") }}</td>
-                          </tr>
-                          @endif
-                          @if (strpos($value->description, 'Prestasi') !== false)
-                          <tr>
-                            <td>2</td>
-                            <td>{{ $value->description }}</td>
-                            <td class="text-right">{{ 'Rp. ' . number_format($value->total,0,",",".") }}</td>
-                          </tr>
-                          @endif
-                          @if (strpos($value->description, 'Jabatan') !== false)
-                          <tr>
-                            <td>3</td>
-                            <td>{{ 'Gross Salary' }}</td>
-                            <td class="text-right">{{ 'Rp. ' . number_format($pph_detail->gross_salary,0,",",".") }}</td>
-                          </tr>
-                          @endif
-                          @if (strpos($value->description, 'Jabatan') !== false)
-                          <tr>
-                            <td>4</td>
-                            <td>&emsp;&emsp;&emsp;{{ $value->description }}</td>
-                            <td class="text-right">{{ 'Rp. ' . number_format($value->total,0,",",".") }}</td>
-                          </tr>
-                          @endif
-                          @if (strpos($value->description, 'Net Salary') !== false)
-                          <tr>
-                            <td>5</td>
-                            <td>Net Salary (Monthly)</td>
-                            <td class="text-right">{{ 'Rp. ' . number_format($value->total / 12,0,",",".") }}</td>
-                          </tr>
-                          @endif
-                          @if (strpos($value->description, 'Net Salary') !== false)
-                          <tr>
-                            <td>6</td>
-                            <td>{{ $value->description }}</td>
-                            <td class="text-right">{{ 'Rp. ' . number_format($value->total,0,",",".") }}</td>
-                          </tr>
-                          @endif
-                          @if (strpos($value->description, 'Net Salary') !== false)
-                          <tr>
-                            <td>7</td>
-                            <td>PTKP</td>
-                            <td class="text-right">{{ 'Rp. ' . number_format($ptkp->value,0,",",".") }}</td>
-                          </tr>
-                          @endif
-                          @if (strpos($value->description, 'Net Salary') !== false)
-                          <tr>
-                            <td>8</td>
-                            <td>PKP</td>
-                            <td class="text-right">{{ 'Rp. ' . number_format($value->total - $ptkp->value,0,",",".") }}</td>
-                          </tr>
-                          @endif
-                          @if (strpos($value->description, 'PPh 21 (Yearly)') !== false)
-                          <tr>
-                            <td>9</td>
-                            <td>{{ $value->description }}</td>
-                            <td class="text-right"></td>
-                          </tr>
-                          @endif
-                          @if (strpos($value->description, 'PPh 21 (Yearly)') !== false)
-                          <tr>
-                            <td></td>
-                            <td>&emsp;&emsp;&emsp;{{ $value->description }}</td>
-                            <td class="text-right">{{ 'Rp. ' . number_format($value->total,0,",",".") }}</td>
-                          </tr>
-                          @endif
-                          @if (strpos($value->description, 'Potongan PPh 21') !== false)
-                          <tr>
-                            <td>10</td>
-                            <td>PPh 21 (Monthly)</td>
-                            <td class="text-right"></td>
-                          </tr>
-                          @endif
-                          @if (strpos($value->description, 'Potongan PPh 21') !== false)
-                          <tr>
-                            <td></td>
-                            <td>&emsp;&emsp;&emsp;PPh 21 (Monthly)</td>
-                            <td class="text-right">{{ 'Rp. ' . number_format($value->total,0,",",".") }}</td>
-                          </tr>
-                          @endif
-                        @endforeach
-                      @endif
-                    </Tbody>
-                </table>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Metode</label>
+                  <input type="text" class="form-control" data-placeholder="Metode" value="{{ $pph_detail->employee->tax_calculation }}" readonly>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>PTKP</label>
+                  <input type="text" class="form-control" data-placeholder="Department" value="{{ $pph_detail->employee->ptkp }}" readonly>
+                </div>
+              </div>
             </div>
-            <div class="overlay d-none">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
+          </div>
+          <div class="overlay d-none">
+            <i class="fa fa-refresh fa-spin"></i>
+          </div>
         </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card card-{{ config('configs.app_theme') }} card-outline">
+          <div class="card-header">
+            <h3 class="card-title">Other</h3>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Period</label>
+                  <input type="text" class="form-control" data-placeholder="Period" value="{{ changeDateFormat('F - Y', $pph_detail->period) }}" readonly>
+                </div>
+              </div>
+              <div style="height: 165px;"></div>
+            </div>
+          </div>
+          <div class="overlay d-none">
+            <i class="fa fa-2x fa-sync-alt fa-spin"></i>
+          </div>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="col-lg-12">
+    <div class="card card-{{ config('configs.app_theme') }} card-outline">
+      <div class="card-header">
+        <h3 class="card-title">Tax Calculation Detail</h3>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped table-bordered datatable" id="gross-table" style="width: 100%">
+          <thead>
+            <tr>
+              <th width="10">No</th>
+              <th width="600">Description</th>
+              <th width="200" class="text-right">Total</th>
+            </tr>
+          </thead>
+          <Tbody>
+            @if ($pph_detail->salarydetail)
+            @foreach ($pph_detail->salarydetail as $key => $value)
+            @if ($value->description == 'Basic Salary')
+            <tr>
+              <td>1</td>
+              <td>{{ $value->description }}</td>
+              <td class="text-right">{{ 'Rp. ' . number_format($value->total,0,",",".") }}</td>
+            </tr>
+            @endif
+            @if (strpos($value->description, 'Prestasi') !== false)
+            <tr>
+              <td>2</td>
+              <td>{{ $value->description }}</td>
+              <td class="text-right">{{ 'Rp. ' . number_format($value->total,0,",",".") }}</td>
+            </tr>
+            @endif
+            @if (strpos($value->description, 'Jabatan') !== false)
+            <tr>
+              <td>3</td>
+              <td>{{ 'Gross Salary' }}</td>
+              <td class="text-right">{{ 'Rp. ' . number_format($pph_detail->gross_salary,0,",",".") }}</td>
+            </tr>
+            @endif
+            @if (strpos($value->description, 'Jabatan') !== false)
+            <tr>
+              <td>4</td>
+              <td>&emsp;&emsp;&emsp;{{ $value->description }}</td>
+              <td class="text-right">{{ 'Rp. ' . number_format($value->total,0,",",".") }}</td>
+            </tr>
+            @endif
+            @if (strpos($value->description, 'Net Salary') !== false)
+            <tr>
+              <td>5</td>
+              <td>Net Salary (Monthly)</td>
+              <td class="text-right">{{ 'Rp. ' . number_format($value->total / $multipleMonth,0,",",".") }}</td>
+            </tr>
+            @endif
+            @if (strpos($value->description, 'Net Salary') !== false)
+            <tr>
+              <td>6</td>
+              <td>{{ $value->description }}</td>
+              <td class="text-right">{{ 'Rp. ' . number_format($value->total,0,",",".") }}</td>
+            </tr>
+            @endif
+            @if (strpos($value->description, 'Net Salary') !== false)
+            <tr>
+              <td>7</td>
+              <td>PTKP</td>
+              <td class="text-right">{{ 'Rp. ' . number_format($ptkp->value,0,",",".") }}</td>
+            </tr>
+            @endif
+            @if (strpos($value->description, 'Net Salary') !== false)
+            <tr>
+              <td>8</td>
+              <td>PKP</td>
+              <td class="text-right">{{ 'Rp. ' . number_format($value->total - $ptkp->value,0,",",".") }}</td>
+            </tr>
+            @endif
+            @if (strpos($value->description, 'PPh 21 (Yearly)') !== false)
+            <tr>
+              <td>9</td>
+              <td>{{ $value->description }}</td>
+              <td class="text-right"></td>
+            </tr>
+            @endif
+            @if (strpos($value->description, 'PPh 21 (Yearly)') !== false)
+            <tr>
+              <td></td>
+              <td>&emsp;&emsp;&emsp;{{ $value->description }}</td>
+              <td class="text-right">{{ 'Rp. ' . number_format($value->total,0,",",".") }}</td>
+            </tr>
+            @endif
+            @if (strpos($value->description, 'Potongan PPh 21') !== false)
+            <tr>
+              <td>10</td>
+              <td>PPh 21 (Monthly)</td>
+              <td class="text-right"></td>
+            </tr>
+            @endif
+            @if (strpos($value->description, 'Potongan PPh 21') !== false)
+            <tr>
+              <td></td>
+              <td>&emsp;&emsp;&emsp;PPh 21 (Monthly)</td>
+              <td class="text-right">{{ 'Rp. ' . number_format($value->total,0,",",".") }}</td>
+            </tr>
+            @endif
+            @endforeach
+            @endif
+          </Tbody>
+        </table>
+      </div>
+      <div class="overlay d-none">
+        <i class="fa fa-refresh fa-spin"></i>
+      </div>
+    </div>
+  </div>
 </div>
 @endsection
 @push('scripts')
@@ -205,7 +205,7 @@
 <script src="{{asset('adminlte/component/dataTables/js/datatables.min.js')}}"></script>
 <script src="{{asset('adminlte/component/jquery-mask/jquery.mask.min.js')}}"></script>
 <script type="text/javascript">
-$(document).ready(function(){
+  $(document).ready(function(){
   $("#form_deduction").validate({
     errorElement: 'div',
     errorClass: 'invalid-feedback',

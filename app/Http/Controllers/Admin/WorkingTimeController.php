@@ -153,21 +153,17 @@ class WorkingTimeController extends Controller
             'notes'             => $request->notes
         ]);
         if ($workingtime) {
-            $departmentPath = explode(",", $request->department_id);
-            foreach ($departmentPath as $key => $path) {
-                $departmentChild = Department::where('path', 'like', "%$path%")->get();
-                foreach ($departmentChild as $key => $department) {
-                    $shiftDepartment = DepartmentShift::create([
-                        'workingtime_id'    => $workingtime->id,
-                        'department_id'     => $department->id
-                    ]);
-                    if (!$shiftDepartment) {
-                        DB::rollBack();
-                        return response()->json([
-                            'status'    => false,
-                            'message'   => $shiftDepartment
-                        ], 400);
-                    }
+            foreach ($request->department_id as $key => $department) {
+                $shiftDepartment = DepartmentShift::create([
+                    'workingtime_id'    => $workingtime->id,
+                    'department_id'     => $department
+                ]);
+                if (!$shiftDepartment) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status'    => false,
+                        'message'   => $shiftDepartment
+                    ], 400);
                 }
             }
             foreach ($request->start as $key => $value) {

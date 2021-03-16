@@ -515,8 +515,25 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/spl/storemass', 'Admin\SPLController@storemass')->name('spl.storemass');
         Route::resource('/spl', 'Admin\SPLController');
 
-        //Route Partner
-        Route::get('/partner/read', 'Admin\PartnerController@read')->name('partner.read');
-        Route::resource('/partner', 'Admin\PartnerController');
+        // Route Department Shift
+        Route::get('/departmentshift/read', 'Admin\DepartmentShiftController@read')->name('departmentshift.read');
+        Route::post('/departmentshift/updateall', 'Admin\DepartmentShiftController@updateAll')->name('departmentshift.updateall');
+        Route::resource('/departmentshift', 'Admin\DepartmentShiftController');
+
+        // Route Breaktime Department
+        Route::get('/breaktimedepartment/read', 'Admin\BreaktimeDepartmentController@read')->name('breaktimedepartment.read');
+        Route::post('/breaktimedepartment/updateall', 'Admin\BreaktimeDepartmentController@updateAll')->name('breaktimedepartment.updateall');
+        Route::resource('/breaktimedepartment', 'Admin\BreaktimeDepartmentController');
+
+        // Route Penalty Config
+        Route::get('/penaltyconfig/read', 'Admin\PenaltyConfigController@read')->name('penaltyconfig.read');
+        Route::get('/penaltyconfig/readallowance', 'Admin\PenaltyConfigController@readAllowance')->name('penaltyconfig.readallowance');
+        Route::post('/penaltyconfig/updateall', 'Admin\PenaltyConfigController@updateAll')->name('penaltyconfig.updateall');
+        Route::post('/penaltyconfig/updateallowance', 'Admin\PenaltyConfigController@updateAllowance')->name('penaltyconfig.updateallowance');
+        Route::resource('/penaltyconfig', 'Admin\PenaltyConfigController');
+
+        // Route Attendance Machine
+        Route::get('/attendancemachine/read', 'Admin\AttendanceMachineController@read')->name('attendancemachine.read');
+        Route::resource('/attendancemachine', 'Admin\AttendanceMachineController');
     });
 });

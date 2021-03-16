@@ -19,4 +19,24 @@ class Allowance extends Model
     {
         return $this->hasMany('App\Models\WorkingtimeAllowance', 'allowance_id', 'id');
     }
+
+    /**
+     * Method to define many-to-many relationship with penalty_configs table through pivot table penalty_config_details
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function penaltyconfig()
+    {
+        return $this->belongsToMany(PenaltyConfig::class, 'penalty_config_details', 'penalty_config_id', 'allowance_id');
+    }
+
+    /**
+     * Described has many (one-to-many) relationship with penalty_config_details table
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function detail()
+    {
+        return $this->hasMany(PenaltyConfigDetail::class, 'allowance_id', 'id');
+    }
 }

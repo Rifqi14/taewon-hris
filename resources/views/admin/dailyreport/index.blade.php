@@ -15,18 +15,23 @@
     cursor: pointer;
     margin: 0 auto;
   }
+
   .customcheckbox.checked {
     background-position: -48px 0;
   }
+
   .scheme:hover {
     cursor: pointer;
   }
+
   .customcheckbox:hover {
     background-position: -24px 0;
   }
+
   .customcheckbox.checked:hover {
     background-position: -48px 0;
   }
+
   .customcheckbox input {
     cursor: pointer;
     opacity: 0;
@@ -35,28 +40,35 @@
     height: 22px;
     margin: 0;
   }
+
   .shift:hover {
     cursor: pointer;
   }
+
   .time_in:hover {
     cursor: pointer;
   }
+
   .time_out:hover {
     cursor: pointer;
   }
+
   .worktime:hover {
     cursor: pointer;
   }
+
   table.dataTable tbody td {
     height: 60px;
   }
-  .ui-state-active{
+
+  .ui-state-active {
     background: #28a745 !important;
     border-color: #28a745 !important;
   }
+
   .ui-menu {
     overflow: auto;
-    height:200px;
+    height: 200px;
   }
 </style>
 @endsection
@@ -172,8 +184,7 @@
       </div>
     </div>
   </div>
-  <div class="modal fade" id="edit-scheme" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog"
-    aria-hidden="true">
+  <div class="modal fade" id="edit-scheme" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -181,30 +192,26 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         </div>
         <div class="modal-body">
-          <form id="form-scheme" action="{{ route('attendanceapproval.quickupdate') }}"
-            class="form-horizontal no-gutters" method="post" autocomplete="off">
+          <form id="form-scheme" action="{{ route('attendanceapproval.quickupdate') }}" class="form-horizontal no-gutters" method="post" autocomplete="off">
             {{ csrf_field() }}
             <input type="hidden" name="scheme_id" id="scheme_id">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
                   <label class="control-label" for="scheme">Overtime Scheme</label>
-                  <input type="text" class="form-control" name="scheme" id="scheme"
-                    placeholder="Overtime Scheme">
+                  <input type="text" class="form-control" name="scheme" id="scheme" placeholder="Overtime Scheme">
                 </div>
               </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button form="form-scheme" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i
-              class="fa fa-save"></i></button>
+          <button form="form-scheme" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i class="fa fa-save"></i></button>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal fade" id="edit-shift" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog"
-    aria-hidden="true">
+  <div class="modal fade" id="edit-shift" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -212,30 +219,26 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         </div>
         <div class="modal-body">
-          <form id="form-shift" action="{{ route('attendanceapproval.quickupdate') }}"
-            class="form-horizontal no-gutters" method="post" autocomplete="off">
+          <form id="form-shift" action="{{ route('attendanceapproval.quickupdate') }}" class="form-horizontal no-gutters" method="post" autocomplete="off">
             {{ csrf_field() }}
             <input type="hidden" name="attendance_id" id="attendance_id">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
                   <label class="control-label" for="working_shift">Working Shift</label>
-                  <input type="text" class="form-control" name="working_shift" id="working_shift"
-                    placeholder="Working Shift">
+                  <input type="text" class="form-control" name="working_shift" id="working_shift" placeholder="Working Shift">
                 </div>
               </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button form="form-shift" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i
-              class="fa fa-save"></i></button>
+          <button form="form-shift" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i class="fa fa-save"></i></button>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal fade" id="edit-in" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog"
-    aria-hidden="true">
+  <div class="modal fade" id="edit-in" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -243,30 +246,26 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         </div>
         <div class="modal-body">
-          <form id="form-in" action="{{ route('attendanceapproval.quickupdate') }}" class="form-horizontal no-gutters"
-            method="post" autocomplete="off">
+          <form id="form-in" action="{{ route('attendanceapproval.quickupdate') }}" class="form-horizontal no-gutters" method="post" autocomplete="off">
             {{ csrf_field() }}
             <input type="hidden" name="first_in_id" id="first_in_id">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
                   <label class="control-label" for="first_in">First In</label>
-                  <input type="text" class="form-control timepicker" name="first_in" id="first_in"
-                    placeholder="First In">
+                  <input type="text" class="form-control timepicker" name="first_in" id="first_in" placeholder="First In">
                 </div>
               </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button form="form-in" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i
-              class="fa fa-save"></i></button>
+          <button form="form-in" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i class="fa fa-save"></i></button>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal fade" id="edit-out" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog"
-    aria-hidden="true">
+  <div class="modal fade" id="edit-out" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -274,16 +273,14 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         </div>
         <div class="modal-body">
-          <form id="form-out" action="{{ route('attendanceapproval.quickupdate') }}" class="form-horizontal no-gutters"
-            method="post" autocomplete="off">
+          <form id="form-out" action="{{ route('attendanceapproval.quickupdate') }}" class="form-horizontal no-gutters" method="post" autocomplete="off">
             {{ csrf_field() }}
             <input type="hidden" name="first_out_id" id="first_out_id">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
                   <label class="control-label" for="last_out">Last Out</label>
-                  <input type="text" class="form-control timepicker" name="last_out" id="last_out"
-                    placeholder="Last Out">
+                  <input type="text" class="form-control timepicker" name="last_out" id="last_out" placeholder="Last Out">
                 </div>
               </div>
             </div>
@@ -295,8 +292,7 @@
       </div>
     </div>
   </div>
-  <div class="modal fade" id="edit-worktime" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog"
-    aria-hidden="true">
+  <div class="modal fade" id="edit-worktime" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -329,8 +325,7 @@
       </div>
     </div>
   </div>
-  <div class="modal fade" id="add-filter" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog"
-    aria-hidden="true" data-backdrop="static">
+  <div class="modal fade" id="add-filter" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -356,8 +351,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button form="form-search" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i
-              class="fa fa-search"></i></button>
+          <button form="form-search" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i class="fa fa-search"></i></button>
         </div>
       </div>
     </div>

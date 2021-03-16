@@ -18,8 +18,7 @@
 					<h3 class="card-title">Working Shift Type</h3>
 					<!-- tools box -->
 					<div class="pull-right card-tools">
-						<a href="{{route('workingtime.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white"
-							data-toggle="tooltip" title="Tambah">
+						<a href="{{route('workingtime.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="Tambah">
 							<i class="fa fa-plus"></i>
 						</a>
 						<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
@@ -48,8 +47,7 @@
 		</div>
 	</div>
 </div>
-<div class="modal fade" id="add-filter" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog"
-	aria-hidden="true" data-backdrop="static">
+<div class="modal fade" id="add-filter" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -62,8 +60,7 @@
 						<div class="col-md-12">
 							<div class="form-group">
 								<label class="control-label" for="name">Working Time Type</label>
-								<select name="working_time_type" id="working_time_type" class="form-control select2"
-									data-placeholder="Select Working Time">
+								<select name="working_time_type" id="working_time_type" class="form-control select2" data-placeholder="Select Working Time">
 									<option value="">Show All</option>
 									@foreach(config('enums.workingtime_type') as $key => $value)
 									<option value="{{ $key }}">{{ $value }}</option>
@@ -199,7 +196,7 @@
 					}
 				}
 			});
-		})
+		});
 	})
 </script>
 @endpush

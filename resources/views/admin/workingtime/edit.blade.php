@@ -4,6 +4,38 @@
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
+<style type="text/css">
+	.customcheckbox {
+		width: 22px;
+		height: 22px;
+		background: url("/img/green.png") no-repeat;
+		background-position-x: 0%;
+		background-position-y: 0%;
+		cursor: pointer;
+		margin: 0 auto;
+	}
+
+	.customcheckbox.checked {
+		background-position: -48px 0;
+	}
+
+	.customcheckbox:hover {
+		background-position: -24px 0;
+	}
+
+	.customcheckbox.checked:hover {
+		background-position: -48px 0;
+	}
+
+	.customcheckbox input {
+		cursor: pointer;
+		opacity: 0;
+		scale: 1.6;
+		width: 22px;
+		height: 22px;
+		margin: 0;
+	}
+</style>
 @endsection
 
 @push('breadcrump')
@@ -41,12 +73,6 @@
 								<input type="text" value="{{ $workingtime->description }}" name="description" class="form-control" placeholder="Description" required>
 							</div>
 						</div>
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label for="department_id">Department <b class="text-danger">*</b></label>
-								<input type="text" name="department_id" id="department_id" class="form-control" placeholder="Department" required>
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -78,51 +104,79 @@
 		</div>
 		<div class="col-lg-12">
 			<div class="card card-{{ config('configs.app_theme') }} card-outline">
-				<div class="card-header">
-					<h3 class="card-title">Working Shift Rule</h3>
+				<div class="nav nav-tabs" id="nav-tab" role="tablist">
+					<a class="nav-item nav-link active" id="nav-shift-tab" data-toggle="tab" href="#nav-shift" role="tab" aria-controls="nav-shift" aria-selected="true">Working Shift</a>
+					<a class="nav-item nav-link" id="nav-department-tab" data-toggle="tab" href="#nav-department" role="tab" aria-controls="nav-department" aria-selected="false">Department</a>
 				</div>
-				<div class="card-body">
-					<table class="table table-striped table-bordered datatable" id="shift-table" style="width: 100%">
-						<thead>
-							<tr>
-								<th width="10" class="text-center align-middle">No</th>
-								<th width="50">Day</th>
-								<th width="25" class="text-center align-middle">Start Time</th>
-								<th width="25" class="text-center align-middle">Finish Time</th>
-								<th width="25" class="text-center align-middle">Min Time In</th>
-								<th width="25" class="text-center align-middle">Max Time Out</th>
-								<th width="25" class="text-center align-middle">Min Workingtime</th>
-								<th width="50" class="text-center align-middle">Status</th>
-							</tr>
-						</thead>
-						<tbody>
-							@foreach ($workingtime->detail as $key => $item)
-							<tr>
-								<td class="text-center align-middle">{{ ++$key }}</td>
-								<td class="align-middle">
-									<input type="hidden" name="day[]" value="{{ $item->day }}" />
-									{{ $item->day }}
-								</td>
-								<td class="text-center align-middle">
-									<div class="form-group mb-0"><input placeholder="Start Time" name="start[]" class="form-control timepicker" value="{{ $item->start }}" /></div>
-								</td>
-								<td class="text-center align-middle">
-									<div class="form-group mb-0"><input placeholder="Finish Time" name="finish[]" class="form-control timepicker" value="{{ $item->finish }}" /></div>
-								</td>
-								<td class="text-center align-middle">
-									<div class="form-group mb-0"><input placeholder="Minimum time In" name="min_in[]" class="form-control timepicker" value="{{ $item->min_in }}" /></div>
-								</td>
-								<td class="text-center align-middle">
-									<div class="form-group mb-0"><input placeholder="Maximum time Out" name="max_out[]" class="form-control timepicker" value="{{ $item->max_out }}" /></div>
-								</td>
-								<td class="text-center align-middle">
-									<div class="form-group mb-0"><input type="number" placeholder="Minimum Workingtime" name="min_wt[]" class="form-control" value="{{ $item->min_workhour }}" /></div>
-								</td>
-								<td class="text-center align-middle"><input type="checkbox" name="save[]" class="i-checks" @if ($item->status == 1) checked @endif/></td>
-							</tr>
-							@endforeach
-						</tbody>
-					</table>
+				<div class="tab-content" id="nav-tabContent">
+					<div class="tab-pane fade show active" id="nav-shift" role="tabpanel" aria-labelledby="nav-shift-tab">
+						<div class="card-header">
+							<h3 class="card-title">Working Shift Rule</h3>
+						</div>
+						<div class="card-body">
+							<table class="table table-striped table-bordered datatable" id="shift-table" style="width: 100%">
+								<thead>
+									<tr>
+										<th width="10" class="text-center align-middle">No</th>
+										<th width="50">Day</th>
+										<th width="25" class="text-center align-middle">Start Time</th>
+										<th width="25" class="text-center align-middle">Finish Time</th>
+										<th width="25" class="text-center align-middle">Min Time In</th>
+										<th width="25" class="text-center align-middle">Max Time Out</th>
+										<th width="25" class="text-center align-middle">Min Workingtime</th>
+										<th width="50" class="text-center align-middle">Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach ($workingtime->detail as $key => $item)
+									<tr>
+										<td class="text-center align-middle">{{ ++$key }}</td>
+										<td class="align-middle">
+											<input type="hidden" name="day[]" value="{{ $item->day }}" />
+											{{ $item->day }}
+										</td>
+										<td class="text-center align-middle">
+											<div class="form-group mb-0"><input placeholder="Start Time" name="start[]" class="form-control timepicker" value="{{ $item->start }}" /></div>
+										</td>
+										<td class="text-center align-middle">
+											<div class="form-group mb-0"><input placeholder="Finish Time" name="finish[]" class="form-control timepicker" value="{{ $item->finish }}" /></div>
+										</td>
+										<td class="text-center align-middle">
+											<div class="form-group mb-0"><input placeholder="Minimum time In" name="min_in[]" class="form-control timepicker" value="{{ $item->min_in }}" /></div>
+										</td>
+										<td class="text-center align-middle">
+											<div class="form-group mb-0"><input placeholder="Maximum time Out" name="max_out[]" class="form-control timepicker" value="{{ $item->max_out }}" /></div>
+										</td>
+										<td class="text-center align-middle">
+											<div class="form-group mb-0"><input type="number" placeholder="Minimum Workingtime" name="min_wt[]" class="form-control" value="{{ $item->min_workhour }}" /></div>
+										</td>
+										<td class="text-center align-middle"><input type="checkbox" name="save[]" class="i-checks" @if ($item->status == 1) checked @endif/></td>
+									</tr>
+									@endforeach
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="tab-pane fade show" id="nav-department" role="tabpanel" aria-labelledby="nav-department-tab">
+						<div class="card-header">
+							<h3 class="card-title">Department</h3>
+						</div>
+						<div class="card-body">
+							<table class="table table-striped table-bordered datatable" id="department-table" style="width: 100%">
+								<thead>
+									<tr>
+										<th class="text-center align-middle">No</th>
+										<th width="400">Department Name</th>
+										<th class="text-center align-middle">
+											<div class="customcheckbox">
+												<input type="checkbox" name="checkall" onclick="checkAll(this)" class="checkall">
+											</div>
+										</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
 				</div>
 				<div class="overlay d-none">
 					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -134,48 +188,140 @@
 @endsection
 @push('scripts')
 <script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
+<script src="{{asset('adminlte/component/dataTables/js/datatables.min.js')}}"></script>
 <script src="{{asset('adminlte/component/daterangepicker/moment.min.js')}}"></script>
 <script src="{{asset('adminlte/component/daterangepicker/daterangepicker.js')}}"></script>
 <script>
+	function checkAll(data) {
+		$.ajax({
+			url: `{{ route('departmentshift.updateall') }}`,
+			method: 'post',
+			data: {
+				_token: "{{ csrf_token() }}",
+				workingtime_id: `{{ $workingtime->id }}`,
+				status: data.checked ? 1 : 0,
+			},
+			dataType: 'json',
+			beforeSend: function() {
+				$('.overlay').removeClass('d-none');
+			}
+		}).done(function(response) {
+			$('.overlay').addClass('d-none');
+			if (response.status) {
+				$.gritter.add({
+					title: 'Success!',
+					text: response.message,
+					class_name: 'gritter-success',
+					time: 1000,
+				});
+			} else {
+				$.gritter.add({
+					title: 'Warning!',
+					text: response.message,
+					class_name: 'gritter-warning',
+					time: 1000,
+				});
+			}
+			return;
+		}).fail(function(response) {
+			$('.overlay').addClass('d-none');
+			var response = response.responseJSON;
+			$.gritter.add({
+				title: 'Error!',
+				text: response.message,
+				class_name: 'gritter-error',
+				time: 1000,
+			});
+		});
+	}
+	function updateDepartment(data) {
+		var workingtime_id, department_id, status;
+		if (data.checked) {
+			workingtime_id	= `{{ $workingtime->id }}`;
+			department_id		=	data.value;
+			status					= 1;
+		} else {
+			workingtime_id	= `{{ $workingtime->id }}`;
+			department_id		=	data.value;
+			status					= 0;
+		}
+		$.ajax({
+			url: `{{ route('departmentshift.store') }}`,
+			method: 'post',
+			data: {
+				_token: "{{ csrf_token() }}",
+				workingtime_id: workingtime_id,
+				department_id: department_id,
+				status: status,
+			},
+			dataType: 'json',
+			beforeSend: function() {
+				$('.overlay').removeClass('d-none');
+			}
+		}).done(function(response) {
+			$('.overlay').addClass('d-none');
+			if (response.status) {
+				$.gritter.add({
+					title: 'Success!',
+					text: response.message,
+					class_name: 'gritter-success',
+					time: 1000,
+				});
+			} else {
+				$.gritter.add({
+					title: 'Warning!',
+					text: response.message,
+					class_name: 'gritter-warning',
+					time: 1000,
+				});
+			}
+			return;
+		}).fail(function(response) {
+			$('.overlay').addClass('d-none');
+			var response = response.responseJSON;
+			$.gritter.add({
+				title: 'Error!',
+				text: response.message,
+				class_name: 'gritter-error',
+				time: 1000,
+			});
+		});
+	}
 	$(document).ready(function(){
 		$('.i-checks').iCheck({
 			checkboxClass: 'icheckbox_square-green',
 			radioClass: 'iradio_square-green',
 		});
-		var data = [];
-		@foreach ($departmentShift as $value)
-			data.push({id: `{{ $value->department->id }}`, text: `{!! $value->department->name !!}`});
-		@endforeach
-		$('#department_id').select2({
-      multiple: true,
-      ajax: {
-				url: "{{route('department.select')}}",
-				type:'GET',
-				dataType: 'json',
-				data: function (term,page) {
-					return {
-						name:term,
-						page:page,
-						limit:30,
-						level: 1,
-					};
-				},
-				results: function (data,page) {
-					var more = (page * 30) < data.total;
-					var option = [];
-					$.each(data.rows,function(index,item){
-						option.push({
-							id:`${item.path}`,
-							text: `${item.name}`
-						});
-					});
-					return {
-						results: option, more: more,
-					};
-				},
+		dataTableDepartment = $("#department-table").DataTable({
+			stateSave: true,
+			processing: true,
+			serverSide: true,
+			filter: false,
+			info: false,
+			lengtChange: true,
+			responsive: true,
+			order: [[1, "asc"]],
+			lengthMenu: [ 100, 250, 500, 1000 ],
+			ajax: {
+				url: "{{ route('departmentshift.read') }}",
+				type: "GET",
+				data: function(data) {
+					data.workingtime_id = `{{ $workingtime->id }}`;
+				}
 			},
-    });
-		$("#department_id").select2('data', data).trigger('change');
+			columnDefs: [
+				{ orderable: false, targets: [0,1,2] },
+				{ className: "text-center", targets: [0,2] },
+				{ render: function ( data, type, row ) {
+              return row.departmentshift.length > 0 ? `<label class="customcheckbox checked"><input value="${row.id}" type="checkbox" onclick="updateDepartment(this)" name="department_id[]" checked><span class="checkmark"></span></label>` : `<label class="customcheckbox"><input value="${row.id}" type="checkbox" onclick="updateDepartment(this)" name="department_id[]"><span class="checkmark"></span></label>`
+            },targets: [2] }
+			],
+			columns: [
+				{ data: "no" },
+				{ data: "name" },
+				{ data: "id" },
+			]
+		});
 		$("#working_time_type").select2();
 		$('.timepicker').daterangepicker({
 			singleDatePicker: true,
@@ -251,6 +397,22 @@
 						time: 1000,
 					});
 				})
+			}
+		});
+		$(document).on('click', '.customcheckbox input', function() {
+			if ($(this).is(':checked')) {
+				$(this).parent().addClass('checked');
+			} else {
+				$(this).parent().removeClass('checked');
+			}
+		});
+		$(document).on('change', '.checkall', function() {
+			if (this.checked) {
+				$('input[name^=department_id]').prop('checked', true);
+				$('input[name^=department_id]').parent().addClass('checked');
+			} else {
+				$('input[name^=department_id]').prop('checked', false);
+				$('input[name^=department_id]').parent().removeClass('checked');
 			}
 		});
 	});

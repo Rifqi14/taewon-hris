@@ -30,6 +30,16 @@ class Department extends Model
         return $this->hasMany('App\Models\LeaveDepartment', 'department_id');
     }
 
+    public function departmentshift()
+    {
+        return $this->hasMany(DepartmentShift::class, 'department_id', 'id');
+    }
+
+    public function breaktimedepartment()
+    {
+        return $this->hasMany(BreaktimeDepartment::class, 'department_id', 'id');
+    }
+
     public function getAutoNumberOptions()
     {
         return [
@@ -38,5 +48,26 @@ class Department extends Model
                 'length' => 7 // The number of digits in an autonumber
             ],
         ];
+    }
+
+    /**
+     * Define scope method to get active department
+     *
+     * @param $query
+     * @return \Illuminate\Http\Response
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+
+    /**
+     * Get active department, call this method instead Department::where('status', 1)->get();
+     *
+     * @return \Illuminate\Http\Response
+     */
+    static function getActive()
+    {
+        return self::active()->get();
     }
 }
