@@ -39,4 +39,14 @@ class Allowance extends Model
     {
         return $this->hasMany(PenaltyConfigDetail::class, 'allowance_id', 'id');
     }
+    public function parentdetail()
+    {
+        return $this->hasMany(AllowanceDetail::class, 'allowance_id', 'id');
+    }
+    public function allowance()
+    {
+        return $this->belongsToMany(Allowance::class, 'allowance_details', 'allowance_id', 'allowancedetail_id')->withTimestamps();
+    }
+
+
 }

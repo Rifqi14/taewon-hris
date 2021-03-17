@@ -90,6 +90,42 @@ class AllowanceController extends Controller
             'data' => $data
         ], 200);
     }
+    public function readAllowance(Request $request)
+    {
+        $start              = $request->start;
+        $length             = $request->length;
+        $query              = $request->search['value'];
+        $sort               = $request->columns[$request->order[0]['column']]['data'];
+        $dir                = $request->order[0]['dir'];
+        $allowanceId        = $request->allowanceId;
+
+        // Count Data
+        $allowance          = Allowance::with(['groupallowance', 'parentdetail' => function ($query) use ($allowanceId) {
+            $query->where('allowance_id', $allowanceId);
+        }])->get();
+        $recordsTotal       = $allowance->count();
+
+        // Select Pagination
+        $allowance          = Allowance::with(['groupallowance', 'parentdetail' => function ($query) use ($allowanceId) {
+            $query->where('allowance_id', $allowanceId);
+        }]);
+        $allowance->paginate($length);
+        $allowance->orderBy($sort, $dir);
+        $allowances         = $allowance->get();
+
+        $data               = [];
+        foreach ($allowances as $allowance) {
+            $allowance->no = ++$start;
+            $allowance->category = @config('enums.allowance_category')[$allowance->category];
+            $data[] = $allowance;
+        }
+        return response()->json([
+            'draw' => $request->draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsTotal,
+            'data' => $data
+        ], 200);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -139,21 +175,25 @@ class AllowanceController extends Controller
             'days_devisor'  => $request->days_devisor,
             'basic_salary'  => $request->basic_salary,
             'notes'         => $request->notes,
+            'formula_bpjs'  => $request->formula_bpjs,
             'status'        => $request->status
         ]);
         if ($allowance) {
-            $workingtimes = explode(',', $request->working_time);
-            $arr_workingtime = array();
-            foreach ($workingtimes as $key => $value) {
-                $arr_workingtime[] = array(
-                    'allowance_id'      => $allowance->id,
-                    'workingtime_id'    => $value,
-                    'created_at'        => Carbon::now()->toDateTimeString(),
-                    'updated_at'        => Carbon::now()->toDateTimeString()
-                );
-            }
-            if (isset($arr_workingtime)) {
-                $workingtime_allowance = WorkingtimeAllowance::insert($arr_workingtime);
+            if(isset($request->working_time))
+            {
+                $workingtimes = explode(',', $request->working_time);
+                $arr_workingtime = array();
+                foreach ($workingtimes as $key => $value) {
+                    $arr_workingtime[] = array(
+                        'allowance_id'      => $allowance->id,
+                        'workingtime_id'    => $value,
+                        'created_at'        => Carbon::now()->toDateTimeString(),
+                        'updated_at'        => Carbon::now()->toDateTimeString()
+                    );
+                }
+                if (isset($arr_workingtime)) {
+                    $workingtime_allowance = WorkingtimeAllowance::insert($arr_workingtime);
+                }
             }
         } else {
             DB::rollBack();
@@ -162,11 +202,99 @@ class AllowanceController extends Controller
                 'message'   => $allowance
             ], 400);
         }
+        if (strpos($allowance->formula_bpjs, 'ALLOWANCE') !== false) {
+            $allowance->allowance()->toggle($request->allowanceID);
+        }
         DB::commit();
         return response()->json([
             'status'    => true,
             'results'   => route('allowance.index')
         ], 200);
+    }
+    public function updateAll(Request $request)
+    {
+        $status         = $request->status;
+        DB::beginTransaction();
+        if ($status == 1) {
+            $allowances = Allowance::all()->pluck('id')->toArray();
+            $allowance = Allowance::find($request->allowanceID);
+            $allowance->allowance()->attach($allowances);
+
+            if (!$allowance) {
+                DB::rollBack();
+                return response()->json([
+                    'status'    => false,
+                    'message'   => 'Error add all allowance'
+                ], 400);
+            }
+            DB::commit();
+            return response()->json([
+                'status'    => true,
+                'message'   => 'Success add all allowance'
+            ], 200);
+        } else {
+            $allowance = Allowance::find($request->allowanceID);
+            $allowance->allowance()->detach();
+
+            if (!$allowance) {
+                DB::rollBack();
+                return response()->json([
+                    'status'    => false,
+                    'message'   => 'Error remove all allowance'
+                ], 400);
+            }
+            DB::commit();
+            return response()->json([
+                'status'    => true,
+                'message'   => 'Success remove all allowance'
+            ], 200);
+        }
+    }
+
+    /**
+     * Method to update attach / detach selected allowance to penalty_config_details table
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateAllowance(Request $request)
+    {
+        $status     = $request->status;
+
+        DB::beginTransaction();
+        if ($status == 1) {
+            $allowance = Allowance::find($request->allowanceID);
+            $allowance->allowance()->attach($request->allowanceDetailID);
+
+            if (!$allowance) {
+                DB::rollBack();
+                return response()->json([
+                    'status'    => false,
+                    'message'   => 'Error to add allowance'
+                ], 400);
+            }
+            DB::commit();
+            return response()->json([
+                'status'    => true,
+                'message'   => 'Success add allowance'
+            ], 200);
+        } else {
+            $allowance = Allowance::find($request->allowanceID);
+            $allowance->allowance()->detach($request->allowanceDetailID);
+
+            if (!$allowance) {
+                DB::rollBack();
+                return response()->json([
+                    'status'    => false,
+                    'message'   => 'Error to remove allowance'
+                ], 400);
+            }
+            DB::commit();
+            return response()->json([
+                'status'    => true,
+                'message'   => 'Success remove allowance'
+            ], 200);
+        }
     }
 
     /**
@@ -188,7 +316,7 @@ class AllowanceController extends Controller
      */
     public function edit($id)
     {
-        $allowance = Allowance::with('account','groupallowance')->find($id);
+        $allowance = Allowance::with(['account','groupallowance', 'allowance'])->find($id);
         if ($allowance) {
             return view('admin.allowance.edit', compact('allowance'));
         } else {
@@ -228,6 +356,7 @@ class AllowanceController extends Controller
         $allowance->days_devisor = $request->days_devisor;
         $allowance->basic_salary = $request->basic_salary;
         $allowance->notes = $request->notes;
+        $allowance->formula_bpjs = $request->formula_bpjs;
         $allowance->status = $request->status;
         $allowance->save();
         if ($allowance) {
@@ -245,9 +374,12 @@ class AllowanceController extends Controller
                 if (isset($arr_workingtime)) {
                     $workingtime_allowance = WorkingtimeAllowance::insert($arr_workingtime);
                 }
+                
             } else {
                 $delete = WorkingtimeAllowance::where('allowance_id', $id)->delete();
             }
+           
+            
         } else {
             DB::rollBack();
             return response()->json([
@@ -255,11 +387,14 @@ class AllowanceController extends Controller
                 'message'     => $allowance
             ], 400);
         }
+        if (strpos($allowance->formula_bpjs, 'ALLOWANCE') === false) {
+            $allowance->allowance()->detach();
+        }
         DB::commit();
-        return response()->json([
-            'status'     => true,
-            'results'     => route('allowance.index'),
-        ], 200);
+        // return response()->json([
+        //     'status'     => true,
+        //     'results'     => route('allowance.index'),
+        // ], 200);
     }
 
     /**

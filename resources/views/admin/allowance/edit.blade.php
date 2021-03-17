@@ -5,6 +5,38 @@
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/themes/explorer-fas/theme.min.css')}}" rel="stylesheet">
+<style type="text/css">
+  .customcheckbox {
+    width: 22px;
+    height: 22px;
+    background: url("/img/green.png") no-repeat;
+    background-position-x: 0%;
+    background-position-y: 0%;
+    cursor: pointer;
+    margin: 0 auto;
+  }
+
+  .customcheckbox.checked {
+    background-position: -48px 0;
+  }
+
+  .customcheckbox:hover {
+    background-position: -24px 0;
+  }
+
+  .customcheckbox.checked:hover {
+    background-position: -48px 0;
+  }
+
+  .customcheckbox input {
+    cursor: pointer;
+    opacity: 0;
+    scale: 1.6;
+    width: 22px;
+    height: 22px;
+    margin: 0;
+  }
+</style>
 @endsection
 
 @push('breadcrump')
@@ -13,134 +45,170 @@
 @endpush
 
 @section('content')
-<div class="row">
-  <div class="col-lg-8">
-    <div class="card card-{{ config('configs.app_theme')}} card-outline">
-      <div class="card-header">
-        <h3 class="card-title">Allowance List</h3>
-      </div>
-      <div class="card-body">
-        <form id="form" action="{{ route('allowance.update',['id'=>$allowance->id]) }}" class="form-horizontal"
+<form id="form" action="{{ route('allowance.update',['id'=>$allowance->id]) }}" class="form-horizontal"
           method="post" autocomplete="off">
           {{ csrf_field() }}
           <input type="hidden" name="_method" value="put">
-          <div class="box-body">
-            <div class="row">
-              <div class="col-sm-6">
-                <!-- text input -->
-                <div class="form-group">
-                  <label>Allowance Name</label>
-                  <input type="text" class="form-control" placeholder="Allowance" id="allowance" name="allowance"
-                    value="{{ $allowance->allowance }}">
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card card-{{ config('configs.app_theme')}} card-outline">
+        <div class="card-header">
+          <h3 class="card-title">Allowance List</h3>
+        </div>
+        <div class="card-body">
+          
+            <div class="box-body">
+              <div class="row">
+                <div class="col-sm-6">
+                  <!-- text input -->
+                  <div class="form-group">
+                    <label>Allowance Name</label>
+                    <input type="text" class="form-control" placeholder="Allowance" id="allowance" name="allowance"
+                      value="{{ $allowance->allowance }}">
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Category</label>
+                    <select name="category" id="category" class="form-control select2" style="width: 100%"
+                      aria-hidden="true">
+                      @foreach (config('enums.allowance_category') as $key=>$value)
+                      <option @if ($allowance->category == $key) selected @endif value="{{ $key }}">{{ $value }}</option>
+                      @endforeach
+                    </select>
+                  </div>
                 </div>
               </div>
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <label>Category</label>
-                  <select name="category" id="category" class="form-control select2" style="width: 100%"
-                    aria-hidden="true">
-                    @foreach (config('enums.allowance_category') as $key=>$value)
-                    <option @if ($allowance->category == $key) selected @endif value="{{ $key }}">{{ $value }}</option>
-                    @endforeach
-                  </select>
+              <div class="row account-section">
+                <div class="col-sm-6">
+                  <!-- text input -->
+                  <div class="form-group">
+                    <label>Account</label>
+                    <input type="text" class="form-control" placeholder="Account" id="account" name="account"
+                      value="{{ $allowance->acc_name }}">
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Recurrence</label>
+                    <select name="recurrence" id="recurrence" class="form-control select2" style="width: 100%"
+                      aria-hidden="true">
+                      <option @if ($allowance->reccurance == 'hourly') selected @endif value="hourly">Hourly</option>
+                      <option @if ($allowance->reccurance == 'daily') selected @endif value="daily">Daily</option>
+                      <option @if ($allowance->reccurance == 'monthly') selected @endif value="monthly">Monthly</option>
+                      <option @if ($allowance->reccurance == 'yearly') selected @endif value="yearly">Yearly</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <!-- text input -->
+                  <div class="form-group">
+                    <label>Group Allowance</label>
+                    <input type="text" class="form-control" placeholder="Select Group Allowance" id="groupallowance" name="groupallowance"
+                      value="">
+                  </div>
+                </div>
+                <div class="col-md-6 formula-bpjs-section d-none">
+                    <div class="form-group">
+                      <label for="formula-bpjs" class="control-label">Formula BPJS <b class="text-danger">*</b></label>
+                      <select name="formula_bpjs" id="formula_bpjs" class="form-control select2" data-placeholder="Formula BPJS" required>
+                      @foreach (config('enums.penalty_config_type') as $key => $item)
+                      <option  @if ($allowance->formula_bpjs == $key) selected @endif value="{{ $key }}">{{ $item }}</option>
+                      @endforeach
+                      </select>
+                    </div>
+                  </div>
+                <div class="col-sm-6 working-time-section d-none">
+                  <div class="form-group">
+                    <label>Working Time</label>
+                    <input type="text" class="form-control" placeholder="Working Time" id="working_time" name="working_time" value="{{ $allowance->workingtime_id }}">
+                  </div>
+                </div>
+              </div>
+              <div class="row days-devisor-section d-none">
+                <div class="col-sm-6">
+                  <!-- text input -->
+                  <div class="form-group">
+                    <label>Days Devisor</label>
+                    <input type="text" class="form-control" id="days_devisor" name="days_devisor" placeholder="Days Devisor" value="{{ $allowance->days_devisor }}">
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="row account-section">
-              <div class="col-sm-6">
-                <!-- text input -->
-                <div class="form-group">
-                  <label>Account</label>
-                  <input type="text" class="form-control" placeholder="Account" id="account" name="account"
-                    value="{{ $allowance->acc_name }}">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <label>Recurrence</label>
-                  <select name="recurrence" id="recurrence" class="form-control select2" style="width: 100%"
-                    aria-hidden="true">
-                    <option @if ($allowance->reccurance == 'hourly') selected @endif value="hourly">Hourly</option>
-                    <option @if ($allowance->reccurance == 'daily') selected @endif value="daily">Daily</option>
-                    <option @if ($allowance->reccurance == 'monthly') selected @endif value="monthly">Monthly</option>
-                    <option @if ($allowance->reccurance == 'yearly') selected @endif value="yearly">Yearly</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <!-- text input -->
-                <div class="form-group">
-                  <label>Group Allowance</label>
-                  <input type="text" class="form-control" placeholder="Select Group Allowance" id="groupallowance" name="groupallowance"
-                    value="">
-                </div>
-              </div>
-              <div class="col-sm-6 working-time-section d-none">
-                <div class="form-group">
-                  <label>Working Time</label>
-                  <input type="text" class="form-control" placeholder="Working Time" id="working_time" name="working_time" value="{{ $allowance->workingtime_id }}">
-                </div>
-              </div>
-            </div>
-            <div class="row days-devisor-section d-none">
-              <div class="col-sm-6">
-                <!-- text input -->
-                <div class="form-group">
-                  <label>Days Devisor</label>
-                  <input type="text" class="form-control" id="days_devisor" name="days_devisor" placeholder="Days Devisor" value="{{ $allowance->days_devisor }}">
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-      <div class="overlay d-none">
-        <i class="fa fa-2x fa-sync-alt fa-spin"></i>
+        </div>
+        <div class="overlay d-none">
+          <i class="fa fa-2x fa-sync-alt fa-spin"></i>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="col-lg-4">
-    <div class="card card-{{ config('configs.app_theme')}} card-outline">
-      <div class="card-header">
-        <h3 class="card-title">Other</h3>
-        <div class="pull-right card-tools">
-          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="Simpan"><i
-              class="fa fa-save"></i></button>
-          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
-              class="fa fa-reply"></i></a>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-sm-12">
-            <!-- text input -->
-            <div class="form-group">
-              <label>Notes</label>
-              <textarea class="form-control" id="notes" name="notes"
-                placeholder="Notes"> {{ $allowance->notes }}</textarea>
-            </div>
+    <div class="col-lg-4">
+      <div class="card card-{{ config('configs.app_theme')}} card-outline">
+        <div class="card-header">
+          <h3 class="card-title">Other</h3>
+          <div class="pull-right card-tools">
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="Simpan"><i
+                class="fa fa-save"></i></button>
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+                class="fa fa-reply"></i></a>
           </div>
         </div>
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="form-group">
-              <label>Status</label>
-              <select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true">
-                <option @if($allowance->status == 1) selected @endif value="1">Active</option>
-                <option @if($allowance->status == 0) selected @endif value="0">Non-Active</option>
-              </select>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <!-- text input -->
+              <div class="form-group">
+                <label>Notes</label>
+                <textarea class="form-control" id="notes" name="notes"
+                  placeholder="Notes"> {{ $allowance->notes }}</textarea>
+              </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Status</label>
+                <select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true">
+                  <option @if($allowance->status == 1) selected @endif value="1">Active</option>
+                  <option @if($allowance->status == 0) selected @endif value="0">Non-Active</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
         </div>
-        </form>
-      </div>
-      <div class="overlay d-none">
-        <i class="fa fa-2x fa-sync-alt fa-spin"></i>
+        <div class="overlay d-none">
+          <i class="fa fa-2x fa-sync-alt fa-spin"></i>
+        </div>
       </div>
     </div>
+    <div class="col-lg-12 allowance-section d-none">
+        <div class="card card-{{ config('configs.app_theme') }} card-outline">
+          <div class="card-header">
+          <h3 class="card-titl">Allowance</h3>
+          </div>
+          <div class="card-body">
+          <table class="table table-striped table-bordered datatable" id="allowance-table" style="width: 100%">
+            <thead>
+            <tr>
+              <th width="10">No</th>
+              <th width="200">Allowance</th>
+              <th width="200">Category</th>
+              <th width="200">Group</th>
+              <th width="10">
+              <div class="customcheckbox">
+                <input type="checkbox" name="checkall" class="checkall" id="checkall">
+              </div>
+              </th>
+            </tr>
+            </thead>
+          </table>
+          </div>
+        </div>
+      </div>
   </div>
-</div>
+</form>
 <div class="row basic-salary-section-rules" style="display:none;">
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme')}} card-outline">
@@ -220,6 +288,103 @@
 <script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
 <script src="{{asset('adminlte/component/dataTables/js/datatables.min.js')}}"></script>
 <script>
+  const BASIC = 'BASIC';
+  var data = [];
+  function checkAll(data) {
+    $.ajax({
+			url: `{{ route('allowance.updateall') }}`,
+			method: 'post',
+			data: {
+				_token: "{{ csrf_token() }}",
+				allowanceID: `{{ $allowance->id }}`,
+				status: data.checked ? 1 : 0,
+			},
+			dataType: 'json',
+			beforeSend: function() {
+				$('.overlay').removeClass('d-none');
+			}
+		}).done(function(response) {
+			$('.overlay').addClass('d-none');
+			if (response.status) {
+				$.gritter.add({
+					title: 'Success!',
+					text: response.message,
+					class_name: 'gritter-success',
+					time: 1000,
+				});
+			} else {
+				$.gritter.add({
+					title: 'Warning!',
+					text: response.message,
+					class_name: 'gritter-warning',
+					time: 1000,
+				});
+			}
+			return;
+		}).fail(function(response) {
+			$('.overlay').addClass('d-none');
+			var response = response.responseJSON;
+			$.gritter.add({
+				title: 'Error!',
+				text: response.message,
+				class_name: 'gritter-error',
+				time: 1000,
+			});
+		});
+  }
+  function updateAllowance(data) {
+    var allowanceID,allowanceDetailID, status;
+		if (data.checked) {
+			allowanceID	= `{{ $allowance->id }}`;
+			allowanceDetailID		  =	data.value;
+			status					= 1;
+		} else {
+			allowanceID	= `{{ $allowance->id }}`;
+			allowanceDetailID		  =	data.value;
+			status					= 0;
+		}
+		$.ajax({
+			url: `{{ route('allowance.updateallowance') }}`,
+			method: 'post',
+			data: {
+				_token: "{{ csrf_token() }}",
+				allowanceID: allowanceID,
+				allowanceDetailID: allowanceID,
+				status: status,
+			},
+			dataType: 'json',
+			beforeSend: function() {
+				$('.overlay').removeClass('d-none');
+			}
+		}).done(function(response) {
+			$('.overlay').addClass('d-none');
+			if (response.status) {
+				$.gritter.add({
+					title: 'Success!',
+					text: response.message,
+					class_name: 'gritter-success',
+					time: 1000,
+				});
+			} else {
+				$.gritter.add({
+					title: 'Warning!',
+					text: response.message,
+					class_name: 'gritter-warning',
+					time: 1000,
+				});
+			}
+			return;
+		}).fail(function(response) {
+			$('.overlay').addClass('d-none');
+			var response = response.responseJSON;
+			$.gritter.add({
+				title: 'Error!',
+				text: response.message,
+				class_name: 'gritter-error',
+				time: 1000,
+			});
+		});
+  }
   $(document).ready(function(){
     $('.select2').select2();
     $( "#groupallowance" ).select2({
@@ -329,6 +494,164 @@
     data.push({id: '{{ $value->workingtime_id }}', text: '{{ $value->workingtime->description }}'});
     @endforeach
     @endif
+    $(document).on("change", "#category", function () {
+			var value = $(this).val();
+			var val = $('#working_type').val();
+			switch (value) {
+				case 'tunjanganLain':
+				if (val == 'All') {
+					$('#working_time').select2('disable');
+					$('#working_time').select2('val', "");
+				} else {
+					$('#working_time').select2('enable');
+				}
+				$('.working-time-section').removeClass('d-none');
+				$('.days-devisor-section').addClass('d-none');
+				$('.basic-salary-section').addClass('d-none');
+				$('.formula-bpjs-section').addClass('d-none');
+				break;
+				case 'tunjanganJkkJkm':
+				if (val == 'All') {
+					$('#working_time').select2('disable');
+					$('#working_time').select2('val', "");
+				} else {
+					$('#working_time').select2('enable');
+				}
+				$('.working-time-section').removeClass('d-none');
+				$('.days-devisor-section').addClass('d-none');
+				$('.basic-salary-section').removeClass('d-none');
+				$('.formula-bpjs-section').addClass('d-none');
+				break;
+				case 'tunjanganKehadiran':
+				if (val == 'All') {
+					$('#working_time').select2('disable');
+					$('#working_time').select2('val', "");
+				} else {
+					$('#working_time').select2('enable');
+				}
+				$('.working-time-section').removeClass('d-none');
+				$('.days-devisor-section').removeClass('d-none');
+				$('.basic-salary-section').addClass('d-none');
+				$('.formula-bpjs-section').addClass('d-none');
+				break;
+				case 'pensiunPekerja':
+				if (val == 'All') {
+					$('#formula_bpjs').select2('disable');
+					$('#formula_bpjs').select2('val', "");
+				} else {
+					$('#formula_bpjs').select2('enable');
+				}
+				$('.formula-bpjs-section').removeClass('d-none');
+				$('.days-devisor-section').addClass('d-none');
+				$('.basic-salary-section').addClass('d-none');
+				$('.working-time-section').addClass('d-none');
+				break;
+				case 'pensiunPemberi':
+				if (val == 'All') {
+					$('#formula_bpjs').select2('disable');
+					$('#formula_bpjs').select2('val', "");
+				} else {
+					$('#formula_bpjs').select2('enable');
+				}
+				$('.formula-bpjs-section').removeClass('d-none');
+				$('.days-devisor-section').addClass('d-none');
+				$('.basic-salary-section').addClass('d-none');
+				$('.working-time-section').addClass('d-none');
+				break;
+				case 'premiPekerja':
+				if (val == 'All') {
+					$('#formula_bpjs').select2('disable');
+					$('#formula_bpjs').select2('val', "");
+				} else {
+					$('#formula_bpjs').select2('enable');
+				}
+				$('.formula-bpjs-section').removeClass('d-none');
+				$('.days-devisor-section').addClass('d-none');
+				$('.basic-salary-section').addClass('d-none');
+				$('.working-time-section').addClass('d-none');
+				break;
+				case 'premiPemberi':
+				if (val == 'All') {
+					$('#formula_bpjs').select2('disable');
+					$('#formula_bpjs').select2('val', "");
+				} else {
+					$('#formula_bpjs').select2('enable');
+				}
+				$('.formula-bpjs-section').removeClass('d-none');
+				$('.days-devisor-section').addClass('d-none');
+				$('.basic-salary-section').addClass('d-none');
+				$('.working-time-section').addClass('d-none');
+				break;
+				default:
+				$('.formula-bpjs-section').addClass('d-none');
+				$('.working-time-section').addClass('d-none');
+				$('.days-devisor-section').addClass('d-none');
+				$('.basic-salary-section').addClass('d-none');
+				break;
+			}
+		});
+    $('#category').trigger('change');
+    $(document).on('change', '#formula_bpjs', function() {
+      // console.log('aaaa');
+      if (this.value == BASIC) {
+        $('.allowance-section').addClass('d-none');
+      } else {
+        $('.allowance-section').removeClass('d-none');
+      }
+		});
+    $('#formula_bpjs').trigger('change');
+
+			$('input[name=checkall]').prop('checked', true);
+			$('input[name=checkall]').parent().addClass('checked');
+			$(document).on('click', '.customcheckbox input', function() {
+				if ($(this).is(':checked')) {
+					$(this).parent().addClass('checked');
+				} else {
+					$(this).parent().removeClass('checked');
+				}
+			});
+		$(document).on('change', '.checkall', function() {
+			if (this.checked) {
+				$('input[name^=allowanceID]').prop('checked', true);
+				$('input[name^=allowanceID]').parent().addClass('checked');
+			} else {
+				$('input[name^=allowanceID]').prop('checked', false);
+				$('input[name^=allowanceID]').parent().removeClass('checked');
+			}
+		});
+		dataTableAllowance = $('.datatable').DataTable({
+			stateSave: true,
+			processing: true,
+			serverSide: true,
+			filter: false,
+			info: false,
+			lengthChange: false,
+			responsive: true,
+			paginate: false,
+			order: [[ 1, "asc"]],
+			ajax: {
+				url: "{{ route('allowance.readallowance') }}",
+				type: "GET",
+				data: function(data) {
+          data.allowanceId = `{{ $allowance->id }}`
+				}
+			},
+			columnDefs: [
+				{ orderable: false, targets: [0, 4] },
+				{ className: 'text-right', targets: [0] },
+				{ className: 'text-center', targets: [4] },
+				{ render: function( data, type, row ) {
+				return `<label class="customcheckbox checked"><input value="${row.id}" type="checkbox" name="allowanceID[]" checked><span class="checkmark"></span></label>`
+				}, targets: [4] }
+			],
+			columns: [
+				{ data: 'no' },
+				{ data: 'allowance' },
+				{ data: 'category' },
+				{ data: 'groupallowance' },
+				{ data: 'id' },
+			]
+		});
     $('#working_time').select2('data', data).trigger('change');
     $("#form").validate({
       errorElement: 'div',
@@ -424,71 +747,65 @@
       }
     });
     $('#category').val('{!! $allowance->category !!}').trigger('change');
-    $('#form_rules').validate({
+    $("#form").validate({
       errorElement: 'div',
       errorClass: 'invalid-feedback',
       focusInvalid: false,
       highlight: function (e) {
         $(e).closest('.form-group').removeClass('has-success').addClass('was-validated has-error');
       },
-
       success: function (e) {
         $(e).closest('.form-group').removeClass('has-error').addClass('has-success');
         $(e).remove();
       },
       errorPlacement: function (error, element) {
-        if(element.is(':file')) {
+        if (element.is(':file')) {
           error.insertAfter(element.parent().parent().parent());
-        }else
-        if(element.parent('.input-group').length) {
+        } else if(element.parent('.input-group').length) {
           error.insertAfter(element.parent());
-        }
-        else
-        if (element.attr('type') == 'checkbox') {
+        } else if (element.attr('type') == 'checkbox') {
           error.insertAfter(element.parent());
-        }
-        else{
+        } else {
           error.insertAfter(element);
         }
       },
       submitHandler: function() {
         $.ajax({
-          url:$('#form_rules').attr('action'),
-          method:'post',
-          data: new FormData($('#form_rules')[0]),
+          url: $('#form').attr('action'),
+          method: 'POST',
+          data: new FormData($('#form')[0]),
           processData: false,
           contentType: false,
-          dataType: 'json',
-          beforeSend:function(){
-              $('.overlay').removeClass('hidden');
+          dataType: 'JSON',
+          beforeSend: function () {
+            $('.overlay').removeClass('d-none');
           }
-        }).done(function(response){
-              $('.overlay').addClass('hidden');
-              if(response.status){
-                $('#add_rules').modal('hide');
-                dataTableRules.draw();
-              }
-              else{
-                $.gritter.add({
-                    title: 'Warning!',
-                    text: response.message,
-                    class_name: 'gritter-warning',
-                    time: 1000,
-                });
-              }
-              return;
-        }).fail(function(response){
-            $('.overlay').addClass('hidden');
-            var response = response.responseJSON;
+        }).done(function (response) {
+          $('.overlay').addClass('d-none');
+          if (response.status) {
+            document.location = response.results;
+          } else {
             $.gritter.add({
-                title: 'Error!',
-                text: response.message,
-                class_name: 'gritter-error',
-                time: 1000,
+              title: 'Warning!',
+              text: response.message,
+              class_name: 'gritter-warning',
+              time: 1000,
             });
+          }
+          return;
+        }).fail(function(response) {
+          $('.overlay').addClass('d-none');
+          var response = response.responseJSON;
+          $.gritter.add({
+            title: 'Error!',
+            text: response.message,
+            class_name: 'gritter-error',
+            time: 1000,
+          });
         });
       }
     });
+    
     $(document).on('click','.deleterule',function(){
         var id = $(this).data('id');
         bootbox.confirm({
