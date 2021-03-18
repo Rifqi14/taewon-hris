@@ -89,6 +89,7 @@ class DashboardController extends Controller
         $query = DB::table('employees');
         $query->select(
             'employees.*',
+            'employee_contracts.description as employee_desc',
             'departments.id as department_id',
             'departments.name as department_name',
             'titles.name as title_name',
@@ -109,6 +110,7 @@ class DashboardController extends Controller
         $query = DB::table('employees');
         $query->select(
             'employees.*',
+            'employee_contracts.description as employee_desc',
             'departments.id as department_id',
             'departments.name as department_name',
             'titles.name as title_name',

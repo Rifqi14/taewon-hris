@@ -201,7 +201,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/employeeexperience/read', 'Admin\EmployeeExperienceController@read')->name('employeeexperience.read');
         Route::resource('/employeeexperience', 'Admin\EmployeeExperienceController')->except(['show']);
         // Route Allowance
+        Route::get('/allowance/readallowance', 'Admin\AllowanceController@readAllowance')->name('allowance.readallowance');
         Route::get('/allowance/read', 'Admin\AllowanceController@read')->name('allowance.read');
+        Route::post('/allowance/updateall', 'Admin\AllowanceController@updateAll')->name('allowance.updateall');
+        Route::post('/allowance/updateallowance', 'Admin\AllowanceController@updateAllowance')->name('allowance.updateallowance');
         Route::get('/allowance/select', 'Admin\AllowanceController@select')->name('allowance.select');
         Route::resource('/allowance', 'Admin\AllowanceController')->except(['show']);
          // Route Group Allowance
