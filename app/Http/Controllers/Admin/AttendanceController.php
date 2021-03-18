@@ -253,6 +253,7 @@ class AttendanceController extends Controller
      */
     public function sync(Request $request)
     {
+        sleep(30);
         $validator  = Validator::make($request->all(), [
             'period'            => 'required',
             'time'              => 'required',
