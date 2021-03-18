@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-ini_set('max_execution_time', 3600);
-ini_set('memory_limit', "1024M");
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
@@ -253,7 +250,6 @@ class AttendanceController extends Controller
      */
     public function sync(Request $request)
     {
-        sleep(30);
         $validator  = Validator::make($request->all(), [
             'period'            => 'required',
             'time'              => 'required',
