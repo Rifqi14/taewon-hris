@@ -71,6 +71,39 @@ class AttendanceMachineController extends Controller
     }
 
     /**
+     * Method to get data to use in select2 element
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function select(Request $request)
+    {
+        $start          = $request->page ? $request->page - 1 : 0;
+        $length         = $request->limit;
+        $deviceSN       = strtoupper($request->deviceSN);
+        $pointName      = strtoupper($request->pointName);
+
+        // Count Data
+        $machine        = AttendanceMachine::ByDeviceSN($deviceSN)->where('point_name', 'like', "%$pointName%");
+        $recordsTotal   = $machine->get()->count();
+
+        // Select Pagination
+        $machine        = AttendanceMachine::ByDeviceSN($deviceSN)->where('point_name', 'like', "%$pointName%");
+        $machine->paginate($length);
+        $attendanceMachines = $machine->get();
+
+        $data           = [];
+        foreach ($attendanceMachines as $key => $machine) {
+            $machine->no    = ++$start;
+            $data[]         = $machine;
+        }
+        return response()->json([
+            'total'     => $recordsTotal,
+            'rows'      => $data,
+        ], 200);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

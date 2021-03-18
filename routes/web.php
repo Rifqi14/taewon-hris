@@ -270,13 +270,16 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/attendanceapproval/quickupdate', 'Admin\AttendanceApprovalController@quickupdate')->name('attendanceapproval.quickupdate');
         Route::resource('/attendanceapproval', 'Admin\AttendanceApprovalController')->except(['show']);
         // Route Attendance
+        Route::get('/attendance/sync', 'Admin\AttendanceController@sync')->name('attendance.sync');
         Route::get('/attendance/read', 'Admin\AttendanceController@read')->name('attendance.read');
         Route::get('/attendance/select', 'Admin\AttendanceController@select')->name('attendance.select');
         Route::get('/attendance/import', 'Admin\AttendanceController@import')->name('attendance.import');
+        Route::get('/attendance/syncpage', 'Admin\AttendanceController@syncPage')->name('attendance.syncpage');
         Route::post('/attendance/preview', 'Admin\AttendanceController@preview')->name('attendance.preview');
         Route::post('/attendance/storemass', 'Admin\AttendanceController@storemass')->name('attendance.storemass');
         Route::post('/attendance/preview2', 'Admin\AttendanceController@preview2')->name('attendance.preview2');
         Route::post('/attendance/storemass2', 'Admin\AttendanceController@storemass2')->name('attendance.storemass2');
+        Route::post('/attendance/syncmass', 'Admin\AttendanceController@syncMass')->name('attendance.syncmass');
         Route::resource('/attendance', 'Admin\AttendanceController')->except(['show']);
         // Route Daily Report
         Route::get('/dailyreport/read', 'Admin\DailyReportController@read')->name('dailyreport.read');
@@ -534,6 +537,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         // Route Attendance Machine
         Route::get('/attendancemachine/read', 'Admin\AttendanceMachineController@read')->name('attendancemachine.read');
+        Route::get('/attendancemachine/select', 'Admin\AttendanceMachineController@select')->name('attendancemachine.select');
         Route::resource('/attendancemachine', 'Admin\AttendanceMachineController');
     });
 });

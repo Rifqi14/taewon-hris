@@ -31,6 +31,9 @@
         <div class="card-header">
           <h3 class="card-title">List Attendance</h3>
           <div class="pull-right card-tools">
+            <a href="{{route('attendance.syncpage')}}" class="btn btn-warning text-white btn-sm" data-toggle="tooltip" title="Synchronize">
+              <i class="fa fa-sync-alt"></i>
+            </a>
             <a href="{{route('attendance.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="Import">
               <i class="fa fa-file-import"></i>
             </a>

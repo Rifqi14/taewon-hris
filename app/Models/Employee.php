@@ -77,6 +77,12 @@ class Employee extends Model
         return $this->hasMany('App\Models\Leave', 'employee_id');
     }
 
+    /**
+     * Scope to get all active employee
+     *
+     * @param $query
+     * @return \Illuminate\Http\Response
+     */
     public function scopeGetActiveEmployees($query)
     {
         return $query->where('status', 1);

@@ -9,12 +9,15 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\AttendanceLog;
+use App\Models\AttendanceMachine;
+use App\Models\AttendanceMachine\AttTransaction;
 use App\Models\Calendar;
 use App\Models\Employee;
 use App\Models\Workingtime;
 use App\Models\OvertimeSchemeList;
 use App\Models\WorkingtimeDetail;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -235,6 +238,57 @@ class AttendanceController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function syncPage()
+    {
+        return view('admin.attendance.sync');
+    }
+
+    /**
+     * Method to get data from attendance machine
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function sync(Request $request)
+    {
+        $validator  = Validator::make($request->all(), [
+            'period'            => 'required',
+            'time'              => 'required',
+            'attendanceMachine' => 'required',
+        ]);
+        $time       = explode(" - ", $request->time);
+        $date1      = changeDateFormat('Y-m-d H:i:s', dbDate($request->period) . ' ' . $time[0]);
+        $date2      = changeDateFormat('Y-m-d H:i:s', dbDate($request->period) . ' ' . $time[1]);
+        $attTransaction     = AttTransaction::whereBetween('att_datetime', [$date1, $date2])->where('device_sn', $request->attendanceMachine)->orderBy('att_datetime', 'asc')->get();
+
+        $data       = [];
+        $no = 1;
+        foreach ($attTransaction as $key => $value) {
+            $employee       = Employee::whereRaw("upper(nid) like '%$value->pers_person_pin%'")->first();
+            $pointName      = AttendanceMachine::where('device_sn', $request->attendanceMachine)->first();
+            $data[]     = array(
+                'index'             => $no,
+                'employee_id'       => $employee ? $employee->id : null,
+                'personel_id'       => $value->pers_person_pin,
+                'first_name'        => $value->pers_person_name,
+                'last_name'         => $value->pers_person_last_name,
+                'department_name'   => $value->auth_dept_name,
+                'attendance_area'   => $value->auth_area_name,
+                'serial_number'     => $value->device_sn,
+                'device_name'       => null,
+                'point_name'        => $pointName->point_name,
+                'attendance_date'   => $value->att_datetime,
+                'date_source'       => $value->mark == 'acc' ? 'Access Control Device' : null
+            );
+            $no++;
+        }
+
+        return response()->json([
+            'status'    => true,
+            'data'      => $data
+        ], 200);
     }
 
     public function preview(Request $request)
@@ -832,465 +886,583 @@ class AttendanceController extends Controller
             'results'     => route('attendance.index'),
         ], 200);
     }
-    
-    public function storemass2(Request $request)
+
+    /**
+     * Method to sync mass
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function syncMass(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'attendance'    => 'required'
+        $validator      = Validator::make($request->all(), [
+            'attendance'    => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status'     => false,
-                'message'     => $validator->errors()->first()
+                'status'    => false,
+                'message'   => $validator->errors()->first()
             ], 400);
         }
 
-        $attendances = json_decode($request->attendance); // Decode attendance preview
+        $attendances    = json_decode($request->attendance); /* Get request data from preview */
+
+        $period         = Carbon::createFromFormat('Y-m-d', dbDate($request->period));
+        $firstMonth     = Carbon::createFromDate($period->year, $period->month, 1);
+        $amonth         = CarbonPeriod::create($firstMonth, $period);
+
+        $employees      = Employee::GetActiveEmployees()->get();
         
         DB::beginTransaction();
-        $storeAttendance = $this->storeAttendanceWithDateRange($attendances, $request->month, $request->year);
-        $storeAttendanceLog = $this->storeAttendanceLog($attendances);
-        foreach ($attendances as $key => $updatelog) {
-            $new_date = changeDateFormat('Y-m-d', $updatelog->attendance_date);
-            $update = Attendance::where('employee_id', $updatelog->employee_id)->where('attendance_date', '=', $new_date)->first();
-            if ($update) {
-                $employee = Employee::find($updatelog->employee_id);
-                $attendance_in = AttendanceLog::where('attendance_id', $update->id)->where('employee_id', $update->employee_id)->where('type', 1)->min('attendance_date');
-                $attendance_out = $this->checkAttendanceOut($update, $attendance_in);
-                $update->attendance_in = $attendance_in ? $attendance_in : null;
-                $update->attendance_out = $attendance_out ? $attendance_out : null;
-                $exception_date = $this->employee_calendar($update->employee_id);
-                if (!$exception_date) {
-                    return response()->json([
-                        'status'     => false,
-                        'message'     => 'Calendar for this employee name ' . $employee->name . ' not found. Please set employee calendar first.'
-                    ], 400);
-                }
-                $date = $update->attendance_date;
-                $update->day = (in_array($date, $exception_date)) ? 'Off' : changeDateFormat('D', $date);
-                $overtime_list = OvertimeSchemeList::where('recurrence_day','=', $update->day)->first();
-                $update->overtime_scheme_id = $overtime_list->overtime_scheme_id;
-                $update->save();
-
-                $adjustment = Attendance::find($update->id);
-                if ($adjustment->attendance_in || $adjustment->attendance_out) {
-                    $attendance_in = $adjustment->attendance_in ? $adjustment->attendance_in : null;
-                    $attendance_out = $adjustment->attendance_out ? $adjustment->attendance_out : null;
-
-                    // Find closest shift
-                    $workingtimes = $this->get_workingtime($adjustment->day);
-                    if (!$workingtimes) {
-                        return response()->json([
-                            'status'     => false,
-                            'message'     => 'Working Shift for this day ' . $adjustment->day . ' not found. Please check master shift.'
-                        ], 400);
-                    }
-
-                    // Get break time between
-                    $breaktimes = $this->get_breaktime($employee->workgroup_id);
-                    if (!$breaktimes) {
-                        return response()->json([
-                            'status'     => false,
-                            'message'     => 'Break time for this employee workgroup ' . $employee->workgroup->name . ' not found. Please check master break.'
-                        ], 400);
-                    }
-                    $attendance_hour = array('attendance_in' => $attendance_in, 'attendance_out' => $attendance_out);
-                    $shift = shiftBetween($workingtimes, $attendance_hour);
-                    $shift2 = findShift($shift, $attendance_hour);
-
-
-                    $worktime = $this->employee_worktime($adjustment->employee_id);
-
-                    $adjustment->workingtime_id = $worktime->working_time ? $worktime->working_time : $shift2->id;
-                    $getworkingtime = $this->checkWorkingtime($adjustment->workingtime_id, $adjustment->day);
-                    // Variable to check working time and over time
-                    if (!$getworkingtime) {
-                        return response()->json([
-                            'status'     => false,
-                            'message'     => 'Working shift for employee name ' . $employee->name . ' and attendance date ' . $adjustment->attendance_date . ' and this day ' . $adjustment->day . ' not found. Please check master shift.'
-                        ], 400);
-                    }
-                    if (($getworkingtime->start >= changeDateFormat('H:i:s', $attendance_in)) && (changeDateFormat('H:i:s', $attendance_in) >= $getworkingtime->min_in)) {
-                        $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance_in) . ' ' . $getworkingtime->start);
-                        $work_time = roundedTime(countWorkingTime($start_shift, $attendance_out));
-                    } else {
-                        $work_time = roundedTime(countWorkingTime($attendance_in, $attendance_out));
-                    }
-                    // $breaktime = breaktime($breaktimes, $attendance_hour);
-                    $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime);
-                    $getbreakovertime = getBreaktimeOvertime($breaktimes, $attendance_hour, $getworkingtime);
-                    $workhour = $getworkingtime->workhour;
-                    $min_workhour = $getworkingtime->min_workhour;
-                    if (changeDateFormat('H:i:s', $attendance_out) < $getworkingtime->finish) {
-                        $adj_over_time = 0;
-                    } else {
-                        $adj_over_time = roundedTime(countOverTime($getworkingtime->finish, changeDateFormat('H:i:s', $attendance_out))) > 10 ? 0 : roundedTime(countOverTime($getworkingtime->finish, changeDateFormat('H:i:s', $attendance_out)));
-                    }
-                    $adj_working_time = $work_time - $adj_over_time;
-
-                    // Store to column adj_working_time & adj_over_time
-                    if ($adjustment->attendance_in) {
-                        if ($adjustment->day == 'Off') {
-                            if ($employee->overtime == 'yes') {
-                                if ($employee->timeout == 'yes') {
-                                    $adjustment->adj_over_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                    $adjustment->adj_working_time = 0;
-                                } else {
-                                    if ($adjustment->attendance_in && $adjustment->attendance_out) {
-                                        $adjustment->adj_over_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                        $adjustment->adj_working_time = 0;
-                                    } elseif ($adjustment->attendance_in && !$attendance_out) {
-                                        if (changeDateFormat('H:i', $adjustment->attendance_in) > changeDateFormat('H:i', '18:00')) {
-                                            $tomorrow = Carbon::parse($adjustment->attendance_in)->addDay()->toDateString();
-                                            $time_out = changeDateFormat('Y-m-d H:i:s', $tomorrow . ' ' . $getworkingtime->finish);
-                                        } else {
-                                            $time_out = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $adjustment->attendance_in) . ' ' . $getworkingtime->finish);
-                                        }
-                                        $adjustment->attendance_out = $time_out;
-                                        $adjustment->adj_over_time = $getworkingtime->min_workhour;
-                                        $adjustment->adj_working_time = 0;
-                                    }
-                                }
-                            } else {
-                                if ($employee->timeout == 'yes') {
-                                    $adjustment->adj_over_time = 0;
-                                    $adjustment->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                } else {
-                                    if ($adjustment->attendance_in && $adjustment->attendance_out) {
-                                        $adjustment->adj_over_time = 0;
-                                        $adjustment->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                    } elseif ($adjustment->attendance_in && !$attendance_out) {
-                                        if (changeDateFormat('H:i', $adjustment->attendance_in) > changeDateFormat('H:i', '18:00')) {
-                                            $tomorrow = Carbon::parse($adjustment->attendance_in)->addDay()->toDateString();
-                                            $time_out = changeDateFormat('Y-m-d H:i:s', $tomorrow . ' ' . $getworkingtime->finish);
-                                        } else {
-                                            $time_out = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $adjustment->attendance_in) . ' ' . $getworkingtime->finish);
-                                        }
-                                        $adjustment->attendance_out = $time_out;
-                                        $adjustment->adj_over_time = 0;
-                                        $adjustment->adj_working_time = $getworkingtime->min_workhour;
-                                    }
-                                }
-                            }
-                        } elseif ($adjustment->day == 'Sat') {
-                            if ($employee->overtime == 'yes') {
-                                if ($employee->timeout == 'yes') {
-                                    $adjustment->adj_over_time = ($adj_over_time - $getbreakovertime) < 1 ? 0 : $adj_over_time - $getbreakovertime;
-                                    $adjustment->adj_working_time = $adj_working_time - $getbreakworkingtime;
-                                } else {
-                                    if ($adjustment->attendance_in && $adjustment->attendance_out) {
-                                        $adjustment->adj_over_time = ($adj_over_time - $getbreakovertime) < 1 ? 0 : $adj_over_time - $getbreakovertime;
-                                        $adjustment->adj_working_time = $adj_working_time - $getbreakworkingtime;
-                                    } elseif ($adjustment->attendance_in && !$attendance_out) {
-                                        if (changeDateFormat('H:i', $adjustment->attendance_in) > changeDateFormat('H:i', '18:00')) {
-                                            $tomorrow = Carbon::parse($adjustment->attendance_in)->addDay()->toDateString();
-                                            $time_out = changeDateFormat('Y-m-d H:i:s', $tomorrow . ' ' . $getworkingtime->finish);
-                                        } else {
-                                            $time_out = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $adjustment->attendance_in) . ' ' . $getworkingtime->finish);
-                                        }
-                                        $adjustment->attendance_out = $time_out;
-                                        $adjustment->adj_over_time = $getworkingtime->min_workhour;
-                                        $adjustment->adj_working_time = 0;
-                                    }
-                                }
-                            } else {
-                                if ($employee->timeout == 'yes') {
-                                    $adjustment->adj_over_time = 0;
-                                    $adjustment->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                } else {
-                                    if ($adjustment->attendance_in && $adjustment->attendance_out) {
-                                        $adjustment->adj_over_time = 0;
-                                        $adjustment->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                    } elseif ($adjustment->attendance_in && !$attendance_out) {
-                                        if (changeDateFormat('H:i', $adjustment->attendance_in) > changeDateFormat('H:i', '18:00')) {
-                                            $tomorrow = Carbon::parse($adjustment->attendance_in)->addDay()->toDateString();
-                                            $time_out = changeDateFormat('Y-m-d H:i:s', $tomorrow . ' ' . $getworkingtime->finish);
-                                        } else {
-                                            $time_out = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $adjustment->attendance_in) . ' ' . $getworkingtime->finish);
-                                        }
-                                        $adjustment->attendance_out = $time_out;
-                                        $adjustment->adj_over_time = 0;
-                                        $adjustment->adj_working_time = $getworkingtime->min_workhour;
-                                    }
-                                }
-                            }
-                        } else {
-                            if ($employee->overtime == 'yes') {
-                                if ($employee->timeout == 'yes') {
-                                    $adjustment->adj_over_time = ($adj_over_time - $getbreakovertime) < 1 ? 0 : $adj_over_time - $getbreakovertime;
-                                    $adjustment->adj_working_time = $adj_working_time - $getbreakworkingtime;
-                                } else {
-                                    if ($adjustment->attendance_in && $adjustment->attendance_out) {
-                                        $adjustment->adj_over_time = ($adj_over_time - $getbreakovertime) < 1 ? 0 : $adj_over_time - $getbreakovertime;
-                                        $adjustment->adj_working_time = $adj_working_time - $getbreakworkingtime;
-                                    } elseif ($adjustment->attendance_in && !$adjustment->attendance_out) {
-                                        if (changeDateFormat('H:i', $adjustment->attendance_in) > changeDateFormat('H:i', '18:00')) {
-                                            $tomorrow = Carbon::parse($adjustment->attendance_in)->addDay()->toDateString();
-                                            $time_out = changeDateFormat('Y-m-d H:i:s', $tomorrow . ' ' . $getworkingtime->finish);
-                                        } else {
-                                            $time_out = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $adjustment->attendance_in) . ' ' . $getworkingtime->finish);
-                                        }
-                                        $adjustment->attendance_out = $time_out;
-                                        $adjustment->adj_over_time = $getworkingtime->min_workhour;
-                                        $adjustment->adj_working_time = 0;
-                                    }
-                                }
-                            } else {
-                                if ($employee->timeout == 'yes') {
-                                    $adjustment->adj_over_time = 0;
-                                    $adjustment->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                } else {
-                                    if ($adjustment->attendance_in && $adjustment->attendance_out) {
-                                        $adjustment->adj_over_time = 0;
-                                        $adjustment->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                    } elseif ($adjustment->attendance_in && !$attendance_out) {
-                                        if (changeDateFormat('H:i', $adjustment->attendance_in) > changeDateFormat('H:i', '18:00')) {
-                                            $tomorrow = Carbon::parse($adjustment->attendance_in)->addDay()->toDateString();
-                                            $time_out = changeDateFormat('Y-m-d H:i:s', $tomorrow . ' ' . $getworkingtime->finish);
-                                        } else {
-                                            $time_out = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $adjustment->attendance_in) . ' ' . $getworkingtime->finish);
-                                        }
-                                        $adjustment->attendance_out = $time_out;
-                                        $adjustment->adj_over_time = 0;
-                                        $adjustment->adj_working_time = $getworkingtime->min_workhour;
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        $adjustment->adj_over_time = 0;
-                        $adjustment->adj_working_time = 0;
-                    }
-                }
-                $adjustment->save();
-                if (!$adjustment) {
-                    DB::rollBack();
-                    return response()->json([
-                        'status'     => false,
-                        'message'     => $adjustment
-                    ], 400);
-                }
-            } else {
-                continue;
-            }
-        }
+        $request->employees     = $employees;
+        $request->amonth        = $amonth;
+        $request->period        = $period;
+        $request->batch_name    = "SYNC/" . date('Y-m-d H:i');
+        $this->createHeaderAttendance($request);
+        $this->createAttendanceLog($request);
+        $this->updateHeaderAttendance($request);
         DB::commit();
         return response()->json([
-            'status'     => true,
-            'results'     => route('attendance.index'),
+            'status'    => true,
+            'message'   => 'Success Syncronize Data',
         ], 200);
     }
 
-    public function updateAttendanceData($attendances)
+    public function updateHeaderAttendance(Request $request)
     {
+        $attendances    = json_decode($request->attendance);
         if ($attendances) {
-            foreach ($attendances as $key => $updateAttendance) {
-                $dateFormat = dbDate($updateAttendance->attendance_date);
-                $check = $this->checkAttendanceAlreadyExist($updateAttendance->employee_id, $dateFormat);
-                if ($check) {
-                    $employeeData = Employee::find($updateAttendance->employee_id);
-                    $attendanceIn = AttendanceLog::AttendanceID($updateAttendance->id)->EmployeeID($updateAttendance->employee_id)->Type(1)->min('attendance_date');
-                    $attendanceOut= $this->checkAttendanceOut($updateAttendance, $attendanceIn);
+            foreach ($attendances as $key => $update) {
+                $checkUpdate    =   $this->checkUpdateStatus($update);
+                if ($checkUpdate) {
+                    $employee       = Employee::find($update->employee_id);
+                    $exception_date     = $this->employee_calendar($employee->id);
+                    if (!$exception_date) {
+                        return response()->json([
+                            'status'     => false,
+                            'message'     => 'Calendar for this employee name ' . $employee->name . ' not found. Please set employee calendar first.'
+                        ], 400);
+                    }
+
+                    $attendanceIn   = AttendanceLog::where('attendance_id', $checkUpdate->id)->where('employee_id', $checkUpdate->employee_id)->where('type', 1)->min('attendance_date');
+                    if ($attendanceIn) {
+                        $attendanceOut  = AttendanceLog::where('attendance_date', '>', $attendanceIn)->where('attendance_id', $checkUpdate->id)->where('employee_id', $checkUpdate->employee_id)->where('type', 0)->max('attendance_date');
+                    } else {
+                        $attendanceOut  = AttendanceLog::where('attendance_id', $checkUpdate->id)->where('employee_id', $checkUpdate->employee_id)->where('type', 0)->max('attendance_date');
+                    }
+                    if ($attendanceIn && !$attendanceOut) {
+                        $attendanceOut  = $this->getAttendanceOut($checkUpdate, $attendanceIn);
+                    }
+                    $checkUpdate->attendance_in     = $attendanceIn;
+                    $checkUpdate->attendance_out    = $attendanceOut;
+                    $checkUpdate->day               = in_array($checkUpdate->attendance_date, $exception_date) ? 'Off' : changeDateFormat('D', $checkUpdate->attendance_date);
+
+                    $overtime_list = OvertimeSchemeList::where('recurrence_day','=', $checkUpdate->day)->first();
+                    if (!$overtime_list) {
+                        return response()->json([
+                            'status'    => false,
+                            'message'   => 'Overtime schema list for this day ' . $checkUpdate->day . ' and this date '. $checkUpdate->attendance_date . ' and this employee id ' . $checkUpdate->employee_id . ' not found'
+                        ], 400);
+                    }
+                    $checkUpdate->overtime_scheme_id= $overtime_list->overtime_scheme_id;
+                    $checkUpdate->save();
+
+                    $this->countWorkingtime($checkUpdate, $employee);
+
+                    if (!$checkUpdate) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'    => false,
+                            'message'   => "Error update header attendance"
+                        ], 400);
+                    }
                 }
             }
+        } else {
+            DB::rollBack();
+            return response()->json([
+                'status'    => false,
+                'message'   => "Error update header attendance"
+            ], 400);
         }
     }
 
-    /**
-     * Check Attendance out exist or not
-     *
-     * @param object $attendance
-     * @param object $attendanceIn
-     * @return void
-     */
-    public function checkAttendanceOut($attendance, $attendanceIn)
+    public function countWorkingtime($attendance, $employee)
     {
-        if ($attendance) {
-            if ($attendanceIn) {
-                // Check Cross date of not
-                if (changeDateFormat('H:i', $attendanceIn) > changeDateFormat('H:i', '15:00')) {
-                    $dateIn = changeDateFormat('Y-m-d', $attendanceIn); // Change format of in attendance to just date
-                    $dateMax = Carbon::parse($dateIn)->endOfDay()->toDateTimeString(); // from $dateIn convert to date time where end of day 23:59:59
-                    $outBetween = AttendanceLog::EmployeeID($attendance->employee_id)->whereBetween('attendance_date', [$attendanceIn, $dateMax])->Type(0)->max('attendance_date'); // Check if out in the same day as in attendance
-    
-                    // Check if same day out
-                    if ($outBetween) {
-                        // If same day then attendance Out fill
-                        $attendanceOut = $outBetween;
-                    } else {
-                        // If not then do this
-                        $dateOut = date('Y-m-d', strtotime('+1 day', strtotime($attendance->attendance_date))); // Create date to next day from attendance date
-                        $nextDayTimeOut = changeDateFormat('Y-m-d H:i:s', $dateOut . ' 09:00:00'); // Set time out to check next day at 09:00:00 AM
-                        $outNextDay = AttendanceLog::whereBetween('attendance_date', [$attendanceIn, $nextDayTimeOut])->EmployeeID($attendance->employee_id)->Type(0)->get();
-                        if ($outNextDay->count() > 0) {
-                            $attendanceOut = $outNextDay->max('attendance_date');
-                            foreach ($outNextDay as $key => $value) {
-                                $value->attendance_id = $attendance->id;
-                                $value->save();
+        if ($attendance && $employee) {
+            if ($attendance->attendance_in || $attendance->attendance_out) {
+                $getWorkingShift    = $this->get_workingtime($attendance->day);
+                if (!$getWorkingShift) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status'     => false,
+                        'message'     => 'Working Shift for this day ' . $attendance->day . ' not found. Please check master shift.'
+                    ], 400);
+                }
+                $breaktimes         = $this->get_breaktime($employee->workgroup_id);
+                if (!$breaktimes) {
+                    return response()->json([
+                        'status'     => false,
+                        'message'     => 'Break time for this employee workgroup ' . $employee->workgroup->name . ' not found. Please check master break.'
+                    ], 400);
+                }
+
+                $shift      = shiftBetween($getWorkingShift, ['attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out]);
+                $findShift  = findShift($shift, ['attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out]);
+
+                $employeeWorkingshift = $this->employee_worktime($employee->id);
+
+                $attendance->workingtime_id = $employeeWorkingshift->working_time ? $employeeWorkingshift->working_time : $findShift->id;
+
+                $workingtimeDetail = $this->checkWorkingtime($attendance->workingtime_id, $attendance->day);
+                if (!$workingtimeDetail) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status'    => false,
+                        'message'   => 'Working shift for employee name ' . $employee->name . ' and attendance date ' . $attendance->attendance_date . ' and this day ' . $attendance->day . ' not found. Please check master shift.'
+                    ], 400);
+                }
+
+
+                if (($workingtimeDetail->start >= changeDateFormat('H:i:s', $attendance->attendance_in)) && (changeDateFormat('H:i:s', $attendance->attendance_in) >= $workingtimeDetail->min_in)) {
+                    $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance->attendance_in) . ' ' . $workingtimeDetail->start);
+                    $work_time = roundedTime(countWorkingTime($start_shift, $attendance->attendance_out));
+                } else {
+                    $work_time = roundedTime(countWorkingTime($attendance->attendance_in, $attendance->attendance_out));
+                }
+
+                $getbreakworkingtime   = getBreaktimeWorkingtime($breaktimes, ['attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out], $workingtimeDetail);
+                $getbreakovertime       = getBreaktimeOvertime($breaktimes, ['attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out], $workingtimeDetail);
+                $workhour               = $workingtimeDetail->workhour;
+                $min_workhour            = $workingtimeDetail->min_workhour;
+                if (changeDateFormat('H:i:s', $attendance->attendance_out) < $workingtimeDetail->finish) {
+                    $adj_over_time      = 0;
+                } else {
+                    $adj_over_time      = roundedTime(countOverTime($workingtimeDetail->finish, changeDateFormat('H:i:s', $attendance->attendance_out))) > 10 ? 0 : roundedTime(countOverTime($workingtimeDetail->finish, changeDateFormat('H:i:s', $attendance->attendance_out)));
+                }
+                if ($work_time >= $workhour) {
+                    $adj_working_time = $min_workhour;
+                    $nextDay = Carbon::parse($attendance->attendance_date)->addDays(1)->toDateString();
+                    $finishNow = changeDateFormat('Y-m-d H:i:s', $attendance->attendance_date . ' ' . $workingtimeDetail->finish);
+                    $finishTomorrow = changeDateFormat('Y-m-d H:i:s', $nextDay . ' ' . $workingtimeDetail->finish);
+                    $finishShift = $workingtimeDetail->finish < $workingtimeDetail->start ? $finishTomorrow : $finishNow;
+                    $diff = Carbon::parse($finishShift)->diffInMinutes(Carbon::parse($attendance->attendance_out));
+                    if ($diff >= 60 && $finishShift < $attendance->attendance_out) {
+                        $adj_over_time = $attendance->attendance_out < $finishShift ? 0 : roundedTime(countOverTime($finishShift, $attendance->attendance_out));
+                        }
+                } else {
+                    $adj_working_time   = $work_time - $adj_over_time;
+                }
+
+                if ($attendance->attendance_in) {
+                    if ($attendance->day == 'Off') {
+                        if ($employee->overtime == 'yes') {
+                            if ($employee->timeout == 'yes') {
+                                $attendance->adj_over_time = $work_time - $getbreakworkingtime - $getbreakovertime;
+                                $attendance->adj_working_time = 0;
+                                $attendance->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                            } else {
+                                if ($attendance->attendance_in && $attendance->attendance_out) {
+                                    $attendance->adj_over_time = $work_time - $getbreakworkingtime - $getbreakovertime;
+                                    $attendance->adj_working_time = 0;
+                                    $attendance->code_case = "A02/BW$getbreakworkingtime/BO$getbreakovertime";
+                                } elseif ($attendance->attendance_in && !$attendance->attendance_out) {
+                                    $time_out = Carbon::parse($attendance->attendance_in)->addHours($workingtimeDetail->min_workhour)->toDateTimeString();
+                                    $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $time_out);
+                                    $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtimeDetail);
+                                    $attendance->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
+                                    $attendance->adj_over_time = $workingtimeDetail->min_workhour + $getbreakworkingtime;
+                                    $attendance->adj_working_time = 0;
+                                    $attendance->code_case = "A03/BW$getbreakworkingtime/BO$getbreakovertime";
+
+                                    $log = AttendanceLog::create([
+                                        'attendance_id'     => $attendance->id,
+                                        'employee_id'       => $attendance->employee_id,
+                                        'type'              => 0,
+                                        'attendance_date'   => $attendance->attendance_out,
+                                    ]);
+                                    if (!$log) {
+                                        return response()->json([
+                                            'status'    => false,
+                                            'message'   => "Error create log from attendance date '$attendance->attendance_date', employee name '$employee->name' where is timeout no set default to finish"
+                                        ], 400);
+                                    }
+                                }
                             }
                         } else {
-                            $attendanceOut = null;
+                            if ($employee->timeout == 'yes') {
+                                $attendance->adj_over_time = 0;
+                                $attendance->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
+                                $attendance->code_case = "A04/BW$getbreakworkingtime/BO$getbreakovertime";
+                            } else {
+                                if ($attendance->attendance_in && $attendance->attendance_out) {
+                                    $attendance->adj_over_time = 0;
+                                    $attendance->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
+                                    $attendance->code_case = "A05/BW$getbreakworkingtime/BO$getbreakovertime";
+                                } elseif ($attendance->attendance_in && !$attendance->attendance_out) {
+                                    $time_out = Carbon::parse($attendance->attendance_in)->addHours($workingtimeDetail->min_workhour)->toDateTimeString();
+                                    $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $time_out);
+                                    $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtimeDetail);
+                                    $attendance->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
+                                    $attendance->adj_over_time = 0;
+                                    $attendance->adj_working_time = $workingtimeDetail->min_workhour + $getbreakworkingtime;
+                                    $attendance->code_case = "A06/BW$getbreakworkingtime/BO$getbreakovertime";
+
+                                    $log = AttendanceLog::create([
+                                        'attendance_id'     => $attendance->id,
+                                        'employee_id'       => $attendance->employee_id,
+                                        'type'              => 0,
+                                        'attendance_date'   => $attendance->attendance_out,
+                                    ]);
+                                    if (!$log) {
+                                        return response()->json([
+                                            'status'    => false,
+                                            'message'   => "Error create log from attendance date '$attendance->attendance_date', employee name '$employee->name' where is timeout no set default to finish"
+                                        ], 400);
+                                    }
+                                }
+                            }
+                        }
+                    } elseif ($attendance->day == 'Sat') {
+                        if ($employee->overtime == 'yes') {
+                            if ($employee->timeout == 'yes') {
+                                $attendance->adj_over_time = ($adj_over_time - $getbreakovertime) < 1 ? 0 : $adj_over_time - $getbreakovertime;
+                                $attendance->adj_working_time = ($adj_working_time == $min_workhour) ? $adj_working_time : $adj_working_time - $getbreakworkingtime;
+                                $attendance->code_case = "A07/BW$getbreakworkingtime/BO$getbreakovertime";
+                            } else {
+                                if ($attendance->attendance_in && $attendance->attendance_out) {
+                                    $attendance->adj_over_time = ($adj_over_time - $getbreakovertime) < 1 ? 0 : $adj_over_time - $getbreakovertime;
+                                    $attendance->adj_working_time = $adj_working_time - $getbreakworkingtime;
+                                    $attendance->code_case = "A08/BW$getbreakworkingtime/BO$getbreakovertime";
+                                } elseif ($attendance->attendance_in && !$attendance->attendance_out) {
+                                    $time_out = Carbon::parse($attendance->attendance_in)->addHours($workingtimeDetail->min_workhour)->toDateTimeString();
+                                    $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $time_out);
+                                    $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtimeDetail);
+                                    $attendance->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
+                                    $attendance->adj_over_time = $workingtimeDetail->min_workhour + $getbreakworkingtime;
+                                    $attendance->adj_working_time = 0;
+                                    $attendance->code_case = "A09/BW$getbreakworkingtime/BO$getbreakovertime";
+
+                                    $log = AttendanceLog::create([
+                                        'attendance_id'     => $attendance->id,
+                                        'employee_id'       => $attendance->employee_id,
+                                        'type'              => 0,
+                                        'attendance_date'   => $attendance->attendance_out,
+                                    ]);
+                                    if (!$log) {
+                                        return response()->json([
+                                            'status'    => false,
+                                            'message'   => "Error create log from attendance date '$attendance->attendance_date', employee name '$employee->name' where is timeout no set default to finish"
+                                        ], 400);
+                                    }
+                                }
+                            }
+                        } else {
+                            if ($employee->timeout == 'yes') {
+                                $attendance->adj_over_time = 0;
+                                $attendance->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
+                                $attendance->code_case = "A10/BW$getbreakworkingtime/BO$getbreakovertime";
+                            } else {
+                                if ($attendance->attendance_in && $attendance->attendance_out) {
+                                    $attendance->adj_over_time = 0;
+                                    $attendance->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
+                                    $attendance->code_case = "A11/BW$getbreakworkingtime/BO$getbreakovertime";
+                                } elseif ($attendance->attendance_in && !$attendance->attendance_out) {
+                                    $time_out = Carbon::parse($attendance->attendance_in)->addHours($workingtimeDetail->min_workhour)->toDateTimeString();
+                                    $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $time_out);
+                                    $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtimeDetail);
+                                    $attendance->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
+                                    $attendance->adj_over_time = 0;
+                                    $attendance->adj_working_time = $workingtimeDetail->min_workhour + $getbreakworkingtime;
+                                    $attendance->code_case = "A12/BW$getbreakworkingtime/BO$getbreakovertime";
+
+                                    $log = AttendanceLog::create([
+                                        'attendance_id'     => $attendance->id,
+                                        'employee_id'       => $attendance->employee_id,
+                                        'type'              => 0,
+                                        'attendance_date'   => $attendance->attendance_out,
+                                    ]);
+                                    if (!$log) {
+                                        return response()->json([
+                                            'status'    => false,
+                                            'message'   => "Error create log from attendance date '$attendance->attendance_date', employee name '$employee->name' where is timeout no set default to finish"
+                                        ], 400);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if ($employee->overtime == 'yes') {
+                            if ($employee->timeout == 'yes') {
+                                $attendance->adj_over_time = ($adj_over_time - $getbreakovertime) < 1 ? 0 : $adj_over_time - $getbreakovertime;
+                                $attendance->adj_working_time = ($adj_working_time == $min_workhour) ? $adj_working_time : $adj_working_time - $getbreakworkingtime;
+                                $attendance->code_case = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                            } else {
+                                if ($attendance->attendance_in && $attendance->attendance_out) {
+                                    $attendance->adj_over_time = ($adj_over_time - $getbreakovertime) < 1 ? 0 : $adj_over_time - $getbreakovertime;
+                                    $attendance->adj_working_time = $adj_working_time - $getbreakworkingtime;
+                                    $attendance->code_case = "A14/BW$getbreakworkingtime/BO$getbreakovertime";
+                                } elseif ($attendance->attendance_in && !$attendance->attendance_out) {
+                                    $time_out = Carbon::parse($attendance->attendance_in)->addHours($workingtimeDetail->min_workhour)->toDateTimeString();
+                                    $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $time_out);
+                                    $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtimeDetail);
+                                    $attendance->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
+                                    $attendance->adj_over_time = $workingtimeDetail->min_workhour + $getbreakworkingtime;
+                                    $attendance->adj_working_time = 0;
+                                    $attendance->code_case = "A15/BW$getbreakworkingtime/BO$getbreakovertime";
+
+                                    $log = AttendanceLog::create([
+                                        'attendance_id'     => $attendance->id,
+                                        'employee_id'       => $attendance->employee_id,
+                                        'type'              => 0,
+                                        'attendance_date'   => $attendance->attendance_out,
+                                    ]);
+                                    if (!$log) {
+                                        return response()->json([
+                                            'status'    => false,
+                                            'message'   => "Error create log from attendance date '$attendance->attendance_date', employee name '$employee->name' where is timeout no set default to finish"
+                                        ], 400);
+                                    }
+                                }
+                            }
+                        } else {
+                            if ($employee->timeout == 'yes') {
+                                $attendance->adj_over_time = 0;
+                                $attendance->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
+                                $attendance->code_case = "A16/BW$getbreakworkingtime/BO$getbreakovertime";
+                            } else {
+                                if ($attendance->attendance_in && $attendance->attendance_out) {
+                                    $attendance->adj_over_time = 0;
+                                    $attendance->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
+                                    $attendance->code_case = "A17/BW$getbreakworkingtime/BO$getbreakovertime";
+                                } elseif ($attendance->attendance_in && !$attendance->attendance_out) {
+                                    $time_out = Carbon::parse($attendance->attendance_in)->addHours($workingtimeDetail->min_workhour)->toDateTimeString();
+                                    $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $time_out);
+                                    $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtimeDetail);
+                                    $attendance->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
+                                    $attendance->adj_over_time = 0;
+                                    $attendance->adj_working_time = $workingtimeDetail->min_workhour + $getbreakworkingtime;
+                                    $attendance->code_case = "A18/BW$getbreakworkingtime/BO$getbreakovertime";
+
+                                    $log = AttendanceLog::create([
+                                        'attendance_id'     => $attendance->id,
+                                        'employee_id'       => $attendance->employee_id,
+                                        'type'              => 0,
+                                        'attendance_date'   => $attendance->attendance_out,
+                                    ]);
+                                    if (!$log) {
+                                        return response()->json([
+                                            'status'    => false,
+                                            'message'   => "Error create log from attendance date '$attendance->attendance_date', employee name '$employee->name' where is timeout no set default to finish"
+                                        ], 400);
+                                    }
+                                }
+                            }
                         }
                     }
                 } else {
-                    $attendanceOut = AttendanceLog::AttendanceID($attendance->id)->EmployeeID($attendance->employee_id)->Type(0)->max('attendance_date');
+                    $attendance->adj_over_time = 0;
+                    $attendance->adj_working_time = 0;
+                    $attendance->code_case = "A19";
                 }
-            } else {
-                $attendanceOut = null;
             }
-    
-            return $attendanceOut;
+            if (($attendance->attendance_in && $attendance->attendance_out) && $attendance->status == -1) {
+                $attendance->status = 0;
+                $attendance->code_case = 'A20';
+            }
+            $attendance->save();
+            if (!$attendance) {
+                DB::rollBack();
+                return response()->json([
+                    'status'    => false,
+                    'message'   => "Error update attendance"
+                ], 400);
+            }
         } else {
-            return $attendanceOut = null;
+            DB::rollBack();
+            return response()->json([
+                'status'    => false,
+                'message'   => 'Error update attendance'
+            ], 400);
         }
     }
 
     /**
-     * Create attendance log table
+     * Method to get attendance out with param
      *
-     * @param array $attendances
+     * @param object $attendance
+     * @param $attendanceIn
+     * @return \Illuminate\Http\Response
      */
-    public function storeAttendanceLog($attendances)
+    public function getAttendanceOut(object $attendance, $attendance_in)
     {
-        if ($attendances) {
-            $flag = false; // Check Header CSV
-            $path = public_path('attendance');
-            // Check path exist
-            if (!file_exists($path)) {
-                mkdir($path, 0777, true);
+        $attendanceIn       = Carbon::parse($attendance_in);
+        $endOfDay           = Carbon::parse($attendance_in)->endOfDay();
+        $nextDay            = Carbon::parse($attendance_in)->addDays(1);
+        $cutOutNextDay      = Carbon::create($nextDay->year, $nextDay->month, $nextDay->day, 9, 0, 0);
+        if (Carbon::createFromTime($attendanceIn->hour, $attendanceIn->minute) > Carbon::createFromTime(15, 00)) {
+            $outBetween     = AttendanceLog::where('employee_id', $attendance->employee_id)->whereBetween('attendance_date', [$attendanceIn->toDateString(), $endOfDay->toDateString()])->where('type', 0)->max('attendance_date');
+            if ($outBetween) {
+                $attendanceOut  = $outBetween;
+            } else {
+                $checkOutNextDay= AttendanceLog::whereBetween('attendance_date', [$attendanceIn->toDateString(), $cutOutNextDay->toDateString()])->where('employee_id', $attendance->employee_id)->where('type', 0)->get();
+                if ($checkOutNextDay->count() > 0) {
+                    $attendanceOut      = $checkOutNextDay->max('attendance_date');
+                    foreach ($attendanceOut as $key => $out) {
+                        $out->attendance_id     = $attendance->id;
+                        $out->save();
+                    }
+                } else {
+                    $attendanceOut      = null;
+                }
             }
-            $file = fopen($path . "/attendance-log-temp.csv", "w");
-            // Loop attendances data from preview
+        } else {
+            $attendanceOut  = AttendanceLog::where('attendance_id', $attendance->id)->where('employee_id', $attendance->employee_id)->where('type', 0)->max('attendance_date');
+        }
+        return $attendanceOut;
+    }
+
+    /**
+     * Method to create attendance log with param from Request
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function createAttendanceLog(Request $request)
+    {
+        $attendances    = json_decode($request->attendance);
+        $employees      = $request->employees;
+        $period         = $request->period;
+        $batch_name     = $request->batch_name;
+        if ($attendances && $employees && $period) {
             foreach ($attendances as $key => $attendance) {
                 if ($attendance->employee_id) {
-                    $attendanceDate = dbDate($attendance->attendance_date);
-                    $check = $this->checkAttendanceAlreadyExist($attendance->employee_id, $attendanceDate);
-                    if (!$flag) {
-                        $data = [
-                            'Attendance', 'Employee', 'Serial Number', 'Device Name', 'Attendance Area', 'Type', 'Date', 'Created At', 'Updated At'
-                        ];
-                        fputcsv($file, $data);
-                        $flag = true;
-                    }
-                    if ($check) {
-                        $data = [
-                            'attendance_id'     => $check->id,
-                            'employee_id'       => $attendance->employee_id,
-                            'serial_number'     => $attendance->serial_number,
-                            'device_name'       => $attendance->device_name,
-                            'attendance_area'   => $attendance->attendance_area,
-                            'type'              => strtoupper($attendance->point_name) == 'MASUK' ? 1 : 0,
-                            'attendance_date'   => $attendance->attendance_date,
-                            'created_at'        => Carbon::now()->toDateTimeString(),
-                            'updated_at'        => Carbon::now()->toDateTimeString()
-                        ];
-                        fputcsv($file, $data);
-                    } else {
-                        $data = [
-                            'attendance_id'     => null,
-                            'employee_id'       => $attendance->employee_id,
-                            'serial_number'     => $attendance->serial_number,
-                            'device_name'       => $attendance->device_name,
-                            'attendance_area'   => $attendance->attendance_area,
-                            'type'              => strtoupper($attendance->point_name) == 'MASUK' ? 1 : 0,
-                            'attendance_date'   => $attendance->attendance_date,
-                            'created_at'        => Carbon::now()->toDateTimeString(),
-                            'updated_at'        => Carbon::now()->toDateTimeString()
-                        ];
-                        fputcsv($file, $data);
+                    $checkAttendance = Attendance::EmployeeAttendance($attendance->employee_id)->AttendanceDate($period->toDateString())->first();
+                    $createAttendanceLog    = AttendanceLog::create([
+                        'attendance_id'         => $checkAttendance ? $checkAttendance->id : null,
+                        'employee_id'           => $attendance->employee_id,
+                        'serial_number'         => $attendance->serial_number,
+                        'device_name'           => $attendance->device_name,
+                        'attendance_area'       => $attendance->attendance_area,
+                        'type'                  => strtoupper($attendance->point_name) == 'MASUK' ? 1 : 0,
+                        'attendance_date'       => $attendance->attendance_date,
+                        'batch_upload'          => $batch_name,
+                    ]);
+                    if (!$createAttendanceLog) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'    => false,
+                            'message'   => "Error create attendance log"
+                        ], 400);
                     }
                 }
             }
-
-            $copyToTable = DB::statement(DB::raw("COPY attendance_logs(attendance_id, employee_id, serial_number, device_name, attendance_area, type, attendance_date, created_at, updated_at) FROM '$path/attendance-log-temp.csv' DELIMITER ',' CSV HEADER;"));
-            if ($copyToTable) {
-                unlink($path . "/attendance-log-temp.csv");
-            } else {
-                return "Error copy data from csv file to table";
-            }
+        } else {
+            DB::rollBack();
+            return response()->json([
+                'status'    => false,
+                'message'   => "Error create attendance log"
+            ], 400);
         }
     }
 
     /**
-     * Create base attendance from date range with null working time & over time
+     * Method to create header attendance with param from Request
      *
-     * @param array $attendance
-     * @param int $month
-     * @param int $year
+     * @param Request $request
+     * @return \Illuminate\Http\Response
      */
-    public function storeAttendanceWithDateRange($attendance, $month, $year)
+    public function createHeaderAttendance(Request $request)
     {
-        $dateNow        = Carbon::today(); // Get today date
-        $dates          = cal_days_in_month(CAL_GREGORIAN, $month, $year); //Count total date in selected $month & $year
-        $dateInAMonth   = []; // Array to store loop date
-        // Looping date to get all date from first month to last month
-        for ($i = 1; $i <= $dates; $i++) {
-            $dateInAMonth[] = $i; // Push $i value (ex: 01) to var $dateInAMonth
-        }
-        $getActiveEmployees = Employee::GetActiveEmployees()->get(); // get active employee from local scope employee model
-
-        $flag = false; // Check Header CSV
-        $path = public_path('attendance');
-        // Check path exist
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
-        $file = fopen($path . "/attendance-temp.csv", "w");
-
-        // Loop date
-        foreach ($dateInAMonth as $date) {
-            // Loop active employee every date in a month
-            foreach ($getActiveEmployees as $key => $employee) {
-                $dateFromMonth = Carbon::createFromDate($year, $month, $date); // Create date with month and year
-
-                // Check if the date if less then today date
-                if ($dateFromMonth <= $dateNow) {
-                    $check  = $this->checkAttendanceAlreadyExist($employee->id, $dateFromMonth); // to check if attendance with this date and this employee already exist
-
-                    // If not exists then create the csv
-                    if (!$check) {
-                        $exceptionDate  = $this->employee_calendar($employee->id); // to get holiday date from employee_calendars table
-
-                        // If Header not defined then define
-                        if (!$flag) {
-                            $data = [
-                                'Employee', 'Date', 'Created At', 'Updated At', 'Working Time', 'Over Time', 'Day'
-                            ];
-                            fputcsv($file, $data);
-                            $flag = true;
+        $employees      = $request->employees;
+        $amonth         = $request->amonth;
+        $period         = $request->period;
+        if ($employees && $amonth && $period) {
+            foreach ($employees as $key => $employee) {
+                $request->join_date = $employee->join_date;
+                $checkJoinDate      = $this->checkNewEmployee($request);
+                if ($checkJoinDate) {
+                    foreach ($amonth as $key => $date) {
+                        $checkAttendance = Attendance::EmployeeAttendance($employee->id)->AttendanceDate($date->toDateString())->first();
+                        if (!$checkAttendance) {
+                            $exception_date     = $this->employee_calendar($employee->id);
+                            $createAttendance   = Attendance::create([
+                                'employee_id'           => $employee->id,
+                                'attendance_date'       => $date->toDateString(),
+                                'adj_working_time'      => 0,
+                                'adj_over_time'         => 0,
+                                'day'                   => (in_array($date->toDateString(), $exception_date)) ? 'Off' : changeDateFormat('D', $date),
+                            ]);
+                            if (!$createAttendance) {
+                                DB::rollBack();
+                                return response()->json([
+                                    'status'    => false,
+                                    'message'   => "Error create header attendance for new employee $employee->name at this date " . $date->toDateString(),
+                                ], 400);
+                            }
                         }
-                        $data = [
-                            'employee_id'       => $employee ? $employee->id : null,
-                            'attendance_date'   => $dateFromMonth ? $dateFromMonth : null,
-                            'created_at'        => Carbon::now()->toDateTimeString(),
-                            'updated_at'        => Carbon::now()->toDateTimeString(),
-                            'adj_working_time'  => 0,
-                            'adj_over_time'     => 0,
-                            'day'               => in_array($dateFromMonth, $exceptionDate) ? 'Off' : changeDateFormat('D', $dateFromMonth),
-                        ];
-                        fputcsv($file, $data);
                     }
-                } else {
-                    continue;
+                }
+                $checkAttendance = Attendance::EmployeeAttendance($employee->id)->AttendanceDate($period->toDateString())->first();
+                if (!$checkAttendance) {
+                    $exception_date     = $this->employee_calendar($employee->id);
+                    $createAttendance   = Attendance::create([
+                        'employee_id'           => $employee->id,
+                        'attendance_date'       => $period->toDateString(),
+                        'adj_working_time'      => 0,
+                        'adj_over_time'         => 0,
+                        'day'                   => (in_array($period->toDateString(), $exception_date)) ? 'Off' : changeDateFormat('D', $period),
+                    ]);
+                    if (!$createAttendance) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'    => false,
+                            'message'   => "Error create header attendance for new employee $employee->name at this date " . $period->toDateString(),
+                        ], 400);
+                    }
                 }
             }
-        }
-
-        $copyToTable = DB::statement(DB::raw("COPY attendances(employee_id, attendance_date, created_at, updated_at, adj_working_time, adj_over_time, day) FROM '$path/attendance-temp.csv' DELIMITER ',' CSV HEADER;"));
-        if ($copyToTable) {
-            unlink($path . "/attendance-temp.csv");
+        } else {
+            DB::rollBack();
+            return response()->json([
+                'status'    => false,
+                'message'   => "Error create header attendance because employee data or date data or periode generate not found, please check input method",
+            ], 400);
         }
     }
 
     /**
-     * Check employee already have attendance
+     * Method to check update attendance
      *
-     * @param bigint $employee_id
-     * @param date $date
+     * @param object $attendance
+     * @return \Illuminate\Http\Response
      */
-    public function checkAttendanceAlreadyExist($employee_id, $date)
+    public function checkUpdateStatus(object $attendance)
     {
-        return Attendance::EmployeeAttendance($employee_id)->AttendanceDate($date)->first();
+        $date       = Carbon::parse($attendance->attendance_date);
+        $check      = Attendance::EmployeeAttendance($attendance->employee_id)->AttendanceDate($date->toDateString())->where('status', '<>', 1)->first();
+        if ($check) {
+            return $check;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Method to check the employee is new employee
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public function checkNewEmployee(Request $request)
+    {
+        $periodeGenerate    = Carbon::createFromFormat('Y-m-d', dbDate($request->period));
+        $employeeJoinDate   = Carbon::parse($request->join_date);
+        if (($periodeGenerate->year == $employeeJoinDate->year) && ($periodeGenerate->month == $employeeJoinDate->month)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
