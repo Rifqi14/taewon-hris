@@ -142,6 +142,7 @@ class DriverAllowanceController extends Controller
                             'recurrence_day'        => $value,
                             'start'                 => $request->start[$key1],
                             'finish'                => $request->finish[$key1],
+                            'type_value'            => $request->type_value,
                             'value'                 => $request->value[$key1]
                         ]);
                         if (!$list) {
@@ -159,6 +160,7 @@ class DriverAllowanceController extends Controller
                         'driver_allowance_id'   => $id,
                         'type'                  => $request->type,
                         'rit'                   => $request->rit[$key],
+                        'type_value'            => $request->type_value,
                         'value'                 => str_replace(['.', ','], '', $request->rit_value[$key])
                     ]);
                     if (!$list) {

@@ -105,6 +105,10 @@
                 <div class="input-group mb-0">
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="currency_symbol">Rp.</span>
+                    {{-- <select class="input-group-text" style="appearance:none; -webkit-appearance:none; -moz-appearance:none;" name="type_value" id="currency_symbol2">
+                      <option value="nominal" @if ($item->type_value == 'nominal') selected @endif>Rp.</option>
+                      <option value="percentage" @if ($item->type_value == 'percentage') selected @endif>%</option>
+                    </select> --}}
                   </div>
                   <input placeholder="Value" name="value[{{ $key }}]" class="form-control currency" aria-label="Value" aria-describedby="currency_symbol" required value="{{ $item->value }}">
                 </div>
@@ -126,7 +130,11 @@
               <td class="text-center align-middle">
                 <div class="input-group mb-0">
                   <div class="input-group-prepend">
-                    <span class="input-group-text" id="currency_symbol">Rp.</span>
+                    {{-- <span class="input-group-text" id="currency_symbol">Rp.</span> --}}
+                    <select class="input-group-text" style="appearance:none; -webkit-appearance:none; -moz-appearance:none;" name="type_value" id="currency_symbol2">
+                      <option value="nominal">Rp.</option>
+                      <option value="percentage">%</option>
+                    </select>
                   </div>
                   <input placeholder="Value" name="value[0]" class="form-control currency" aria-label="Value" aria-describedby="currency_symbol" required>
                 </div>
@@ -177,7 +185,11 @@
               <td class="text-center align-middle">
                 <div class="input-group mb-0">
                   <div class="input-group-prepend">
-                    <span class="input-group-text" id="currency_symbol2">Rp.</span>
+                    {{-- <span class="input-group-text" id="currency_symbol2">Rp.</span> --}}
+                    <select class="input-group-text" style="appearance:none; -webkit-appearance:none; -moz-appearance:none;" name="type_value" id="currency_symbol2">
+                      <option value="nominal" @if ($item->type_value == 'nominal') selected @endif>Rp.</option>
+                      <option value="percentage" @if ($item->type_value == 'percentage') selected @endif>%</option>
+                    </select>
                   </div>
                   <input placeholder="Value" name="rit_value[]" class="form-control currency" aria-label="Value" value="{{ $item->value }}" aria-describedby="currency_symbol2" required>
                 </div>
