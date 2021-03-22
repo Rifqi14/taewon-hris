@@ -538,5 +538,8 @@ Route::group(['prefix' => 'admin'], function () {
         // Route Attendance Machine
         Route::get('/attendancemachine/read', 'Admin\AttendanceMachineController@read')->name('attendancemachine.read');
         Route::resource('/attendancemachine', 'Admin\AttendanceMachineController');
+        // Route Attendance Machine
+        Route::get('/partner/read', 'Admin\PartnerController@read')->name('partner.read');
+        Route::resource('/partner', 'Admin\PartnerController');
     });
 });
