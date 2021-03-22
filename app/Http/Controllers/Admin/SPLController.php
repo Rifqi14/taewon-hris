@@ -342,8 +342,8 @@ class SPLController extends Controller
         $spls = json_decode($request->spls);
         DB::beginTransaction();
         foreach ($spls as $spl) {
-            $check = Spl::where('nik', $spl->nik)->first();
-            if (!$check) {
+            // $check = Spl::where('nik', $spl->nik)->first();
+            // if (!$check) {
                 $splimport = Spl::create([
                     'employee_id' => $spl->employee_id,
                     'nik' => $spl->nik,
@@ -358,7 +358,7 @@ class SPLController extends Controller
                         'message'   => $splimport
                     ], 400);
                 }
-            }
+            // }
         }
         DB::commit();
         return response()->json([

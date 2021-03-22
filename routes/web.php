@@ -350,6 +350,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/deliveryorder/read_donumber', 'Admin\DeliveryOrderController@read_donumber')->name('deliveryorder.read_donumber');
         Route::get('/deliveryorder/select', 'Admin\DeliveryOrderController@select')->name('deliveryorder.select');
         Route::get('/deliveryorder/select_employee', 'Admin\DeliveryOrderController@select_employee')->name('deliveryorder.select_employee');
+        Route::get('/deliveryorder/import', 'Admin\DeliveryOrderController@import')->name('deliveryorder.import');
+        Route::post('/deliveryorder/preview', 'Admin\DeliveryOrderController@preview')->name('deliveryorder.preview');
+        Route::post('/deliveryorder/storemass', 'Admin\DeliveryOrderController@storemass')->name('deliveryorder.storemass');
         Route::get('/deliveryorder/print/{id}', 'Admin\DeliveryOrderController@print');
         Route::resource('/deliveryorder', 'Admin\DeliveryOrderController')->except(['show']);
         // Route Daily Report Driver

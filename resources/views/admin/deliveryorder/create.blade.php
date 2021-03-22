@@ -26,7 +26,7 @@
         <div class="card-body">
           {{ csrf_field() }}
           <div class="form-row">
-            <div class="form-group col-sm-6">
+            {{-- <div class="form-group col-sm-6">
               <div class="row">
                 <label class="col-sm-3 label-controls" for="date">Date</label>
                 <div class="col-sm-8 controls">
@@ -40,26 +40,26 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> --}}
             <div class="form-group col-sm-6">
               <div class="row">
                 <label class="col-sm-3 label-controls" for="type_truck">Type Truck</label>
                 <div class="col-sm-8 controls">
                   <select name="type_truck" id="type_truck" class="form-control select2" style="width: 100%" required>
-                    <option value="fuso">Fuso</option>
-                    <option value="colt_diesel">Colt Diesel</option>
+                    <option value="Fuso">Fuso</option>
+                    <option value="Colt Diesel">Colt Diesel</option>
                   </select>
                 </div>
               </div>
             </div>
-            <div class="form-group col-sm-6">
+            {{-- <div class="form-group col-sm-6">
               <div class="row">
                 <label class="col-sm-3 label-controls" for="date">D.O Number</label>
                 <div class="col-sm-8 controls">
                   <input type="text" name="do_number" class="form-control" placeholder="D.O Number" required />
                 </div>
               </div>
-            </div>
+            </div> --}}
             <div class="form-group col-sm-6">
               <div class="row">
                 <label class="col-sm-3 label-controls" for="driver_id">Driver Name</label>
@@ -78,9 +78,39 @@
             </div>
             <div class="form-group col-sm-6">
               <div class="row">
-                <label class="col-sm-3 label-controls" for="destination">Destination</label>
+                <label class="col-sm-3 label-controls" for="destination">Customer</label>
                 <div class="col-sm-8 controls">
-                  <input type="text" id="destination" name="destination" class="form-control" placeholder="Destination" required />
+                  <input type="text" id="destination" name="customer" class="form-control" placeholder="Customer" required />
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-sm-6">
+              <div class="row">
+                <label class="col-sm-3 label-controls" for="departure_time">Departure Time</label>
+                <div class="col-sm-8 controls">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="far fa-calendar-alt"></i>
+                      </span>
+                    </div>
+                    <input type="text" name="departure_time" class="form-control datepicker" placeholder="Departure Time" required />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-sm-6">
+              <div class="row">
+                <label class="col-sm-3 label-controls" for="arrived_time">Arrived Time</label>
+                <div class="col-sm-8 controls">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="far fa-calendar-alt"></i>
+                      </span>
+                    </div>
+                    <input type="text" name="arrived_time" class="form-control datepicker" placeholder="Arrived Time" required />
+                  </div>
                 </div>
               </div>
             </div>
@@ -96,7 +126,7 @@
         </div>
       </div>
     </div>
-    <div class="col-lg-12 ">
+    {{-- <div class="col-lg-12 ">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
           <h3 class="card-title">List Item</h3>
@@ -130,7 +160,7 @@
           <i class="fa fa-2x fa-sync-alt fa-spin"></i>
         </div>
       </div>
-    </div>
+    </div> --}}
   </div>
 </form>
 @endsection
