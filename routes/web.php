@@ -273,13 +273,16 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/attendanceapproval/quickupdate', 'Admin\AttendanceApprovalController@quickupdate')->name('attendanceapproval.quickupdate');
         Route::resource('/attendanceapproval', 'Admin\AttendanceApprovalController')->except(['show']);
         // Route Attendance
+        Route::get('/attendance/sync', 'Admin\AttendanceController@sync')->name('attendance.sync');
         Route::get('/attendance/read', 'Admin\AttendanceController@read')->name('attendance.read');
         Route::get('/attendance/select', 'Admin\AttendanceController@select')->name('attendance.select');
         Route::get('/attendance/import', 'Admin\AttendanceController@import')->name('attendance.import');
+        Route::get('/attendance/syncpage', 'Admin\AttendanceController@syncPage')->name('attendance.syncpage');
         Route::post('/attendance/preview', 'Admin\AttendanceController@preview')->name('attendance.preview');
         Route::post('/attendance/storemass', 'Admin\AttendanceController@storemass')->name('attendance.storemass');
         Route::post('/attendance/preview2', 'Admin\AttendanceController@preview2')->name('attendance.preview2');
         Route::post('/attendance/storemass2', 'Admin\AttendanceController@storemass2')->name('attendance.storemass2');
+        Route::post('/attendance/syncmass', 'Admin\AttendanceController@syncMass')->name('attendance.syncmass');
         Route::resource('/attendance', 'Admin\AttendanceController')->except(['show']);
         // Route Daily Report
         Route::get('/dailyreport/read', 'Admin\DailyReportController@read')->name('dailyreport.read');
@@ -347,6 +350,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/deliveryorder/read_donumber', 'Admin\DeliveryOrderController@read_donumber')->name('deliveryorder.read_donumber');
         Route::get('/deliveryorder/select', 'Admin\DeliveryOrderController@select')->name('deliveryorder.select');
         Route::get('/deliveryorder/select_employee', 'Admin\DeliveryOrderController@select_employee')->name('deliveryorder.select_employee');
+        Route::get('/deliveryorder/import', 'Admin\DeliveryOrderController@import')->name('deliveryorder.import');
+        Route::post('/deliveryorder/preview', 'Admin\DeliveryOrderController@preview')->name('deliveryorder.preview');
+        Route::post('/deliveryorder/storemass', 'Admin\DeliveryOrderController@storemass')->name('deliveryorder.storemass');
         Route::get('/deliveryorder/print/{id}', 'Admin\DeliveryOrderController@print');
         Route::resource('/deliveryorder', 'Admin\DeliveryOrderController')->except(['show']);
         // Route Daily Report Driver
@@ -537,6 +543,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         // Route Attendance Machine
         Route::get('/attendancemachine/read', 'Admin\AttendanceMachineController@read')->name('attendancemachine.read');
+        Route::get('/attendancemachine/select', 'Admin\AttendanceMachineController@select')->name('attendancemachine.select');
         Route::resource('/attendancemachine', 'Admin\AttendanceMachineController');
         // Route Attendance Machine
         Route::get('/partner/read', 'Admin\PartnerController@read')->name('partner.read');

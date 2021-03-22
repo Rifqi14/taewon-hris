@@ -27,6 +27,7 @@
         <div class="card-header">
           <h3 class="card-title">Delivery Order List</h3>
           <div class="pull-right card-tools">
+            <a href="{{route('deliveryorder.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="Import" style="cursor: pointer;"><i class="fa fa-file-import"></i></a>
             <a href="{{route('deliveryorder.create')}}"
               class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip"
               title="Add Data">
@@ -95,9 +96,9 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label" for="destination">Destination</label>
+                  <label class="control-label" for="destination">Customer</label>
                   {{-- <input type="text" name="destination" id="destination" class="form-control filter" placeholder="Destination"> --}}
-                  <select name="destination" id="destination" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple data-placeholder="Destination">
+                  <select name="destination" id="destination" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple data-placeholder="Customer">
                     <option value=""></option>
                     @foreach ($desti as $tujuan)
                     <option value="{{ $tujuan->destination }}">{{ $tujuan->destination }}</option>
@@ -105,7 +106,7 @@
                 </select>
                 </div>
               </div>
-              <div class="col-md-4">
+              {{-- <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label" for="do_number">DO Number</label>
                   <select name="do_number" id="do_number" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple data-placeholder="DO Number">
@@ -115,18 +116,18 @@
                       @endforeach
                   </select>
                 </div>
-              </div>
+              </div> --}}
             </div>
           <table class="table table-striped table-bordered datatable" style="width: 100%">
             <thead>
               <tr>
                 <th width="10">No</th>
-                <th width="70">D.O Number</th>
-                <th width="100">Date</th>
-                <th width="100">Department</th>
+                <th width="70">Departure Time</th>
+                <th width="100">Arrived Time</th>
+                <th width="100">Kloter</th>
                 <th width="130" class="text-left">Driver</th>
                 <th width="100">Police No</th>
-                <th width="100">Destination</th>
+                <th width="100">Customer</th>
                 <th width="10">Action</th>
               </tr>
             </thead>
@@ -271,9 +272,9 @@
       ],
       columns: [
         { data: "no" },
-        { data: "do_number" },
-        { data: "date" },
-        { data: "department_name" },
+        { data: "departure_time" },
+        { data: "arrived_time" },
+        { data: "group" },
         { data: "driver_name" },
         { data: "police_no" },
         { data: "destination" },

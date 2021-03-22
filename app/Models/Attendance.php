@@ -23,10 +23,26 @@ class Attendance extends Model
     // {
     //     return $this->belongsTo('App\Models\OvertimeScheme', 'overtime_scheme_id');
     // }
+
+    /**
+     * Method to get attendance data by employee id in attendances table
+     *
+     * @param $query
+     * @param int $employee_id
+     * @return \Illuminate\Http\Response
+     */
     public function scopeEmployeeAttendance($query, $employee_id)
     {
         return $query->where('employee_id', $employee_id);
     }
+
+    /**
+     * Method to get attendance data by date in attendances table
+     *
+     * @param $query
+     * @param int $date
+     * @return \Illuminate\Http\Response
+     */
     public function scopeAttendanceDate($query, $date)
     {
         return $query->where('attendance_date', $date);

@@ -125,9 +125,6 @@ class DeliveryOrderController extends Controller
         if ($destination) {
             $query->whereIn('delivery_orders.destination', $destination);
         }
-        if ($do_number) {
-            $query->whereIn('do_number', $do_number);
-        }
         // if ($date_from) {
         //     $query->where('date','>=', $date_from);
         // }
@@ -135,8 +132,8 @@ class DeliveryOrderController extends Controller
         //     $query->where('date','<=', $date_to);
         // }
         if ($date_from && $date_to) {
-            $query->whereRaw("date::date >= '$date_from'");
-            $query->whereRaw("date::date <= '$date_to'");
+            $query->whereRaw("delivery_orders.departure_time >= '$date_from'");
+            $query->whereRaw("delivery_orders.departure_time <= '$date_to'");
         }
 
         $recordsTotal = $query->count();
@@ -175,9 +172,6 @@ class DeliveryOrderController extends Controller
         if ($destination) {
             $query->whereIn('delivery_orders.destination', $destination);
         }
-        if ($do_number) {
-            $query->whereIn('do_number', $do_number);
-        }
         // if ($date_from) {
         //     $query->where('date','>=', $date_from);
         // }
@@ -185,8 +179,8 @@ class DeliveryOrderController extends Controller
         //     $query->where('date','<=', $date_to);
         // }
         if ($date_from && $date_to) {
-            $query->whereRaw("date::date >= '$date_from'");
-            $query->whereRaw("date::date <= '$date_to'");
+            $query->whereRaw("delivery_orders.departure_time >= '$date_from'");
+            $query->whereRaw("delivery_orders.departure_time <= '$date_to'");
         }
 
         $query->offset($start);
@@ -248,9 +242,9 @@ class DeliveryOrderController extends Controller
         $query->where('employees.status', 1);
         $query->whereRaw("upper(departments.path) like '%DRIVER%'");
         $employees = $query->get();
-        $query = DB::table('delivery_orders');
-        $query->select('delivery_orders.*');
-        $donumbers = $query->get();
+        // $query = DB::table('delivery_orders');
+        // $query->select('delivery_orders.*');
+        // $donumbers = $query->get();
         $query = DB::table('delivery_orders');
         $query->select('delivery_orders.police_no');
         $query->groupBy('delivery_orders.police_no');
@@ -261,7 +255,7 @@ class DeliveryOrderController extends Controller
         $query->groupBy('delivery_orders.destination');
         $query->orderBy('destination', 'asc');
         $desti = $query->get();
-        return view('admin.deliveryorder.index', compact('employees', 'donumbers', 'police_nomer', 'desti'));
+        return view('admin.deliveryorder.index', compact('employees', 'police_nomer', 'desti'));
     }
 
     /**
@@ -285,68 +279,70 @@ class DeliveryOrderController extends Controller
         $id = $this->getLatestId();
         DB::beginTransaction();
         $deliveryorder = DeliveryOrder::create([
-            'date'          => changeDateFormat('Y-m-d H:i:s', changeSlash($request->date)),
+            // 'date'          => changeDateFormat('Y-m-d H:i:s', changeSlash($request->date)),
             'type_truck'    => $request->type_truck,
-            'do_number'     => $request->do_number,
+            // 'do_number'     => $request->do_number,
             'driver_id'     => $request->driver_id,
             'police_no'     => $request->police_no,
-            'destination'   => $request->destination,
+            'destination'   => $request->customer,
+            'departure_time'=> changeDateFormat('Y-m-d H:i:s', changeSlash($request->departure_time)),
+            'arrived_time'  => changeDateFormat('Y-m-d H:i:s', changeSlash($request->arrived_time)),
             'group'         => $request->kloter
         ]);
 
-        if ($deliveryorder) {
-            if (isset($request->product_item)) {
-                foreach ($request->product_item as $key => $value) {
-                    $deliveryorderdetail = DeliveryOrderDetail::create([
-                        'delivery_order_id'  => $deliveryorder->id,
-                        'po_number'          => $request->po_number[$key],
-                        'item_name'          => $request->item_name[$key],
-                        'size'               => $request->size[$key],
-                        'qty'                => $request->qty[$key],
-                        'remarks'            => $request->remarks[$key],
-                    ]);
-                    if (!$deliveryorderdetail) {
-                        DB::rollBack();
-                        return response()->json([
-                            'status'    => false,
-                            'message'   => $deliveryorderdetail
-                        ], 400);
-                    }
-                }
-            }
-            $latestrit = DriverAllowanceList::whereDate('date', changeDateFormat('Y-m-d', changeSlash($request->date)))->where('driver_id', $request->driver_id)->where('group', $request->kloter)->whereRaw("truck like '%$request->type_truck%'")->max('rit');
-            $driverallowance = DriverAllowanceList::create([
-                'driver_id'     => $request->driver_id,
-                'date'          => changeDateFormat('Y-m-d', changeSlash($request->date)),
-                'rit'           => $latestrit ? ++$latestrit : 1,
-                'truck'         => $request->type_truck,
-                'group'         => $request->kloter
-            ]);
-            $driverlist = DriverList::where('type', $request->type_truck)->where('rit', ($driverallowance->rit >= 3) ? 3 : $driverallowance->rit)->first();
-            if (!$driverlist) {
-                DB::rollBack();
-                return response()->json([
-                    'status'    => false,
-                    'message'   => "Error: value for this truck " . $request->type_truck . " and this RIT " . $driverallowance->rit . " not found"
-                ], 400);
-            } else {
-                $driverallowance->value = $driverlist->value;
-                $driverallowance->update();
-            }
-            if (!$driverallowance) {
-                DB::rollBack();
-                return response()->json([
-                    'status'    => false,
-                    'message'   => $driverallowance
-                ], 400);
-            }
-        } else {
-            DB::rollBack();
-            return response()->json([
-                'status'    => false,
-                'message'   => $deliveryorder
-            ], 400);
-        }
+        // if ($deliveryorder) {
+        //     if (isset($request->product_item)) {
+        //         foreach ($request->product_item as $key => $value) {
+        //             $deliveryorderdetail = DeliveryOrderDetail::create([
+        //                 'delivery_order_id'  => $deliveryorder->id,
+        //                 'po_number'          => $request->po_number[$key],
+        //                 'item_name'          => $request->item_name[$key],
+        //                 'size'               => $request->size[$key],
+        //                 'qty'                => $request->qty[$key],
+        //                 'remarks'            => $request->remarks[$key],
+        //             ]);
+        //             if (!$deliveryorderdetail) {
+        //                 DB::rollBack();
+        //                 return response()->json([
+        //                     'status'    => false,
+        //                     'message'   => $deliveryorderdetail
+        //                 ], 400);
+        //             }
+        //         }
+        //     }
+        //     $latestrit = DriverAllowanceList::whereDate('date', changeDateFormat('Y-m-d', changeSlash($request->date)))->where('driver_id', $request->driver_id)->where('group', $request->kloter)->whereRaw("truck like '%$request->type_truck%'")->max('rit');
+        //     $driverallowance = DriverAllowanceList::create([
+        //         'driver_id'     => $request->driver_id,
+        //         'date'          => changeDateFormat('Y-m-d', changeSlash($request->date)),
+        //         'rit'           => $latestrit ? ++$latestrit : 1,
+        //         'truck'         => $request->type_truck,
+        //         'group'         => $request->kloter
+        //     ]);
+        //     $driverlist = DriverList::where('type', $request->type_truck)->where('rit', ($driverallowance->rit >= 3) ? 3 : $driverallowance->rit)->first();
+        //     if (!$driverlist) {
+        //         DB::rollBack();
+        //         return response()->json([
+        //             'status'    => false,
+        //             'message'   => "Error: value for this truck " . $request->type_truck . " and this RIT " . $driverallowance->rit . " not found"
+        //         ], 400);
+        //     } else {
+        //         $driverallowance->value = $driverlist->value;
+        //         $driverallowance->update();
+        //     }
+        //     if (!$driverallowance) {
+        //         DB::rollBack();
+        //         return response()->json([
+        //             'status'    => false,
+        //             'message'   => $driverallowance
+        //         ], 400);
+        //     }
+        // } else {
+        //     DB::rollBack();
+        //     return response()->json([
+        //         'status'    => false,
+        //         'message'   => $deliveryorder
+        //     ], 400);
+        // }
         DB::commit();
         return response()->json([
             'status'    => true,
@@ -399,68 +395,17 @@ class DeliveryOrderController extends Controller
         $truck_changed = $deliveryorder->type_truck;
         $driver_changed = $deliveryorder->driver_id;
         $kloter = $deliveryorder->group;
-        $deliveryorder->date            = changeDateFormat('Y-m-d H:i:s', changeSlash($request->date));
+        // $deliveryorder->date            = changeDateFormat('Y-m-d H:i:s', changeSlash($request->date));
         $deliveryorder->type_truck      = $request->type_truck;
-        $deliveryorder->do_number       = $request->do_number;
+        // $deliveryorder->do_number       = $request->do_number;
         $deliveryorder->driver_id       = $request->driver_id;
         $deliveryorder->police_no       = $request->police_no;
-        $deliveryorder->destination     = $request->destination;
+        $deliveryorder->destination     = $request->customer;
         $deliveryorder->group           = $request->kloter;
+        $deliveryorder->departure_time  = $request->departure_time;
+        $deliveryorder->arrived_time    = $request->arrived_time;
         $deliveryorder->save();
-        if ($deliveryorder) {
-            if (isset($request->product_item)) {
-                $lists = DeliveryOrderDetail::where('delivery_order_id', '=', $id);
-                $lists->delete();
-                foreach ($request->product_item as $key => $value) {
-                    $deliveryorderdetail = DeliveryOrderDetail::create([
-                        'delivery_order_id'  => $id,
-                        'po_number'          => $request->po_number[$key],
-                        'item_name'          => $request->item_name[$key],
-                        'size'               => $request->size[$key],
-                        'qty'                => $request->qty[$key],
-                        'remarks'            => $request->remarks[$key],
-                    ]);
-                    if (!$deliveryorderdetail) {
-                        DB::rollBack();
-                        return response()->json([
-                            'status'    => false,
-                            'message'   => $deliveryorderdetail
-                        ], 400);
-                    }
-                }
-            }
-            $latestrit = DriverAllowanceList::whereDate('date', changeDateFormat('Y-m-d', $date_changed))->where('driver_id', $driver_changed)->where('group', $kloter)->whereRaw("truck like '%$truck_changed%'")->max('rit');
-            if ($latestrit) {
-                $del_rit = DriverAllowanceList::whereDate('date', changeDateFormat('Y-m-d', $date_changed))->where('driver_id', $driver_changed)->where('group', $kloter)->whereRaw("truck like '%$truck_changed%'")->where('rit', $latestrit);
-                $del_rit->delete();
-            }
-            $latestrit_new = DriverAllowanceList::whereDate('date', changeDateFormat('Y-m-d', changeSlash($request->date)))->where('driver_id', $request->driver_id)->where('group', $request->kloter)->whereRaw("truck like '%$request->type_truck%'")->max('rit');
-            $driverallowance = DriverAllowanceList::create([
-                'driver_id'     => $request->driver_id,
-                'date'          => changeDateFormat('Y-m-d', changeSlash($request->date)),
-                'rit'           => $latestrit_new ? ++$latestrit_new : 1,
-                'truck'         => $request->type_truck,
-                'group'         => $request->kloter
-            ]);
-            $driverlist = DriverList::where('type', $request->type_truck)->where('rit', ($driverallowance->rit >= 3) ? 3 : $driverallowance->rit)->first();
-            if (!$driverlist) {
-                DB::rollBack();
-                return response()->json([
-                    'status'    => false,
-                    'message'   => "Error: value for this truck " . $request->type_truck . " and this RIT " . $driverallowance->rit . " not found"
-                ], 400);
-            } else {
-                $driverallowance->value = $driverlist->value;
-                $driverallowance->update();
-            }
-            if (!$driverallowance) {
-                DB::rollBack();
-                return response()->json([
-                    'status'    => false,
-                    'message'   => $driverallowance
-                ], 400);
-            }
-        } else {
+        if (!$deliveryorder) {
             DB::rollBack();
             return response()->json([
                 'status'    => false,
@@ -483,13 +428,8 @@ class DeliveryOrderController extends Controller
     public function destroy($id)
     {
         try {
-            $list = DeliveryOrderDetail::where('delivery_order_id', '=', $id);
-            $list->delete();
             $deliveryorder = DeliveryOrder::find($id);
             $deliveryorder->delete();
-
-            $deleteallowance = DriverAllowanceList::whereDate('date', '=', changeDateFormat('Y-m-d', changeSlash($deliveryorder->date)))->where('driver_id', $deliveryorder->driver_id)->where('group', $deliveryorder->group)->whereRaw("truck like '%$deliveryorder->type_truck%'")->orderBy('rit', 'desc')->first();
-            $deleteallowance->delete();
         } catch (\Illuminate\Database\QueryException $e) {
             return response()->json([
                 'status'    => false,
@@ -499,6 +439,145 @@ class DeliveryOrderController extends Controller
         return response()->json([
             'status'    => true,
             'message'   => 'Success delete data'
+        ], 200);
+    }
+
+    public function import(Request $request)
+    {
+        return view('admin.deliveryorder.import');
+    }
+    public function preview(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'file'         => 'required|mimes:xlsx'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'    => false,
+                'message'   => $validator->errors()->first()
+            ], 400);
+        }
+        $file = $request->file('file');
+        try {
+            $filetype       = \PHPExcel_IOFactory::identify($file);
+            $objReader      = \PHPExcel_IOFactory::createReader($filetype);
+            $objPHPExcel    = $objReader->load($file);
+        } catch (\Exception $e) {
+            die('Error loading file "' . pathinfo($file, PATHINFO_BASENAME) . '": ' . $e->getMessage());
+        }
+        $data     = [];
+        $no = 1;
+        $sheet = $objPHPExcel->getActiveSheet(0);
+        $highestRow = $sheet->getHighestRow();
+        for ($row = 2; $row <= $highestRow; $row++) {
+            $driver_name = strtoupper($sheet->getCellByColumnAndRow(0, $row)->getValue());
+            $police_no = $sheet->getCellByColumnAndRow(1, $row)->getValue();
+            $type_truck = $sheet->getCellByColumnAndRow(2, $row)->getValue();
+            $kloter = $sheet->getCellByColumnAndRow(3, $row)->getValue();
+            $customer = $sheet->getCellByColumnAndRow(4, $row)->getValue();
+            if (is_numeric($sheet->getCellByColumnAndRow(5, $row)->getValue())){
+                $departure_time = date('Y-m-d H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(5, $row)->getValue())));
+            }else{
+                $departure_time = date('Y-m-d H:i:s', strtotime($sheet->getCellByColumnAndRow(5, $row)->getValue()));
+            }
+            if (is_numeric($sheet->getCellByColumnAndRow(6, $row)->getValue())){
+                $arrived_time = date('Y-m-d H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(6, $row)->getValue())));
+            }else{
+                $arrived_time = date('Y-m-d H:i:s', strtotime($sheet->getCellByColumnAndRow(6, $row)->getValue()));
+            }
+            // $departure_time = $sheet->getCellByColumnAndRow(5, $row)->getValue();
+            // $arrived_time = $sheet->getCellByColumnAndRow(6, $row)->getValue();
+            $status = 1;
+            $error_message = '';
+            if ($driver_name) {
+                $driver = Employee::whereRaw("upper(name) like '%$driver_name%'")
+                    ->get()
+                    ->first();
+                $data[] = array(
+                    'index' => $no,
+                    'driver_id' => $driver ? $driver->id : null,
+                    'driver_name' => $driver_name,
+                    'police_no' => $police_no,
+                    'type_truck' => $type_truck,
+                    'kloter' => $kloter,
+                    'customer' => $customer,
+                    'departure_time' => $departure_time,
+                    'arrived_time' => $arrived_time,
+                    'status' => $status
+                );
+                $no++;
+            }
+            if (!$driver || !$police_no || !$type_truck || !$kloter || !$customer || !$departure_time) {
+                $status = 0;
+                if (!$driver) {
+                    $error_message .= 'Driver Name Not Found</br>';
+                }
+                if (!$police_no) {
+                    $error_message .= 'Police No Not Found</br>';
+                }
+                if (!$type_truck) {
+                    $error_message .= 'Type Truck Not Found</br>';
+                }
+                if (!$kloter) {
+                    $error_message .= 'Kloter Not Found</br>';
+                }
+                if (!$customer) {
+                    $error_message .= 'Customer Not Found</br>';
+                }
+                if (!$departure_time) {
+                    $error_message .= 'Departure Time Not Found</br>';
+                }
+            }else{
+                $error_message .= 'the data is all right</br>';
+            }
+        }
+        return response()->json([
+            'status'     => true,
+            'data'     => $data
+        ], 200);
+    }
+    public function storemass(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            // 'name' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'    => false,
+                'message'   => $validator->errors()->first()
+            ], 400);
+        }
+        $deliveryorders = json_decode($request->deliveryorders);
+        // dd($deliveryorders);
+        DB::beginTransaction();
+        foreach ($deliveryorders as $deliveryorder) {
+            // $check = DeliveryOrder::where('destination', $deliveryorder->customer);
+            // if($check){
+            //     $delete = $check->delete();
+            // }
+            // if (!$check) {
+                $doimport = DeliveryOrder::create([
+                    'driver_id' => $deliveryorder->driver_id,
+                    'police_no' => $deliveryorder->police_no,
+                    'type_truck' => $deliveryorder->type_truck,
+                    'group' => $deliveryorder->kloter,
+                    'destination' => $deliveryorder->customer,
+                    'departure_time' => $deliveryorder->departure_time, 
+                    'arrived_time' => $deliveryorder->arrived_time 
+                ]);
+                if (!$doimport) {
+                    DB::rollback();
+                    return response()->json([
+                        'status' => false,
+                        'message'   => $doimport
+                    ], 400);
+                }
+            }
+        // }
+        DB::commit();
+        return response()->json([
+            'status' => true,
+            'results' => route('deliveryorder.index'),
         ], 200);
     }
 }
