@@ -16,4 +16,8 @@ class DeliveryOrder extends Model
     {
         return $this->hasMany('App\Models\DeliveryOrderDetail', 'delivery_order_id', 'id');
     }
+    public function partner()
+    {
+        return $this->hasOne('App\Models\Partner', 'id', 'partner_id');
+    }
 }

@@ -73,7 +73,7 @@
                             <i class="far fa-calendar-alt"></i>
                           </span>
                         </div>
-                        <input type="text" name="date_from" id="date_from" class="form-control datepicker filter" placeholder="Date">
+                        <input type="text" name="date_from" id="date_from" class="form-control filter" placeholder="Date">
                       </div>
                     </div>
                   </div>
@@ -98,12 +98,12 @@
                 <div class="form-group">
                   <label class="control-label" for="destination">Customer</label>
                   {{-- <input type="text" name="destination" id="destination" class="form-control filter" placeholder="Destination"> --}}
-                  <select name="destination" id="destination" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple data-placeholder="Customer">
+                  {{-- <select name="destination" id="destination" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple data-placeholder="Customer">
                     <option value=""></option>
                     @foreach ($desti as $tujuan)
                     <option value="{{ $tujuan->destination }}">{{ $tujuan->destination }}</option>
                     @endforeach
-                </select>
+                </select> --}}
                 </div>
               </div>
               {{-- <div class="col-md-4">
@@ -213,6 +213,18 @@
     $('.select2').select2({
       allowClear: true
     });
+    $('#date_from').daterangepicker({
+      autoUpdateInput: false,
+      singleDatePicker: true,
+      timePicker: false,
+      timePickerIncrement: 30,
+      locale: {
+      format: 'DD/MM/YYYY'
+      }
+    }, function(chosen_date) {
+      $('#date_from').val(chosen_date.format('DD/MM/YYYY'));
+      dataTable.draw();
+    });
     $('.datepicker').daterangepicker({
       singleDatePicker: true,
       timePicker: false,
@@ -251,18 +263,23 @@
       },
       columnDefs: [
         {orderable: false, targets: [0,5]},
-        {className: "text-center", targets: [0]},
+        {className: "text-center", targets: [3]},
         {className: "text-left", targets: [4]},
         { render: function(data, type, row) {
-            return `<a class="edit" data-id="${row.id}" href="#">${row.driver_name}</a><br>${row.nid}`;
+            return `<a class="edit" data-id="${row.id}" href="#">${row.driver_name}</a><br><small>${row.nid}</small>`;
         }, targets:[4]},
+        { render: function(data, type, row) {
+            return `${row.type_truck}<br><small>${row.police_no}</small>`;
+        }, targets:[5]},
+        { render: function(data, type, row) {
+            return `${row.customer}<br><small> RIT : ${row.rit}</small>`;
+        }, targets:[6]},
         { render: function ( data, type, row ) {
           return `<div class="dropdown">
                       <button class="btn  btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                           <i class="fa fa-bars"></i>
                       </button>
                       <ul class="dropdown-menu dropdown-menu-right">
-                          <li><a class="dropdown-item print" href="javascript:void(0);" onclick="eventPrint(this)" data-id="${row.id}"><i class="fas fa-print mr-2"></i> Print</a></li>
                           <li><a class="dropdown-item edit" href="#" data-id="${row.id}"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
                           <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
                       </ul>
@@ -277,7 +294,7 @@
         { data: "group" },
         { data: "driver_name" },
         { data: "police_no" },
-        { data: "destination" },
+        { data: "customer" },
         { data: "id" },
       ]
     });

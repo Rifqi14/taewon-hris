@@ -159,7 +159,7 @@
                   }
                 },targets: [8]
               },
-              { className: "text-center", targets: [7,8] },
+              { className: "text-center", targets: [8] },
           ],
       });
 

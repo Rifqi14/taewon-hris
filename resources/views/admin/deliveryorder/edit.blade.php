@@ -79,9 +79,9 @@
             </div>
             <div class="form-group col-sm-6">
               <div class="row">
-                <label class="col-sm-3 label-controls" for="destination">Customer</label>
+                <label class="col-sm-3 label-controls" for="customer">Customer</label>
                 <div class="col-sm-8 controls">
-                  <input type="text" id="destination" name="customer" class="form-control" placeholder="Customer" required value="{{ $deliveryorder->destination }}"/>
+                  <input type="text" id="customer" name="customer" class="form-control" placeholder="Customer"/>
                 </div>
               </div>
             </div>
@@ -231,6 +231,37 @@
     });
     @if($deliveryorder->driver_id)
       $("#driver_id").select2('data',{id:{{$deliveryorder->driver_id}},text:'{{$deliveryorder->driver->name}}'}).trigger('change');
+    @endif
+    $("#customer" ).select2({
+      ajax: {
+        url: "{{route('partner.select')}}",
+        type:'GET',
+        dataType: 'json',
+        data: function (term,page) {
+          return {
+            name:term,
+            page:page,
+            limit:30,
+          };
+        },
+        results: function (data,page) {
+          var more = (page * 30) < data.total;
+          var option = [];
+          $.each(data.rows,function(index,item){
+            option.push({
+              id:item.id,
+              text: item.name,
+            });
+          });
+          return {
+            results: option, more: more,
+          };
+        },
+      },
+      allowClear: true,
+    });
+    @if($deliveryorder->partner_id)
+      $("#customer").select2('data',{id:{{$deliveryorder->partner_id}},text:'{{$deliveryorder->partner->name}}'}).trigger('change');
     @endif
     $('#table-product').on('click','.remove',function(){
     $(this).parents('tr').remove();

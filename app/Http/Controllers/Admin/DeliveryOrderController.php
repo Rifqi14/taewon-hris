@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DriverAllowance;
 use App\Models\DriverAllowanceList;
 use App\Models\DriverList;
+use App\Models\Partner;
 use App\Models\Employee;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -97,6 +98,8 @@ class DeliveryOrderController extends Controller
             'delivery_orders.*',
             'driver.name as driver_name',
             'driver.nid',
+            'partners.name as customer',
+            'partners.rit as rit',
             'driver.department_id',
             'driver.workgroup_id',
             'departments.name as department_name',
@@ -105,7 +108,7 @@ class DeliveryOrderController extends Controller
         $query->leftJoin('employees as driver', 'driver.id', '=', 'delivery_orders.driver_id');
         $query->leftJoin('departments', 'departments.id', '=', 'driver.department_id');
         $query->leftJoin('work_groups', 'work_groups.id', '=', 'driver.workgroup_id');
-
+        $query->leftJoin('partners', 'partners.id', '=', 'delivery_orders.partner_id');
         if ($driver_id != "") {
             $query->whereRaw("upper(driver.name) like '%$driver_id%'");
         }
@@ -122,9 +125,9 @@ class DeliveryOrderController extends Controller
         if ($police_no) {
             $query->whereIn('delivery_orders.police_no', $police_no);
         }
-        if ($destination) {
-            $query->whereIn('delivery_orders.destination', $destination);
-        }
+        // if ($destination) {
+        //     $query->whereIn('delivery_orders.destination', $destination);
+        // }
         // if ($date_from) {
         //     $query->where('date','>=', $date_from);
         // }
@@ -144,6 +147,8 @@ class DeliveryOrderController extends Controller
             'delivery_orders.*',
             'driver.name as driver_name',
             'driver.nid',
+            'partners.name as customer',
+            'partners.rit as rit',
             'driver.department_id',
             'driver.workgroup_id',
             'departments.name as department_name',
@@ -152,7 +157,7 @@ class DeliveryOrderController extends Controller
         $query->leftJoin('employees as driver', 'driver.id', '=', 'delivery_orders.driver_id');
         $query->leftJoin('departments', 'departments.id', '=', 'driver.department_id');
         $query->leftJoin('work_groups', 'work_groups.id', '=', 'driver.workgroup_id');
-
+        $query->leftJoin('partners', 'partners.id', '=', 'delivery_orders.partner_id');
         if ($driver_id != "") {
             $query->whereRaw("upper(driver.name) like '%$driver_id%'");
         }
@@ -169,9 +174,9 @@ class DeliveryOrderController extends Controller
         if ($police_no) {
             $query->whereIn('delivery_orders.police_no', $police_no);
         }
-        if ($destination) {
-            $query->whereIn('delivery_orders.destination', $destination);
-        }
+        // if ($destination) {
+        //     $query->whereIn('delivery_orders.destination', $destination);
+        // }
         // if ($date_from) {
         //     $query->where('date','>=', $date_from);
         // }
@@ -250,12 +255,12 @@ class DeliveryOrderController extends Controller
         $query->groupBy('delivery_orders.police_no');
         $query->orderBy('police_no', 'asc');
         $police_nomer = $query->get();
-        $query = DB::table('delivery_orders');
-        $query->select('delivery_orders.destination');
-        $query->groupBy('delivery_orders.destination');
-        $query->orderBy('destination', 'asc');
-        $desti = $query->get();
-        return view('admin.deliveryorder.index', compact('employees', 'police_nomer', 'desti'));
+        // $query = DB::table('delivery_orders');
+        // $query->select('delivery_orders.destination');
+        // $query->groupBy('delivery_orders.destination');
+        // $query->orderBy('destination', 'asc');
+        // $desti = $query->get();
+        return view('admin.deliveryorder.index', compact('employees', 'police_nomer'));
     }
 
     /**
@@ -284,7 +289,7 @@ class DeliveryOrderController extends Controller
             // 'do_number'     => $request->do_number,
             'driver_id'     => $request->driver_id,
             'police_no'     => $request->police_no,
-            'destination'   => $request->customer,
+            'partner_id'    => $request->customer,
             'departure_time'=> changeDateFormat('Y-m-d H:i:s', changeSlash($request->departure_time)),
             'arrived_time'  => changeDateFormat('Y-m-d H:i:s', changeSlash($request->arrived_time)),
             'group'         => $request->kloter
@@ -369,7 +374,7 @@ class DeliveryOrderController extends Controller
      */
     public function edit($id)
     {
-        $deliveryorder = DeliveryOrder::with('deliveryorderdetail')->find($id);
+        $deliveryorder = DeliveryOrder::with('deliveryorderdetail')->with('partner')->find($id);
         $query = DB::table('delivery_orders');
         $query->select('delivery_orders.*', 'deliveryorderdetail.po_number');
 
@@ -400,7 +405,7 @@ class DeliveryOrderController extends Controller
         // $deliveryorder->do_number       = $request->do_number;
         $deliveryorder->driver_id       = $request->driver_id;
         $deliveryorder->police_no       = $request->police_no;
-        $deliveryorder->destination     = $request->customer;
+        $deliveryorder->partner_id      = $request->customer;
         $deliveryorder->group           = $request->kloter;
         $deliveryorder->departure_time  = $request->departure_time;
         $deliveryorder->arrived_time    = $request->arrived_time;
@@ -474,7 +479,7 @@ class DeliveryOrderController extends Controller
             $police_no = $sheet->getCellByColumnAndRow(1, $row)->getValue();
             $type_truck = $sheet->getCellByColumnAndRow(2, $row)->getValue();
             $kloter = $sheet->getCellByColumnAndRow(3, $row)->getValue();
-            $customer = $sheet->getCellByColumnAndRow(4, $row)->getValue();
+            $customer = strtoupper($sheet->getCellByColumnAndRow(4, $row)->getValue());
             if (is_numeric($sheet->getCellByColumnAndRow(5, $row)->getValue())){
                 $departure_time = date('Y-m-d H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(5, $row)->getValue())));
             }else{
@@ -485,29 +490,13 @@ class DeliveryOrderController extends Controller
             }else{
                 $arrived_time = date('Y-m-d H:i:s', strtotime($sheet->getCellByColumnAndRow(6, $row)->getValue()));
             }
+            $partner = Partner::whereRaw("upper(name) like '%$customer%'")->first();
+            $driver = Employee::whereRaw("upper(name) like '%$driver_name%'")->get()->first();
             // $departure_time = $sheet->getCellByColumnAndRow(5, $row)->getValue();
             // $arrived_time = $sheet->getCellByColumnAndRow(6, $row)->getValue();
             $status = 1;
             $error_message = '';
-            if ($driver_name) {
-                $driver = Employee::whereRaw("upper(name) like '%$driver_name%'")
-                    ->get()
-                    ->first();
-                $data[] = array(
-                    'index' => $no,
-                    'driver_id' => $driver ? $driver->id : null,
-                    'driver_name' => $driver_name,
-                    'police_no' => $police_no,
-                    'type_truck' => $type_truck,
-                    'kloter' => $kloter,
-                    'customer' => $customer,
-                    'departure_time' => $departure_time,
-                    'arrived_time' => $arrived_time,
-                    'status' => $status
-                );
-                $no++;
-            }
-            if (!$driver || !$police_no || !$type_truck || !$kloter || !$customer || !$departure_time) {
+            if (!$driver || !$police_no || !$type_truck || !$kloter || !$partner || !$departure_time) {
                 $status = 0;
                 if (!$driver) {
                     $error_message .= 'Driver Name Not Found</br>';
@@ -521,14 +510,29 @@ class DeliveryOrderController extends Controller
                 if (!$kloter) {
                     $error_message .= 'Kloter Not Found</br>';
                 }
-                if (!$customer) {
+                if (!$partner) {
                     $error_message .= 'Customer Not Found</br>';
                 }
                 if (!$departure_time) {
                     $error_message .= 'Departure Time Not Found</br>';
                 }
-            }else{
-                $error_message .= 'the data is all right</br>';
+            }
+            if ($driver_name) {
+                $data[] = array(
+                    'index' => $no,
+                    'driver_id' => $driver ? $driver->id : null,
+                    'driver_name' => $driver_name,
+                    'police_no' => $police_no,
+                    'type_truck' => $type_truck,
+                    'kloter' => $kloter,
+                    'customer' => $customer,
+                    'customer_id' => $partner ? $partner->id : null,
+                    'departure_time' => $departure_time,
+                    'arrived_time' => $arrived_time,
+                    'error_message' => $error_message,
+                    'status' => $status
+                );
+                $no++;
             }
         }
         return response()->json([
@@ -556,12 +560,21 @@ class DeliveryOrderController extends Controller
             //     $delete = $check->delete();
             // }
             // if (!$check) {
+
+                if (!$deliveryorder->customer_id || !$deliveryorder->driver_id || !$deliveryorder->type_truck || !$deliveryorder->police_no || !$deliveryorder->kloter) {
+                    DB::rollback();
+                    return response()->json([
+                        'status' => false,
+                        'message'   => 'Data Belum Lengkap'
+                    ], 400);
+                }
+
                 $doimport = DeliveryOrder::create([
                     'driver_id' => $deliveryorder->driver_id,
                     'police_no' => $deliveryorder->police_no,
                     'type_truck' => $deliveryorder->type_truck,
                     'group' => $deliveryorder->kloter,
-                    'destination' => $deliveryorder->customer,
+                    'partner_id' => $deliveryorder->customer_id,
                     'departure_time' => $deliveryorder->departure_time, 
                     'arrived_time' => $deliveryorder->arrived_time 
                 ]);
