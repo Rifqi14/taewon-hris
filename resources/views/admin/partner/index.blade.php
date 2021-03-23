@@ -1,18 +1,18 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Partner')
+@section('title', 'Customer')
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 @push('breadcrump')
-    <li class="breadcrumb-item active">Partner</li>
+    <li class="breadcrumb-item active">Customer</li>
 @endpush
 @section('content')
 <div class="row">
     <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Data Partner</h3>
+          <h3 class="card-title">Data Customer</h3>
           <!-- tools card -->
           <div class="pull-right card-tools">
             <a href="{{route('partner.create')}}" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="Tambah">
@@ -30,8 +30,9 @@
                     <tr>
                         <th width="10">#</th>
                         <th width="100">Nama</th>
-                        <th width="50">RIT</th>
-                        <th width="50">Dibuat</th>
+                        <th width="100">Email</th>
+                        <th width="100">RIT</th>
+                        <th width="50">Status</th>
                         <th width="10">#</th>
                     </tr>
                 </thead>
@@ -102,11 +103,20 @@ $(function(){
                 orderable: false,targets:[0]
             },
             { className: "text-right", targets: [0] },
-            { className: "text-center", targets: [2,3,4] },
+            { className: "text-center", targets: [2,3,4,5] },
             { render: function ( data, type, row ) {
-                return `${row.name} <br> ${row.code}`
-            },targets: [1]
-            },
+                return `${row.name} <br><small>${row.code}</small>`
+            },targets: [1]},
+            { render: function ( data, type, row ) {
+                return `${row.email} <br><small>${row.phone}</small>`
+            },targets: [2]},
+            { render: function(data, type, row) {
+                if (data == 1) {
+                    return '<span class="badge badge-success">Active</span>';
+                } else {
+                    return '<span class="badge badge-danger">Non Active</span>';
+                }
+            }, targets:[4]},
             { render: function ( data, type, row ) {
                 return `<div class="dropdown">
                     <button class="btn  btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -116,14 +126,15 @@ $(function(){
                         <li><a class="dropdown-item" href="{{url('admin/partner')}}/${row.id}/edit"><i class="fa fa-edit"></i> Edit</a></li>
                         <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fa fa-trash"></i> Delete</a></li>
                     </ul></div>`
-            },targets: [4]
+            },targets: [5]
             }
         ],
         columns: [
             { data: "no" },
             { data: "name" },
+            { data: "email" },
             { data: "rit" },
-            { data: "created_at" },
+            { data: "status" },
             { data: "id" },
         ]
     });
@@ -153,7 +164,7 @@ $(function(){
                             _token: "{{ csrf_token() }}"
                         };
 						$.ajax({
-							url: `{{url('admin/province')}}/${id}`,
+							url: `{{url('admin/partner')}}/${id}`,
 							dataType: 'json', 
 							data:data,
 							type:'DELETE',

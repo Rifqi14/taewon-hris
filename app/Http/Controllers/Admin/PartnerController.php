@@ -17,6 +17,35 @@ class PartnerController extends Controller
     {
         View::share('menu_active', url('admin/' . 'partner'));
     }
+    public function select(Request $request){
+        $start = $request->page?$request->page - 1:0;
+        $length = $request->limit;
+        $name = strtoupper($request->name);
+
+        //Count Data
+        $query = DB::table('partners');
+        $query->select('partners.*');
+        $query->whereRaw("upper(name) like '%$name%'");
+        $recordsTotal = $query->count();
+
+        //Select Pagination
+        $query = DB::table('partners');
+        $query->select('partners.*');
+        $query->whereRaw("upper(name) like '%$name%'");
+        $query->offset($start);
+        $query->limit($length);
+        $partners = $query->get();
+
+        $data = [];
+        foreach($partners as $partner){
+            $partner->no = ++$start;
+            $data[] = $partner;
+        }
+        return response()->json([
+            'total'=>$recordsTotal,
+            'rows'=>$data
+        ], 200);
+    }
     public function read(Request $request)
     {
         $start = $request->start;
@@ -83,7 +112,6 @@ class PartnerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'     => 'required',
-            'code'     => 'required',
             'rit'      => 'required'
         ]);
 
@@ -93,21 +121,32 @@ class PartnerController extends Controller
                 'message'     => $validator->errors()->first()
             ], 400);
         }
-
+        DB::beginTransaction();
         $partner = Partner::create([
-            'code'     => $request->code,
+            'code'     => '',
+            'site_id'  => Session::get('site_id'),
             'name'     => $request->name,
             'address'  => $request->address,
             'email'    => $request->email,
             'phone'    => $request->phone,
-            'rit'      => $request->rit
+            'rit'      => $request->rit,
+            'status'   => $request->status,
         ]);
+        if ($request->code) {
+            $partner->code = $request->code;
+            $partner->save();
+        } else {
+            $partner->code = $partner->code_system;
+            $partner->save();
+        }
         if (!$partner) {
+            DB::rollBack();
             return response()->json([
                 'status' => false,
                 'message'     => $partner
             ], 400);
         }
+        DB::commit();
         return response()->json([
             'status'     => true,
             'results'     => route('partner.index'),
@@ -148,7 +187,6 @@ class PartnerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'     => 'required',
-            'code'     => 'required',
             'rit'      => 'required'
         ]);
 
@@ -166,6 +204,7 @@ class PartnerController extends Controller
         $partner->email   = $request->email;
         $partner->phone   = $request->phone;
         $partner->rit     = $request->rit;
+        $partner->status  = $request->status;
         $partner->save();
 
         if (!$partner) {

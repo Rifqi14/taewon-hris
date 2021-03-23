@@ -1,11 +1,11 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Partner ')
+@section('title', 'Customer ')
 @section('stylesheets')
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('partner.index')}}">Partner</a></li>
+<li class="breadcrumb-item"><a href="{{route('partner.index')}}">Customer</a></li>
 <li class="breadcrumb-item active">Create</li>
 @endpush
 
@@ -15,7 +15,7 @@
     <div class="col-lg-8">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header" style="height: 57px;">
-          <h3 class="card-title">Partner Data</h3>
+          <h3 class="card-title">Customer Data</h3>
         </div>
         <div class="card-body">
           <form id="form" action="{{ route('partner.store') }}" method="post" autocomplete="off">
@@ -24,8 +24,8 @@
               <div class="col-sm-6">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Code <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="code" id="code" placeholder="Code" required>
+                  <label>Code</label>
+                  <input type="text" class="form-control" name="code" id="code" placeholder="Code">
                 </div>
               </div>
               <div class="col-sm-6">
@@ -47,11 +47,17 @@
                 <!-- text input -->
                 <div class="form-group">
                   <label>Number Phone</label>
-                  <input class="form-control" type="phone" id="phone" placeholder="Number Phone" name="phone">
+                  <input class="form-control" type="number" id="phone" placeholder="Number Phone" name="phone">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <!-- text input -->
+                <div class="form-group">
+                  <label>Email</label>
+                  <input class="form-control" type="email" id="email" placeholder="Email" name="email">
                 </div>
               </div>
             </div>
-            <div style="height: 23px;"></div>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-refresh fa-spin"></i>
@@ -76,19 +82,23 @@
                 <!-- text input -->
                 <div class="form-group">
                   <label>Address</label>
-                  <textarea class="form-control" name="address" placeholder="Address"></textarea>
+                  <textarea class="form-control" name="address" placeholder="Address" rows="4"></textarea>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <label>Email</label>
-                  <input class="form-control" id="email" placeholder="Email" name="email">
+                  <label>Status</label>
+                  <select name="status" id="status" class="form-control">
+                    <option value="1">Active</option>
+                    <option value="0">Non Active</option>
+                  </select>
                 </div>
               </div>
             </div>
           </form>
+          <div style="height: 10px;"></div>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -103,7 +113,7 @@
   <script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
   <script>
     $(document).ready(function(){
-         
+         $('#status').select2();
           $("#form").validate({
             errorElement: 'div',
             errorClass: 'invalid-feedback',

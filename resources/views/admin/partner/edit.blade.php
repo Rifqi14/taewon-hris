@@ -48,11 +48,17 @@
                 <!-- text input -->
                 <div class="form-group">
                   <label>Number Phone</label>
-                  <input class="form-control" type="phone" id="phone" value="{{$partner->phone}}" placeholder="Number Phone" name="phone">
+                  <input class="form-control" type="number" id="phone" value="{{$partner->phone}}" placeholder="Number Phone" name="phone">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <!-- text input -->
+                <div class="form-group">
+                  <label>Email</label>
+                  <input class="form-control" type="email" id="email" value="{{$partner->email}}" placeholder="Email" name="email">
                 </div>
               </div>
             </div>
-            <div style="height: 23px;"></div>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-refresh fa-spin"></i>
@@ -77,19 +83,23 @@
                 <!-- text input -->
                 <div class="form-group">
                   <label>Address</label>
-                  <textarea class="form-control" name="address" value="{{$partner->address}}" placeholder="Address">{{$partner->address}}</textarea>
+                  <textarea class="form-control" name="address" value="{{$partner->address}}" rows="4" placeholder="Address">{{$partner->address}}</textarea>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <label>Email</label>
-                  <input class="form-control" id="email" value="{{$partner->email}}" placeholder="Email" name="email">
+                  <label>Status</label>
+                  <select name="status" class="form-control" id="status">
+                    <option value="1" @if($partner->status == '1') selected @endif>Active</option>
+                    <option value="0" @if($partner->status == '0') selected @endif>Non Active</option>
+                  </select>
                 </div>
               </div>
             </div>
           </form>
+          <div style="height: 10px;"></div>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -104,7 +114,7 @@
   <script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
   <script>
     $(document).ready(function(){
-         
+          $('#status').select2();
           $("#form").validate({
             errorElement: 'div',
             errorClass: 'invalid-feedback',
