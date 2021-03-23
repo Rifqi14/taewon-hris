@@ -207,7 +207,7 @@ class DriverAllowanceController extends Controller
     {
         $driver = DriverAllowance::with('driverlist')->find($id);
         $query = DB::table('driver_lists');
-        $query->select('driver_lists.start', 'driver_lists.finish', 'driver_lists.value');
+        $query->select('driver_lists.start', 'driver_lists.finish', 'driver_lists.value', 'driver_lists.type_value');
         $query->leftJoin('driver_allowances', 'driver_allowances.id', '=', 'driver_lists.driver_allowance_id');
         $query->where('driver_lists.driver_allowance_id', '=', $id);
         $query->whereNotNull('driver_lists.recurrence_day');
@@ -303,6 +303,7 @@ class DriverAllowanceController extends Controller
                                 'recurrence_day'        => $value,
                                 'start'                 => $request->start[$key1],
                                 'finish'                => $request->finish[$key1],
+                                'type_value'            => $request->type_value,
                                 'value'                 => $request->value[$key1]
                             ]);
                             if (!$list) {
@@ -323,6 +324,7 @@ class DriverAllowanceController extends Controller
                         'driver_allowance_id'   => $id,
                         'type'                  => $request->type,
                         'rit'                   => $request->rit[$key],
+                        'type_value'            => $request->type_value,
                         'value'                 => str_replace(['.', ','], '', $request->rit_value[$key])
                     ]);
                     if (!$list) {

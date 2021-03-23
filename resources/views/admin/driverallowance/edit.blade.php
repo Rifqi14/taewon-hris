@@ -85,6 +85,7 @@
               <th width="10">No</th>
               <th width="100">Start Time</th>
               <th width="100">Finish Time</th>
+              <th width="100">Type</th>
               <th width="100">Value</th>
               <th width="10">Action</th>
             </tr>
@@ -92,6 +93,7 @@
           <tbody>
             @if (count($list) > 0 && $driver->driverlist->first()->type == null)
             @foreach ($list as $key => $item)
+            {{-- @dump($item); --}}
             <tr>
               <td class="text-center align-middle">{{ $key + 1 }}</td>
               <td class="text-center align-middle">
@@ -101,15 +103,23 @@
                 <div class="form-group mb-0"><input placeholder="Finish Time" name="finish[{{ $key }}]" class="form-control timepicker" required value="{{ $item->finish }}" />
                 </div>
               </td>
+              <td class="align-middle">
+                <div class="form-group mb-0">
+                  <select class="form-control select2" name="type_value" id="type_value">
+                    <option value="nominal" @if ($item->type_value == 'nominal') selected @endif>Nominal</option>
+                    <option value="percentage" @if ($item->type_value == 'percentage') selected @endif>Percentage</option>
+                  </select>
+                </div>
+              </td>
               <td class="text-center align-middle">
                 <div class="input-group mb-0">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text" id="currency_symbol">Rp.</span>
+                  {{-- <div class="input-group-prepend"> --}}
+                    {{-- <span class="input-group-text" id="currency_symbol">Rp.</span> --}}
                     {{-- <select class="input-group-text" style="appearance:none; -webkit-appearance:none; -moz-appearance:none;" name="type_value" id="currency_symbol2">
                       <option value="nominal" @if ($item->type_value == 'nominal') selected @endif>Rp.</option>
                       <option value="percentage" @if ($item->type_value == 'percentage') selected @endif>%</option>
                     </select> --}}
-                  </div>
+                  {{-- </div> --}}
                   <input placeholder="Value" name="value[{{ $key }}]" class="form-control currency" aria-label="Value" aria-describedby="currency_symbol" required value="{{ $item->value }}">
                 </div>
               </td>
@@ -170,6 +180,7 @@
             <tr>
               <th width="10">No</th>
               <th width="100">RIT</th>
+              <th width="100">Type</th>
               <th width="200">Value</th>
               <th width="10">Action</th>
             </tr>
@@ -182,15 +193,23 @@
               <td class="text-center align-middle">
                 <div class="form-group mb-0"><input type="hidden" name="type_choose[]" /><input placeholder="RIT" name="rit[]" class="form-control" value="{{ $item->rit }}" required /></div>
               </td>
+              <td class="align-middle">
+                <div class="form-group mb-0">
+                  <select class="form-control select2" name="type_value" id="type_value">
+                    <option value="nominal" @if ($item->type_value == 'nominal') selected @endif>Nominal</option>
+                    <option value="percentage" @if ($item->type_value == 'percentage') selected @endif>Percentage</option>
+                  </select>
+                </div>
+              </td>
               <td class="text-center align-middle">
                 <div class="input-group mb-0">
-                  <div class="input-group-prepend">
+                  {{-- <div class="input-group-prepend"> --}}
                     {{-- <span class="input-group-text" id="currency_symbol2">Rp.</span> --}}
-                    <select class="input-group-text" style="appearance:none; -webkit-appearance:none; -moz-appearance:none;" name="type_value" id="currency_symbol2">
+                    {{-- <select class="input-group-text" style="appearance:none; -webkit-appearance:none; -moz-appearance:none;" name="type_value" id="currency_symbol2">
                       <option value="nominal" @if ($item->type_value == 'nominal') selected @endif>Rp.</option>
                       <option value="percentage" @if ($item->type_value == 'percentage') selected @endif>%</option>
                     </select>
-                  </div>
+                  </div> --}}
                   <input placeholder="Value" name="rit_value[]" class="form-control currency" aria-label="Value" value="{{ $item->value }}" aria-describedby="currency_symbol2" required>
                 </div>
               </td>
@@ -282,7 +301,9 @@
     var html = '<tr>';
         html += '<td class="text-center align-middle">'+length+'</td>';
         html += '<td class="text-center align-middle"><div class="form-group mb-0"><input type="hidden" name="type_choose[]"/><input placeholder="RIT" name="rit[]" class="form-control" required/></div></td>';
-        html += '<td class="text-center align-middle"><div class="input-group mb-0"><div class="input-group-prepend"><span class="input-group-text" id="currency_symbol2">Rp.</span></div><input placeholder="Value" name="rit_value[]" class="form-control currency" aria-label="Value" aria-describedby="currency_symbol2" required></div></td>';
+        // html += '<td class="text-center align-middle"><div class="input-group mb-0"><div class="input-group-prepend"><span class="input-group-text" id="currency_symbol2">Rp.</span></div><input placeholder="Value" name="rit_value[]" class="form-control currency" aria-label="Value" aria-describedby="currency_symbol2" required></div></td>';
+        html += '<td class="align-middle"><div class="form-group mb-0"><select name="type_value" class="form-control select2" id="type_value"><option value="nominal">Nominal</option><option value="percentage">Percentage</option></select></div></td>';
+        html += '<td class="text-center align-middle"><div class="input-group mb-0"><input placeholder="Nilai" name="rit_value[]" class="form-control" aria-label="Value" aria-describedby="currency_symbol2" required></div></td>';
         html += '<td class="text-center align-middle"><a href="javascript:void(0)" class="fa fa-plus fa-lg d-inline" onclick="addType()"></a> / <a href="javascript:void(0)" class="fa fa-trash fa-lg d-inline remove"></a></td>';
         html += '</tr>'
     $('#type_table').append(html);
@@ -294,7 +315,9 @@
         html += '<td class="text-center align-middle">'+number+'</td>';
         html += '<td class="text-center align-middle"><div class="form-group mb-0"><input type="hidden" name="recurrence_choose['+length+']"/><input placeholder="Start Time" name="start['+length+']" class="form-control timepicker" required/></div></td>';
         html += '<td class="text-center align-middle"><div class="form-group mb-0"><input placeholder="Finish Time" name="finish['+length+']" class="form-control timepicker" required/></div></td>';
-        html += '<td class="text-center align-middle"><div class="input-group mb-0"><div class="input-group-prepend"><span class="input-group-text" id="currency_symbol">Rp.</span></div><input placeholder="Value" name="value['+length+']" class="form-control currency" aria-label="Value" aria-describedby="currency_symbol" required></div></td>';
+        // html += '<td class="text-center align-middle"><div class="input-group mb-0"><div class="input-group-prepend"><span class="input-group-text" id="currency_symbol">Rp.</span></div><input placeholder="Value" name="value['+length+']" class="form-control currency" aria-label="Value" aria-describedby="currency_symbol" required></div></td>';
+        html += '<td class="align-middle"><div class="form-group mb-0"><select name="type_value" class="form-control select2" id="type_value"><option value="nominal">Nominal</option><option value="percentage">Percentage</option></select></div></td>';
+        html += '<td class="text-center align-middle"><div class="input-group mb-0"><input placeholder="Nilai" name="rit_value[]" class="form-control" aria-label="Value" aria-describedby="currency_symbol" required></div></td>';
         html += '<td class="text-center align-middle"><a href="javascript:void(0)" onclick="addRecurrence()" class="fa fa-plus fa-lg d-inline"></a> / <a href="#" class="fa fa-trash fa-lg d-inline remove"></a></td>';
         html += '</tr>';
     $('#recurrence_table').append(html);
