@@ -38,13 +38,13 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Start Overtime <b class="text-danger">*</b></label>
-                            <input placeholder="Start Overtime" name="start_overtime" class="form-control timepicker"/>
+                            <input placeholder="Start Overtime" name="start_overtime" id="start_overtime" class="form-control"/>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Finish Overtime <b class="text-danger">*</b></label>
-                            <input placeholder="Finish Overtime" name="finish_overtime" class="form-control timepicker"/>
+                            <input placeholder="Finish Overtime" name="finish_overtime" id="finish_overtime" class="form-control"/>
                         </div>
                     </div>
                 </div>
@@ -116,16 +116,32 @@
                 $(this).closest("form").validate().form();
             }
         })
-		$('.timepicker').daterangepicker({
+		$('#start_overtime').daterangepicker({
 			singleDatePicker: true,
 			timePicker: true,
 			timePicker24Hour: true,
 			timePickerIncrement: 1,
 			timePickerSeconds: false,
 			locale: {
-				format: 'MM/DD/YYYY HH:mm:ss'
+				format: 'DD/MM/YYYY HH:mm:ss'
 			}
-		});
+		},
+		function(chosen_date) {
+            $('#start_overtime').val(chosen_date.format('DD/MM/YYYY HH:mm:ss'));
+        });
+		$('#finish_overtime').daterangepicker({
+			singleDatePicker: true,
+			timePicker: true,
+			timePicker24Hour: true,
+			timePickerIncrement: 1,
+			timePickerSeconds: false,
+			locale: {
+				format: 'DD/MM/YYYY HH:mm:ss'
+			}
+		},
+		function(chosen_date) {
+            $('#finish_overtime').val(chosen_date.format('DD/MM/YYYY HH:mm:ss'));
+        });
         $('#employee_name').select2({
             ajax: {
                 url: "{{route('spl.selectemployee')}}",

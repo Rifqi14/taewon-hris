@@ -146,15 +146,20 @@ class SPLController extends Controller
                 'message'     => $validator->errors()->first()
             ], 400);
         }
-
+        $dateTimeStart = str_replace('/','-',$request->start_overtime);
+        $dateTimeFinish = str_replace('/','-',$request->finish_overtime);
         $spl = Spl::create([
             'employee_id' => $request->employee_name,
             'nik' => $request->nik,
-            'start_overtime' => $request->start_overtime,
-            'finish_overtime' => $request->finish_overtime,
+            'start_overtime' => $dateTimeStart,
+            'finish_overtime' => $dateTimeFinish,
             'notes' => $request->notes,
             'status' => $request->status,
         ]);
+        $spl->duration = floor((strtotime($dateTimeFinish) - strtotime($dateTimeStart)) / (60*60));
+        // $jam = floor($spl->duration/(60*60));
+        // dd($spl);
+        $spl->save();
         if (!$spl) {
             return response()->json([
                 'status' => false,
@@ -213,7 +218,8 @@ class SPLController extends Controller
                 'message'     => $validator->errors()->first()
             ], 400);
         }
-
+        $dateTimeStart = str_replace('/','-',$request->start_overtime);
+        $dateTimeFinish = str_replace('/','-',$request->finish_overtime);
         $spl = Spl::find($id);
         $spl->employee_id = $request->employee_name;
         $spl->nik = $request->nik;
@@ -221,6 +227,7 @@ class SPLController extends Controller
         $spl->finish_overtime = $request->finish_overtime;
         $spl->notes = $request->notes;
         $spl->status = $request->status;
+        $spl->duration = floor((strtotime($dateTimeFinish) - strtotime($dateTimeStart)) / (60*60));
         $spl->save();
 
         if (!$spl) {
