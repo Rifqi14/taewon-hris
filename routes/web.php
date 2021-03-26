@@ -280,6 +280,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/attendance/syncpage', 'Admin\AttendanceController@syncPage')->name('attendance.syncpage');
         Route::post('/attendance/preview', 'Admin\AttendanceController@preview')->name('attendance.preview');
         Route::post('/attendance/storemass', 'Admin\AttendanceController@storemass')->name('attendance.storemass');
+        Route::post('/attendance/newstoremass', 'Admin\AttendanceController@new_storemass')->name('attendance.newstoremass');
         Route::post('/attendance/preview2', 'Admin\AttendanceController@preview2')->name('attendance.preview2');
         Route::post('/attendance/storemass2', 'Admin\AttendanceController@storemass2')->name('attendance.storemass2');
         Route::post('/attendance/syncmass', 'Admin\AttendanceController@syncMass')->name('attendance.syncmass');

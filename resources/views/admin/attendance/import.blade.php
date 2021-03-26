@@ -33,7 +33,7 @@
         <!-- /. tools -->
       </div>
       <div class="card-body">
-        <form id="form" action="{{route('attendance.storemass')}}">
+        <form id="form" action="{{route('attendance.newstoremass')}}">
         </form>
         <div class="pull-right offset-8">
           <div class="row">

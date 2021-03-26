@@ -313,33 +313,31 @@ class AttendanceController extends Controller
         $sheet = $objPHPExcel->getActiveSheet(0);
         $highestRow = $sheet->getHighestRow();
         for ($row = 3; $row <= $highestRow; $row++) {
-            $personel_id = $sheet->getCellByColumnAndRow(0, $row)->getValue();
-            $first_name = $sheet->getCellByColumnAndRow(1, $row)->getValue();
-            $last_name = $sheet->getCellByColumnAndRow(2, $row)->getValue();
+            $personel_id     = $sheet->getCellByColumnAndRow(0, $row)->getValue();
+            $first_name      = $sheet->getCellByColumnAndRow(1, $row)->getValue();
+            $last_name       = $sheet->getCellByColumnAndRow(2, $row)->getValue();
             $department_name = $sheet->getCellByColumnAndRow(3, $row)->getValue();
             $attendance_area = $sheet->getCellByColumnAndRow(4, $row)->getValue();
-            $serial_number = $sheet->getCellByColumnAndRow(5, $row)->getValue();
-            $device_name = $sheet->getCellByColumnAndRow(6, $row)->getValue();
-            $point_name = $sheet->getCellByColumnAndRow(7, $row)->getValue();
+            $serial_number   = $sheet->getCellByColumnAndRow(5, $row)->getValue();
+            $device_name     = $sheet->getCellByColumnAndRow(6, $row)->getValue();
+            $point_name      = $sheet->getCellByColumnAndRow(7, $row)->getValue();
             $attendance_date = $sheet->getCellByColumnAndRow(8, $row)->getValue();
-            $date_source = $sheet->getCellByColumnAndRow(9, $row)->getValue();
+            $date_source     = $sheet->getCellByColumnAndRow(9, $row)->getValue();
             if ($personel_id) {
-                $employee = Employee::whereRaw("upper(nid) like '%$personel_id%'")
-                    ->get()
-                    ->first();
+                $employee = Employee::whereRaw("upper(nid) like '%$personel_id%'")->get()->first();
                 $data[] = array(
                     'index' => $no,
-                    'employee_id' => $employee ? $employee->id : null,
-                    'personel_id' => $personel_id,
-                    'first_name' => $first_name,
-                    'last_name' => $last_name,
+                    'employee_id'     => $employee ? $employee->id : null,
+                    'personel_id'     => $personel_id,
+                    'first_name'      => $first_name,
+                    'last_name'       => $last_name,
                     'department_name' => $department_name,
                     'attendance_area' => $attendance_area,
-                    'serial_number' => $serial_number,
-                    'device_name' => $device_name,
-                    'point_name' => $point_name,
+                    'serial_number'   => $serial_number,
+                    'device_name'     => $device_name,
+                    'point_name'      => $point_name,
                     'attendance_date' => $attendance_date,
-                    'date_source' => $date_source
+                    'date_source'     => $date_source
                 );
                 $no++;
             }
@@ -598,7 +596,9 @@ class AttendanceController extends Controller
                     }
                     $attendance_hour = array('attendance_in' => $attendance_in, 'attendance_out' => $attendance_out);
                     $shift = shiftBetween($workingtimes, $attendance_hour);
+                    
                     $shift2 = findShift($shift, $attendance_hour);
+
 
 
                     $worktime = $this->employee_worktime($adjustment->employee_id);
@@ -897,6 +897,7 @@ class AttendanceController extends Controller
     }
     public function new_storemass(Request $request)
     {
+        
         $validator = Validator::make($request->all(), [
             'attendance'    => 'required'
         ]);
@@ -932,7 +933,8 @@ class AttendanceController extends Controller
                             'adj_over_time'     => 0,
                             'day'               => (in_array($date, $exception_date)) ? 'Off' : changeDateFormat('D', $date),
                             'created_at'        => Carbon::now()->toDateTimeString(),
-                            'updated_at'        => Carbon::now()->toDateTimeString()
+                            'updated_at'        => Carbon::now()->toDateTimeString(),
+                            'breaktime'         => 0,
                         ]);
                         if (!$createAttendance) {
                             return response()->json([
@@ -1002,6 +1004,7 @@ class AttendanceController extends Controller
             if ($update) {
                 $employee = Employee::find($updatelog->employee_id);
                 $attendance_in = AttendanceLog::where('attendance_id', $update->id)->where('employee_id', $update->employee_id)->where('type', 1)->min('attendance_date');
+                // dd($attendance_in);
                 if ($attendance_in) {
                     $attendance_out = AttendanceLog::where('attendance_date', '>', $attendance_in)->where('attendance_id', $update->id)->where('employee_id', $update->employee_id)->where('type', 0)->max('attendance_date');
                 } else {
@@ -1052,339 +1055,458 @@ class AttendanceController extends Controller
                 }
                 $update->overtime_scheme_id = $overtime_list->overtime_scheme_id;
                 $update->save();
+                // dd($update);
 
                 //end log in/ log out
-                
 
                 $adjustment = Attendance::find($update->id);
-                $attendance_in = $adjustment->attendance_in ? $adjustment->attendance_in : null;
-                $attendance_out = $adjustment->attendance_out ? $adjustment->attendance_out : null;
-                // Find closest shift
-                $workingtimes = $this->get_workingtime($adjustment->day); //Get master shift sesuai hari
-                if (!$workingtimes) {
-                    return response()->json([
-                        'status'     => false,
-                        'message'     => 'Working Shift for this day ' . $adjustment->day . ' not found. Please check master shift.'
-                    ], 400);
-                }
-                $breaktimes = $this->get_breaktime($employee->workgroup_id);
-                if (!$breaktimes) {
-                    return response()->json([
-                        'status'     => false,
-                        'message'     => 'Break time for this employee workgroup ' . $employee->workgroup->name . ' not found. Please check master break.'
-                    ], 400);
-                }
-                $attendance_hour = array('attendance_in' => $attendance_in, 'attendance_out' => $attendance_out);
-                $shift = shiftBetween($workingtimes, $attendance_hour);
-                $shift2 = findShift($shift, $attendance_hour);
-
-
-                $worktime = $this->employee_worktime($adjustment->employee_id);
-
-                $adjustment->workingtime_id = $worktime->working_time ? $worktime->working_time : $shift2->id;
-                $getworkingtime = $this->checkWorkingtime($adjustment->workingtime_id, $adjustment->day);
-                // Variable to check working time and over time
-                if (!$getworkingtime) {
-                    return response()->json([
-                        'status'     => false,
-                        'message'     => 'Working shift for employee name ' . $employee->name . ' and attendance date ' . $adjustment->attendance_date . ' and this day ' . $adjustment->day . ' not found. Please check master shift.'
-                    ], 400);
-                }
-                if (($getworkingtime->start >= changeDateFormat('H:i:s', $attendance_in)) && (changeDateFormat('H:i:s', $attendance_in) >= $getworkingtime->min_in)) {
-                    $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance_in) . ' ' . $getworkingtime->start);
-                    $work_time = roundedTime(countWorkingTime($start_shift, $attendance_out));
-                } else {
-                    $work_time = roundedTime(countWorkingTime($attendance_in, $attendance_out));
-                }
-                // $breaktime = breaktime($breaktimes, $attendance_hour);
-                $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime); //menghitung total istirahat jam kerja
-                $getbreakovertime = getBreaktimeOvertime($breaktimes, $attendance_hour, $getworkingtime); //menghitung istirahat jam lembur
-                $workhour = $getworkingtime->workhour;
-                $min_workhour = $getworkingtime->min_workhour;
-                //overtime
-
-                // WT && OT
-                if (changeDateFormat('H:i:s', $attendance_out) < $getworkingtime->finish) {
-                    $adj_over_time = 0;
-                } else {
-                    $adj_over_time = roundedTime(countOverTime($getworkingtime->finish, changeDateFormat('H:i:s', $attendance_out))) > 10 ? 0 : roundedTime(countOverTime($getworkingtime->finish, changeDateFormat('H:i:s', $attendance_out)));
-                }
-                //end overtime
-                //workingtime
-                if ($work_time >= $workhour) {
-                    $adj_working_time = $min_workhour;
-                    $nextDay = Carbon::parse($adjustment->attendance_date)->addDays(1)->toDateString();
-                    $finishNow = changeDateFormat('Y-m-d H:i:s', $adjustment->attendance_date . ' ' . $getworkingtime->finish);
-                    $finishTomorrow = changeDateFormat('Y-m-d H:i:s', $nextDay . ' ' . $getworkingtime->finish);
-                    $finishShift = $getworkingtime->finish < $getworkingtime->start ? $finishTomorrow : $finishNow;
-                    $diff = Carbon::parse($finishShift)->diffInMinutes(Carbon::parse($attendance_out));
-                    if ($diff >= 60 && $finishShift < $attendance_out) {
-                        $adj_over_time = $attendance_out < $finishShift ? 0 : roundedTime(countOverTime($finishShift, $attendance_out));
-                    }
-                } else {
-                    $adj_working_time = $work_time - $adj_over_time;
-                }
-                //end workingtime
-                //End WT && OT
-                // dd($getbreakworkingtime);
                 if ($adjustment->attendance_in || $adjustment->attendance_out) {
+                    $attendance_in = $adjustment->attendance_in ? $adjustment->attendance_in : null;
+                    $attendance_out = $adjustment->attendance_out ? $adjustment->attendance_out : null;
+                    // Find closest shift
+                    $workingtimes = $this->get_workingtime($adjustment->day); //Get master shift sesuai hari
+                    if (!$workingtimes) {
+                        return response()->json([
+                            'status'     => false,
+                            'message'     => 'Working Shift for this day ' . $adjustment->day . ' not found. Please check master shift.'
+                        ], 400);
+                    }
+                    $breaktimes = $this->get_breaktime($employee->workgroup_id);
+                    if (!$breaktimes) {
+                        return response()->json([
+                            'status'     => false,
+                            'message'     => 'Break time for this employee workgroup ' . $employee->workgroup->name . ' not found. Please check master break.'
+                        ], 400);
+                    }
+                    $attendance_hour = array('attendance_in' => $attendance_in, 'attendance_out' => $attendance_out);
+                    $shift = shiftBetween($workingtimes, $attendance_hour);
+                    $shift2 = findShift($shift, $attendance_hour);
+                    // dd($shift2);
+
+                    if (!$shift2) {
+                        return response()->json([
+                            'status'     => false,
+                            'message'     => 'Shift for this employee workgroup ' . $employee->name . ' not found. Please check master break.'
+                        ], 400);
+                    }
+
+                    $worktime = $this->employee_worktime($adjustment->employee_id);
+
+                    $adjustment->workingtime_id = $worktime->working_time ? $worktime->working_time : $shift2->id;
+                    $getworkingtime = $this->checkWorkingtime($adjustment->workingtime_id, $adjustment->day);
+                    // Variable to check working time and over time
+                    if (!$getworkingtime) {
+                        return response()->json([
+                            'status'     => false,
+                            'message'     => 'Working shift for employee name ' . $employee->name . ' and attendance date ' . $adjustment->attendance_date . ' and this day ' . $adjustment->day . ' not found. Please check master shift.'
+                        ], 400);
+                    }
+                    if (($getworkingtime->start >= changeDateFormat('H:i:s', $attendance_in)) && (changeDateFormat('H:i:s', $attendance_in) >= $getworkingtime->min_in)) {
+                        $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance_in) . ' ' . $getworkingtime->start);
+                        $work_time = roundedTime(countWorkingTime($start_shift, $attendance_out));
+                    } else {
+                        $work_time = roundedTime(countWorkingTime($attendance_in, $attendance_out));
+                    }
+                    // $breaktime = breaktime($breaktimes, $attendance_hour);
+
+                    $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime); //menghitung total istirahat jam kerja
+                    $getbreakovertime = getBreaktimeOvertime($breaktimes, $attendance_hour, $getworkingtime); //menghitung istirahat jam lembur
+
+                    $workhour = $getworkingtime->workhour;
+                    $min_workhour = $getworkingtime->min_workhour;
+                    //overtime
+
+                    // WT && OT
+                    if (changeDateFormat('H:i:s', $attendance_out) < $getworkingtime->finish) {
+                        $adj_over_time = 0;
+                    } else {
+                        $adj_over_time = roundedTime(countOverTime($getworkingtime->finish, changeDateFormat('H:i:s', $attendance_out))) > 10 ? 0 : roundedTime(countOverTime($getworkingtime->finish, changeDateFormat('H:i:s', $attendance_out)));
+                    }
+                    //end overtime
+                    //workingtime
+                    if ($work_time >= $workhour) {
+                        $adj_working_time = $min_workhour;
+                        $nextDay = Carbon::parse($adjustment->attendance_date)->addDays(1)->toDateString();
+                        $finishNow = changeDateFormat('Y-m-d H:i:s', $adjustment->attendance_date . ' ' . $getworkingtime->finish);
+                        $finishTomorrow = changeDateFormat('Y-m-d H:i:s', $nextDay . ' ' . $getworkingtime->finish);
+                        $finishShift = $getworkingtime->finish < $getworkingtime->start ? $finishTomorrow : $finishNow;
+                        $diff = Carbon::parse($finishShift)->diffInMinutes(Carbon::parse($attendance_out));
+                        if ($diff >= 60 && $finishShift < $attendance_out) {
+                            $adj_over_time = $attendance_out < $finishShift ? 0 : roundedTime(countOverTime($finishShift, $attendance_out));
+                        }
+                    } else {
+                        $adj_working_time = $work_time - $adj_over_time;
+                    }
                     // Store to column adj_working_time & adj_over_time
                     if ($adjustment->attendance_in) {
+                        // total jam
+                        $total_jam = Carbon::parse($adjustment->attendance_out)->diffInHours($adjustment->attendance_in);
+                        // total breaktime
+                        $break_time = $getbreakworkingtime - $getbreakovertime;
+                        // WT
+                        $wt_attendance = $total_jam - $break_time;
+
                         if ($adjustment->day == 'Off') {
                             // Check timeout
                             if($employee->timeout == 'yes'){
                                 if($adjustment->attendance_in && $adjustment->attendance_out){
-
-                                    $adjustment->adj_over_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                    $adjustment->adj_working_time = 0;
-                                    $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
-
+                                    
+                                    // cek overtime
                                     if ($employee->overtime == 'yes') {
-                                        // $cekadjustment = Attendance::find($update->id);dd
-                                        $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id',$employee->id)->first();
+                                        // cek spl
+                                        $ot= $wt_attendance - $min_workhour;
+
                                         if ($employee->spl == 'yes') {
-                                            // ketika ada spl dan adjustment
+                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id',$employee->id)->first();
+                                            // ketika ada spl
                                             if ($cekspl) {
-                                                $adjustment->adj_over_time = $work_time - $getbreakworkingtime - $getbreakovertime;
+
+                                                if($cekspl->duration < $ot ){
+                                                    $adjustment->adj_over_time = $cekspl->duration;
+                                                }else{
+                                                    $adjustment->adj_over_time = $ot;
+                                                }
                                                 $adjustment->adj_working_time = 0;
                                                 $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
                                             } else {
+                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_working_time = 0;
+                                                $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
                                             }
                                         } else {
-                                            // 
+                                            //  spl not
+                                            $adjustment->adj_over_time = $ot;
+                                            $adjustment->adj_working_time = 0;
+                                            $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->breaktime = $break_time;
                                         }
                                     } else {
                                         $adjustment->adj_over_time = 0;
                                         $adjustment->adj_working_time = 0;
-                                        $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";  
+                                        $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->breaktime = $break_time;  
                                     }
                                 } elseif ($adjustment->attendance_in && !$attendance_out) {
+                                    $time_out = Carbon::parse($adjustment->attendance_in)->addHours($getworkingtime->min_workhour)->toDateTimeString();
+                                    $attendance_hour = array('attendance_in' => $adjustment->attendance_in, 'attendance_out' => $time_out);
+                                    $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime);
+                                    $adjustment->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
 
+                                    $total_jam = Carbon::parse($adjustment->attendance_out)->diffInHours($adjustment->attendance_in);
+                                    $break_time = $getbreakworkingtime - $getbreakovertime;
+                                    $wt_attendance = $total_jam - $break_time;
+
+                                    if ($employee->overtime == 'yes') {
+                                        $ot = $wt_attendance - $min_workhour;
+                                        
+                                        if ($employee->spl == 'yes') {
+                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
+                                            // ketika ada spl
+                                            if ($cekspl) {
+
+                                                if ($cekspl->duration < $ot) {
+                                                    $adjustment->adj_over_time = $cekspl->duration;
+                                                } else {
+                                                    $adjustment->adj_over_time = $ot;
+                                                }
+                                                $adjustment->adj_working_time = 0;
+                                                $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
+                                            } else {
+                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_working_time = 0;
+                                                $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
+                                            }
+                                        } else {
+                                            //  spl not
+                                            $adjustment->adj_over_time = $ot;
+                                            $adjustment->adj_working_time = 0;
+                                            $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->breaktime = $break_time;
+                                        }
+                                    } else {
+                                        $adjustment->adj_over_time = 0;
+                                        $adjustment->adj_working_time = 0;
+                                        $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->breaktime = $break_time;
+                                    }
                                 }
-                                // Check Overtime
                                 
                             }else{
-                                // 
-                            }
-                            //overtime yes 
-                            if ($employee->overtime == 'yes') {
-                                if ($employee->timeout == 'yes') {
+                                if ($adjustment->attendance_in && $adjustment->attendance_out) {
 
-                                    $adjustment->adj_over_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                    $adjustment->adj_working_time = 0;
-                                    $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
-                                } else {
-                                    //in out lengkap
-                                    if ($adjustment->attendance_in && $adjustment->attendance_out) {
-                                        $adjustment->adj_over_time = $work_time - $getbreakworkingtime - $getbreakovertime;
+                                    if ($employee->overtime == 'yes') {
+                                        // $cekadjustment = Attendance::find($update->id);dd
+                                        $ot = $wt_attendance - $min_workhour;
+
+                                        if ($employee->spl == 'yes') {
+                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
+                                            // ketika ada spl dan adjustment
+                                            if ($cekspl) {
+
+                                                if ($cekspl->duration < $ot) {
+                                                    $adjustment->adj_over_time = $cekspl->duration;
+                                                } else {
+                                                    $adjustment->adj_over_time = $ot;
+                                                }
+
+                                                $adjustment->adj_working_time = 0;
+                                                $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
+                                            } else {
+                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_working_time = 0;
+                                                $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
+                                            }
+                                        } else {
+                                            //  spl not
+                                            $adjustment->adj_over_time = $ot;
+                                            $adjustment->adj_working_time = 0;
+                                            $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->breaktime = $break_time;
+                                        }
+                                    } else {
+                                        $adjustment->adj_over_time = 0;
                                         $adjustment->adj_working_time = 0;
-                                        $adjustment->code_case = "A02/BW$getbreakworkingtime/BO$getbreakovertime";
-                                    } elseif ($adjustment->attendance_in && !$attendance_out) {
-                                        //in lengkap out pakai shift keluar
-                                        $time_out = Carbon::parse($adjustment->attendance_in)->addHours($getworkingtime->min_workhour)->toDateTimeString(); //attendance_in + min_workhour
-                                        $attendance_hour = array('attendance_in' => $adjustment->attendance_in, 'attendance_out' => $time_out);
-                                        $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime);
-                                        $adjustment->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
-                                        $adjustment->adj_over_time = $getworkingtime->min_workhour + $getbreakworkingtime;
+                                        $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->breaktime = $break_time;
+                                    }
+                                } elseif ($adjustment->attendance_in && !$attendance_out) {
+                                    $time_out = Carbon::parse($adjustment->attendance_in)->addHours($getworkingtime->min_workhour)->toDateTimeString();
+                                    $attendance_hour = array('attendance_in' => $adjustment->attendance_in, 'attendance_out' => $time_out);
+                                    $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime);
+                                    $adjustment->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
+
+                                    $total_jam = Carbon::parse($adjustment->attendance_out)->diffInHours($adjustment->attendance_in);
+                                    $break_time = $getbreakworkingtime - $getbreakovertime;
+                                    $wt_attendance = $total_jam - $break_time;
+
+                                    if ($employee->overtime == 'yes') {
+                                        $ot = $wt_attendance - $min_workhour;
+
+                                        if ($employee->spl == 'yes') {
+                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
+                                            // ketika ada spl dan adjustment
+                                            if ($cekspl) {
+
+                                                if ($cekspl->duration < $ot) {
+                                                    $adjustment->adj_over_time = $cekspl->duration;
+                                                } else {
+                                                    $adjustment->adj_over_time = $ot;
+                                                }
+                                                $adjustment->adj_working_time = 0;
+                                                $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
+                                            } else {
+                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_working_time = 0;
+                                                $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
+                                            }
+                                        } else {
+                                            //  spl not
+                                            $adjustment->adj_over_time = $ot;
+                                            $adjustment->adj_working_time = 0;
+                                            $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->breaktime = $break_time;
+                                        }
+                                    } else {
+                                        $adjustment->adj_over_time = 0;
                                         $adjustment->adj_working_time = 0;
-                                        $adjustment->code_case = "A03/BW$getbreakworkingtime/BO$getbreakovertime";
-
-                                        $log = AttendanceLog::create([
-                                            'attendance_id'     => $adjustment->id,
-                                            'employee_id'       => $adjustment->employee_id,
-                                            'type'              => 0,
-                                            'attendance_date'   => $adjustment->attendance_out,
-                                        ]);
-                                        if (!$log) {
-                                            return response()->json([
-                                                'status'    => false,
-                                                'message'   => "Error create log from attendance date '$adjustment->attendance_date', employee name '$employee->name' where is timeout no set default to finish"
-                                            ], 400);
-                                        }
+                                        $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->breaktime = $break_time;
                                     }
-                                }
-                            } else {
-                                //overtime no
-                                if ($employee->timeout == 'yes') {
-                                    $adjustment->adj_over_time = 0;
-                                    $adjustment->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                    $adjustment->code_case = "A04/BW$getbreakworkingtime/BO$getbreakovertime";
-                                } else {
-                                    if ($adjustment->attendance_in && $adjustment->attendance_out) {
-                                        $adjustment->adj_over_time = 0;
-                                        $adjustment->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                        $adjustment->code_case = "A05/BW$getbreakworkingtime/BO$getbreakovertime";
-                                    } elseif ($adjustment->attendance_in && !$attendance_out) {
-                                        // if (changeDateFormat('H:i', $adjustment->attendance_in) > changeDateFormat('H:i', '18:00')) {
-                                        //     $tomorrow = Carbon::parse($adjustment->attendance_in)->addDay()->toDateString();
-                                        //     $time_out = changeDateFormat('Y-m-d H:i:s', $tomorrow . ' ' . $getworkingtime->finish);
-                                        // } else {
-                                        //     $time_out = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $adjustment->attendance_in) . ' ' . $getworkingtime->finish);
-                                        // }
-                                        $time_out = Carbon::parse($adjustment->attendance_in)->addHours($getworkingtime->min_workhour)->toDateTimeString();
-                                        $attendance_hour = array('attendance_in' => $adjustment->attendance_in, 'attendance_out' => $time_out);
-                                        $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime);
-                                        $adjustment->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
-                                        $adjustment->adj_over_time = 0;
-                                        $adjustment->adj_working_time = $getworkingtime->min_workhour + $getbreakworkingtime;
-                                        $adjustment->code_case = "A06/BW$getbreakworkingtime/BO$getbreakovertime";
-
-                                        $log = AttendanceLog::create([
-                                            'attendance_id'     => $adjustment->id,
-                                            'employee_id'       => $adjustment->employee_id,
-                                            'type'              => 0,
-                                            'attendance_date'   => $adjustment->attendance_out,
-                                        ]);
-                                        if (!$log) {
-                                            return response()->json([
-                                                'status'    => false,
-                                                'message'   => "Error create log from attendance date '$adjustment->attendance_date', employee name '$employee->name' where is timeout no set default to finish"
-                                            ], 400);
-                                        }
-                                    }
-                                }
-                            }
-                        } elseif ($adjustment->day == 'Sat') {
-                            if ($employee->overtime == 'yes') {
-                                if ($employee->timeout == 'yes') {
-                                    $adjustment->adj_over_time = ($adj_over_time - $getbreakovertime) < 1 ? 0 : $adj_over_time - $getbreakovertime;
-                                    $adjustment->adj_working_time = ($adj_working_time == $min_workhour) ? $adj_working_time : $adj_working_time - $getbreakworkingtime;
-                                    $adjustment->code_case = "A07/BW$getbreakworkingtime/BO$getbreakovertime";
-                                } else {
-                                    if ($adjustment->attendance_in && $adjustment->attendance_out) {
-                                        $adjustment->adj_over_time = ($adj_over_time - $getbreakovertime) < 1 ? 0 : $adj_over_time - $getbreakovertime;
-                                        $adjustment->adj_working_time = $adj_working_time - $getbreakworkingtime;
-                                        $adjustment->code_case = "A08/BW$getbreakworkingtime/BO$getbreakovertime";
-                                    } elseif ($adjustment->attendance_in && !$attendance_out) {
-                                        $time_out = Carbon::parse($adjustment->attendance_in)->addHours($getworkingtime->min_workhour)->toDateTimeString();
-                                        $attendance_hour = array('attendance_in' => $adjustment->attendance_in, 'attendance_out' => $time_out);
-                                        $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime);
-                                        $adjustment->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
-                                        $adjustment->adj_over_time = $getworkingtime->min_workhour + $getbreakworkingtime;
-                                        $adjustment->adj_working_time = 0;
-                                        $adjustment->code_case = "A09/BW$getbreakworkingtime/BO$getbreakovertime";
-
-                                        $log = AttendanceLog::create([
-                                            'attendance_id'     => $adjustment->id,
-                                            'employee_id'       => $adjustment->employee_id,
-                                            'type'              => 0,
-                                            'attendance_date'   => $adjustment->attendance_out,
-                                        ]);
-                                        if (!$log) {
-                                            return response()->json([
-                                                'status'    => false,
-                                                'message'   => "Error create log from attendance date '$adjustment->attendance_date', employee name '$employee->name' where is timeout no set default to finish"
-                                            ], 400);
-                                        }
-                                    }
-                                }
-                            } else {
-                                if ($employee->timeout == 'yes') {
-                                    $adjustment->adj_over_time = 0;
-                                    $adjustment->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                    $adjustment->code_case = "A10/BW$getbreakworkingtime/BO$getbreakovertime";
-                                } else {
-                                    if ($adjustment->attendance_in && $adjustment->attendance_out) {
-                                        $adjustment->adj_over_time = 0;
-                                        $adjustment->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                        $adjustment->code_case = "A11/BW$getbreakworkingtime/BO$getbreakovertime";
-                                    } elseif ($adjustment->attendance_in && !$attendance_out) {
-                                        $time_out = Carbon::parse($adjustment->attendance_in)->addHours($getworkingtime->min_workhour)->toDateTimeString();
-                                        $attendance_hour = array('attendance_in' => $adjustment->attendance_in, 'attendance_out' => $time_out);
-                                        $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime);
-                                        $adjustment->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
-                                        $adjustment->adj_over_time = 0;
-                                        $adjustment->adj_working_time = $getworkingtime->min_workhour + $getbreakworkingtime;
-                                        $adjustment->code_case = "A12/BW$getbreakworkingtime/BO$getbreakovertime";
-
-                                        $log = AttendanceLog::create([
-                                            'attendance_id'     => $adjustment->id,
-                                            'employee_id'       => $adjustment->employee_id,
-                                            'type'              => 0,
-                                            'attendance_date'   => $adjustment->attendance_out,
-                                        ]);
-                                        if (!$log) {
-                                            return response()->json([
-                                                'status'    => false,
-                                                'message'   => "Error create log from attendance date '$adjustment->attendance_date', employee name '$employee->name' where is timeout no set default to finish"
-                                            ], 400);
-                                        }
-                                    }
-                                }
+                                } 
                             }
                         } else {
-                            if ($employee->overtime == 'yes') {
-                                if ($employee->timeout == 'yes') {
-                                    $adjustment->adj_over_time = ($adj_over_time - $getbreakovertime) < 1 ? 0 : $adj_over_time - $getbreakovertime;
-                                    $adjustment->adj_working_time = ($adj_working_time == $min_workhour) ? $adj_working_time : $adj_working_time - $getbreakworkingtime;
-                                    $adjustment->code_case = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
-                                } else {
-                                    if ($adjustment->attendance_in && $adjustment->attendance_out) {
-                                        $adjustment->adj_over_time = ($adj_over_time - $getbreakovertime) < 1 ? 0 : $adj_over_time - $getbreakovertime;
-                                        $adjustment->adj_working_time = $adj_working_time - $getbreakworkingtime;
-                                        $adjustment->code_case = "A14/BW$getbreakworkingtime/BO$getbreakovertime";
-                                    } elseif ($adjustment->attendance_in && !$adjustment->attendance_out) {
-                                        $time_out = Carbon::parse($adjustment->attendance_in)->addHours($getworkingtime->min_workhour)->toDateTimeString();
-                                        $attendance_hour = array('attendance_in' => $adjustment->attendance_in, 'attendance_out' => $time_out);
-                                        $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime);
-                                        $adjustment->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
-                                        $adjustment->adj_over_time = $getworkingtime->min_workhour + $getbreakworkingtime;
-                                        $adjustment->adj_working_time = 0;
-                                        $adjustment->code_case = "A15/BW$getbreakworkingtime/BO$getbreakovertime";
+                            
+                            $total_jam = Carbon::parse($adjustment->attendance_out)->diffInHours($adjustment->attendance_in);
 
-                                        $log = AttendanceLog::create([
-                                            'attendance_id'     => $adjustment->id,
-                                            'employee_id'       => $adjustment->employee_id,
-                                            'type'              => 0,
-                                            'attendance_date'   => $adjustment->attendance_out,
-                                        ]);
-                                        if (!$log) {
-                                            return response()->json([
-                                                'status'    => false,
-                                                'message'   => "Error create log from attendance date '$adjustment->attendance_date', employee name '$employee->name' where is timeout no set default to finish"
-                                            ], 400);
+                            $break_time = $getbreakworkingtime - $getbreakovertime;
+
+                            $wt_attendance = $total_jam - $break_time;
+                            $wt = ($adj_working_time == $min_workhour) ? $adj_working_time : $adj_working_time - $getbreakworkingtime;
+
+                            if ($employee->timeout == 'yes') {
+                                if ($adjustment->attendance_in && $adjustment->attendance_out) {
+
+                                    if ($employee->overtime == 'yes') {
+                                        $ot = $wt_attendance - $min_workhour;
+
+                                        if ($employee->spl == 'yes') {
+                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
+                                            // ketika ada spl dan adjustment
+                                            if ($cekspl) {
+
+                                                if ($cekspl->duration < $ot) {
+                                                    $adjustment->adj_over_time = $cekspl->duration;
+                                                } else {
+                                                    $adjustment->adj_over_time = $ot;
+                                                }
+
+                                                $adjustment->adj_working_time = $min_workhour;
+                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
+                                                
+                                            } else {
+                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_working_time = $min_workhour;
+                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
+                                            }
+                                        } else {
+                                            //  spl not
+                                            $adjustment->adj_over_time = $wt_attendance;
+                                            $adjustment->adj_working_time = $wt;
+                                            $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->breaktime = $break_time;
                                         }
+                                    } else {
+                                        $adjustment->adj_over_time = 0;
+                                        $adjustment->adj_working_time = $wt_attendance;
+                                        $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->breaktime = $break_time;
+                                    }
+                                } elseif ($adjustment->attendance_in && !$attendance_out) {
+                                    $time_out = Carbon::parse($adjustment->attendance_in)->addHours($getworkingtime->min_workhour)->toDateTimeString();
+                                    $attendance_hour = array('attendance_in' => $adjustment->attendance_in, 'attendance_out' => $time_out);
+                                    $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime);
+                                    $adjustment->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
+                                    $total_jam = Carbon::parse($adjustment->attendance_out)->diffInHours($adjustment->attendance_in);
+                                    $break_time = $getbreakworkingtime - $getbreakovertime;
+                                    $wt_attendance = $total_jam - $break_time;
+
+                                    if ($employee->overtime == 'yes') {
+                                        $ot = $wt_attendance - $min_workhour;
+
+                                        if ($employee->spl == 'yes') {
+                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
+                                            // ketika ada spl dan adjustment
+                                            if ($cekspl) {
+
+                                                if ($cekspl->duration < $ot) {
+                                                    $adjustment->adj_over_time = $cekspl->duration;
+                                                } else {
+                                                    $adjustment->adj_over_time = $ot;
+                                                }
+                                                $adjustment->adj_working_time = $min_workhour;
+                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
+                                            } else {
+                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_working_time = $min_workhour;
+                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
+                                            }
+                                        } else {
+                                            //  spl not
+                                            $adjustment->adj_over_time = $ot;
+                                            $adjustment->adj_working_time = $min_workhour;
+                                            $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->breaktime = $break_time;
+                                        }
+                                    } else {
+                                        $adjustment->adj_over_time = 0;
+                                        $adjustment->adj_working_time = $wt_attendance;
+                                        $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->breaktime = $break_time;
                                     }
                                 }
-                            } else {
-                                if ($employee->timeout == 'yes') {
-                                    $adjustment->adj_over_time = 0;
-                                    $adjustment->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                    $adjustment->code_case = "A16/BW$getbreakworkingtime/BO$getbreakovertime";
-                                } else {
-                                    if ($adjustment->attendance_in && $adjustment->attendance_out) {
-                                        $adjustment->adj_over_time = 0;
-                                        $adjustment->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                                        $adjustment->code_case = "A17/BW$getbreakworkingtime/BO$getbreakovertime";
-                                    } elseif ($adjustment->attendance_in && !$attendance_out) {
-                                        $time_out = Carbon::parse($adjustment->attendance_in)->addHours($getworkingtime->min_workhour)->toDateTimeString();
-                                        $attendance_hour = array('attendance_in' => $adjustment->attendance_in, 'attendance_out' => $time_out);
-                                        $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime);
-                                        $adjustment->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
-                                        $adjustment->adj_over_time = 0;
-                                        $adjustment->adj_working_time = $getworkingtime->min_workhour + $getbreakworkingtime;
-                                        $adjustment->code_case = "A18/BW$getbreakworkingtime/BO$getbreakovertime";
+                                // Check Overtime
 
-                                        $log = AttendanceLog::create([
-                                            'attendance_id'     => $adjustment->id,
-                                            'employee_id'       => $adjustment->employee_id,
-                                            'type'              => 0,
-                                            'attendance_date'   => $adjustment->attendance_out,
-                                        ]);
-                                        if (!$log) {
-                                            return response()->json([
-                                                'status'    => false,
-                                                'message'   => "Error create log from attendance date '$adjustment->attendance_date', employee name '$employee->name' where is timeout no set default to finish"
-                                            ], 400);
+                            } else {
+                                if ($adjustment->attendance_in && $adjustment->attendance_out) {
+                                    if ($employee->overtime == 'yes') {
+
+                                        $ot = $wt_attendance - $min_workhour;
+
+                                        if ($employee->spl == 'yes') {
+                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
+                                            // ketika ada spl dan adjustment
+                                            if ($cekspl) {
+
+                                                if ($cekspl->duration < $ot) {
+                                                    $adjustment->adj_over_time = $cekspl->duration;
+                                                } else {
+                                                    $adjustment->adj_over_time = $ot;
+                                                }
+
+                                                $adjustment->adj_working_time = $min_workhour;
+                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
+                                            } else {
+                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_working_time = $min_workhour;
+                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
+                                            }
+                                        } else {
+                                            //  spl not
+                                            $adjustment->adj_over_time = $ot;
+                                            $adjustment->adj_working_time = $min_workhour;
+                                            $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->breaktime = $break_time;
                                         }
+                                    } else {
+                                        $adjustment->adj_over_time = 0;
+                                        $adjustment->adj_working_time = $wt_attendance;
+                                        $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->breaktime = $break_time;
                                     }
+                                } elseif ($adjustment->attendance_in && !$attendance_out) {
+                                    $time_out = Carbon::parse($adjustment->attendance_in)->addHours($getworkingtime->min_workhour)->toDateTimeString();
+                                    $attendance_hour = array('attendance_in' => $adjustment->attendance_in, 'attendance_out' => $time_out);
+                                    $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime);
+                                    $adjustment->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
+
+                                    $total_jam = Carbon::parse($adjustment->attendance_out)->diffInHours($adjustment->attendance_in);
+
+                                    $break_time = $getbreakworkingtime - $getbreakovertime;
+                                    $wt_attendance = $total_jam - $break_time;
+
+                                    if ($employee->overtime == 'yes') {
+
+                                        $ot = $wt_attendance - $min_workhour;
+
+                                        if ($employee->spl == 'yes') {
+                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
+                                            // ketika ada spl dan adjustment
+                                            if ($cekspl) {
+                                                if ($cekspl->duration < $ot) {
+                                                    $adjustment->adj_over_time = $cekspl->duration;
+                                                } else {
+                                                    $adjustment->adj_over_time = $ot;
+                                                }
+                                                $adjustment->adj_working_time = $min_workhour;
+                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
+                                            } else {
+                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_working_time = $min_workhour;
+                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->breaktime = $break_time;
+                                            }
+                                        } else {
+                                            
+                                            $adjustment->adj_over_time = $ot;
+                                            $adjustment->adj_working_time = $min_workhour;
+                                            $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->breaktime = $break_time;
+                                        }
+                                    } else {
+                                        $adjustment->adj_over_time = 0;
+                                        $adjustment->adj_working_time = $wt_attendance;
+                                        $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->breaktime = $break_time;
+                                    }
+
                                 }
                             }
                         }
-                    } else {
-                        $adjustment->adj_over_time = 0;
-                        $adjustment->adj_working_time = 0;
-                        $adjustment->code_case = "A19";
                     }
                 }
                 if (($adjustment->attendance_in && $adjustment->attendance_out) && $adjustment->status == -1) {
