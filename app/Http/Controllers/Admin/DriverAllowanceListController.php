@@ -21,7 +21,7 @@ class DriverAllowanceListController extends Controller
         $employee_id = $request->employee_id;
         $month = $request->month;
         $year = $request->year;
-
+        // DB::enableQueryLog();
         // Count Data
         // $query = DeliveryOrder::where('driver_id', $employee_id)->whereMonth('departure_time', $month)->whereYear('departure_time', $year);
         $query = DB::table('delivery_orders');
@@ -33,7 +33,8 @@ class DriverAllowanceListController extends Controller
                     'partners.name as customer',
                     'delivery_orders.driver_id',
                     'driver_lists.value as value',
-                    'driver_lists.rit as rule');
+                    'driver_lists.rit as rule',
+                    'driver_lists.type');
         $query->leftJoin('partners', 'partners.id','=','delivery_orders.partner_id');
         $query->leftJoin('driver_lists', 'driver_lists.type','=','delivery_orders.type_truck');
         // $query->leftJoin('driver_lists','driver_lists.driver_allowance_id','=','driver_allowance_lists.id');
@@ -51,7 +52,8 @@ class DriverAllowanceListController extends Controller
                     'partners.name as customer',
                     'delivery_orders.driver_id',
                     'driver_lists.value as value',
-                    'driver_lists.rit as rule');
+                    'driver_lists.rit as rule',
+                    'driver_lists.type');
         $query->leftJoin('partners', 'partners.id','=','delivery_orders.partner_id');
         $query->leftJoin('driver_lists', 'driver_lists.type','=','delivery_orders.type_truck');
         $query->where('delivery_orders.driver_id', $employee_id);
@@ -61,14 +63,15 @@ class DriverAllowanceListController extends Controller
         $query->offset($start);
         $query->limit($length);
         $query->orderBy('delivery_orders.departure_time', 'asc');
-        // $query->groupBy('driver_allowance_lists.date', 'driver_allowance_lists.truck', 'driver_allowance_lists.driver_id', 'driver_allowance_lists.group');
+        $query->groupBy('delivery_orders.departure_time', 'delivery_orders.type_truck', 'delivery_orders.driver_id', 'delivery_orders.group','partners.rit','partners.name','driver_lists.value','driver_lists.rit','driver_lists.type');
         $driverallowances = $query->get();
         // dd($driverallowances);
+        // dd(DB::getQueryLog());
 
         $data = [];
         foreach ($driverallowances as $driverallowance) {
             $driverallowance->no = ++$start;
-            $driverallowance->total_value = $driverallowance->value * ($driverallowance->value/100);
+            $driverallowance->total_value = $driverallowance->value * ($driverallowance->rit/100);
             $data[] = $driverallowance;
         }
         return response()->json([
