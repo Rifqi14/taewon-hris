@@ -46,8 +46,8 @@
                 <label class="col-sm-3 label-controls" for="type_truck">Type Truck</label>
                 <div class="col-sm-8 controls">
                   <select name="type_truck" id="type_truck" class="form-control select2" style="width: 100%" required>
-                    <option value="Fuso">Fuso</option>
-                    <option value="Colt Diesel">Colt Diesel</option>
+                    <option value="fuso">Fuso</option>
+                    <option value="colt_diesel">Colt Diesel</option>
                   </select>
                 </div>
               </div>

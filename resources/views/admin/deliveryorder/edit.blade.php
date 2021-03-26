@@ -47,8 +47,8 @@
                 <label class="col-sm-3 label-controls" for="type_truck">Type Truck</label>
                 <div class="col-sm-8 controls">
                   <select name="type_truck" id="type_truck" class="form-control select2" style="width: 100%" required>
-                    <option value="Fuso" @if ($deliveryorder->type_truck == 'Fuso') selected @endif>Fuso</option>
-                    <option value="Colt Diesel" @if ($deliveryorder->type_truck == 'Colt Diesel') selected @endif>Colt Diesel</option>
+                    <option value="fuso" @if ($deliveryorder->type_truck == 'fuso') selected @endif>Fuso</option>
+                    <option value="colt_diesel" @if ($deliveryorder->type_truck == 'colt_diesel') selected @endif>Colt Diesel</option>
                   </select>
                 </div>
               </div>
