@@ -98,6 +98,7 @@
 											<option value="daily">Daily</option>
 											<option value="monthly">Monthly</option>
 											<option value="yearly">Yearly</option>
+											<option value="breaktime">BreakTime</option>
 										</select>
 									</div>
 								</div>

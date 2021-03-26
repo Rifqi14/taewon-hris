@@ -97,6 +97,7 @@
                       <option @if ($allowance->reccurance == 'daily') selected @endif value="daily">Daily</option>
                       <option @if ($allowance->reccurance == 'monthly') selected @endif value="monthly">Monthly</option>
                       <option @if ($allowance->reccurance == 'yearly') selected @endif value="yearly">Yearly</option>
+											<option @if ($allowance->reccurance == 'breaktime') selected @endif value="breaktime">BreakTime</option>
                     </select>
                   </div>
                 </div>

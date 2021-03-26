@@ -831,14 +831,15 @@
 													<tr>
 														<th width="5" class="text-right">#</th>
 														<th width="10">Date</th>
-														<th width="10">Truck</th>
 														<th width="10">Kloter</th>
-														<th width="10">RIT</th>
+														<th width="10">Rule</th>
 														<th width="10">Value</th>
+														<th width="10">RIT</th>
+														<th width="10">Total</th>
 														<th width="10">Action</th>
 													</tr>
 												</thead>
-												<tfoot>
+												{{-- <tfoot>
 													<tr>
 														<td colspan="5" class="text-right"><b>Grand Total</b></td>
 														<td>
@@ -847,7 +848,7 @@
 														<td>
 														</td>
 													</tr>
-												</tfoot>
+												</tfoot> --}}
 											</table>
 										</div>
 									</div>
@@ -1261,10 +1262,10 @@
 					<thead>
 						<tr>
 							<th width="5" class="text-right">#</th>
-							<th width="10">Date</th>
-							<th width="10">DO Number</th>
-							<th width="10">Truck</th>
-							<th width="10">Destination</th>
+							<th width="10">Departure Time</th>
+							<th width="10">Arrived Time</th>
+							<th width="10">Police No</th>
+							<th width="10">Customer</th>
 						</tr>
 					</thead>
 				</table>
@@ -5883,59 +5884,63 @@ $(document).ready(function(){
 			{
 				orderable: false,targets:[0]
 			},
-			{ className: "text-right", targets: [0,3,4,5] },
-			{ className: "text-center", targets: [6] },
+			{ className: "text-right", targets: [0,3,4,5,6] },
+			{ className: "text-center", targets: [7] },
+			// { render: function(data, type, row) {
+			// 	if (row.truck == 'Fuso') {
+			// 		return 'Fuso'
+			// 	} else {
+			// 		return 'Colt Diesel'
+			// 	}
+			// }, targets:[2]},
 			{ render: function(data, type, row) {
-				if (row.truck == 'fuso') {
-					return 'Fuso'
-				} else {
-					return 'Colt Diesel'
-				}
-			}, targets:[2]},
+				return `${row.date}<br><small> Type Kendaraan ${row.truck}</small>`;
+			}, targets:[1]},
 			{ render: function ( data, type, row ) {
 				return `<div class="dropdown">
 					<button type="button" class="btn  btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a class="dropdown-item detaildriver" href="#" data-date="${row.date}" data-driver="${row.driver_id}" data-truck="${row.truck}" data-group="${row.group}"><i class="fas fa-search mr-2"></i> Detail</a></li>
+						<li><a class="dropdown-item detaildriver" href="#" data-date="${row.date}" data-driver="${row.driver_id}" data-truck="${row.truck}" data-group="${row.rule}"><i class="fas fa-search mr-2"></i> Detail</a></li>
 					</ul>
 					</div>`
-			},targets: [6]
+			},targets: [7]
 			}
 		],
 		columns: [
 			{ data: "no" },
-			{ data: "date" },
-			{ data: "truck" },
-			{ data: "group" },
-			{ data: "rit" },
-			{ data: "value", render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' )},
-			{ data: "date" },
+			{ data: "date"},
+			{ data: "kloter" },
+			{ data: "rule" },
+			{ data: "value" },
+			{ data: "rit", render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' )},
+			{ data: "total_value", render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' )},
+			{ data: "type" },
 
 		],
-		footerCallback: function(row, data, start, end, display, grand_total) {
-			var api = this.api(), data;
-			console.log(grand_total);
+		// footerCallback: function(row, data, start, end, display, grand_total) {
+		// 	var api = this.api(), data;
+		// 	console.log(grand_total);
 
-			var intVal = function ( i ) {
-					return typeof i === 'string' ? i.replace(/[\$,]/g, '')*1 : typeof i === 'number' ? i : 0;
-			};
+		// 	var intVal = function ( i ) {
+		// 			return typeof i === 'string' ? i.replace(/[\$,]/g, '')*1 : typeof i === 'number' ? i : 0;
+		// 	};
 
-			total = api.column( 5 ).data().reduce( function (a, b) { return intVal(a) + intVal(b);}, 0 );
+		// 	total = api.column( 5 ).data().reduce( function (a, b) { return intVal(a) + intVal(b);}, 0 );
 
-			pageTotal = api.column( 5, { page: 'current'} ).data().reduce( function (a, b) {return intVal(a) + intVal(b);}, 0 );
-			var numFormat = $.fn.dataTable.render.number('.', ',', 0, 'Rp. ' ).display;
+		// 	pageTotal = api.column( 5, { page: 'current'} ).data().reduce( function (a, b) {return intVal(a) + intVal(b);}, 0 );
+		// 	var numFormat = $.fn.dataTable.render.number('.', ',', 0, 'Rp. ' ).display;
 
-			$( api.column( 5 ).footer() ).html(numFormat(total));
-		}
+		// 	$( api.column( 5 ).footer() ).html(numFormat(total));
+		// }
 	});
 	$(document).on('click','.detaildriver',function(){
 		// $('#allowance-id-history').attr('value', $(this).data('allowance'));
 		// dataTableHistory.draw();
 		$('#view-driver-allowance').modal('show');
 		var group = $(this).data('group');
-		var date = $(this).data("date");
+		// var date = $(this).data("date");
 		var truck = $(this).data("truck");
 		var driver = $(this).data('driver');
 		console.log(group);
@@ -5953,7 +5958,7 @@ $(document).ready(function(){
 				url: "{{ route('driverallowancelist.read_detail') }}",
 				type: "GET",
 				data:function(data){
-					data.date = date;
+					// data.date = date;
 					data.driver = driver;
 					data.truck = truck;
 					data.group = group;
@@ -5964,20 +5969,13 @@ $(document).ready(function(){
 					orderable: false,targets:[0]
 				},
 				{ className: "text-right", targets: [0,3,4] },
-				{ render: function(data, type, row) {
-					if (row.type_truck == 'fuso') {
-						return 'Fuso'
-					} else {
-						return 'Colt Diesel'
-					}
-				}, targets:[3]}
 			],
 			columns: [
 				{ data: "no" },
-				{ data: "date" },
-				{ data: "do_number" },
-				{ data: "type_truck" },
-				{ data: "destination" }
+				{ data: "departure_time" },
+				{ data: "arrived_time" },
+				{ data: "police_no" },
+				{ data: "police_no" }
 
 			],
 			footerCallback: function(row, data, start, end, display, grand_total) {
