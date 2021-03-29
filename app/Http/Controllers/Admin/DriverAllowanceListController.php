@@ -88,6 +88,7 @@ class DriverAllowanceListController extends Controller
         // $query->select('driver_allowance_lists.date as date', DB::raw('max(rit) as rit'), DB::raw('sum(value) as value'), 'driver_allowance_lists.truck', 'driver_allowance_lists.driver_id', 'driver_allowance_lists.group');
         $query->offset($start);
         $query->limit($length);
+        // $query->orderBy($sort, $dir);
         $query->orderBy('driver_lists.rit', 'asc');
         // $query->groupBy('delivery_orders.driver_id','delivery_orders.departure_time', 'delivery_orders.type_truck', 'delivery_orders.group','partners.rit','partners.name','driver_lists.value','driver_lists.rit','driver_lists.type', 'delivery_orders.list_order','driver_lists.type_value');
         $driverallowances = $query->get();
@@ -115,17 +116,18 @@ class DriverAllowanceListController extends Controller
         $query = $request->search['value'];
         $sort = $request->column[$request->order[0]['column']]['data'];
         $dir = $request->order[0]['dir'];
-        $date = $request->date;
+        $month = $request->month;
+        $year = $request->year;
         $driver = $request->driver;
         $truck = $request->truck;
         $group = $request->group;
 
         // Count Data
-        $query = DeliveryOrder::where('driver_id', $driver)->where('departure_time', $date)->where('group', $group);
+        $query = DeliveryOrder::select('partners.name as customer','delivery_orders.departure_time as departure_time','delivery_orders.arrived_time as arrived_time','delivery_orders.police_no as police_no')->leftJoin('partners','partners.id','=','delivery_orders.partner_id')->where('driver_id', $driver)->whereMonth('departure_time', $month)->whereYear('departure_time', $year);
         $recordsTotal = $query->count();
 
         // Select Pagination
-        $query = DeliveryOrder::where('driver_id', $driver)->where('departure_time', $date)->where('group', $group)->offset($start)->limit($length)->orderBy('date', 'asc');
+        $query = DeliveryOrder::select('partners.name as customer','delivery_orders.departure_time as departure_time','delivery_orders.arrived_time as arrived_time','delivery_orders.police_no as police_no')->leftJoin('partners','partners.id','=','delivery_orders.partner_id')->where('driver_id', $driver)->whereMonth('departure_time', $month)->whereYear('departure_time', $year)->offset($start)->limit($length)->orderBy('departure_time', 'asc');
         $driverallowances = $query->get();
 
         $data = [];

@@ -839,16 +839,16 @@
 														<th width="10">Action</th>
 													</tr>
 												</thead>
-												{{-- <tfoot>
+												<tfoot>
 													<tr>
-														<td colspan="5" class="text-right"><b>Grand Total</b></td>
+														<td colspan="6" class="text-right"><b>Grand Total</b></td>
 														<td>
 															<span id="total" class="text-right" placeholder="Total"></span>
 														</td>
 														<td>
 														</td>
 													</tr>
-												</tfoot> --}}
+												</tfoot>
 											</table>
 										</div>
 									</div>
@@ -5927,31 +5927,31 @@ $(document).ready(function(){
 			{ data: "type" },
 
 		],
-		// footerCallback: function(row, data, start, end, display, grand_total) {
-		// 	var api = this.api(), data;
-		// 	console.log(grand_total);
+		footerCallback: function(row, data, start, end, display, grand_total) {
+			var api = this.api(), data;
+			console.log(grand_total);
 
-		// 	var intVal = function ( i ) {
-		// 			return typeof i === 'string' ? i.replace(/[\$,]/g, '')*1 : typeof i === 'number' ? i : 0;
-		// 	};
+			var intVal = function ( i ) {
+					return typeof i === 'string' ? i.replace(/[\$,]/g, '')*1 : typeof i === 'number' ? i : 0;
+			};
 
-		// 	total = api.column( 5 ).data().reduce( function (a, b) { return intVal(a) + intVal(b);}, 0 );
+			total = api.column( 6 ).data().reduce( function (a, b) { return intVal(a) + intVal(b);}, 0 );
 
-		// 	pageTotal = api.column( 5, { page: 'current'} ).data().reduce( function (a, b) {return intVal(a) + intVal(b);}, 0 );
-		// 	var numFormat = $.fn.dataTable.render.number('.', ',', 0, 'Rp. ' ).display;
+			pageTotal = api.column( 6, { page: 'current'} ).data().reduce( function (a, b) {return intVal(a) + intVal(b);}, 0 );
+			var numFormat = $.fn.dataTable.render.number('.', ',', 0, 'Rp. ' ).display;
 
-		// 	$( api.column( 5 ).footer() ).html(numFormat(total));
-		// }
+			$( api.column( 6 ).footer() ).html(numFormat(total));
+		}
 	});
 	$(document).on('click','.detaildriver',function(){
 		// $('#allowance-id-history').attr('value', $(this).data('allowance'));
 		// dataTableHistory.draw();
 		$('#view-driver-allowance').modal('show');
 		var group = $(this).data('group');
-		// var date = $(this).data("date");
+		var date = $(this).data("date");
 		var truck = $(this).data("truck");
 		var driver = $(this).data('driver');
-		console.log(group);
+		// console.log(group);
 		dataTableDriverDetail = $('#table-view-driver-allowance').DataTable({
 			stateSave:true,
 			processing: true,
@@ -5968,22 +5968,25 @@ $(document).ready(function(){
 				data:function(data){
 					// data.date = date;
 					data.driver = driver;
-					data.truck = truck;
-					data.group = group;
+					// data.truck = truck;
+					// data.group = group;
+					data.month = $('#month-driver').val();
+					data.year = $('#year-driver').val();
 				}
 			},
 			columnDefs:[
 				{
 					orderable: false,targets:[0]
 				},
-				{ className: "text-right", targets: [0,3,4] },
+				{ className: "text-right", targets: [0] },
+				{ className: "text-center", targets: [3] },
 			],
 			columns: [
 				{ data: "no" },
 				{ data: "departure_time" },
 				{ data: "arrived_time" },
 				{ data: "police_no" },
-				{ data: "police_no" }
+				{ data: "customer" }
 
 			],
 			footerCallback: function(row, data, start, end, display, grand_total) {
