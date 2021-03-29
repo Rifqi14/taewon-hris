@@ -19,6 +19,7 @@
     <div class="col-lg-8">
       <div class="row">
         {{ csrf_field() }}
+        <input type="hidden" value="{{ $attendances->code_case }}">
         <input type="hidden" name="_method" value="put">
         <div class="col-lg-12">
           <div class="card card-{{ config('configs.app_theme') }} card-outline">

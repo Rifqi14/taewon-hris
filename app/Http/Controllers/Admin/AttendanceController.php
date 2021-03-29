@@ -1142,7 +1142,7 @@ class AttendanceController extends Controller
                         // total jam
                         $total_jam = Carbon::parse($adjustment->attendance_out)->diffInHours($adjustment->attendance_in);
                         // total breaktime
-                        $break_time = $getbreakworkingtime - $getbreakovertime;
+                        $break_time = $getbreakworkingtime + $getbreakovertime;
                         // WT
                         $wt_attendance = $total_jam - $break_time;
 
@@ -1170,22 +1170,22 @@ class AttendanceController extends Controller
                                                 $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = 0;
-                                                $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A02/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             }
                                         } else {
                                             //  spl not
                                             $adjustment->adj_over_time = $ot;
                                             $adjustment->adj_working_time = 0;
-                                            $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->code_case  = "A03/BW$getbreakworkingtime/BO$getbreakovertime";
                                             $adjustment->breaktime = $break_time;
                                         }
                                     } else {
                                         $adjustment->adj_over_time = 0;
                                         $adjustment->adj_working_time = 0;
-                                        $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->code_case  = "A04/BW$getbreakworkingtime/BO$getbreakovertime";
                                         $adjustment->breaktime = $break_time;  
                                     }
                                 } elseif ($adjustment->attendance_in && !$attendance_out) {
@@ -1195,7 +1195,7 @@ class AttendanceController extends Controller
                                     $adjustment->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
 
                                     $total_jam = Carbon::parse($adjustment->attendance_out)->diffInHours($adjustment->attendance_in);
-                                    $break_time = $getbreakworkingtime - $getbreakovertime;
+                                    $break_time = $getbreakworkingtime + $getbreakovertime;
                                     $wt_attendance = $total_jam - $break_time;
 
                                     if ($employee->overtime == 'yes') {
@@ -1212,25 +1212,25 @@ class AttendanceController extends Controller
                                                     $adjustment->adj_over_time = $ot;
                                                 }
                                                 $adjustment->adj_working_time = 0;
-                                                $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A05/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = 0;
-                                                $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A06/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             }
                                         } else {
                                             //  spl not
                                             $adjustment->adj_over_time = $ot;
                                             $adjustment->adj_working_time = 0;
-                                            $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->code_case  = "A07/BW$getbreakworkingtime/BO$getbreakovertime";
                                             $adjustment->breaktime = $break_time;
                                         }
                                     } else {
                                         $adjustment->adj_over_time = 0;
                                         $adjustment->adj_working_time = 0;
-                                        $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->code_case  = "A08/BW$getbreakworkingtime/BO$getbreakovertime";
                                         $adjustment->breaktime = $break_time;
                                     }
                                 }
@@ -1254,25 +1254,25 @@ class AttendanceController extends Controller
                                                 }
 
                                                 $adjustment->adj_working_time = 0;
-                                                $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A09/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = 0;
-                                                $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A10/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             }
                                         } else {
                                             //  spl not
                                             $adjustment->adj_over_time = $ot;
                                             $adjustment->adj_working_time = 0;
-                                            $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->code_case  = "A11/BW$getbreakworkingtime/BO$getbreakovertime";
                                             $adjustment->breaktime = $break_time;
                                         }
                                     } else {
                                         $adjustment->adj_over_time = 0;
                                         $adjustment->adj_working_time = 0;
-                                        $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->code_case  = "A12/BW$getbreakworkingtime/BO$getbreakovertime";
                                         $adjustment->breaktime = $break_time;
                                     }
                                 } elseif ($adjustment->attendance_in && !$attendance_out) {
@@ -1282,7 +1282,7 @@ class AttendanceController extends Controller
                                     $adjustment->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
 
                                     $total_jam = Carbon::parse($adjustment->attendance_out)->diffInHours($adjustment->attendance_in);
-                                    $break_time = $getbreakworkingtime - $getbreakovertime;
+                                    $break_time = $getbreakworkingtime + $getbreakovertime;
                                     $wt_attendance = $total_jam - $break_time;
 
                                     if ($employee->overtime == 'yes') {
@@ -1299,25 +1299,25 @@ class AttendanceController extends Controller
                                                     $adjustment->adj_over_time = $ot;
                                                 }
                                                 $adjustment->adj_working_time = 0;
-                                                $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = 0;
-                                                $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A14/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             }
                                         } else {
                                             //  spl not
                                             $adjustment->adj_over_time = $ot;
                                             $adjustment->adj_working_time = 0;
-                                            $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->code_case  = "A15/BW$getbreakworkingtime/BO$getbreakovertime";
                                             $adjustment->breaktime = $break_time;
                                         }
                                     } else {
                                         $adjustment->adj_over_time = 0;
                                         $adjustment->adj_working_time = 0;
-                                        $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->code_case  = "A16/BW$getbreakworkingtime/BO$getbreakovertime";
                                         $adjustment->breaktime = $break_time;
                                     }
                                 } 
@@ -1326,7 +1326,7 @@ class AttendanceController extends Controller
                             
                             $total_jam = Carbon::parse($adjustment->attendance_out)->diffInHours($adjustment->attendance_in);
 
-                            $break_time = $getbreakworkingtime - $getbreakovertime;
+                            $break_time = $getbreakworkingtime + $getbreakovertime;
 
                             $wt_attendance = $total_jam - $break_time;
                             $wt = ($adj_working_time == $min_workhour) ? $adj_working_time : $adj_working_time - $getbreakworkingtime;
@@ -1349,26 +1349,26 @@ class AttendanceController extends Controller
                                                 }
 
                                                 $adjustment->adj_working_time = $min_workhour;
-                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A17/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                                 
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = $min_workhour;
-                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A18/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             }
                                         } else {
                                             //  spl not
                                             $adjustment->adj_over_time = $wt_attendance;
                                             $adjustment->adj_working_time = $wt;
-                                            $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->code_case  = "A19/BW$getbreakworkingtime/BO$getbreakovertime";
                                             $adjustment->breaktime = $break_time;
                                         }
                                     } else {
                                         $adjustment->adj_over_time = 0;
                                         $adjustment->adj_working_time = $wt_attendance;
-                                        $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->code_case  = "A20/BW$getbreakworkingtime/BO$getbreakovertime";
                                         $adjustment->breaktime = $break_time;
                                     }
                                 } elseif ($adjustment->attendance_in && !$attendance_out) {
@@ -1377,7 +1377,7 @@ class AttendanceController extends Controller
                                     $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime);
                                     $adjustment->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
                                     $total_jam = Carbon::parse($adjustment->attendance_out)->diffInHours($adjustment->attendance_in);
-                                    $break_time = $getbreakworkingtime - $getbreakovertime;
+                                    $break_time = $getbreakworkingtime + $getbreakovertime;
                                     $wt_attendance = $total_jam - $break_time;
 
                                     if ($employee->overtime == 'yes') {
@@ -1394,25 +1394,25 @@ class AttendanceController extends Controller
                                                     $adjustment->adj_over_time = $ot;
                                                 }
                                                 $adjustment->adj_working_time = $min_workhour;
-                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A21/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = $min_workhour;
-                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A22/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             }
                                         } else {
                                             //  spl not
                                             $adjustment->adj_over_time = $ot;
                                             $adjustment->adj_working_time = $min_workhour;
-                                            $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->code_case  = "A23/BW$getbreakworkingtime/BO$getbreakovertime";
                                             $adjustment->breaktime = $break_time;
                                         }
                                     } else {
                                         $adjustment->adj_over_time = 0;
                                         $adjustment->adj_working_time = $wt_attendance;
-                                        $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->code_case  = "A24/BW$getbreakworkingtime/BO$getbreakovertime";
                                         $adjustment->breaktime = $break_time;
                                     }
                                 }
@@ -1436,25 +1436,25 @@ class AttendanceController extends Controller
                                                 }
 
                                                 $adjustment->adj_working_time = $min_workhour;
-                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A25/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = $min_workhour;
-                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A26/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             }
                                         } else {
                                             //  spl not
                                             $adjustment->adj_over_time = $ot;
                                             $adjustment->adj_working_time = $min_workhour;
-                                            $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->code_case  = "A27/BW$getbreakworkingtime/BO$getbreakovertime";
                                             $adjustment->breaktime = $break_time;
                                         }
                                     } else {
                                         $adjustment->adj_over_time = 0;
                                         $adjustment->adj_working_time = $wt_attendance;
-                                        $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->code_case  = "A28/BW$getbreakworkingtime/BO$getbreakovertime";
                                         $adjustment->breaktime = $break_time;
                                     }
                                 } elseif ($adjustment->attendance_in && !$attendance_out) {
@@ -1465,7 +1465,7 @@ class AttendanceController extends Controller
 
                                     $total_jam = Carbon::parse($adjustment->attendance_out)->diffInHours($adjustment->attendance_in);
 
-                                    $break_time = $getbreakworkingtime - $getbreakovertime;
+                                    $break_time = $getbreakworkingtime + $getbreakovertime;
                                     $wt_attendance = $total_jam - $break_time;
 
                                     if ($employee->overtime == 'yes') {
@@ -1482,25 +1482,25 @@ class AttendanceController extends Controller
                                                     $adjustment->adj_over_time = $ot;
                                                 }
                                                 $adjustment->adj_working_time = $min_workhour;
-                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A29/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = $min_workhour;
-                                                $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                                $adjustment->code_case  = "A30/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             }
                                         } else {
                                             
                                             $adjustment->adj_over_time = $ot;
                                             $adjustment->adj_working_time = $min_workhour;
-                                            $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                            $adjustment->code_case  = "A31/BW$getbreakworkingtime/BO$getbreakovertime";
                                             $adjustment->breaktime = $break_time;
                                         }
                                     } else {
                                         $adjustment->adj_over_time = 0;
                                         $adjustment->adj_working_time = $wt_attendance;
-                                        $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
+                                        $adjustment->code_case  = "A32/BW$getbreakworkingtime/BO$getbreakovertime";
                                         $adjustment->breaktime = $break_time;
                                     }
 
@@ -1511,7 +1511,7 @@ class AttendanceController extends Controller
                 }
                 if (($adjustment->attendance_in && $adjustment->attendance_out) && $adjustment->status == -1) {
                     $adjustment->status = 0;
-                    $adjustment->code_case = 'A20';
+                    $adjustment->code_case = 'A33';
                 }
                 $adjustment->save();
                 if (!$adjustment) {
