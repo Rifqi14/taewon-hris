@@ -1170,7 +1170,7 @@ class AttendanceController extends Controller
                                                 $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = 0;
                                                 $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
@@ -1215,7 +1215,7 @@ class AttendanceController extends Controller
                                                 $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = 0;
                                                 $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
@@ -1257,7 +1257,7 @@ class AttendanceController extends Controller
                                                 $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = 0;
                                                 $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
@@ -1302,7 +1302,7 @@ class AttendanceController extends Controller
                                                 $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = 0;
                                                 $adjustment->code_case  = "A01/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
@@ -1353,7 +1353,7 @@ class AttendanceController extends Controller
                                                 $adjustment->breaktime = $break_time;
                                                 
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = $min_workhour;
                                                 $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
@@ -1397,7 +1397,7 @@ class AttendanceController extends Controller
                                                 $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = $min_workhour;
                                                 $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
@@ -1439,7 +1439,7 @@ class AttendanceController extends Controller
                                                 $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = $min_workhour;
                                                 $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
@@ -1485,7 +1485,7 @@ class AttendanceController extends Controller
                                                 $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
                                             } else {
-                                                $adjustment->adj_over_time = $ot;
+                                                $adjustment->adj_over_time = 0;
                                                 $adjustment->adj_working_time = $min_workhour;
                                                 $adjustment->code_case  = "A13/BW$getbreakworkingtime/BO$getbreakovertime";
                                                 $adjustment->breaktime = $break_time;
