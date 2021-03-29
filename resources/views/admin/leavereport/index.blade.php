@@ -192,6 +192,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                       <li><a class="dropdown-item" href="{{url('admin/leavereport')}}/${row.id}/detail"><i class="fas fa-search mr-2"></i> Detail</a></li>
+                      <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
                     </ul>
                   </div>`
           },targets: [7]
@@ -221,7 +222,7 @@
             className: 'btn-default'
           },
         },
-        title:'Delete Leave Application?',
+        title:'Delete Leave Report?',
         message:'Data that has been deleted cannot be recovered',
         callback: function(result) {
           if(result) {
@@ -229,7 +230,7 @@
               _token: "{{ csrf_token() }}"
             };
             $.ajax({
-              url: `{{url('admin/leave')}}/${id}`,
+              url: `{{url('admin/leavereport')}}/${id}`,
               dataType: 'json',
               data:data,
               type:'DELETE',

@@ -188,8 +188,20 @@ class LeaveReportController extends Controller
      */
     public function destroy($id)
     {
-        //
-    }
+        try {
+           $leave = Leave::find($id);
+           $leave->delete();
+       } catch (\Illuminate\Database\QueryException $e) {
+           return response()->json([
+               'status'     => false,
+               'message'     => 'Error delete data'
+           ], 400);
+       }
+       return response()->json([
+           'status'     => true,
+           'message' => 'Success delete data'
+       ], 200);
+   }
 
     public function export(Request $request)
     {

@@ -150,7 +150,7 @@
             <thead>
               <tr>
                 <th width="10">No</th>
-                <th width="100">RIT</th>
+                <th width="100">Rule</th>
                 <th width="100">Type</th>
                 <th width="200">Value</th>
                 <th width="10">Action</th>
@@ -160,7 +160,7 @@
               <tr>
                 <td class="text-center align-middle">1</td>
                 <td class="text-center align-middle">
-                  <div class="form-group mb-0"><input type="hidden" name="type_choose[]" /><input placeholder="RIT"
+                  <div class="form-group mb-0"><input type="hidden" name="type_choose[]" /><input placeholder="Rule"
                       name="rit[]" class="form-control" required /></div>
                 </td>
                 <td class="align-middle">
@@ -227,7 +227,7 @@
     var length = $('#type_table tr').length;
     var html = '<tr>';
         html += '<td class="text-center align-middle">'+length+'</td>';
-        html += '<td class="text-center align-middle"><div class="form-group mb-0"><input type="hidden" name="type_choose[]"/><input placeholder="RIT" name="rit[]" class="form-control" required/></div></td>';
+        html += '<td class="text-center align-middle"><div class="form-group mb-0"><input type="hidden" name="type_choose[]"/><input placeholder="Rule" name="rit[]" class="form-control" required/></div></td>';
         // html += '<td class="text-center align-middle"><div class="input-group mb-0"><div class="input-group-prepend"><select class="input-group-text" style="appearance:none; -webkit-appearance:none; -moz-appearance:none;" name="type_value" id="currency_symbol2"><option value="nominal">Rp.</option><option value="percentage">%</option></select></div><input placeholder="Value" name="rit_value[]" class="form-control" aria-label="Value" aria-describedby="currency_symbol2" required></div></td>';
         html += '<td class="align-middle"><div class="form-group mb-0"><select name="type_value" class="form-control select2" id="type_value"><option value="nominal">Nominal</option><option value="percentage">Percentage</option></select></div></td>';
         html += '<td class="text-center align-middle"><div class="input-group mb-0"><input placeholder="Nilai" name="rit_value[]" class="form-control" aria-label="Value" aria-describedby="currency_symbol2" required></div></td>';

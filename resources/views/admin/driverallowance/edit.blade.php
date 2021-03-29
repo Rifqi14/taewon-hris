@@ -179,7 +179,7 @@
           <thead>
             <tr>
               <th width="10">No</th>
-              <th width="100">RIT</th>
+              <th width="100">Rule</th>
               <th width="100">Type</th>
               <th width="200">Value</th>
               <th width="10">Action</th>
@@ -191,7 +191,7 @@
             <tr>
               <td class="text-center align-middle">{{ $key + 1 }}</td>
               <td class="text-center align-middle">
-                <div class="form-group mb-0"><input type="hidden" name="type_choose[]" /><input placeholder="RIT" name="rit[]" class="form-control" value="{{ $item->rit }}" required /></div>
+                <div class="form-group mb-0"><input type="hidden" name="type_choose[]" /><input placeholder="Rule" name="rit[]" class="form-control" value="{{ $item->rit }}" required /></div>
               </td>
               <td class="align-middle">
                 <div class="form-group mb-0">
@@ -220,7 +220,7 @@
             <tr>
               <td class="text-center align-middle">1</td>
               <td class="text-center align-middle">
-                <div class="form-group mb-0"><input type="hidden" name="type_choose[]" /><input placeholder="RIT"
+                <div class="form-group mb-0"><input type="hidden" name="type_choose[]" /><input placeholder="Rule"
                     name="rit[]" class="form-control" required /></div>
               </td>
               <td class="text-center align-middle">
@@ -300,7 +300,7 @@
     var length = $('#type_table tr').length;
     var html = '<tr>';
         html += '<td class="text-center align-middle">'+length+'</td>';
-        html += '<td class="text-center align-middle"><div class="form-group mb-0"><input type="hidden" name="type_choose[]"/><input placeholder="RIT" name="rit[]" class="form-control" required/></div></td>';
+        html += '<td class="text-center align-middle"><div class="form-group mb-0"><input type="hidden" name="type_choose[]"/><input placeholder="Rule" name="rit[]" class="form-control" required/></div></td>';
         // html += '<td class="text-center align-middle"><div class="input-group mb-0"><div class="input-group-prepend"><span class="input-group-text" id="currency_symbol2">Rp.</span></div><input placeholder="Value" name="rit_value[]" class="form-control currency" aria-label="Value" aria-describedby="currency_symbol2" required></div></td>';
         html += '<td class="align-middle"><div class="form-group mb-0"><select name="type_value" class="form-control select2" id="type_value"><option value="nominal">Nominal</option><option value="percentage">Percentage</option></select></div></td>';
         html += '<td class="text-center align-middle"><div class="input-group mb-0"><input placeholder="Nilai" name="rit_value[]" class="form-control" aria-label="Value" aria-describedby="currency_symbol2" required></div></td>';

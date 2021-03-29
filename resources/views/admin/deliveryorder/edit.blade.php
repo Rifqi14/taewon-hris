@@ -95,7 +95,7 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
                     </div>
-                    <input type="text" name="departure_time" class="form-control datepicker" placeholder="Departure Time" required value="{{ date('d/m/Y H:i:s', strtotime($deliveryorder->departure_time)) }}" />
+                    <input type="text" name="departure_time" class="form-control" id="departure_time" placeholder="Departure Time" required value="{{ date('d/m/Y H:i:s', strtotime($deliveryorder->departure_time)) }}" />
                   </div>
                 </div>
               </div>
@@ -110,7 +110,7 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
                     </div>
-                    <input type="text" name="arrived_time" class="form-control datepicker" placeholder="Arrived Time" required value="{{ date('d/m/Y H:i:s', strtotime($deliveryorder->arrived_time)) }}" />
+                    <input type="text" name="arrived_time" class="form-control" id="arrived_time" placeholder="Arrived Time" required value="{{ date('d/m/Y H:i:s', strtotime($deliveryorder->arrived_time)) }}" />
                   </div>
                 </div>
               </div>
@@ -273,6 +273,32 @@
       locale: {
       format: 'DD/MM/YYYY HH:mm:ss'
       }
+    });
+    $('#departure_time').daterangepicker({
+			singleDatePicker: true,
+			timePicker: true,
+			timePicker24Hour: true,
+			timePickerIncrement: 1,
+			timePickerSeconds: false,
+			locale: {
+				format: 'DD/MM/YYYY HH:mm:ss'
+			}
+		},
+		function(chosen_date) {
+      $('#departure_time').val(chosen_date.format('DD/MM/YYYY HH:mm:ss'));
+    });
+    $('#arrived_time').daterangepicker({
+			singleDatePicker: true,
+			timePicker: true,
+			timePicker24Hour: true,
+			timePickerIncrement: 1,
+			timePickerSeconds: false,
+			locale: {
+				format: 'DD/MM/YYYY HH:mm:ss'
+			}
+		},
+		function(chosen_date) {
+      $('#arrived_time').val(chosen_date.format('DD/MM/YYYY HH:mm:ss'));
     });
     $('.timepicker').daterangepicker({
       singleDatePicker: true,

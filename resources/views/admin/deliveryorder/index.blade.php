@@ -269,7 +269,12 @@
             return `<a class="edit" data-id="${row.id}" href="#">${row.driver_name}</a><br><small>${row.nid}</small>`;
         }, targets:[4]},
         { render: function(data, type, row) {
-            return `${row.type_truck}<br><small>${row.police_no}</small>`;
+            if (row.type_truck == 'fuso') {
+              return `Fuso <br><small>${row.police_no}</small>`
+            } else {
+              return `Colt Diesel <br><small>${row.police_no}</small>`
+            }
+            // return `${row.type_truck}<br><small>${row.police_no}</small>`;
         }, targets:[5]},
         { render: function(data, type, row) {
             return `${row.customer}<br><small> RIT : ${row.rit}</small>`;

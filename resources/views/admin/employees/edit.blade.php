@@ -5884,15 +5884,23 @@ $(document).ready(function(){
 			{
 				orderable: false,targets:[0]
 			},
-			{ className: "text-right", targets: [0,3,4,5,6] },
-			{ className: "text-center", targets: [7] },
+			{ className: "text-right", targets: [0,5,6] },
+			{ className: "text-center", targets: [2,3,4,7] },
 			// { render: function(data, type, row) {
-			// 	if (row.truck == 'Fuso') {
+			// 	if (row.truck == 'fuso') {
 			// 		return 'Fuso'
 			// 	} else {
 			// 		return 'Colt Diesel'
 			// 	}
 			// }, targets:[2]},
+			{ render: function ( data, type, row ) {
+				if(row.type_value == 'percentage'){
+					return row.value + '%'
+				}else{
+					return 'Rp.' + row.value
+				}
+			},
+			targets: [4] },
 			{ render: function(data, type, row) {
 				return `${row.date}<br><small> Type Kendaraan ${row.truck}</small>`;
 			}, targets:[1]},
