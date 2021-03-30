@@ -520,6 +520,7 @@ Route::group(['prefix' => 'admin'], function () {
         // Route SPL
         Route::get('/spl/selectemployee', 'Admin\SPLController@selectemployee')->name('spl.selectemployee');
         Route::get('spl/read', 'Admin\SPLController@read')->name('spl.read');
+        Route::post('/spl/durationupdate', 'Admin\SPLController@durationupdate')->name('spl.durationupdate');
         Route::get('/spl/import', 'Admin\SPLController@import')->name('spl.import');
         Route::post('/spl/preview', 'Admin\SPLController@preview')->name('spl.preview');
         Route::post('/spl/storemass', 'Admin\SPLController@storemass')->name('spl.storemass');

@@ -40,6 +40,7 @@
         <table class="table table-striped table-bordered" style="width:100%" id="table-item">
           <thead>
             <tr>
+                <th width="100">Date</th>
                 <th width="100">Employee Name</th>
                 <th width="100">NIK Taewon</th>
                 <th width="50">Start Overtime</th>
@@ -109,6 +110,7 @@
       count=0;
       $.each(items, function() {
           table_item.row.add([
+            this.date,
             this.employee_name,
             this.nik,
             this.start_overtime,
@@ -146,14 +148,14 @@
                   orderable: false,targets:[0,1,2,3,4,5]
               },
               { render: function ( data, type, row ) {
-                  if (row[5] == 1) {
+                  if (row[6] == 1) {
                     return '<span class="badge badge-success"><i class="fa fa-check"></i></span>';
                   } else {
                     return '<span class="badge badge-danger"><i class="fa fa-times"></i></span>';
                   }
-                },targets: [5]
+                },targets: [6]
               },
-              { className: "text-center", targets: [5] },
+              { className: "text-center", targets: [6] },
           ],
       });
 

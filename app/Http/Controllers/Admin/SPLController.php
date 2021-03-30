@@ -151,6 +151,7 @@ class SPLController extends Controller
         $spl = Spl::create([
             'employee_id' => $request->employee_name,
             'nik' => $request->nik,
+            'spl_date' => $request->date,
             'start_overtime' => $dateTimeStart,
             'finish_overtime' => $dateTimeFinish,
             'notes' => $request->notes,
@@ -189,6 +190,25 @@ class SPLController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function durationupdate(Request $request)
+    {
+        if (isset($request->duration)) {
+            // dd($request->working_shift);
+            $duration = Spl::find($request->spl_id);
+            $duration->duration = $request->duration;
+            $duration->save();
+        } 
+        if ($duration) {
+            return response()->json([
+                'success' => true,
+                'results'     => route('spl.index'),
+            ], 200);
+        }
+        // return response()->json([
+        //     'status'     => true,
+        //     'results'     => 'Berhasil Simpan Data',
+        // ], 200);
+    }
     public function edit($id)
     {
         $spl = Spl::with('employee')->find($id);
@@ -222,6 +242,7 @@ class SPLController extends Controller
         $dateTimeFinish = str_replace('/','-',$request->finish_overtime);
         $spl = Spl::find($id);
         $spl->employee_id = $request->employee_name;
+        $spl->spl_date = $request->date;
         $spl->nik = $request->nik;
         $spl->start_overtime = $request->start_overtime;
         $spl->finish_overtime = $request->finish_overtime;
@@ -292,18 +313,23 @@ class SPLController extends Controller
         $sheet = $objPHPExcel->getActiveSheet(0);
         $highestRow = $sheet->getHighestRow();
         for ($row = 2; $row <= $highestRow; $row++) {
-            $nid = $sheet->getCellByColumnAndRow(0, $row)->getValue();
+            $nid = $sheet->getCellByColumnAndRow(1, $row)->getValue();
             if ($nid) {
-                $employee_name = strtoupper($sheet->getCellByColumnAndRow(1, $row)->getValue());
-                if (is_numeric($sheet->getCellByColumnAndRow(2, $row)->getValue())){
-                    $start_overtime = date('Y-m-d H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(2, $row)->getValue())));
+                if (is_numeric($sheet->getCellByColumnAndRow(0, $row)->getValue())){
+                    $date = date('Y-m-d', \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(0, $row)->getValue()));
                 }else{
-                    $start_overtime = date('Y-m-d H:i:s', strtotime($sheet->getCellByColumnAndRow(2, $row)->getValue()));
+                    $date = date('Y-m-d', strtotime($sheet->getCellByColumnAndRow(0, $row)->getValue()));
                 }
+                $employee_name = strtoupper($sheet->getCellByColumnAndRow(2, $row)->getValue());
                 if (is_numeric($sheet->getCellByColumnAndRow(3, $row)->getValue())){
-                    $finish_overtime = date('Y-m-d H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(3, $row)->getValue())));
+                    $start_overtime = date('Y-m-d H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(3, $row)->getValue())));
                 }else{
-                    $finish_overtime = date('Y-m-d H:i:s', strtotime($sheet->getCellByColumnAndRow(3, $row)->getValue()));
+                    $start_overtime = date('Y-m-d H:i:s', strtotime($sheet->getCellByColumnAndRow(3, $row)->getValue()));
+                }
+                if (is_numeric($sheet->getCellByColumnAndRow(4, $row)->getValue())){
+                    $finish_overtime = date('Y-m-d H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(4, $row)->getValue())));
+                }else{
+                    $finish_overtime = date('Y-m-d H:i:s', strtotime($sheet->getCellByColumnAndRow(4, $row)->getValue()));
                 }
                 $employee = Employee::whereRaw("upper(name) like '%$employee_name%'")->first();
                 $status = 1;
@@ -318,6 +344,7 @@ class SPLController extends Controller
                 }
                 $data[] = array(
                     'index' => $no,
+                    'date' => $date,
                     'employee_name' => $employee_name,
                     'employee_id' => $employee ? $employee->id : null,
                     'nik' => $nid,
@@ -354,6 +381,7 @@ class SPLController extends Controller
                 $splimport = Spl::create([
                     'employee_id' => $spl->employee_id,
                     'nik' => $spl->nik,
+                    'spl_date' => $spl->date,
                     'start_overtime' => $spl->start_overtime,
                     'finish_overtime' => $spl->finish_overtime,
                     'status' => 1

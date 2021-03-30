@@ -24,6 +24,12 @@
 			</div>
 			<div class="card-body">
                 <div class="row">
+					<div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date <b class="text-danger">*</b></label>
+                            <input type="text" name="date" id="date" class="form-control datepicker" placeholder="Date" required="{{ $spl->spl_date }}" required>
+                        </div>
+                    </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Employee Name <b class="text-danger">*</b></label>
@@ -102,7 +108,7 @@
 	$(document).ready(function(){
         $('.datepicker').daterangepicker({
             singleDatePicker: true,
-            autoUpdateInput: false,
+            // autoUpdateInput: false,
             timePicker: false,
             locale: {
                 format: 'DD/MM/YYYY'

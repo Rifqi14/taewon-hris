@@ -3,6 +3,11 @@
 @section('title', 'SPL | Surat Pengajuan Lembur')
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
+<style>
+	.duration:hover {
+		cursor: pointer;
+	}
+</style>
 @endsection
 
 @push('breadcrump')
@@ -41,6 +46,7 @@
 								<th width="100">Employee Name</th>
 								<th width="100">Start Overtime</th>
 								<th width="100">Finish Overtime</th>
+								<th width="10">Duration</th>
 								<th width="100">Status</th>
 								<th width="10">Action</th>
 							</tr>
@@ -54,38 +60,33 @@
 		</div>
 	</div>
 </div>
-<div class="modal fade" id="add-filter" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog"
-	aria-hidden="true" data-backdrop="static">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title">Filter</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-			</div>
-			<div class="modal-body">
-				<form id="form-search" autocomplete="off">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="form-group">
-								<label class="control-label" for="name">Working Time Type</label>
-								<select name="working_time_type" id="working_time_type" class="form-control select2"
-									data-placeholder="Select Working Time">
-									<option value="">Show All</option>
-									@foreach(config('enums.workingtime_type') as $key => $value)
-									<option value="{{ $key }}">{{ $value }}</option>
-									@endforeach
-								</select>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button form="form-search" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i class="fa fa-search"></i></button>
-			</div>
-		</div>
-	</div>
-</div>
+<div class="modal fade" id="edit-duration" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Duration</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        </div>
+        <div class="modal-body">
+          <form id="form-duration" action="{{ route('spl.durationupdate') }}" class="form-horizontal no-gutters" method="post" autocomplete="off">
+            {{ csrf_field() }}
+            <input type="text" name="spl_id" id="spl_id">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="control-label" for="duration">Duration</label>
+                  <input type="text" class="form-control" name="duration" id="duration" placeholder="Duration" value="0">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button form="form-duration" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i class="fa fa-save"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 
 @push('scripts')
@@ -118,14 +119,14 @@
 					orderable: false,targets:[0]
 				},
 				{ className: "text-right", targets: [0] },
-				{ className: "text-center", targets: [4,5,6] },
+				{ className: "text-center", targets: [3,4,5,6,7] },
                 { render: function(data, type, row) {
                     if (data == 1) {
                         return '<span class="badge badge-success">Active</span>';
                     } else {
                         return '<span class="badge badge-danger">Non Active</span>';
                     }
-                }, targets:[5]},
+                }, targets:[6]},
 				{ render: function ( data, type, row ) {
 					return `<div class="dropdown">
 					<button class="btn  btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -135,7 +136,7 @@
 					<li><a class="dropdown-item" href="{{url('admin/spl')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
 					<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
 					</ul></div>`
-				},targets: [6]
+				},targets: [7]
 				}
 			],
 			columns: [
@@ -144,6 +145,7 @@
 			{ data: "employee_name" },
 			{ data: "start_overtime" },
 			{ data: "finish_overtime" },
+			{ data: "duration", className: "duration align-middle text-center" },
 			{ data: "status" },
 			{ data: "id" },
 			]
@@ -153,6 +155,88 @@
 			dataTable.draw();
 			$('#add-filter').modal('hide');
 		})
+		$('.datatable').on('click', '.duration', function() {
+		var data = dataTable.row(this).data();
+		// console.table(data);
+		if (data) {
+			$('#edit-duration').modal('show');
+			$('#form-duration input[name=spl_id]').attr('value', data.id);
+			$('#form-duration input[name=duration]').attr('value', data.duration);
+		}
+		});
+		$("#form-duration").validate({
+			errorElement: 'div',
+			errorClass: 'invalid-feedback',
+			focusInvalid: false,
+			highlight: function (e) {
+				$(e).closest('.form-group').removeClass('has-success').addClass('was-validated has-error');
+			},
+
+			success: function (e) {
+				$(e).closest('.form-group').removeClass('has-error').addClass('has-success');
+				$(e).remove();
+			},
+			errorPlacement: function (error, element) {
+				if(element.is(':file')) {
+				error.insertAfter(element.parent().parent().parent());
+				}else
+				if(element.parent('.input-group').length) {
+				error.insertAfter(element.parent());
+				}
+				else
+				if (element.attr('type') == 'checkbox') {
+				error.insertAfter(element.parent());
+				}
+				else{
+				error.insertAfter(element);
+				}
+			},
+			submitHandler: function() {
+				$.ajax({
+				url:$('#form-duration').attr('action'),
+				method:'post',
+				data: new FormData($('#form-duration')[0]),
+				processData: false,
+				contentType: false,
+				dataType: 'json',
+				beforeSend:function(){
+					$('.overlay').removeClass('d-none');
+				}
+				}).done(function(response){
+					$('.overlay').addClass('d-none');
+					if(response.status){
+						dataTable.draw();
+						$('#edit-duration').modal('hide');
+						$('#form-duration input[name=spl_id]').attr('value', '');
+						$('#form-duration input[name=duration]').attr('value', '0');;
+						$.gritter.add({
+							title: 'Success!',
+							text: response.message,
+							class_name: 'gritter-success',
+							time: 1000,
+						});
+					}
+					else{
+						$.gritter.add({
+							title: 'Warning!',
+							text: response.message,
+							class_name: 'gritter-warning',
+							time: 1000,
+						});
+					}
+					return;
+				}).fail(function(response){
+					$('.overlay').addClass('d-none');
+					var response = response.responseJSON;
+					$.gritter.add({
+						title: 'Error!',
+						text: response.message,
+						class_name: 'gritter-error',
+						time: 1000,
+					});
+				});
+			}
+		});
 		$(document).on('click','.delete',function(){
 			var id = $(this).data('id');
 			bootbox.confirm({
