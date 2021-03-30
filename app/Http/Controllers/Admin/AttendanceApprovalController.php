@@ -623,6 +623,17 @@ class AttendanceApprovalController extends Controller
                             'message'     => $approve
                         ], 400);
                     } elseif ($approve && $approve->adj_over_time > 0) {
+                        $readConfigs = Config::where('option', 'cut_off')->first();
+                        $cut_off = $readConfigs->value;
+                        if (date('d', strtotime($approve->attendance_date)) > $cut_off) {
+                            $month = date('m', strtotime($approve->attendance_date));
+                            $year = date('Y', strtotime($approve->attendance_date));
+                            $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
+                            $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
+                        } else {
+                            $month =  date('m', strtotime($approve->attendance_date));
+                            $year =  date('Y', strtotime($approve->attendance_date));
+                        }
                         $overtime = Overtime::where('date', $approve->attendance_date)->where('employee_id', $approve->employee_id);
                         $overtime->delete();
                         $rules = OvertimeSchemeList::select('hour', 'amount')->where('overtime_scheme_id', '=', $approve->overtime_scheme_id)->groupBy('hour','amount')->get();
@@ -697,6 +708,7 @@ class AttendanceApprovalController extends Controller
                                 $overtimes = $approve->adj_over_time;
                                 $length = count($rules);
                                 foreach ($rules as $key => $value) {
+                                    
                                     $date = Carbon::parse($approve->attendance_date);
                                     $sallary = SalaryIncreases::GetSalaryIncreaseDetail($approve->employee_id, $date->month, $date->year)->get();
                                     // $emp_id = $approve->employee_id;
@@ -713,7 +725,9 @@ class AttendanceApprovalController extends Controller
                                                 'hour'          => ($i != $length - 1 && $overtimes >= 1) ? 1 : $overtimes,
                                                 'amount'        => $value->amount,
                                                 'basic_salary'  => $getSallary ? $getSallary->amount / 173 : 0,
-                                                'date'          => changeDateFormat('Y-m-d', $approve->attendance_date)
+                                                'date'          => changeDateFormat('Y-m-d', $approve->attendance_date),
+                                                'year'          => $year,
+                                                'month'         => $month,
                                             ]);
                                         } else {
                                             continue;
@@ -744,7 +758,9 @@ class AttendanceApprovalController extends Controller
                                                 'hour'          => ($i != $length - 1 && $overtimes >= 1) ? 1 : $overtimes,
                                                 'amount'        => $value->amount,
                                                 'basic_salary'  => $getSallary ? $getSallary->amount / 173 : 0,
-                                                'date'          => changeDateFormat('Y-m-d', $approve->attendance_date)
+                                                'date'          => changeDateFormat('Y-m-d', $approve->attendance_date),
+                                                'year'          => $year,
+                                                'month'         => $month,
                                             ]);
                                         } else {
                                             continue;
@@ -860,15 +876,6 @@ class AttendanceApprovalController extends Controller
                                         }
 
                                         if ($employeedetailallowance) {
-                                            if (date('d', strtotime($approve->attendance_date)) > $cut_off) {
-                                                $month = date('m', strtotime($approve->attendance_date));
-                                                $year = date('Y', strtotime($approve->attendance_date));
-                                                $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
-                                                $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
-                                            } else {
-                                                $month =  date('m', strtotime($approve->attendance_date));
-                                                $year =  date('Y', strtotime($approve->attendance_date));
-                                            }
                                             $query = EmployeeAllowance::select('employee_allowances.*');
                                             $query->where('employee_id', '=', $history->employee_id);
                                             $query->where('allowance_id', '=', $history->allowance_id);
@@ -906,8 +913,15 @@ class AttendanceApprovalController extends Controller
                                     }
 
                                     if ($employeedetailallowance) {
-                                        $month =  date('m', strtotime($approve->attendance_date));
-                                        $year =  date('Y', strtotime($approve->attendance_date));
+                                        if (date('d', strtotime($approve->attendance_date)) > $cut_off) {
+                                            $month = date('m', strtotime($approve->attendance_date));
+                                            $year = date('Y', strtotime($approve->attendance_date));
+                                            $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
+                                            $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
+                                        } else {
+                                            $month =  date('m', strtotime($approve->attendance_date));
+                                            $year =  date('Y', strtotime($approve->attendance_date));
+                                        }
                                         $query = EmployeeAllowance::select('employee_allowances.*');
                                         $query->where('employee_id', '=', $history->employee_id);
                                         $query->where('allowance_id', '=', $history->allowance_id);
