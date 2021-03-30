@@ -1001,6 +1001,7 @@ class AttendanceController extends Controller
             $new_date = changeDateFormat('Y-m-d', $updatelog->attendance_date);
             $update = Attendance::where('employee_id', $updatelog->employee_id)->where('attendance_date', '=', $new_date)->where('status', '<>', 1)->first();
             // log in and log out
+            // dd($update);
             if ($update) {
                 $employee = Employee::find($updatelog->employee_id);
                 $attendance_in = AttendanceLog::where('attendance_id', $update->id)->where('employee_id', $update->employee_id)->where('type', 1)->min('attendance_date');
@@ -1329,6 +1330,7 @@ class AttendanceController extends Controller
                             $break_time = $getbreakworkingtime + $getbreakovertime;
 
                             $wt_attendance = $total_jam - $break_time;
+                            
                             $wt = ($adj_working_time == $min_workhour) ? $adj_working_time : $adj_working_time - $getbreakworkingtime;
 
                             if ($employee->timeout == 'yes') {
@@ -1360,8 +1362,8 @@ class AttendanceController extends Controller
                                             }
                                         } else {
                                             //  spl not
-                                            $adjustment->adj_over_time = $wt_attendance;
-                                            $adjustment->adj_working_time = $wt;
+                                            $adjustment->adj_over_time = $ot;
+                                            $adjustment->adj_working_time = $min_workhour;
                                             $adjustment->code_case  = "A19/BW$getbreakworkingtime/BO$getbreakovertime";
                                             $adjustment->breaktime = $break_time;
                                         }
