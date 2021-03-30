@@ -39,15 +39,19 @@ class OvertimeController extends Controller
         $query = $request->search['value'];
         $sort = $request->columns[$request->order[0]['column']]['data'];
         $dir = $request->order[0]['dir'];
-        $month = $request->montly;
+        $montly = $request->montly;
         $year = $request->year;
         $employee_id = $request->employee_id;
 
         //Count Data
         $query = DB::table('overtimes');
         $query->select('overtimes.*');
-        $query->whereMonth('date', $month);
-        $query->whereYear('date', $year);
+        if ($montly != '') {
+            $query->where('month', '=', $montly);
+        }
+        if ($year != '') {
+            $query->where('year', '=', $year);
+        }
         $query->where('employee_id',  $employee_id);
         $query->where('final_salary', '!=', 0);
         $recordsTotal = $query->count();
@@ -55,8 +59,12 @@ class OvertimeController extends Controller
         //Select Pagination
         $query = DB::table('overtimes');
         $query->select('overtimes.*');
-        $query->whereMonth('date', $month);
-        $query->whereYear('date', $year);
+        if ($montly != '') {
+            $query->where('month', '=', $montly);
+        }
+        if ($year != '') {
+            $query->where('year', '=', $year);
+        }
         $query->where('employee_id',  $employee_id);
         $query->where('final_salary', '!=', 0);
         if ($start) {

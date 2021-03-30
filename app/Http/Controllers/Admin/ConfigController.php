@@ -24,18 +24,19 @@ class ConfigController extends Controller
     public function update(Request $request)
     {
         $fields = [
-            'app_name', 'app_copyright', 'app_logo', 'app_icon', 'app_theme', 'company_name', 'company_email', 'company_phone', 'company_address', 'email_push', 'language'
+            'app_name', 'app_copyright', 'app_logo', 'app_icon', 'app_theme', 'company_name', 'company_email', 'company_phone', 'company_address', 'email_push', 'language','cut_off'
         ];
         $validator = Validator::make($request->all(), [
-            'app_name'     => 'required',
-            'app_copyright' => 'required',
-            'app_logo' => 'mimes:png',
-            'app_icon' => 'mimes:png',
-            'app_theme' => 'required',
-            'company_name' => 'required',
-            'company_email' => 'required|email',
-            'company_phone' => 'required',
-            'company_address' => 'required'
+            'app_name'        => 'required',
+            'app_copyright'   => 'required',
+            'app_logo'        => 'mimes:png',
+            'app_icon'        => 'mimes:png',
+            'app_theme'       => 'required',
+            'company_name'    => 'required',
+            'company_email'   => 'required|email',
+            'company_phone'   => 'required',
+            'company_address' => 'required',
+            'cut_off'         => 'required'
         ]);
 
         if ($validator->fails()) {
