@@ -866,7 +866,9 @@ class AttendanceApprovalController extends Controller
                                                 'allowance_id' => $history->allowance_id,
                                                 'workingtime_id' => $history->workingtime_id,
                                                 'tanggal_masuk' => $history->date,
-                                                'value' => $history->value
+                                                'value' => $history->value,
+                                                'month' => $month,
+                                                'year' => $year
                                             ]);
                                         } catch (\Illuminate\Database\QueryException $e) {
                                             return response()->json([
@@ -903,7 +905,9 @@ class AttendanceApprovalController extends Controller
                                             'allowance_id' => $history->allowance_id,
                                             'workingtime_id' => $history->workingtime_id,
                                             'tanggal_masuk' => $history->date,
-                                            'value' => $history->value
+                                            'value' => $history->value,
+                                            'month' => $month,
+                                            'year' => $year
                                         ]);
                                     } catch (\Illuminate\Database\QueryException $e) {
                                         return response()->json([
@@ -985,7 +989,9 @@ class AttendanceApprovalController extends Controller
                                                 'allowance_id' => $hour->allowance_id,
                                                 'workingtime_id' => $hour->workingtime_id,
                                                 'tanggal_masuk' => $hour->date,
-                                                'value' => $hour->value
+                                                'value' => $hour->value,
+                                                'month' => $month,
+                                                'year' => $year
                                             ]);
                                         } catch (\Illuminate\Database\QueryException $e) {
                                             return response()->json([
@@ -1021,7 +1027,9 @@ class AttendanceApprovalController extends Controller
                                             'allowance_id' => $hour->allowance_id,
                                             'workingtime_id' => $hour->workingtime_id,
                                             'tanggal_masuk' => $hour->date,
-                                            'value' => $hour->value
+                                            'value' => $hour->value,
+                                            'month' => $month,
+                                            'year' => $year
                                         ]);
                                     } catch (\Illuminate\Database\QueryException $e) {
                                         return response()->json([
