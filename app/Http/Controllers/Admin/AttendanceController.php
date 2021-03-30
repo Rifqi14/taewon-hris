@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\AttendanceLog;
-use App\Models\SPL;
+use App\Models\Spl;
 use App\Models\AttendanceMachine;
 use App\Models\AttendanceMachine\AttTransaction;
 use App\Models\Calendar;
@@ -1158,7 +1158,7 @@ class AttendanceController extends Controller
                                         $ot= $wt_attendance - $min_workhour;
 
                                         if ($employee->spl == 'yes') {
-                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id',$employee->id)->first();
+                                            $cekspl = Spl::where('spl_date', $adjustment->attendance_date)->where('employee_id',$employee->id)->first();
                                             // ketika ada spl
                                             if ($cekspl) {
 
@@ -1203,7 +1203,7 @@ class AttendanceController extends Controller
                                         $ot = $wt_attendance - $min_workhour;
                                         
                                         if ($employee->spl == 'yes') {
-                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
+                                            $cekspl = Spl::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
                                             // ketika ada spl
                                             if ($cekspl) {
 
@@ -1244,7 +1244,7 @@ class AttendanceController extends Controller
                                         $ot = $wt_attendance - $min_workhour;
 
                                         if ($employee->spl == 'yes') {
-                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
+                                            $cekspl = Spl::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
                                             // ketika ada spl dan adjustment
                                             if ($cekspl) {
 
@@ -1290,7 +1290,7 @@ class AttendanceController extends Controller
                                         $ot = $wt_attendance - $min_workhour;
 
                                         if ($employee->spl == 'yes') {
-                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
+                                            $cekspl = Spl::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
                                             // ketika ada spl dan adjustment
                                             if ($cekspl) {
 
@@ -1340,7 +1340,7 @@ class AttendanceController extends Controller
                                         $ot = $wt_attendance - $min_workhour;
 
                                         if ($employee->spl == 'yes') {
-                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
+                                            $cekspl = Spl::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
                                             // ketika ada spl dan adjustment
                                             if ($cekspl) {
 
@@ -1386,7 +1386,7 @@ class AttendanceController extends Controller
                                         $ot = $wt_attendance - $min_workhour;
 
                                         if ($employee->spl == 'yes') {
-                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
+                                            $cekspl = Spl::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
                                             // ketika ada spl dan adjustment
                                             if ($cekspl) {
 
@@ -1427,7 +1427,7 @@ class AttendanceController extends Controller
                                         $ot = $wt_attendance - $min_workhour;
 
                                         if ($employee->spl == 'yes') {
-                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
+                                            $cekspl = Spl::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
                                             // ketika ada spl dan adjustment
                                             if ($cekspl) {
 
@@ -1475,7 +1475,7 @@ class AttendanceController extends Controller
                                         $ot = $wt_attendance - $min_workhour;
 
                                         if ($employee->spl == 'yes') {
-                                            $cekspl = SPL::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
+                                            $cekspl = Spl::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();
                                             // ketika ada spl dan adjustment
                                             if ($cekspl) {
                                                 if ($cekspl->duration < $ot) {
