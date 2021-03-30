@@ -190,7 +190,7 @@ class DeliveryOrderController extends Controller
 
         $query->offset($start);
         $query->limit($length);
-        $query->orderBy($sort, $dir);
+        $query->orderBy('partners.rit', 'desc');
         $drivers = $query->get();
 
         $data = [];
@@ -294,6 +294,22 @@ class DeliveryOrderController extends Controller
             'arrived_time'  => changeDateFormat('Y-m-d H:i:s', changeSlash($request->arrived_time)),
             'group'         => $request->kloter
         ]);
+        $partner_rit = Partner::find($request->customer);
+        $partner_collection = DeliveryOrder::select("delivery_orders.id")->leftJoin('partners','partners.id','=','delivery_orders.partner_id')->where('driver_id',$request->driver_id)->where('group', $request->kloter)->where('type_truck', $request->type_truck)->orderBy('partners.rit', 'desc')->get();
+        // dd($partner_collection);
+        $rule_count = DriverList::where("driver_lists.type", "=", $request->type_truck)->count();
+        // dd($rule_count);
+        $no = 0;
+        $new = false;
+        foreach ($partner_collection as $key => $collection) {
+            if($no <= $rule_count){
+                $no++;
+            }
+            $collections = DeliveryOrder::find($collection->id);
+            // dd($collections);
+            $collections->list_order = $no;
+            $collections->update();
+        }
 
         // if ($deliveryorder) {
         //     if (isset($request->product_item)) {

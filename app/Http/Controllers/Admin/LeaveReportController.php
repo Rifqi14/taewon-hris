@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Leave;
+use App\Models\LeaveDetail;
 use App\Models\Employee;
 use App\Models\LeaveLog;
 use Carbon\Carbon;
@@ -187,9 +188,36 @@ class LeaveReportController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-        //
-    }
+    {   
+        // $leaveDetail = LeaveDetail::where('leave_details.employee_id','=',$leave->employee_id)->where('leave_details.leavesetting_id','=', $leave->leave_setting_id)->get();
+        // dd($leaveDetail);
+        try {
+            $leave = Leave::find($id);
+            // dd($leave);
+            $leaveDetail = LeaveDetail::where('leave_details.employee_id','=',$leave->employee_id)->where('leave_details.leavesetting_id','=', $leave->leave_setting_id)->get();
+            // $leaveDetail->delete();
+            foreach ($leaveDetail as $detail) {
+                if ($detail->remaining_balance != -1) {
+                    $detail->used_balance = $detail->used_balance > 0 && $detail->over_balance == 0 ? $detail->used_balance - $leave->duration : 0;
+                    $detail->remaining_balance = $detail->remaining_balance > 0 && $detail->over_balance == 0 ? $detail->remaining_balance + $leave->duration : 0;
+                }
+                // $detail->used_balance - $leave->duration;
+                // dd($detail->used_balance);
+                // $detail->remaining_balance = $detail->remaining_balance + $leave->duration;
+                $detail->update();
+            }
+            $leave->delete();
+       } catch (\Illuminate\Database\QueryException $e) {
+           return response()->json([
+               'status'     => false,
+               'message'     => 'Error delete data'
+           ], 400);
+       }
+       return response()->json([
+           'status'     => true,
+           'message' => 'Success delete data'
+       ], 200);
+   }
 
     public function export(Request $request)
     {
