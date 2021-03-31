@@ -45,13 +45,13 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Start Overtime <b class="text-danger">*</b></label>
-                            <input placeholder="Start Overtime" name="start_overtime" class="form-control" value="{{ $spl->start_overtime }}"/>
+                            <input placeholder="Start Overtime" name="start_overtime" id="start_overtime" class="form-control timepicker" value="{{ date('d/m/Y H:i:s',strtotime($spl->start_overtime)) }}"/>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Finish Overtime <b class="text-danger">*</b></label>
-                            <input placeholder="Finish Overtime" name="finish_overtime" class="form-control" value="{{ $spl->finish_overtime }}"/>
+                            <input placeholder="Finish Overtime" name="finish_overtime" id="finish_overtime" class="form-control timepicker" value="{{ date('d/m/Y H:i:s',strtotime($spl->finish_overtime)) }}"/>
                         </div>
                     </div>
                 </div>
