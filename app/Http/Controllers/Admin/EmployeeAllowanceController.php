@@ -42,10 +42,10 @@ class EmployeeAllowanceController extends Controller
             $query->where('employee_detailallowances.allowance_id', '=', $allowance);
         }
         if ($montly != '') {
-            $query->whereMonth('employee_detailallowances.month', '=', $montly);
+            $query->where('employee_detailallowances.month', '=', $montly);
         }
         if ($year != '') {
-            $query->whereYear('employee_detailallowances.year', '=', $year);
+            $query->where('employee_detailallowances.year', '=', $year);
         }
         $recordsTotal = $query->count();
 
@@ -61,10 +61,10 @@ class EmployeeAllowanceController extends Controller
             $query->where('employee_detailallowances.allowance_id', '=', $allowance);
         }
         if ($montly != '') {
-            $query->whereMonth('employee_detailallowances.month', '=', $montly);
+            $query->where('employee_detailallowances.month', '=', $montly);
         }
         if ($year != '') {
-            $query->whereYear('employee_detailallowances.year', '=', $year);
+            $query->where('employee_detailallowances.year', '=', $year);
         }
         $query->offset($start);
         $query->limit($length);
