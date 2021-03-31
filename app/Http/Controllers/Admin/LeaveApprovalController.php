@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AlphaPenalty;
 use App\Models\Leave;
 use App\Models\Employee;
+use App\Models\Config;
 use App\Models\EmployeeSalary;
 use App\Models\LeaveDetail;
 use App\Models\LeaveLog;
@@ -148,13 +149,28 @@ class LeaveApprovalController extends Controller
                     if ($deletePenalty) {
                         $deletePenalty->delete();
                     }
+
+                    $readConfigs = Config::where('option', 'cut_off')->first();
+                    $cut_off = $readConfigs->value;
+                    if (date('d', strtotime($log->date)) > $cut_off) {
+                        $month = date('m', strtotime($log->date));
+                        $year = date('Y', strtotime($log->date));
+                        $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
+                        $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
+                    } else {
+                        $month =  date('m', strtotime($log->date));
+                        $year =  date('Y', strtotime($log->date));
+                    }
+
                     if ($employeeBaseSalary && $employeeBaseSalary->amount > 0) {
                         $alphaPenalty = AlphaPenalty::create([
                             'employee_id'       => $leave->employee_id,
                             'date'              => $log->date,
                             'salary'            => $employeeBaseSalary ? $employeeBaseSalary->amount : 0,
                             'penalty'           => $employeeBaseSalary ? $employeeBaseSalary->amount / 30 : 0,
-                            'leave_id'          => $id
+                            'leave_id'          => $id,
+                            'year'              => $year,
+                            'month'             => $month
                         ]);
                         if (!$alphaPenalty) {
                             return response()->json([

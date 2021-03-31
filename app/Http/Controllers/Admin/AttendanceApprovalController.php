@@ -888,8 +888,8 @@ class AttendanceApprovalController extends Controller
                                             $updatequery->select('employee_detailallowances.*', DB::raw('count(tanggal_masuk) as date'));
                                             $updatequery->where('employee_detailallowances.employee_id', '=', $history->employee_id);
                                             $updatequery->where('employee_detailallowances.allowance_id', '=', $history->allowance_id);
-                                            $updatequery->whereRaw("extract( month from employee_detailallowances.tanggal_masuk) = $month");
-                                            $updatequery->whereRaw("extract( year from employee_detailallowances.tanggal_masuk) = $year");
+                                            $updatequery->where('employee_detailallowances.month', $month);
+                                            $updatequery->where('employee_detailallowances.year', $year);
                                             $updatequery->groupBy('employee_detailallowances.id');
                                             $updatecount = $updatequery->get()->count();
                                             if ($updatefactor) {
@@ -936,8 +936,8 @@ class AttendanceApprovalController extends Controller
                                         $updatequery->select('employee_detailallowances.*', DB::raw('count(tanggal_masuk) as date'));
                                         $updatequery->where('employee_detailallowances.employee_id', '=', $history->employee_id);
                                         $updatequery->where('employee_detailallowances.allowance_id', '=', $history->allowance_id);
-                                        $updatequery->whereRaw("extract( month from employee_detailallowances.tanggal_masuk) = $month");
-                                        $updatequery->whereRaw("extract( year from employee_detailallowances.tanggal_masuk) = $year");
+                                        $updatequery->where('employee_detailallowances.month', $month);
+                                        $updatequery->where('employee_detailallowances.year', $year);
                                         $updatequery->groupBy('employee_detailallowances.id');
                                         $updatecount = $updatequery->get()->count();
                                         if ($updatefactor) {
@@ -1010,8 +1010,8 @@ class AttendanceApprovalController extends Controller
                                             $updatequery = DB::table('employee_detailallowances');
                                             $updatequery->where('employee_detailallowances.employee_id', '=', $hour->employee_id);
                                             $updatequery->where('employee_detailallowances.allowance_id', '=', $hour->allowance_id);
-                                            $updatequery->whereRaw("extract( month from employee_detailallowances.tanggal_masuk) = $month");
-                                            $updatequery->whereRaw("extract( year from employee_detailallowances.tanggal_masuk) = $year");
+                                            $updatequery->where('employee_detailallowances.month', $month);
+                                            $updatequery->where('employee_detailallowances.year', $year);
                                             $updatequery->groupBy('employee_detailallowances.id');
                                             $updatecount = $updatequery->get()->sum('value');
                                             if ($updatefactor) {
@@ -1058,8 +1058,8 @@ class AttendanceApprovalController extends Controller
                                         // $updatequery->select('employee_detailallowances.*', DB::raw('count(tanggal_masuk) as date'));
                                         $updatequery->where('employee_detailallowances.employee_id', '=', $hour->employee_id);
                                         $updatequery->where('employee_detailallowances.allowance_id', '=', $hour->allowance_id);
-                                        $updatequery->whereRaw("extract( month from employee_detailallowances.tanggal_masuk) = $month");
-                                        $updatequery->whereRaw("extract( year from employee_detailallowances.tanggal_masuk) = $year");
+                                        $updatequery->where('employee_detailallowances.month', $month);
+                                        $updatequery->where('employee_detailallowances.year', $year);
                                         $updatequery->groupBy('employee_detailallowances.id');
                                         $updatecount = $updatequery->get()->sum('value');
                                         if ($updatefactor) {
