@@ -873,7 +873,8 @@ class AttendanceApprovalController extends Controller
                                         } catch (\Illuminate\Database\QueryException $e) {
                                             return response()->json([
                                                 'status'      => false,
-                                                'message'     => 'There is error in employee name ' . $history->employee_name . ' when approved attendance in date ' . $history->date . ' and allowance ' . $history->allowance_name. 'month' . $month . 'year' . $year
+                                                'message'     => 'There is error in employee name ' . $history->employee_name . ' when approved attendance in date ' . $history->date . ' and allowance ' . $history->allowance_name .
+                                                'month' . $month . 'year' . $year . 'value' . $history->value . 'workingtime' . $history->workingtime_id
                                             ], 400);
                                         }
 
@@ -912,7 +913,8 @@ class AttendanceApprovalController extends Controller
                                     } catch (\Illuminate\Database\QueryException $e) {
                                         return response()->json([
                                             'status'      => false,
-                                            'message'     => 'There is error in employee name ' . $history->employee_name . ' when approved attendance in date ' . $history->date . ' and allowance ' . $history-> allowance_name . 'month' . $month . 'year' . $year
+                                            'message'     => 'There is error in employee name ' . $history->employee_name . ' when approved attendance in date ' . $history->date . ' and allowance ' . $history-> allowance_name . 
+                                            'month' . $month . 'year' . $year. 'value'. $history->value.'workingtime'.$history->workingtime_id
                                         ], 400);
                                     }
 
