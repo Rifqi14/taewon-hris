@@ -181,8 +181,8 @@ class EmployeesController extends Controller
         );
         $query->leftJoin('leaves','alpha_penalties.leave_id','=','leaves.id');
         $query->leftJoin('leave_settings','leaves.leave_setting_id','=','leave_settings.id');
-        $query->where('alpha_penalties.month', $month);
-        $query->where('alpha_penalties.year', $year);
+        $query->where('alpha_penalties.month','=', $month);
+        $query->where('alpha_penalties.year','=', $year);
         $query->where('alpha_penalties.employee_id',  $employee_id);
         // $query->where('final_salary', '!=', 0);
         $recordsTotal = $query->count();
@@ -196,8 +196,8 @@ class EmployeesController extends Controller
         );
         $query->leftJoin('leaves','alpha_penalties.leave_id','=','leaves.id');
         $query->leftJoin('leave_settings','leaves.leave_setting_id','=','leave_settings.id');
-        $query->where('alpha_penalties.month', $month);
-        $query->where('alpha_penalties.year', $year);
+        $query->where('alpha_penalties.month','=', $month);
+        $query->where('alpha_penalties.year','=', $year);
         $query->where('alpha_penalties.employee_id',  $employee_id);
         // $query->where('final_salary', '!=', 0);
         if ($start) {
