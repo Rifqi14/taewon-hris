@@ -151,7 +151,7 @@ class SPLController extends Controller
         $spl = Spl::create([
             'employee_id' => $request->employee_name,
             'nik' => $request->nik,
-            'spl_date' => $request->date,
+            'spl_date' => $request->spl_date,
             'start_overtime' => $dateTimeStart,
             'finish_overtime' => $dateTimeFinish,
             'notes' => $request->notes,
@@ -242,7 +242,7 @@ class SPLController extends Controller
         $dateTimeFinish = str_replace('/','-',$request->finish_overtime);
         $spl = Spl::find($id);
         $spl->employee_id = $request->employee_name;
-        $spl->spl_date = $request->date;
+        $spl->spl_date = $request->spl_date;
         $spl->nik = $request->nik;
         $spl->start_overtime = $request->start_overtime;
         $spl->finish_overtime = $request->finish_overtime;

@@ -27,7 +27,7 @@
 					<div class="col-sm-6">
                         <div class="form-group">
                             <label>Date <b class="text-danger">*</b></label>
-                            <input type="text" name="date" id="date" class="form-control datepicker" placeholder="Date" required="{{ $spl->spl_date }}" required>
+                            <input type="text" name="spl_date" id="spl_date" class="form-control datepicker" placeholder="Date" value=" {{ \Carbon\Carbon::parse($spl->spl_date)->format('d/m/Y')}}" required>
                         </div>
                     </div>
                     <div class="col-sm-6">
