@@ -144,7 +144,8 @@ class LeaveApprovalController extends Controller
         if ($leave->status == 1) {
             $leaveSettingType = LeaveSetting::find($leave->leave_setting_id);
             $employee = Employee::find($leave->employee_id);
-            $penalty_config = PenaltyConfig::where('workgroup_id', $employee->workgroup_id)->wherePivot('leave', $leaveSettingType->id)->first();
+            $penalty_config = PenaltyConfig::leftJoin('penalty_config_leave_settings', 'penalty_config_leave_settings.penalty_config_id', '=','penalty_configs.id')->where('workgroup_id', $employee->workgroup_id)->where('penalty_config_leave_settings.leave_setting_id', $leaveSettingType->id)->first();
+            // dd($penalty_config);
             $leaveLogs = LeaveLog::where('leave_id', $leave->id)->get();
             if($leaveSettingType->description == 0){
                 if($penalty_config){
@@ -199,6 +200,7 @@ class LeaveApprovalController extends Controller
                     {
                         foreach ($leaveLogs as $key => $log) {
                             $employeeBaseSalary = EmployeeSalary::where('employee_id', $employee->id)->where('created_date', '<', $log->date)->orderBy('created_date', 'desc')->first();
+                            
                             if (!$employeeBaseSalary) {
                                 return response()->json([
                                     'status'     => false,
@@ -249,6 +251,7 @@ class LeaveApprovalController extends Controller
                     if($penalty_config->type == 'BASIC & ALLOWANCE') {
                         foreach ($leaveLogs as $key => $log) {
                             $employeeBaseSalary = EmployeeSalary::where('employee_id', $employee->id)->where('created_date', '<', $log->date)->orderBy('created_date', 'desc')->first();
+                            
                             if (!$employeeBaseSalary) {
                                 return response()->json([
                                     'status'     => false,
