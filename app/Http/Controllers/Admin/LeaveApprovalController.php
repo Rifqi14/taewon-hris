@@ -9,9 +9,11 @@ use App\Models\Leave;
 use App\Models\Employee;
 use App\Models\Config;
 use App\Models\EmployeeSalary;
+use App\Models\EmployeeAllowance;
 use App\Models\LeaveDetail;
 use App\Models\LeaveLog;
 use App\Models\LeaveSetting;
+use App\Models\PenaltyConfig;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Carbon\Carbon;
@@ -141,42 +143,155 @@ class LeaveApprovalController extends Controller
 
         if ($leave->status == 1) {
             $leaveSettingType = LeaveSetting::find($leave->leave_setting_id);
-            if ($leaveSettingType->description == 0) {
-                $leaveLogs = LeaveLog::where('leave_id', $leave->id)->get();
-                foreach ($leaveLogs as $key => $log) {
-                    $employeeBaseSalary = EmployeeSalary::where('employee_id', $leave->employee_id)->where('created_date', '<', $log->date)->orderBy('created_date', 'desc')->first();
-                    $deletePenalty = AlphaPenalty::where('employee_id', $leave->employee_id)->where('date', $log->date)->first();
-                    if ($deletePenalty) {
-                        $deletePenalty->delete();
+            $employee = Employee::find($leave->employee_id);
+            $penalty_config = PenaltyConfig::where('workgroup_id', $employee->workgroup_id)->wherePivot('leave', $leaveSettingType->id)->first();
+            $leaveLogs = LeaveLog::where('leave_id', $leave->id)->get();
+            if($leaveSettingType->description == 0){
+                if($penalty_config){
+                    
+                    if($penalty_config->type == 'BASIC')
+                    {
+                        foreach ($leaveLogs as $key => $log) {
+                            $employeeBaseSalary = EmployeeSalary::where('employee_id', $employee->id)->where('created_date', '<', $log->date)->orderBy('created_date', 'desc')->first();
+                            if (!$employeeBaseSalary) {
+                                return response()->json([
+                                    'status'     => false,
+                                    'message'   => "Could not find basic salary for this employee"
+                                ], 400);
+                            }
+                            $deletePenalty = AlphaPenalty::where('employee_id', $leave->employee_id)->where('date', $log->date)->first();
+                            if ($deletePenalty) {
+                                $deletePenalty->delete();
+                            }
+    
+                            $readConfigs = Config::where('option', 'cut_off')->first();
+                            $cut_off = $readConfigs->value;
+                            if (date('d', strtotime($log->date)) > $cut_off) {
+                                $month = date('m', strtotime($log->date));
+                                $year = date('Y', strtotime($log->date));
+                                $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
+                                $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
+                            } else {
+                                $month =  date('m', strtotime($log->date));
+                                $year =  date('Y', strtotime($log->date));
+                            }
+    
+                            if ($employeeBaseSalary && $employeeBaseSalary->amount > 0) {
+                                $alphaPenalty = AlphaPenalty::create([
+                                    'employee_id'       => $leave->employee_id,
+                                    'date'              => $log->date,
+                                    'salary'            => $employeeBaseSalary ? $employeeBaseSalary->amount : 0,
+                                    'penalty'           => $employeeBaseSalary ? $employeeBaseSalary->amount / 30 : 0,
+                                    'leave_id'          => $id,
+                                    'year'              => $year,
+                                    'month'             => $month
+                                ]);
+                                if (!$alphaPenalty) {
+                                    return response()->json([
+                                        'status'    => false,
+                                        'message'   => $alphaPenalty
+                                    ], 400);
+                                }
+                            }
+                        } 
                     }
-
-                    $readConfigs = Config::where('option', 'cut_off')->first();
-                    $cut_off = $readConfigs->value;
-                    if (date('d', strtotime($log->date)) > $cut_off) {
-                        $month = date('m', strtotime($log->date));
-                        $year = date('Y', strtotime($log->date));
-                        $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
-                        $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
-                    } else {
-                        $month =  date('m', strtotime($log->date));
-                        $year =  date('Y', strtotime($log->date));
+                    if($penalty_config->type == 'ALLOWANCE')
+                    {
+                        foreach ($leaveLogs as $key => $log) {
+                            $employeeBaseSalary = EmployeeSalary::where('employee_id', $employee->id)->where('created_date', '<', $log->date)->orderBy('created_date', 'desc')->first();
+                            if (!$employeeBaseSalary) {
+                                return response()->json([
+                                    'status'     => false,
+                                    'message'   => "Could not find basic salary for this employee"
+                                ], 400);
+                            }
+                            
+                            $readConfigs = Config::where('option', 'cut_off')->first();
+                            $cut_off = $readConfigs->value;
+                            if (date('d', strtotime($log->date)) > $cut_off) {
+                                $month = date('m', strtotime($log->date));
+                                $year = date('Y', strtotime($log->date));
+                                $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
+                                $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
+                            } else {
+                                $month =  date('m', strtotime($log->date));
+                                $year =  date('Y', strtotime($log->date));
+                            }
+                            $employeeAllowance = EmployeeAllowance::where('employee_id', $employee->id)->where('month', $month)->sum('value');
+    
+                            $deletePenalty = AlphaPenalty::where('employee_id', $leave->employee_id)->where('date', $log->date)->first();
+                            if ($deletePenalty) {
+                                $deletePenalty->delete();
+                            }
+    
+    
+                            if ($employeeBaseSalary && $employeeBaseSalary->amount > 0) {
+                                $alphaPenalty = AlphaPenalty::create([
+                                    'employee_id'       => $leave->employee_id,
+                                    'date'              => $log->date,
+                                    'salary'            => $employeeAllowance ? $employeeAllowance : 0,
+                                    'penalty'           => $employeeAllowance ? $employeeAllowance / 30 : 0,
+                                    'leave_id'          => $id,
+                                    'year'              => $year,
+                                    'month'             => $month
+                                ]);
+                                if (!$alphaPenalty) {
+                                    return response()->json([
+                                        'status'    => false,
+                                        'message'   => $alphaPenalty
+                                    ], 400);
+                                }
+                            }
+                            
+                            
+                        }
                     }
-
-                    if ($employeeBaseSalary && $employeeBaseSalary->amount > 0) {
-                        $alphaPenalty = AlphaPenalty::create([
-                            'employee_id'       => $leave->employee_id,
-                            'date'              => $log->date,
-                            'salary'            => $employeeBaseSalary ? $employeeBaseSalary->amount : 0,
-                            'penalty'           => $employeeBaseSalary ? $employeeBaseSalary->amount / 30 : 0,
-                            'leave_id'          => $id,
-                            'year'              => $year,
-                            'month'             => $month
-                        ]);
-                        if (!$alphaPenalty) {
-                            return response()->json([
-                                'status'    => false,
-                                'message'   => $alphaPenalty
-                            ], 400);
+                    if($penalty_config->type == 'BASIC & ALLOWANCE') {
+                        foreach ($leaveLogs as $key => $log) {
+                            $employeeBaseSalary = EmployeeSalary::where('employee_id', $employee->id)->where('created_date', '<', $log->date)->orderBy('created_date', 'desc')->first();
+                            if (!$employeeBaseSalary) {
+                                return response()->json([
+                                    'status'     => false,
+                                    'message'   => "Could not find basic salary for this employee"
+                                ], 400);
+                            }
+    
+                            $readConfigs = Config::where('option', 'cut_off')->first();
+                            $cut_off = $readConfigs->value;
+                            if (date('d', strtotime($log->date)) > $cut_off) {
+                                $month = date('m', strtotime($log->date));
+                                $year = date('Y', strtotime($log->date));
+                                $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
+                                $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
+                            } else {
+                                $month =  date('m', strtotime($log->date));
+                                $year =  date('Y', strtotime($log->date));
+                            }
+                            $employeeAllowance = EmployeeAllowance::where('employee_id', $employee->id)->where('month', $month)->sum('value');
+    
+                            $deletePenalty = AlphaPenalty::where('employee_id', $leave->employee_id)->where('date', $log->date)->first();
+                            if ($deletePenalty) {
+                                $deletePenalty->delete();
+                            }
+    
+    
+                            if ($employeeBaseSalary && $employeeBaseSalary->amount > 0) {
+                                $alphaPenalty = AlphaPenalty::create([
+                                    'employee_id'       => $leave->employee_id,
+                                    'date'              => $log->date,
+                                    'salary'            => $employeeAllowance ? $employeeAllowance + $employeeBaseSalary->amount : 0,
+                                    'penalty'           => $employeeAllowance ? $employeeAllowance + $employeeBaseSalary->amount / 30 : 0,
+                                    'leave_id'          => $id,
+                                    'year'              => $year,
+                                    'month'             => $month
+                                ]);
+                                if (!$alphaPenalty) {
+                                    return response()->json([
+                                        'status'    => false,
+                                        'message'   => $alphaPenalty
+                                    ], 400);
+                                }
+                            }
                         }
                     }
                 }
