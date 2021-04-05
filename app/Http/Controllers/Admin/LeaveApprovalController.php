@@ -139,9 +139,9 @@ class LeaveApprovalController extends Controller
     {
         $leave = Leave::find($id);
         $leave->status = $request->status;
-        $leave->save();
+        // $leave->save();
 
-        if ($leave->status == 1) {
+        if ($request->status == 1) {
             $leaveSettingType = LeaveSetting::find($leave->leave_setting_id);
             $employee = Employee::find($leave->employee_id);
             $penalty_config = PenaltyConfig::leftJoin('penalty_config_leave_settings', 'penalty_config_leave_settings.penalty_config_id', '=','penalty_configs.id')->where('workgroup_id', $employee->workgroup_id)->where('penalty_config_leave_settings.leave_setting_id', $leaveSettingType->id)->first();
@@ -219,8 +219,8 @@ class LeaveApprovalController extends Controller
                                 $month =  date('m', strtotime($log->date));
                                 $year =  date('Y', strtotime($log->date));
                             }
-                            $employeeAllowance = EmployeeAllowance::where('employee_id', $employee->id)->where('month', $month)->sum('value');
-    
+                            $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $employee->id)->where('month', $month)->where('year', $year)->first();
+                            // dd($employeeAllowance);
                             $deletePenalty = AlphaPenalty::where('employee_id', $leave->employee_id)->where('date', $log->date)->first();
                             if ($deletePenalty) {
                                 $deletePenalty->delete();
@@ -231,8 +231,8 @@ class LeaveApprovalController extends Controller
                                 $alphaPenalty = AlphaPenalty::create([
                                     'employee_id'       => $leave->employee_id,
                                     'date'              => $log->date,
-                                    'salary'            => $employeeAllowance ? $employeeAllowance : 0,
-                                    'penalty'           => $employeeAllowance ? $employeeAllowance / 30 : 0,
+                                    'salary'            => $employeeAllowance ? $employeeAllowance->total : 0,
+                                    'penalty'           => $employeeAllowance ? $employeeAllowance->total / 30 : 0,
                                     'leave_id'          => $id,
                                     'year'              => $year,
                                     'month'             => $month
@@ -270,8 +270,8 @@ class LeaveApprovalController extends Controller
                                 $month =  date('m', strtotime($log->date));
                                 $year =  date('Y', strtotime($log->date));
                             }
-                            $employeeAllowance = EmployeeAllowance::where('employee_id', $employee->id)->where('month', $month)->sum('value');
-    
+                            $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $employee->id)->where('month', $month)->where('year', $year)->first();
+                            // dd($employeeAllowance[);
                             $deletePenalty = AlphaPenalty::where('employee_id', $leave->employee_id)->where('date', $log->date)->first();
                             if ($deletePenalty) {
                                 $deletePenalty->delete();
@@ -282,8 +282,8 @@ class LeaveApprovalController extends Controller
                                 $alphaPenalty = AlphaPenalty::create([
                                     'employee_id'       => $leave->employee_id,
                                     'date'              => $log->date,
-                                    'salary'            => $employeeAllowance ? $employeeAllowance + $employeeBaseSalary->amount : 0,
-                                    'penalty'           => $employeeAllowance ? $employeeAllowance + $employeeBaseSalary->amount / 30 : 0,
+                                    'salary'            => $employeeAllowance ? $employeeAllowance->total + $employeeBaseSalary->amount : 0,
+                                    'penalty'           => $employeeAllowance ? $employeeAllowance->total + $employeeBaseSalary->amount / 30 : 0,
                                     'leave_id'          => $id,
                                     'year'              => $year,
                                     'month'             => $month
