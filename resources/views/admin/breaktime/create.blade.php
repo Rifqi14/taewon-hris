@@ -82,6 +82,14 @@
                 </div>
               </div>
             </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="pr-5">Cross Date</label>
+                  <input class="form-control" type="checkbox" id="cross_date" name="cross_date" checked>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="overlay d-none">
             <i class="fa fa-refresh fa-spin"></i>
@@ -162,6 +170,10 @@
 <script>
   $(document).ready(function(){
     $('.i-checks').iCheck({
+      checkboxClass: 'icheckbox_square-green',
+      radioClass: 'iradio_square-green',
+    });
+    $('#cross_date').iCheck({
       checkboxClass: 'icheckbox_square-green',
       radioClass: 'iradio_square-green',
     });

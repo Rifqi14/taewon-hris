@@ -10,6 +10,7 @@ use App\Models\Employee;
 use App\Models\Config;
 use App\Models\EmployeeSalary;
 use App\Models\EmployeeAllowance;
+use App\Models\PenaltyConfigDetail;
 use App\Models\LeaveDetail;
 use App\Models\LeaveLog;
 use App\Models\LeaveSetting;
@@ -157,7 +158,11 @@ class LeaveApprovalController extends Controller
             if($leaveSettingType->description == 0){
                 if($penalty_config){
                     // dd($penalty_config);
-                    
+                    $allowance_id = [];
+                    $penaltyconfigdetails = PenaltyConfigDetail::where('penalty_config_id', $penalty_config->id)->get();
+                    foreach($penaltyconfigdetails as $penaltyconfigdetail){
+                        $allowance_id[] = $penaltyconfigdetail->allowance_id;
+                    }
                     if($penalty_config->type == 'BASIC')
                     {
                         foreach ($leaveLogs as $key => $log) {
@@ -226,7 +231,8 @@ class LeaveApprovalController extends Controller
                                 $month =  date('m', strtotime($log->date));
                                 $year =  date('Y', strtotime($log->date));
                             }
-                            $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $employee->id)->where('month', $month)->where('year', $year)->first();
+                            $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))
+                            ->where('employee_id', $employee->id)->where('month', $month)->where('year', $year)->whereIn('allowance_id',$allowance_id)->first();
                             // dd($employeeAllowance);
                             $deletePenalty = AlphaPenalty::where('employee_id', $leave->employee_id)->where('date', $log->date)->first();
                             if ($deletePenalty) {
@@ -275,8 +281,9 @@ class LeaveApprovalController extends Controller
                                 $month =  date('m', strtotime($log->date));
                                 $year =  date('Y', strtotime($log->date));
                             }
-                            $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $employee->id)->where('month', $month)->where('year', $year)->first();
-                            // dd($employeeAllowance[);
+                            $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $employee->id)
+                            ->where('month', $month)->where('year', $year)->whereIn('allowance_id', $allowance_id)->first();
+                            // dd($employeeAllowance);
                             $deletePenalty = AlphaPenalty::where('employee_id', $leave->employee_id)->where('date', $log->date)->first();
                             if ($deletePenalty) {
                                 $deletePenalty->delete();

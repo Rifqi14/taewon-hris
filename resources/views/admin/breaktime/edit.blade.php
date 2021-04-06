@@ -83,6 +83,14 @@
 							</div>
 						</div>
 					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+							<label class="pr-5">Cross Date</label>
+							<input class="form-control" @if ($breaktime->cross_date == '1') checked @endif type="checkbox" id="cross_date" name="cross_date">
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -251,6 +259,10 @@
 		});
 	}
 	$(document).ready(function(){
+		$('#cross_date').iCheck({
+			checkboxClass: 'icheckbox_square-green',
+			radioClass: 'iradio_square-green',
+		});
 		$('.i-checks').iCheck({
 			checkboxClass: 'icheckbox_square-green',
 			radioClass: 'iradio_square-green',
