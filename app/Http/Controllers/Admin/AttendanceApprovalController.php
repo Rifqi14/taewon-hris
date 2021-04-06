@@ -831,6 +831,7 @@ class AttendanceApprovalController extends Controller
                             $month =  date('m', strtotime($approve->attendance_date));
                             $year =  date('Y', strtotime($approve->attendance_date));
                         }
+                        // Daily
                         $query = DB::table('attendances');
                         $query->select(
                             'attendances.employee_id as employee_id',
@@ -956,6 +957,7 @@ class AttendanceApprovalController extends Controller
                                 ], 400);
                             }
                         }
+                        // Hourly
                         $query = DB::table('attendances');
                         $query->select(
                             'employee_allowances.*',
@@ -1012,8 +1014,8 @@ class AttendanceApprovalController extends Controller
                                             $updatequery = DB::table('employee_detailallowances');
                                             $updatequery->where('employee_detailallowances.employee_id', '=', $hour->employee_id);
                                             $updatequery->where('employee_detailallowances.allowance_id', '=', $hour->allowance_id);
-                                            $updatequery->whereRaw("extract( month from employee_detailallowances.tanggal_masuk) = $month");
-                                            $updatequery->whereRaw("extract( year from employee_detailallowances.tanggal_masuk) = $year");
+                                            $updatequery->where('employee_detailallowances.month', '=', $month);
+                                            $updatequery->where('employee_detailallowances.year', '=', $year);
                                             $updatequery->groupBy('employee_detailallowances.id');
                                             $updatecount = $updatequery->get()->sum('value');
                                             if ($updatefactor) {
@@ -1060,8 +1062,8 @@ class AttendanceApprovalController extends Controller
                                         // $updatequery->select('employee_detailallowances.*', DB::raw('count(tanggal_masuk) as date'));
                                         $updatequery->where('employee_detailallowances.employee_id', '=', $hour->employee_id);
                                         $updatequery->where('employee_detailallowances.allowance_id', '=', $hour->allowance_id);
-                                        $updatequery->whereRaw("extract( month from employee_detailallowances.tanggal_masuk) = $month");
-                                        $updatequery->whereRaw("extract( year from employee_detailallowances.tanggal_masuk) = $year");
+                                        $updatequery->where('employee_detailallowances.month', '=', $month);
+                                        $updatequery->where('employee_detailallowances.year', '=', $year);
                                         $updatequery->groupBy('employee_detailallowances.id');
                                         $updatecount = $updatequery->get()->sum('value');
                                         if ($updatefactor) {
@@ -1078,7 +1080,131 @@ class AttendanceApprovalController extends Controller
                                 ], 400);
                             }
                         }
-                        // if ($hourly) {
+
+                        // Breaktime
+                        $query = DB::table('attendances');
+                        $query->select(
+                            'employee_allowances.*',
+                            'attendances.employee_id as employee_id',
+                            'attendances.workingtime_id as workingtime_id',
+                            'attendances.attendance_date as date',
+                            'allowances.reccurance as reccuran',
+                            'allowances.allowance as allowance_name',
+                            'employees.name as employee_name',
+                            'employee_allowances.allowance_id as allowance_id',
+                            'attendances.breaktime as value',
+                            'employee_allowances.type as type',
+                            'workingtime_allowances.workingtime_id as workingtime'
+                        );
+                        $query->leftJoin('employee_allowances', 'attendances.employee_id', '=', 'employee_allowances.employee_id');
+                        $query->leftJoin('employees', 'employees.id', '=', 'employee_allowances.employee_id');
+                        $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
+                        $query->leftJoin('workingtime_allowances', 'workingtime_allowances.allowance_id', '=', 'allowances.id');
+                        $query->where('attendances.id', '=', $approve->id);
+                        $query->where('employee_allowances.status', '=', 1);
+                        $query->where('allowances.reccurance', '=', 'breaktime');
+                        $query->where('employee_allowances.month', $month);
+                        $query->where('employee_allowances.year', $year);
+                        $query->where('employee_allowances.employee_id', '=', $approve->employee_id);
+                        $breaktimes = $query->get();
+                        foreach ($breaktimes as $breaktime) {
+                            if ($breaktime) {
+                                if ($breaktime->workingtime) {
+                                    if ($breaktime->workingtime == $breaktime->workingtime_id) {
+                                        try {
+                                            $employeedetailallowance = EmployeeDetailAllowance::create([
+                                                'employee_id' => $breaktime->employee_id,
+                                                'allowance_id' => $breaktime->allowance_id,
+                                                'workingtime_id' => $breaktime->workingtime_id,
+                                                'tanggal_masuk' => $breaktime->date,
+                                                'value' => $breaktime->value,
+                                                'month' => $month,
+                                                'year' => $year
+                                            ]);
+                                        } catch (\Illuminate\Database\QueryException $e) {
+                                            return response()->json([
+                                                'status'      => false,
+                                                'message'     => 'There is error in employee name ' . $breaktime->employee_name . ' when approved attendance in date ' . $breaktime->date . ' and allowance ' . $breaktime->allowance_name
+                                            ], 400);
+                                        }
+
+                                        if ($employeedetailallowance) {
+                                            $query = EmployeeAllowance::select('employee_allowances.*');
+                                            $query->where('employee_id', '=', $breaktime->employee_id);
+                                            $query->where('allowance_id', '=', $breaktime->allowance_id);
+                                            $query->where('month', $month);
+                                            $query->where('year', $year);
+                                            $updatefactor = $query->first();
+                                            $updatequery = DB::table('employee_detailallowances');
+                                            $updatequery->where('employee_detailallowances.employee_id', '=', $breaktime->employee_id);
+                                            $updatequery->where('employee_detailallowances.allowance_id', '=', $breaktime->allowance_id);
+                                            $updatequery->where('employee_detailallowances.month' ,'=', $month);
+                                            $updatequery->where('employee_detailallowances.year' ,'=', $year);
+                                            $updatequery->groupBy('employee_detailallowances.id');
+                                            $updatecount = $updatequery->get()->sum('value');
+                                            if ($updatefactor) {
+                                                $updatefactor->factor = $updatecount;
+                                                $updatefactor->save();
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    try {
+                                        $employeedetailallowance = EmployeeDetailAllowance::create([
+                                            'employee_id' => $breaktime->employee_id,
+                                            'allowance_id' => $breaktime->allowance_id,
+                                            'workingtime_id' => $breaktime->workingtime_id,
+                                            'tanggal_masuk' => $breaktime->date,
+                                            'value' => $breaktime->value,
+                                            'month' => $month,
+                                            'year' => $year
+                                        ]);
+                                    } catch (\Illuminate\Database\QueryException $e) {
+                                        return response()->json([
+                                            'status'      => false,
+                                            'message'     => 'There is error in employee name ' . $breaktime->employee_name . ' when approved attendance in date ' . $breaktime->date . ' and allowance ' . $breaktime->allowance_name
+                                        ], 400);
+                                    }
+
+                                    if ($employeedetailallowance) {
+                                        if (date('d', strtotime($approve->attendance_date)) > $cut_off) {
+                                            $month = date('m', strtotime($approve->attendance_date));
+                                            $year = date('Y', strtotime($approve->attendance_date));
+                                            $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
+                                            $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
+                                        } else {
+                                            $month =  date('m', strtotime($approve->attendance_date));
+                                            $year =  date('Y', strtotime($approve->attendance_date));
+                                        }
+                                        $query = EmployeeAllowance::select('employee_allowances.*');
+                                        $query->where('employee_id', '=', $breaktime->employee_id);
+                                        $query->where('allowance_id', '=', $breaktime->allowance_id);
+                                        $query->where('month', $month);
+                                        $query->where('year', $year);
+                                        $updatefactor = $query->first();
+                                        $updatequery = DB::table('employee_detailallowances');
+                                        // $updatequery->select('employee_detailallowances.*', DB::raw('count(tanggal_masuk) as date'));
+                                        $updatequery->where('employee_detailallowances.employee_id', '=', $breaktime->employee_id);
+                                        $updatequery->where('employee_detailallowances.allowance_id', '=', $breaktime->allowance_id);
+                                        $updatequery->where('employee_detailallowances.month', '=', $month);
+                                        $updatequery->where('employee_detailallowances.year', '=', $year);
+                                        $updatequery->groupBy('employee_detailallowances.id');
+                                        $updatecount = $updatequery->get()->sum('value');
+                                        if ($updatefactor) {
+                                            $updatefactor->factor = $updatecount;
+                                            $updatefactor->save();
+                                        }
+                                    }
+                                }
+                            } else {
+                                DB::rollBack();
+                                return response()->json([
+                                    'status'      => false,
+                                    'message'     => $breaktime
+                                ], 400);
+                            }
+                        }
+                        // if ($breaktimes) {
                         //     $hourly->factor = $hourly->factor + $approve->adj_working_time;
                         //     $hourly->save();
                         // }
