@@ -139,9 +139,9 @@ class LeaveApprovalController extends Controller
     {
         $leave = Leave::find($id);
         $leave->status = $request->status;
-        // $leave->save();
+        $leave->save();
 
-        if ($request->status == 1) {
+        if ($leave->status == 1) {
             $leaveSettingType = LeaveSetting::find($leave->leave_setting_id);
             $employee = Employee::find($leave->employee_id);
             $penalty_config = PenaltyConfig::leftJoin('penalty_config_leave_settings', 'penalty_config_leave_settings.penalty_config_id', '=','penalty_configs.id')->where('workgroup_id', $employee->workgroup_id)->where('penalty_config_leave_settings.leave_setting_id', $leaveSettingType->id)->first();
@@ -225,7 +225,6 @@ class LeaveApprovalController extends Controller
                             if ($deletePenalty) {
                                 $deletePenalty->delete();
                             }
-    
     
                             if ($employeeBaseSalary && $employeeBaseSalary->amount > 0) {
                                 $alphaPenalty = AlphaPenalty::create([
