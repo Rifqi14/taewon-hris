@@ -1490,11 +1490,23 @@ class AttendanceApprovalController extends Controller
             }
             if ($attendance->status == 1) {
                 if ($rules) {
+                        $readConfigs = Config::where('option', 'cut_off')->first();
+                        $cut_off = $readConfigs->value;
+                        if (date('d', strtotime($attendance->attendance_date)) > $cut_off) {
+                            $month = date('m', strtotime($attendance->attendance_date));
+                            $year = date('Y', strtotime($attendance->attendance_date));
+                            $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
+                            $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
+                        } else {
+                            $month =  date('m', strtotime($attendance->attendance_date));
+                            $year =  date('Y', strtotime($attendance->attendance_date));
+                        }
                         $i = 0;
                         $overtimes = $attendance->adj_over_time;
                         $length = count($rules);
                         $listdel = Overtime::where('employee_id','=', $attendance->employee_id)->where('date','=', $attendance->attendance_date);
                         $listdel->delete();
+                    
                         foreach ($rules as $key => $value) {
                             $date = Carbon::parse($attendance->attendance_date);
                             // $sallary = SalaryIncreases::GetSalaryIncreaseDetail($attendance->employee_id, $date->month, $date->year)->get();
@@ -1507,7 +1519,9 @@ class AttendanceApprovalController extends Controller
                                     'hour'          => ($i != $length - 1 && $overtimes >= 1) ? 1 : $overtimes,
                                     'amount'        => $value->amount,
                                     'basic_salary'  => $sallary ? $sallary->amount / 173 : 0,
-                                    'date'          => changeDateFormat('Y-m-d', $attendance->attendance_date)
+                                    'date'          => changeDateFormat('Y-m-d', $attendance->attendance_date),
+                                    'month'         => $month,
+                                    'year'          => $year
                                 ]);
                             } else {
                                 continue;
