@@ -123,11 +123,11 @@ class DriverAllowanceListController extends Controller
         $group = $request->group;
 
         // Count Data
-        $query = DeliveryOrder::select('partners.name as customer','delivery_orders.departure_time as departure_time','delivery_orders.arrived_time as arrived_time','delivery_orders.police_no as police_no')->leftJoin('partners','partners.id','=','delivery_orders.partner_id')->where('driver_id', $driver)->whereMonth('departure_time', $month)->whereYear('departure_time', $year);
+        $query = DeliveryOrder::select('partners.name as customer','delivery_orders.departure_time as departure_time','delivery_orders.arrived_time as arrived_time','delivery_orders.police_no as police_no')->leftJoin('partners','partners.id','=','delivery_orders.partner_id')->where('driver_id', $driver)->where('departure_time', $month)->whereRaw('departure_time', $year);
         $recordsTotal = $query->count();
 
         // Select Pagination
-        $query = DeliveryOrder::select('partners.name as customer','delivery_orders.departure_time as departure_time','delivery_orders.arrived_time as arrived_time','delivery_orders.police_no as police_no')->leftJoin('partners','partners.id','=','delivery_orders.partner_id')->where('driver_id', $driver)->whereMonth('departure_time', $month)->whereYear('departure_time', $year)->offset($start)->limit($length)->orderBy('departure_time', 'asc');
+        $query = DeliveryOrder::select('partners.name as customer','delivery_orders.departure_time as departure_time','delivery_orders.arrived_time as arrived_time','delivery_orders.police_no as police_no')->leftJoin('partners','partners.id','=','delivery_orders.partner_id')->where('driver_id', $driver)->where('departure_time', $month)->whereRaw('departure_time', $year)->offset($start)->limit($length)->orderBy('departure_time', 'asc');
         $driverallowances = $query->get();
 
         $data = [];
