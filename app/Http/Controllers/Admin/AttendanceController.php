@@ -11,6 +11,7 @@ use App\Models\AttendanceMachine;
 use App\Models\AttendanceMachine\AttTransaction;
 use App\Models\Calendar;
 use App\Models\Employee;
+use App\Models\Config;
 use App\Models\Workingtime;
 use App\Models\OvertimeSchemeList;
 use App\Models\WorkingtimeDetail;
@@ -439,6 +440,7 @@ class AttendanceController extends Controller
         $employees = Employee::where('status', 1)->get();
         $data_attend = [];
         DB::beginTransaction();
+        $readConfigs = Config::where('option', 'cut_off')->first();
         foreach ($amonth as $key1 => $value) {
             foreach ($employees as $key => $attendance) {
                 $new_date = changeDateFormat('Y-m-d', $request->year . '-' . $request->month . '-' . $value);
@@ -448,6 +450,16 @@ class AttendanceController extends Controller
                     if (!$check) {
                         $exception_date = $this->employee_calendar($attendance->id);
                         $date = $new_date;
+                        $cut_off = $readConfigs->value;
+                        if (date('d', strtotime($date)) > $cut_off) {
+                            $month = date('m', strtotime($date));
+                            $year = date('Y', strtotime($date));
+                            $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
+                            $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
+                        } else {
+                            $month =  date('m', strtotime($date));
+                            $year =  date('Y', strtotime($date));
+                        }
                         $createAttendance = Attendance::create([
                             'employee_id'       => $attendance->id,
                             'attendance_date'   => $new_date,
@@ -455,7 +467,9 @@ class AttendanceController extends Controller
                             'adj_over_time'     => 0,
                             'day'               => (in_array($date, $exception_date)) ? 'Off' : changeDateFormat('D', $date),
                             'created_at'        => Carbon::now()->toDateTimeString(),
-                            'updated_at'        => Carbon::now()->toDateTimeString()
+                            'updated_at'        => Carbon::now()->toDateTimeString(),
+                            'month'             => $month,
+                            'year'              => $year
                         ]);
                         if (!$createAttendance) {
                             return response()->json([
@@ -1113,6 +1127,8 @@ class AttendanceController extends Controller
                     $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime); //menghitung total istirahat jam kerja
                     $getbreakovertime = getBreaktimeOvertime($breaktimes, $attendance_hour, $getworkingtime); //menghitung istirahat jam lembur
 
+                    // dd($getbreakworkingtime, $breaktimes, $attendance_hour, $getworkingtime);
+
                     $workhour = $getworkingtime->workhour;
                     $min_workhour = $getworkingtime->min_workhour;
                     //overtime
@@ -1146,6 +1162,7 @@ class AttendanceController extends Controller
                         $break_time = $getbreakworkingtime + $getbreakovertime;
                         // WT
                         $wt_attendance = $total_jam - $break_time;
+                        
 
                         if ($adjustment->day == 'Off') {
                             // Check timeout
@@ -1324,20 +1341,19 @@ class AttendanceController extends Controller
                                 } 
                             }
                         } else {
+
+                            // dd([
+                            //     'out', $adjustment->attendance_out, 'in', $adjustment->attendance_in, 'total jam', $total_jam, 'breakWT', $getbreakworkingtime,
+                            //     'breakOT', $getbreakovertime, 'breaktime', $break_time, 'wt_attendance', $wt_attendance, 'min_workhour', $min_workhour
+                            // ]);
                             
-                            $total_jam = Carbon::parse($adjustment->attendance_out)->diffInHours($adjustment->attendance_in);
-
-                            $break_time = $getbreakworkingtime + $getbreakovertime;
-
-                            $wt_attendance = $total_jam - $break_time;
-                            
-                            $wt = ($adj_working_time == $min_workhour) ? $adj_working_time : $adj_working_time - $getbreakworkingtime;
-
                             if ($employee->timeout == 'yes') {
                                 if ($adjustment->attendance_in && $adjustment->attendance_out) {
 
                                     if ($employee->overtime == 'yes') {
                                         $ot = $wt_attendance - $min_workhour;
+
+                                        // dd($ot);
 
                                         if ($employee->spl == 'yes') {
                                             $cekspl = Spl::where('spl_date', $adjustment->attendance_date)->where('employee_id', $employee->id)->first();

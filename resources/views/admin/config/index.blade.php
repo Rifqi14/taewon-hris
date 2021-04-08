@@ -103,7 +103,7 @@
         <label for="cut_off">Cut Off</label>
         <select name="cut_off" class="form-control select2" placeholder="Pilih Cut Off" required>
           @php  
-              for ($x = 1; $x <= 28; $x++) {
+              for ($x = 1; $x <= 31; $x++) {
                 @endphp
                 <option value="{{ $x }}" @if(config('configs.cut_off') == $x) selected @endif>{{ $x }}</option>
                 @php 

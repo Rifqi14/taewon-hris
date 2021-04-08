@@ -153,7 +153,8 @@ class BreakTimeController extends Controller
             'finish_time' => $request->finish_time,
             'notes' => $request->notes,
             'status' => $request->status,
-            'breaktime' => Carbon::parse($request->start_time)->diff(Carbon::parse($request->finish_time))->format('%h')
+            'breaktime' => Carbon::parse($request->start_time)->diff(Carbon::parse($request->finish_time))->format('%h'),
+            'cross_date'     => $request->cross_date?1:0
         ]);
         if ($breaktime) {
             foreach ($request->department_id as $key => $department) {
@@ -280,6 +281,7 @@ class BreakTimeController extends Controller
         $breaktime->finish_time = $request->finish_time;
         $breaktime->notes = $request->notes;
         $breaktime->status = $request->status;
+        $breaktime->cross_date = $request->cross_date?1:0;
         $breaktime->save();
 
         if ($breaktime) {
