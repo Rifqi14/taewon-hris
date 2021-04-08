@@ -500,8 +500,8 @@ class SalaryReportController extends Controller
     $query->selectRaw("SUM(hour) as hour, sum(final_salary) as final_salary, amount");
     $query->where('overtimes.employee_id', '=', $id);
     $query->where('overtimes.final_salary', '>', 0);
-    $query->whereMonth('date', '=', $month);
-    $query->whereYear('date', '=', $year);
+    $query->where('month', '=', $month);
+    $query->where('year', '=', $year);
     $query->groupBy('overtimes.amount');
     $salaries = $query->get();
 
@@ -527,8 +527,8 @@ class SalaryReportController extends Controller
     $query->select('attendances.*');
     $query->where('attendances.employee_id', '=', $id);
     $query->where('attendances.status', '=', 1);
-    $query->whereMonth('attendance_date', '=', $month);
-    $query->whereYear('attendance_date', '=', $year);
+    $query->where('month', '=', $month);
+    $query->where('year', '=', $year);
     $query->where('day', '!=', 'Off');
     $attendances = $query->get();
 
@@ -606,7 +606,7 @@ class SalaryReportController extends Controller
 
   public function getAlphaData($id, $month, $year)
   {
-    $query    = AlphaPenalty::where('employee_id', $id)->whereMonth('date', $month)->whereYear('date', $year);
+    $query    = AlphaPenalty::where('employee_id', $id)->where('month', $month)->where('year', $year);
 
     return $query;
   }
@@ -1545,8 +1545,8 @@ class SalaryReportController extends Controller
             $deduction = $this->get_deduction($view_employee, $request->montly, $request->year);
             $overtime = $this->get_overtime($view_employee, $request->montly, $request->year);
             $attendance = $this->get_attendance($view_employee, $request->montly, $request->year);
-            $leave = $this->get_leave($view_employee, $request->montly, $request->year);
-            $alpha = $this->get_alpha($view_employee, $request->montly, $request->year);
+            // $leave = $this->get_leave($view_employee, $request->montly, $request->year);
+            // $alpha = $this->get_alpha($view_employee, $request->montly, $request->year);
             $driverallowance = $this->get_driver_allowance($view_employee, $request->montly, $request->year);
             $penaltyallowance = $this->getPenaltyAllowance($view_employee, $request->montly, $request->year);
             $employee = Employee::with('department')->with('title')->find($view_employee);
