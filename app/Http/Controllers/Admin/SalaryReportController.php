@@ -650,8 +650,8 @@ class SalaryReportController extends Controller
     $query = DB::table('driver_allowance_lists');
     $query->select('driver_allowance_lists.*');
     $query->where('driver_id', $id);
-    $query->whereMonth('date', $month);
-    $query->whereYear('date', $year);
+    $query->where('month', $month);
+    $query->where('year', $year);
 
     return $query->sum('value');
   }
