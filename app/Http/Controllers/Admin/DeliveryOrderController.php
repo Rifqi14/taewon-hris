@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DriverAllowance;
 use App\Models\DriverAllowanceList;
 use App\Models\DriverList;
+use App\Models\Config;
 use App\Models\Partner;
 use App\Models\Employee;
 use Carbon\Carbon;
@@ -311,6 +312,54 @@ class DeliveryOrderController extends Controller
             $collections->update();
         }
 
+        if($deliveryorder){
+
+            $readConfigs = Config::where('option', 'cut_off')->first();
+            $cut_off = $readConfigs->value;
+            if (date('d', strtotime(dbDate($request->departure_time))) > $cut_off) {
+                $month = date('m', strtotime(dbDate($request->departure_time)));
+                $year = date('Y', strtotime(dbDate($request->departure_time)));
+                $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
+                $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
+            } else {
+                $month =  date('m', strtotime(dbDate($request->departure_time)));
+                $year =  date('Y', strtotime(dbDate($request->departure_time)));
+            }
+            $driverallowancelist = DriverAllowanceList::create([
+                'date'          => dbDate($request->departure_time),
+                'rit'           => 100,
+                'truck'         => $request->type_truck,
+                'value'         => $partner_rit->rit,
+                'driver_id'     => $request->driver_id,
+                'group'         => $request->kloter,
+                'month'         => $month,
+                'year'          => $year
+            ]);
+
+            if(!$driverallowancelist){
+                DB::rollback();
+                return response()->json([
+                    'status'    => false,
+                    'message'   => $driverallowancelist
+                ], 400);
+            }
+
+            $checkupdates = Driverallowancelist::where('driver_id', $request->driver_id)->where('date', dbDate($request->departure_time))->where('group', $request->kloter)->orderBy('value', 'desc')->get();
+            foreach($checkupdates as $key => $checkupdate){
+                $rit = $key+1;
+                $driverlist = DriverList::where('type', $request->type_truck)->where('rit', $rit)->first();
+
+                if (!$driverlist) {
+                    $driverlist = DriverList::where('type', $request->type_truck)->orderBy('rit', 'desc')->first();
+                    
+                }
+
+                $checkupdate->rit = $driverlist->value;
+                $checkupdate->save();
+            }
+           
+        
+        }
         // if ($deliveryorder) {
         //     if (isset($request->product_item)) {
         //         foreach ($request->product_item as $key => $value) {

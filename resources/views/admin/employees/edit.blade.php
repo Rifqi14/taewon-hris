@@ -832,7 +832,6 @@
 														<th width="5" class="text-right">#</th>
 														<th width="10">Date</th>
 														<th width="10">Kloter</th>
-														<th width="10">Rule</th>
 														<th width="10">Value</th>
 														<th width="10">RIT</th>
 														<th width="10">Total</th>
@@ -841,7 +840,7 @@
 												</thead>
 												<tfoot>
 													<tr>
-														<td colspan="6" class="text-right"><b>Grand Total</b></td>
+														<td colspan="5" class="text-right"><b>Grand Total</b></td>
 														<td>
 															<span id="total" class="text-right" placeholder="Total"></span>
 														</td>
@@ -5883,10 +5882,10 @@ $(document).ready(function(){
 		},
 		columnDefs:[
 			{
-				orderable: false,targets:[0]
+				orderable: false,targets:[0,1,2,3,4,5,6]
 			},
 			{ className: "text-right", targets: [0,5,6] },
-			{ className: "text-center", targets: [2,3,4,7] },
+			{ className: "text-center", targets: [2,3,4] },
 			// { render: function(data, type, row) {
 			// 	if (row.truck == 'fuso') {
 			// 		return 'Fuso'
@@ -5895,11 +5894,8 @@ $(document).ready(function(){
 			// 	}
 			// }, targets:[2]},
 			{ render: function ( data, type, row ) {
-				if(row.type_value == 'percentage'){
-					return row.value + '%'
-				}else{
-					return 'Rp.' + row.value
-				}
+				return row.rit + '%'
+				
 			},
 			targets: [4] },
 			{ render: function(data, type, row) {
@@ -5914,18 +5910,17 @@ $(document).ready(function(){
 						<li><a class="dropdown-item detaildriver" href="#" data-date="${row.date}" data-driver="${row.driver_id}" data-truck="${row.truck}" data-group="${row.rule}"><i class="fas fa-search mr-2"></i> Detail</a></li>
 					</ul>
 					</div>`
-			},targets: [7]
+			},targets: [6]
 			}
 		],
 		columns: [
 			{ data: "no" },
 			{ data: "date"},
-			{ data: "kloter" },
-			{ data: "rule" },
-			{ data: "value" },
-			{ data: "rit", render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' )},
+			{ data: "group" },
+			{ data: "value", render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' ) },
+			{ data: "group"},
 			{ data: "total_value", render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' )},
-			{ data: "type" },
+			{ data: "id" },
 
 		],
 		footerCallback: function(row, data, start, end, display, grand_total) {
@@ -5936,12 +5931,12 @@ $(document).ready(function(){
 					return typeof i === 'string' ? i.replace(/[\$,]/g, '')*1 : typeof i === 'number' ? i : 0;
 			};
 
-			total = api.column( 6 ).data().reduce( function (a, b) { return intVal(a) + intVal(b);}, 0 );
+			total = api.column( 5 ).data().reduce( function (a, b) { return intVal(a) + intVal(b);}, 0 );
 
-			pageTotal = api.column( 6, { page: 'current'} ).data().reduce( function (a, b) {return intVal(a) + intVal(b);}, 0 );
+			pageTotal = api.column( 5, { page: 'current'} ).data().reduce( function (a, b) {return intVal(a) + intVal(b);}, 0 );
 			var numFormat = $.fn.dataTable.render.number('.', ',', 0, 'Rp. ' ).display;
 
-			$( api.column( 6 ).footer() ).html(numFormat(total));
+			$( api.column( 5 ).footer() ).html(numFormat(total));
 		}
 	});
 	$(document).on('click','.detaildriver',function(){

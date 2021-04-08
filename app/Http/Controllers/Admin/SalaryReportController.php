@@ -1554,10 +1554,10 @@ class SalaryReportController extends Controller
             $attendance_allowance = $this->get_attendance_allowance($view_employee, $request->montly, $request->year);
             $pph = $this->getPPhAllowance($view_employee, $request->montly, $request->year);
             if ($basesalary) {
-              $periode_salary = changeDateFormat('Y-m', $request->year . '-' . $request->montly);
-              $join_date = changeDateFormat('Y-m', $employee->join_date);
-              $daily_salary = $basesalary->amount / 30;
-              $attendance_count = count($attendance);
+              // $periode_salary = changeDateFormat('Y-m', $request->year . '-' . $request->montly);
+              // $join_date = changeDateFormat('Y-m', $employee->join_date);
+              // $daily_salary = $basesalary->amount / 30;
+              // $attendance_count = count($attendance);
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
@@ -1651,6 +1651,7 @@ class SalaryReportController extends Controller
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
               ]);
+
             }
             if (strpos($employee->department->path, 'Driver') !== false && $driverallowance > 0) {
               $spsi = SalaryReportDetail::create([
@@ -1662,6 +1663,16 @@ class SalaryReportController extends Controller
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
               ]);
+              if(!$spsi){
+                DB::rollBack();
+                return response()->json([
+                  'status'    => false,
+                  'message'   => $spsi
+                ],
+                  400
+                );
+              }
+              
             }
             if ($alphaPenalty->sum('penalty') > 0 && $employee->workgroup->penalty == 'Basic') {
               $alpha_penalty = SalaryReportDetail::create([
