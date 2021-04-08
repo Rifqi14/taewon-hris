@@ -1523,7 +1523,7 @@ class SalaryReportController extends Controller
       foreach ($request->employee_name as $view_employee) {
         $dt = Carbon::createFromFormat('Y-m', $request->year . '-' . $request->montly);
         $checkDate = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $request->montly . '-' . $request->year);
-        $checkJoinDate = $employees = Employee::select('employees.*')->where('employees.status', 1)->where('employees.join_date', '<=', $checkDate)->find($view_employee);
+        $checkJoinDate = Employee::select('employees.*')->where('employees.status', 1)->where('employees.join_date', '<=', $checkDate)->find($view_employee);
         $exists = $this->check_periode($request->montly, $request->year, $view_employee);
         if ($exists) {
           $delete = $exists->delete();
