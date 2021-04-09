@@ -542,11 +542,11 @@ class DeliveryOrderController extends Controller
         $sheet = $objPHPExcel->getActiveSheet(0);
         $highestRow = $sheet->getHighestRow();
         for ($row = 2; $row <= $highestRow; $row++) {
-            $driver_name = strtoupper($sheet->getCellByColumnAndRow(0, $row)->getValue());
-            $police_no = $sheet->getCellByColumnAndRow(1, $row)->getValue();
-            $type_truck = $sheet->getCellByColumnAndRow(2, $row)->getValue();
-            $kloter = $sheet->getCellByColumnAndRow(3, $row)->getValue();
-            $customer = strtoupper($sheet->getCellByColumnAndRow(4, $row)->getValue());
+            $driver_name    = strtoupper($sheet->getCellByColumnAndRow(0, $row)->getValue());
+            $police_no      = $sheet->getCellByColumnAndRow(1, $row)->getValue();
+            $type_truck     = strtoupper($sheet->getCellByColumnAndRow(2, $row)->getValue());
+            $kloter         = $sheet->getCellByColumnAndRow(3, $row)->getValue();
+            $customer       = strtoupper($sheet->getCellByColumnAndRow(4, $row)->getValue());
             if (is_numeric($sheet->getCellByColumnAndRow(5, $row)->getValue())){
                 $departure_time = date('Y-m-d H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(5, $row)->getValue())));
             }else{
@@ -681,9 +681,10 @@ class DeliveryOrderController extends Controller
                 foreach ($checkupdates as $key => $checkupdate) {
                     $rit = $key + 1;
                     $driverlist = DriverList::where('type', $deliveryorder->type_truck)->where('rit', $rit)->first();
-
+                    dd($driverlist);
                     if (!$driverlist) {
                         $driverlist = DriverList::where('type', $deliveryorder->type_truck)->orderBy('rit', 'desc')->first();
+                        dd($driverlist);
                     }
 
                     $checkupdate->rit = $driverlist->value;
