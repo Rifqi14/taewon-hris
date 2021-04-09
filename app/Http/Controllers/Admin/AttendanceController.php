@@ -358,6 +358,7 @@ class AttendanceController extends Controller
         $query_calendar->leftJoin('calendars', 'calendars.id', '=', 'employees.calendar_id');
         $query_calendar->leftJoin('calendar_exceptions', 'calendar_exceptions.calendar_id', '=', 'calendars.id');
         $query_calendar->where('employees.id', '=', $id);
+        $query_calendar->where('calendar_exceptions.is_switch_day','!=', 'YES');
         $calendar = $query_calendar->get();
         $exception_date = [];
         foreach ($calendar as $date) {
