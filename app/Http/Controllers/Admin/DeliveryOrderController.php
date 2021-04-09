@@ -681,10 +681,8 @@ class DeliveryOrderController extends Controller
                 foreach ($checkupdates as $key => $checkupdate) {
                     $rit = $key + 1;
                     $driverlist = DriverList::where('type', $deliveryorder->type_truck)->where('rit', $rit)->first();
-                    dd($driverlist);
                     if (!$driverlist) {
                         $driverlist = DriverList::where('type', $deliveryorder->type_truck)->orderBy('rit', 'desc')->first();
-                        dd($driverlist);
                     }
 
                     $checkupdate->rit = $driverlist->value;
