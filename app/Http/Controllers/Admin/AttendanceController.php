@@ -13,8 +13,10 @@ use App\Models\Calendar;
 use App\Models\Employee;
 use App\Models\Config;
 use App\Models\Workingtime;
+use App\Models\CalendarException;
 use App\Models\OvertimeSchemeList;
 use App\Models\WorkingtimeDetail;
+use App\Models\CalendarShiftSwitch;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Query\Builder;
@@ -419,6 +421,14 @@ class AttendanceController extends Controller
         return $query->first();
     }
 
+    public function checkWorkingtimeSwitch($id, $day)
+    {
+        $query = CalendarShiftSwitch::whereNotNull('min_workhour')->where('workingtime_id', $id)->where('day', $day);
+
+        return $query->first();
+    }
+
+
     public function storemass(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -618,7 +628,10 @@ class AttendanceController extends Controller
                     $worktime = $this->employee_worktime($adjustment->employee_id);
 
                     $adjustment->workingtime_id = $worktime->working_time ? $worktime->working_time : $shift2->id;
+                   
                     $getworkingtime = $this->checkWorkingtime($adjustment->workingtime_id, $adjustment->day);
+                    
+
                     // Variable to check working time and over time
                     if (!$getworkingtime) {
                         return response()->json([
@@ -1108,7 +1121,15 @@ class AttendanceController extends Controller
                     $worktime = $this->employee_worktime($adjustment->employee_id);
 
                     $adjustment->workingtime_id = $worktime->working_time ? $worktime->working_time : $shift2->id;
-                    $getworkingtime = $this->checkWorkingtime($adjustment->workingtime_id, $adjustment->day);
+                    
+                    // check Switch Workingtime
+                    $switchworkintime = CalendarException::where('calendar_id', $employee->calendar_id)->first();
+                    if ($switchworkintime->is_switch_day == 'YES') {
+                        $getworkingtime = $this->checkWorkingtimeSwitch($adjustment->workingtime_id, $adjustment->day);
+                    } else {
+                        $getworkingtime = $this->checkWorkingtime($adjustment->workingtime_id, $adjustment->day);
+                    }
+                    // $getworkingtime = $this->checkWorkingtime($adjustment->workingtime_id, $adjustment->day);
                     // Variable to check working time and over time
                     if (!$getworkingtime) {
                         return response()->json([
