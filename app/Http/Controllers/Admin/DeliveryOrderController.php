@@ -333,7 +333,8 @@ class DeliveryOrderController extends Controller
                 'driver_id'     => $request->driver_id,
                 'group'         => $request->kloter,
                 'month'         => $month,
-                'year'          => $year
+                'year'          => $year,
+                'total_value'   => 0
             ]);
 
             if(!$driverallowancelist){
@@ -355,6 +356,7 @@ class DeliveryOrderController extends Controller
                 }
 
                 $checkupdate->rit = $driverlist->value;
+                $checkupdate->total_value = ($checkupdate->value / 100) * $driverlist->value;
                 $checkupdate->save();
             }
            
@@ -643,6 +645,52 @@ class DeliveryOrderController extends Controller
                     'departure_time' => $deliveryorder->departure_time, 
                     'arrived_time' => $deliveryorder->arrived_time 
                 ]);
+            if ($doimport) {
+                $partner_rit = Partner::find($deliveryorder->customer_id);
+                $readConfigs = Config::where('option', 'cut_off')->first();
+                $cut_off = $readConfigs->value;
+                if (date('d', strtotime(dbDate($deliveryorder->departure_time))) > $cut_off) {
+                    $month = date('m', strtotime(dbDate($deliveryorder->departure_time)));
+                    $year = date('Y', strtotime(dbDate($deliveryorder->departure_time)));
+                    $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
+                    $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
+                } else {
+                    $month =  date('m', strtotime(dbDate($deliveryorder->departure_time)));
+                    $year =  date('Y', strtotime(dbDate($deliveryorder->departure_time)));
+                }
+                $driverallowancelist = DriverAllowanceList::create([
+                    'date'          => dbDate($deliveryorder->departure_time),
+                    'rit'           => 100,
+                    'truck'         => $deliveryorder->type_truck,
+                    'value'         => $partner_rit->rit,
+                    'driver_id'     => $deliveryorder->driver_id,
+                    'group'         => $deliveryorder->kloter,
+                    'month'         => $month,
+                    'year'          => $year
+                ]);
+
+                if (!$driverallowancelist) {
+                    DB::rollback();
+                    return response()->json([
+                        'status'    => false,
+                        'message'   => $driverallowancelist
+                    ], 400);
+                }
+
+                $checkupdates = Driverallowancelist::where('driver_id', $deliveryorder->driver_id)->where('date', dbDate($deliveryorder->departure_time))->where('group', $deliveryorder->kloter)->orderBy('value', 'desc')->get();
+                foreach ($checkupdates as $key => $checkupdate) {
+                    $rit = $key + 1;
+                    $driverlist = DriverList::where('type', $deliveryorder->type_truck)->where('rit', $rit)->first();
+
+                    if (!$driverlist) {
+                        $driverlist = DriverList::where('type', $deliveryorder->type_truck)->orderBy('rit', 'desc')->first();
+                    }
+
+                    $checkupdate->rit = $driverlist->value;
+                    $checkupdate->total_value = ($checkupdate->value / 100) * $driverlist->value;
+                    $checkupdate->save();
+                }
+            }
                 if (!$doimport) {
                     DB::rollback();
                     return response()->json([

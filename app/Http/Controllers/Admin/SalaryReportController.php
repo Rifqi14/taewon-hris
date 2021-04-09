@@ -653,7 +653,7 @@ class SalaryReportController extends Controller
     $query->where('month', $month);
     $query->where('year', $year);
 
-    return $query->sum('value');
+    return $query->sum('total_value');
   }
 
   public function getLatestId()
