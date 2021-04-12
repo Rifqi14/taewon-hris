@@ -2120,10 +2120,10 @@ class AttendanceController extends Controller
     /**
      * Method to check update attendance
      *
-     * @param object $attendance
+     * @param $attendance
      * @return \Illuminate\Http\Response
      */
-    public function checkUpdateStatus(object $attendance)
+    public function checkUpdateStatus($attendance)
     {
         $date       = Carbon::parse($attendance->attendance_date);
         $check      = Attendance::EmployeeAttendance($attendance->employee_id)->AttendanceDate($date->toDateString())->where('status', '<>', 1)->first();
