@@ -381,6 +381,17 @@ class AttendanceController extends Controller
 
         return $worktime;
     }
+    public function attendance_cutoff($id)
+    {
+        $query = DB::table('attendance_cut_offs');
+        $query->select('attendance_cut_offs.*');
+        $query->leftJoin('attendance_cut_off_departments', 'attendance_cut_off_departments.attendance_cut_off_id', '=', 'attendance_cut_offs.id');
+        $query->where('attendance_cut_offs.status', 1);
+        $query->where('attendance_cut_off_departments.department_id', '=', $id);
+        $attendance_cutoff = $query->first();
+        
+        return $attendance_cutoff;
+    }
 
     public function get_workingtime($day)
     {
@@ -1051,7 +1062,7 @@ class AttendanceController extends Controller
                             $date_out = date('Y-m-d', strtotime('+1 day', strtotime($update->attendance_date)));
                             $date_day = changeDateFormat('Y-m-d H:i:s', $date_out . '09:00:00');
                             // Attendance Cut Off
-                            $attendance_cutoff = AttendanceCutOff::where('department_id', $employee->department_id)->where('status', 1)->first();
+                            $attendance_cutoff = $this->attendance_cutoff($employee->department_id);
                             if($attendance_cutoff){
                                 if ($attendance_cutoff->option == 'Static') {
                                     $date_day = changeDateFormat('Y-m-d H:i:s', $date_out . $attendance_cutoff->hour);
@@ -1080,6 +1091,7 @@ class AttendanceController extends Controller
                 $update->attendance_in = $attendance_in ? $attendance_in : null;
                 $update->attendance_out = $attendance_out && $attendance_out > $attendance_in ? $attendance_out : null;
                 $exception_date = $this->employee_calendar($update->employee_id);
+                // dd($exception_date);
                 if (!$exception_date) {
                     return response()->json([
                         'status'     => false,

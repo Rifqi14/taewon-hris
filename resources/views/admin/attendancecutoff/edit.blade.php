@@ -395,10 +395,10 @@
         // alert(this.value);
       if (this.value == 'Flexible') {
         $('#duration-section').show();
-        $('#hour').attr('value','');
+        // $('#hour').attr('value','');
         $('#hour-section').hide();
       } else {
-        $('#duration').attr('value','');
+        // $('#duration').attr('value','');
         $('#duration-section').hide();
         $('#hour-section').show();
       }
