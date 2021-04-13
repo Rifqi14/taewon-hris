@@ -12,6 +12,7 @@ use App\Models\AttendanceMachine\AttTransaction;
 use App\Models\Calendar;
 use App\Models\Employee;
 use App\Models\Config;
+use App\Models\AttendanceCutOff;
 use App\Models\Workingtime;
 use App\Models\CalendarException;
 use App\Models\OvertimeSchemeList;
@@ -1048,7 +1049,20 @@ class AttendanceController extends Controller
                             $attendance_out = $out_between;
                         } else {
                             $date_out = date('Y-m-d', strtotime('+1 day', strtotime($update->attendance_date)));
-                            $date_day = changeDateFormat('Y-m-d H:i:s', $date_out . ' 09:00:00');
+                            $date_day = changeDateFormat('Y-m-d H:i:s', $date_out . '09:00:00');
+                            // Attendance Cut Off
+                            $attendance_cutoff = AttendanceCutOff::where('department_id', $employee->department_id)->where('status', 1)->first();
+                            if($attendance_cutoff){
+                                
+                                if ($attendance_cutoff->option == 'Static') {
+                                    $date_day = changeDateFormat('Y-m-d H:i:s', $date_out . $attendance_cutoff->hour);
+                                }
+                                if ($attendance_cutoff->option == 'Flexible') {
+                                    $date_day = date('Y-m-d H:i:s', strtotime($attendance_in . '+' . $attendance_cutoff->duration . 'Hours'));
+                                }
+                            }
+                            
+                            // End Attendance Cut Off
                             $outs = AttendanceLog::whereBetween('attendance_date', [$attendance_in, $date_day])->where('employee_id', '=', $update->employee_id)->where('type', '=', 0)->get();
                             if ($outs->count() > 0) {
                                 $attendance_out = $outs->max('attendance_date');
