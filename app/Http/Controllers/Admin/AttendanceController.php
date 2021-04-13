@@ -1053,7 +1053,6 @@ class AttendanceController extends Controller
                             // Attendance Cut Off
                             $attendance_cutoff = AttendanceCutOff::where('department_id', $employee->department_id)->where('status', 1)->first();
                             if($attendance_cutoff){
-                                
                                 if ($attendance_cutoff->option == 'Static') {
                                     $date_day = changeDateFormat('Y-m-d H:i:s', $date_out . $attendance_cutoff->hour);
                                 }

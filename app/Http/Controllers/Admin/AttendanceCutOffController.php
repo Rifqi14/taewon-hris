@@ -106,7 +106,7 @@ class AttendanceCutOffController extends Controller
         $attendancecutoff = AttendanceCutOff::create([
             'name'          => $request->name,
             'option'        => $request->option,
-            'duration'      => $request->option == 'Flexible'?$request->duration:null,
+            'duration'      => $request->option == 'Flexible' ?$request->duration:null,
             'hour'          => $request->option == 'Static' ? $request->hour : null,
             'status'        => $request->status,
             'description'   => $request->description
@@ -194,7 +194,7 @@ class AttendanceCutOffController extends Controller
         $attendancecutoff = AttendanceCutOff::find($id);
         $attendancecutoff->name        = $request->name;
         $attendancecutoff->option      = $request->option;
-        $attendancecutoff->hour        = $request->option == 'Flexible'?$request->duration:null;
+        $attendancecutoff->hour        = $request->option == 'Static'?$request->hour:null;
         $attendancecutoff->duration    = $request->option == 'Flexible'?$request->duration:null;
         $attendancecutoff->status      = $request->status;
         $attendancecutoff->description = $request->description;
