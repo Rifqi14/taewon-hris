@@ -208,7 +208,7 @@
             { orderable: false, targets: [0,1,2] },
             { className: "text-center", targets: [0,2] },
             { render: function ( data, type, row ) {
-            return `<label class="customcheckbox checked"><input value="${row.id}" type="checkbox" name="department_id[]"><span class="checkmark"></span></label>`
+            return `<label class="customcheckbox checked"><input value="${row.id}" type="checkbox" name="department_id[]" checked><span class="checkmark"></span></label>`
         },targets: [2] }
         ],
         columns: [
