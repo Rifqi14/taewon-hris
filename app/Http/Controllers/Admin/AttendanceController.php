@@ -359,7 +359,7 @@ class AttendanceController extends Controller
         $query_calendar->leftJoin('calendars', 'calendars.id', '=', 'employees.calendar_id');
         $query_calendar->leftJoin('calendar_exceptions', 'calendar_exceptions.calendar_id', '=', 'calendars.id');
         $query_calendar->where('employees.id', '=', $id);
-        $query_calendar->where('calendar_exceptions.is_switch_day','!=', 'YES');
+        $query_calendar->whereRaw("coalesce(calendar_exceptions.is_switch_day,'') != 'YES'");
         $calendar = $query_calendar->get();
         $exception_date = [];
         foreach ($calendar as $date) {
@@ -1091,7 +1091,6 @@ class AttendanceController extends Controller
                 $update->attendance_in = $attendance_in ? $attendance_in : null;
                 $update->attendance_out = $attendance_out && $attendance_out > $attendance_in ? $attendance_out : null;
                 $exception_date = $this->employee_calendar($update->employee_id);
-                // dd($exception_date);
                 if (!$exception_date) {
                     return response()->json([
                         'status'     => false,
