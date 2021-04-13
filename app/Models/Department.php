@@ -39,6 +39,10 @@ class Department extends Model
     {
         return $this->hasMany(BreaktimeDepartment::class, 'department_id', 'id');
     }
+    public function attendancecutoffdepartment()
+    {
+        return $this->hasMany(AttendanceCutOffDepartment::class, 'department_id', 'id');
+    }
 
     public function getAutoNumberOptions()
     {

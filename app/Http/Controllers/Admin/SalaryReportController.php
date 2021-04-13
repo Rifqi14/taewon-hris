@@ -1876,13 +1876,13 @@ class SalaryReportController extends Controller
    */
   public function printmass(Request $request)
   {
-    $id = json_decode($request->id);
-    $salaries = SalaryReport::with('employee')->with('salarydetail')->whereIn('id', $id)->get();
-    foreach ($salaries as $salary) {
-      $salary->print_status = 1;
-      $salary->save();
-    }
-    return view('admin.salaryreport.print', compact('salaries'));
+    // $id = json_decode($request->id);
+    // $salaries = SalaryReport::with('employee')->with('salarydetail')->whereIn('id', $id)->get();
+    // foreach ($salaries as $salary) {
+    //   $salary->print_status = 1;
+    //   $salary->save();
+    // }
+    return view('admin.salaryreport.newprint');
   }
 
   /**

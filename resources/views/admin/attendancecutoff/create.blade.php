@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Break Time ')
+@section('title', 'Attendance Cut Off ')
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
@@ -39,54 +39,50 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('breaktime.index')}}">Break Time</a></li>
+<li class="breadcrumb-item"><a href="{{route('breaktime.index')}}">Attendance Cut Off</a></li>
 <li class="breadcrumb-item active">Create</li>
 @endpush
 
 @section('content')
-<form id="form" action="{{ route('breaktime.store') }}" method="post" autocomplete="off">
+<form id="form" action="{{ route('attendancecutoff.store') }}" method="post" autocomplete="off">
   <div class="wrapper wrapper-content">
     <div class="row">
       <div class="col-lg-8">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header" style="height: 57px;">
-            <h3 class="card-title">Break Time</h3>
+            <h3 class="card-title">Attendance Cut Off</h3>
           </div>
           <div class="card-body">
             {{ csrf_field() }}
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Break Time <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="break_time" id="break_time" placeholder="Break Time">
+                  <label>Name <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" name="name" id="name" placeholder="Name">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Workgroup Combination <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="workgroup" id="workgroup" data-placeholder="Workgroup Combination">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <label>Start Time<b class="text-danger">*</b></label>
-                  <input class="form-control timepicker" id="start_time" name="start_time">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <label>Finish Time<b class="text-danger">*</b></label>
-                  <input class="form-control timepicker" id="finish_time" name="finish_time">
+                  <label>Option <b class="text-danger">*</b></label>
+                  <select name="option" id="option" class="form-control select2" data-placeholder="Select Option">
+                      <option value=""></option>
+                      <option value="Flexible">Flexible</option>
+                      <option value="Static">Static</option>
+                    </select>
                 </div>
               </div>
             </div>
             <div class="row">
-              <div class="col-sm-6">
+              <div class="col-sm-6" id="duration-section">
                 <div class="form-group">
-                  <label class="pr-5">Cross Date</label>
-                  <input class="form-control" type="checkbox" id="cross_date" name="cross_date" checked>
+                  <label>Duration(Hour)<b class="text-danger">*</b></label>
+                  <input type="number" class="form-control" id="duration" name="duration">
+                </div>
+              </div>
+              <div class="col-sm-6" id="hour-section">
+                <div class="form-group">
+                  <label>Hour<b class="text-danger">*</b></label>
+                  <input class="form-control timepicker" id="hour" name="hour">
                 </div>
               </div>
             </div>
@@ -112,7 +108,7 @@
                   <!-- text input -->
                   <div class="form-group">
                     <label>Notes</label>
-                    <textarea class="form-control" name="notes" placeholder="Notes"></textarea>
+                    <textarea class="form-control" name="description" placeholder="description"></textarea>
                   </div>
                 </div>
               </div>
@@ -177,7 +173,8 @@
       checkboxClass: 'icheckbox_square-green',
       radioClass: 'iradio_square-green',
     });
-    $("#status").select2();
+    $(".select2").select2();
+    // $("#status").select2();
     $('.timepicker').daterangepicker({
       singleDatePicker: true,
       timePicker: true,
@@ -190,71 +187,37 @@
     }).on('show.daterangepicker', function(ev, picker) {
       picker.container.find('.calendar-table').hide();
     });
-    $( "#workgroup" ).select2({
-      multiple: true,
-      ajax: {
-        url: "{{route('workgroup.select')}}",
-        type:'GET',
-        dataType: 'json',
-        data: function (term,page) {
-          return {
-            name:term,
-            page:page,
-            limit:30,
-          };
+    dataTableDepartment = $("#department-table").DataTable({
+        stateSave: true,
+        processing: true,
+        serverSide: true,
+        filter: false,
+        info: false,
+        lengtChange: true,
+        responsive: true,
+        order: [[1, "asc"]],
+        lengthMenu: [ 100, 250, 500, 1000 ],
+        ajax: {
+            url: "{{ route('breaktimedepartment.read') }}",
+            type: "GET",
+            data: function(data) {
+                
+            }
         },
-        results: function (data,page) {
-          var more = (page * 30) < data.total;
-          var option = [];
-          $.each(data.rows,function(index,item){
-            option.push({
-              id:item.id,
-              text: `${item.name}`
-            });
-          });
-          return {
-            results: option, more: more,
-          };
-        },
-      },
-      allowClear: true,
+        columnDefs: [
+            { orderable: false, targets: [0,1,2] },
+            { className: "text-center", targets: [0,2] },
+            { render: function ( data, type, row ) {
+            return `<label class="customcheckbox checked"><input value="${row.id}" type="checkbox" name="department_id[]"><span class="checkmark"></span></label>`
+        },targets: [2] }
+        ],
+        columns: [
+            { data: "no" },
+            { data: "name" },
+            { data: "id" },
+        ]
     });
-    
-		dataTableDepartment = $("#department-table").DataTable({
-			stateSave: true,
-			processing: true,
-			serverSide: true,
-			filter: false,
-			info: false,
-			lengtChange: true,
-			responsive: true,
-			order: [[1, "asc"]],
-			lengthMenu: [ 100, 250, 500, 1000 ],
-			ajax: {
-				url: "{{ route('breaktimedepartment.read') }}",
-				type: "GET",
-				data: function(data) {
-					
-				}
-			},
-			columnDefs: [
-				{ orderable: false, targets: [0,1,2] },
-				{ className: "text-center", targets: [0,2] },
-				{ render: function ( data, type, row ) {
-              return `<label class="customcheckbox checked"><input value="${row.id}" type="checkbox" name="department_id[]" checked><span class="checkmark"></span></label>`
-            },targets: [2] }
-			],
-			columns: [
-				{ data: "no" },
-				{ data: "name" },
-				{ data: "id" },
-			]
-		});
-    $(document).on("change", "#workgroup", function () {
-      if (!$.isEmptyObject($('#form').validate().submitted)) {
-        $('#form').validate().form();
-      }
-    });
+  
     $(document).on("change", "#department_id", function () {
       if (!$.isEmptyObject($('#form').validate().submitted)) {
         $('#form').validate().form();
@@ -324,26 +287,38 @@
         })
       }
     });
-		$('input[name=checkall]').prop('checked', true);
-		$('input[name=checkall]').parent().addClass('checked');
-		$('input[name^=department_id]').prop('checked', true);
-		$('input[name^=department_id]').parent().addClass('checked');
-		$(document).on('click', '.customcheckbox input', function() {
-			if ($(this).is(':checked')) {
-				$(this).parent().addClass('checked');
-			} else {
-				$(this).parent().removeClass('checked');
-			}
-		});
-		$(document).on('change', '.checkall', function() {
-			if (this.checked) {
-				$('input[name^=department_id]').prop('checked', true);
-				$('input[name^=department_id]').parent().addClass('checked');
-			} else {
-				$('input[name^=department_id]').prop('checked', false);
-				$('input[name^=department_id]').parent().removeClass('checked');
-			}
-		});
+    $('#duration-section').hide();
+    $('#hour-section').hide();
+    $(document).on('change', '#option', function() {
+        // alert(this.value);
+      if (this.value == 'Flexible') {
+        $('#duration-section').show();
+        $('#hour-section').hide();
+      } else {
+        $('#duration-section').hide();
+        $('#hour-section').show();
+      }
+    }).trigger('change');
+    $('input[name=checkall]').prop('checked', true);
+    $('input[name=checkall]').parent().addClass('checked');
+    // $('input[name^=department_id]').prop('checked', true);
+    // $('input[name^=department_id]').parent().addClass('checked');
+    $(document).on('click', '.customcheckbox input', function() {
+        if ($(this).is(':checked')) {
+            $(this).parent().addClass('checked');
+        } else {
+            $(this).parent().removeClass('checked');
+        }
+    });
+    $(document).on('change', '.checkall', function() {
+        if (this.checked) {
+            $('input[name^=department_id]').prop('checked', true);
+            $('input[name^=department_id]').parent().addClass('checked');
+        } else {
+            $('input[name^=department_id]').prop('checked', false);
+            $('input[name^=department_id]').parent().removeClass('checked');
+        }
+    });
   });
 </script>
 @endpush

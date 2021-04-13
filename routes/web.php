@@ -551,5 +551,14 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/partner/read', 'Admin\PartnerController@read')->name('partner.read');
         Route::get('/partner/select', 'Admin\PartnerController@select')->name('partner.select');
         Route::resource('/partner', 'Admin\PartnerController');
+        //Route Attendance Cut Off
+        Route::get('/attendancecutoff/read', 'Admin\AttendanceCutOffController@read')->name('attendancecutoff.read');
+        // Route::get('/attendancecutoff/select', 'Admin\AttendanceCutOffController@select')->name('attendancecutoff.select');
+        Route::resource('/attendancecutoff', 'Admin\AttendanceCutOffController');
+
+        // Route Attendance Cut Off Department
+        Route::get('/attendancecutoffdepartment/read', 'Admin\AttendancecutOffDepartmentController@read')->name('attendancecutoffdepartment.read');
+        Route::post('/attendancecutoffdepartment/updateall', 'Admin\AttendancecutOffDepartmentController@updateAll')->name('attendancecutoffdepartment.updateall');
+        Route::resource('/attendancecutoffdepartment', 'Admin\AttendancecutOffDepartmentController');
     });
 });
