@@ -749,13 +749,14 @@ class SalaryReportController extends Controller
             if ($basesalary) {
               $periode_salary = changeDateFormat('Y-m', $year . '-' . $month);
               $join_date = changeDateFormat('Y-m', $employee->join_date);
+              $resign_date = changeDateFormat('Y-m', $employee->resign_date);
               $daily_salary = $basesalary->amount / 30;
               $attendance_count = count($attendance);
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
                 'description'       => LABEL_BASIC_SALARY,
-                'total'             => $basesalary->amount,
+                'total'             => $resign_date == $periode_salary ? (date("d", strtotime($employee->resign_date . '-1 days')) * $basesalary->amount) / 30 : $basesalary->amount,
                 'type'              => 1,
                 'status'            => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
                 'is_added'          => 'NO'
@@ -872,17 +873,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-            if ($employee->resign_date) {
-              SalaryReportDetail::create([
-                'salary_report_id'  => $salaryreport->id,
-                'employee_id'       => $employee->id,
-                'description'       => LABEL_PRORATE,
-                'total'             => (date("d", strtotime($employee->resign_date . '-1 days')) * $basesalary->amount) / 30,
-                'type'              => 1,
-                'status'            => 'Draft',
-                'is_added'          => 'NO'
-              ]);
-            }
+            
             $salaryreport->gross_salary = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
             $salaryreport->deduction    = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
             $salaryreport->net_salary   = $salaryreport->gross_salary - $salaryreport->deduction;
@@ -1017,13 +1008,14 @@ class SalaryReportController extends Controller
             if ($basesalary) {
               $periode_salary = changeDateFormat('Y-m', $year . '-' . $month);
               $join_date = changeDateFormat('Y-m', $employee->join_date);
+              $resign_date = changeDateFormat('Y-m', $employee->resign_date);
               $daily_salary = $basesalary->amount / 30;
               $attendance_count = count($attendance);
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
                 'description'       => LABEL_BASIC_SALARY,
-                'total'             => $basesalary->amount,
+                'total'             => $resign_date == $periode_salary ? (date("d", strtotime($employee->resign_date . '-1 days')) * $basesalary->amount) / 30 : $basesalary->amount,
                 'type'              => 1,
                 'status'            => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
                 'is_added'          => 'NO'
@@ -1140,17 +1132,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-            if ($employee->resign_date) {
-              SalaryReportDetail::create([
-                'salary_report_id'  => $salaryreport->id,
-                'employee_id'       => $employee->id,
-                'description'       => LABEL_PRORATE,
-                'total'             => (date("d", strtotime($employee->resign_date . '-1 days')) * $basesalary->amount) / 30,
-                'type'              => 1,
-                'status'            => 'Draft',
-                'is_added'          => 'NO'
-              ]);
-            }
+            
             $salaryreport->gross_salary = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
             $salaryreport->deduction    = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
             $salaryreport->net_salary   = $salaryreport->gross_salary - $salaryreport->deduction;
@@ -1282,13 +1264,14 @@ class SalaryReportController extends Controller
             if ($basesalary) {
               $periode_salary = changeDateFormat('Y-m', $year . '-' . $month);
               $join_date = changeDateFormat('Y-m', $employee->join_date);
+              $resign_date = changeDateFormat('Y-m', $employee->resign_date);
               $daily_salary = $basesalary->amount / 30;
               $attendance_count = count($attendance);
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
                 'description'       => LABEL_BASIC_SALARY,
-                'total'             => $basesalary->amount,
+                'total'             => $resign_date == $periode_salary ? (date("d", strtotime($employee->resign_date . '-1 days')) * $basesalary->amount) / 30 : $basesalary->amount,
                 'type'              => 1,
                 'status'            => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
                 'is_added'          => 'NO'
@@ -1406,17 +1389,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-            if ($employee->resign_date) {
-              SalaryReportDetail::create([
-                'salary_report_id'  => $salaryreport->id,
-                'employee_id'       => $employee->id,
-                'description'       => LABEL_PRORATE,
-                'total'             => (date("d", strtotime($employee->resign_date . '-1 days')) * $basesalary->amount) / 30,
-                'type'              => 1,
-                'status'            => 'Draft',
-                'is_added'          => 'NO'
-              ]);
-            }
+           
             $salaryreport->gross_salary = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
             $salaryreport->deduction    = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
             $salaryreport->net_salary   = $salaryreport->gross_salary - $salaryreport->deduction;
@@ -1593,15 +1566,16 @@ class SalaryReportController extends Controller
             $attendance_allowance = $this->get_attendance_allowance($view_employee, $request->montly, $request->year);
             $pph = $this->getPPhAllowance($view_employee, $request->montly, $request->year);
             if ($basesalary) {
-              // $periode_salary = changeDateFormat('Y-m', $request->year . '-' . $request->montly);
-              // $join_date = changeDateFormat('Y-m', $employee->join_date);
+              $periode_salary = changeDateFormat('Y-m', $request->year . '-' . $request->montly);
+              $join_date = changeDateFormat('Y-m', $employee->join_date);
+              $resign_date = changeDateFormat('Y-m', $employee->resign_date);
               // $daily_salary = $basesalary->amount / 30;
               // $attendance_count = count($attendance);
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
                 'description'       => LABEL_BASIC_SALARY,
-                'total'             => $basesalary->amount,
+                'total'             => $resign_date == $periode_salary ? (date("d", strtotime($employee->resign_date . '-1 days')) * $basesalary->amount) / 30 : $basesalary->amount,
                 'type'              => 1,
                 'status'            => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
                 'is_added'          => 'NO'
