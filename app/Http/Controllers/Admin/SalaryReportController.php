@@ -555,18 +555,22 @@ class SalaryReportController extends Controller
 
     $attendance = $this->get_attendance($id, $month, $year);
 
-    $qty_absent = abs(count($work_date) - count($attendance));
-    $allowance = AllowanceRule::with('allowance')->where('qty_absent', '=', $qty_absent >= 2 ? 2 : $qty_absent)->first();
-    $attendance_allowance = 0;
-    $basesalary = $this->get_employee_salary($id);
-    if ($allowance->qty_allowance > 0 && $basesalary) {
-      $attendance_allowance = $allowance->qty_allowance * ($basesalary->amount / 30);
-    }
-
     $employee_allowance = EmployeeAllowance::with('allowance')->where('status', 1)->where('month', $month)->where('year', $year)->where('employee_id', $id)->whereHas('allowance', function ($q) {
       $q->where('category', 'like', 'tunjanganKehadiran');
     })->first();
-    return $employee_allowance ? $attendance_allowance : 0;
+
+    if($employee_allowance){
+      $qty_absent = abs(count($work_date) - count($attendance));
+      $allowance = AllowanceRule::with('allowance')->where('qty_absent', '=', $qty_absent >= 2 ? 2 : $qty_absent)->first();
+      $attendance_allowance = 0;
+      $basesalary = $this->get_employee_salary($id);
+      if ($allowance->qty_allowance > 0 && $basesalary) {
+        $attendance_allowance = $allowance->qty_allowance * ($basesalary->amount / 30);
+      }
+      return $attendance_allowance;
+    }else{
+      return 0;
+    }
   }
 
   public function get_leave($id, $month, $year)
