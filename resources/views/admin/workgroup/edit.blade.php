@@ -152,7 +152,7 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="type" class="control-label">Type</label>
-									<select class="form-control select2" data-placeholder="Type" name="type" id="type">
+									<select class="form-control" data-placeholder="Type" name="type" id="type">
 										<option value="percentage">Percentage</option>
 										<option value="nominal">Nominal</option>
 										<option value="automatic">Automatic</option>
