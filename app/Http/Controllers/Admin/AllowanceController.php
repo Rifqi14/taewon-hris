@@ -347,17 +347,17 @@ class AllowanceController extends Controller
 
         DB::beginTransaction();
         $allowance = Allowance::find($id);
-        $allowance->allowance = $request->allowance;
-        $allowance->category = $request->category;
-        $allowance->account_id = $request->account;
-        $allowance->reccurance = $request->recurrence;
-        $allowance->group_allowance_id = $request->groupallowance;
-        $allowance->working_type = $request->working_type;
-        $allowance->days_devisor = $request->days_devisor;
-        $allowance->basic_salary = $request->basic_salary;
-        $allowance->notes = $request->notes;
-        $allowance->formula_bpjs = $request->formula_bpjs;
-        $allowance->status = $request->status;
+        $allowance->allowance           = $request->allowance;
+        $allowance->category            = $request->category;
+        $allowance->account_id          = $request->account;
+        $allowance->reccurance          = $request->recurrence;
+        $allowance->group_allowance_id  = $request->groupallowance;
+        $allowance->working_type        = $request->working_type;
+        $allowance->days_devisor        = $request->days_devisor;
+        $allowance->basic_salary        = $request->basic_salary;
+        $allowance->notes               = $request->notes;
+        $allowance->formula_bpjs        = $request->formula_bpjs;
+        $allowance->status              = $request->status;
         $allowance->save();
         if ($allowance) {
             if ($request->working_time) {
@@ -391,6 +391,7 @@ class AllowanceController extends Controller
             $allowance->allowance()->detach();
         }
         DB::commit();
+        return redirect()->route('allowance.index');
         // return response()->json([
         //     'status'     => true,
         //     'results'     => route('allowance.index'),
@@ -408,7 +409,7 @@ class AllowanceController extends Controller
         try {
             $allowance = Allowance::find($id);
             $allowance->delete();
-            $this->destroychild($allowance->id);
+            // $this->destroychild($allowance->id);
         } catch (\Illuminate\Database\QueryException $e) {
             return response()->json([
                 'status'    => false,
