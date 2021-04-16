@@ -560,5 +560,15 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/attendancecutoffdepartment/read', 'Admin\AttendancecutOffDepartmentController@read')->name('attendancecutoffdepartment.read');
         Route::post('/attendancecutoffdepartment/updateall', 'Admin\AttendancecutOffDepartmentController@updateAll')->name('attendancecutoffdepartment.updateall');
         Route::resource('/attendancecutoffdepartment', 'Admin\AttendancecutOffDepartmentController');
+
+        //Route Allowance Increase
+        Route::get('/allowanceincrease/read', 'Admin\AllowanceIncreaseController@read')->name('allowanceincrease.read');
+        Route::get('/allowanceincrease/reademployee', 'Admin\AllowanceIncreaseController@reademployee')->name('allowanceincrease.reademployee');
+        Route::resource('/allowanceincrease','Admin\AllowanceIncreaseController');
+
+        //Route Allowance Increase Detail
+        Route::get('/allowanceincreasedetail/read', 'Admin\AllowanceIncreaseDetailController@read')->name('allowanceincreasedetail.read');
+        // Route::get('/allowanceincrease/reademployee', 'Admin\AllowanceIncreaseController@reademployee')->name('allowanceincrease.reademployee');
+        Route::resource('/allowanceincreasedetail', 'Admin\AllowanceIncreaseDetailController');
     });
 });
