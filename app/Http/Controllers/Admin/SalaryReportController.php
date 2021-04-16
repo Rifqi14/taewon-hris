@@ -872,7 +872,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-            if (count($employee->resign_date) > 0) {
+            if ($employee->resign_date) {
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
@@ -1140,7 +1140,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-            if (count($employee->resign_date) > 0) {
+            if ($employee->resign_date) {
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
@@ -1406,7 +1406,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-            if (count($employee->resign_date) > 0) {
+            if ($employee->resign_date) {
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
@@ -1735,7 +1735,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-            if(count($employee->resign_date) > 0){
+            if($employee->resign_date){
               SalaryReportDetail::create([
                 'salary_report_id'  => $id,
                 'employee_id'       => $view_employee,
