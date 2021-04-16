@@ -51,7 +51,7 @@ const LABEL_POSITION_ALLOWANCE    = 'Biaya Jabatan';
 const LABEL_NET_SALARY_YEAR       = 'Net Salary (Yearly)';
 const LABEL_PPH_YEARLY            = 'PPh 21 (Yearly)';
 const LABEL_PPH_MONTHLY           = 'Potongan PPh 21';
-const LABEL_PRORATE               = 'Prorate';
+// const LABEL_PRORATE               = 'Prorate';
 
 class SalaryReportController extends Controller
 {
@@ -1389,7 +1389,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-           
+            
             $salaryreport->gross_salary = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
             $salaryreport->deduction    = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
             $salaryreport->net_salary   = $salaryreport->gross_salary - $salaryreport->deduction;
@@ -1709,17 +1709,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-            if($employee->resign_date){
-              SalaryReportDetail::create([
-                'salary_report_id'  => $id,
-                'employee_id'       => $view_employee,
-                'description'       => LABEL_PRORATE,
-                'total'             => (date("d", strtotime($employee->resign_date . '-1 days')) * $basesalary->amount) / 30,
-                'type'              => 1,
-                'status'            => 'Draft',
-                'is_added'          => 'NO'
-              ]);
-            }
+            
             $salaryreport->gross_salary = $this->gross_salary($id) ? $this->gross_salary($id) : 0;
             $salaryreport->deduction    = $this->deduction_salary($id) ? $this->deduction_salary($id) : 0;
             $salaryreport->net_salary   = $salaryreport->gross_salary - $salaryreport->deduction;
