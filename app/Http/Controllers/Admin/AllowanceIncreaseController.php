@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\AllowanceIncrease;
+use App\Models\AllowanceIncreaseDetail;
 use App\Models\WorkGroup;
 use App\Models\Title;
 use Illuminate\Http\Request;
@@ -89,17 +90,23 @@ class AllowanceIncreaseController extends Controller
         $year = $request->year;
         $type = $request->type;
         $allowance_id = $request->allowance_id;
+        $allowance_increase_id = $request->allowance_increase_id;
         $month = date('m',mktime($request->month));
 
         // dd($allowance_id, $month, $year);
+        $sf_increases = AllowanceIncreaseDetail::where('allowance_increase_id', $allowance_increase_id)->get();
 
+        $dataa = [];
+        foreach ($sf_increases as $sv_salary) {
+            $dataa[] = $sv_salary->employee_id;
+        }
 
         //Count Data
         $query = DB::table('employee_allowances');
         $query->select('employee_allowances.*',
             'employees.name',
             'employees.nid',
-            'employees.id',
+            'employee_allowances.id',
             // 'employee_salarys.employee_id',
             'departments.id as department_id',
             'departments.name as department_name',
@@ -123,9 +130,9 @@ class AllowanceIncreaseController extends Controller
         if ($employee_id) {
             $query->where('employees.id', $employee_id);
         }
-        // if ($dataa) {
-        //     $query->whereNotIn('employees.id', $dataa);
-        // }
+        if ($dataa) {
+            $query->whereNotIn('employees.id', $dataa);
+        }
         if ($nid) {
             $query->whereRaw("employees.nid like '%$nid%'");
         }
@@ -147,7 +154,7 @@ class AllowanceIncreaseController extends Controller
         $query->select('employee_allowances.*',
             'employees.name',
             'employees.nid',
-            'employees.id',
+            'employee_allowances.id',
             // 'employee_salarys.employee_id',
             'departments.id as department_id',
             'departments.name as department_name',
@@ -170,9 +177,9 @@ class AllowanceIncreaseController extends Controller
         if ($employee_id) {
             $query->where('employees.id', $employee_id);
         }
-        // if ($dataa) {
-        //     $query->whereNotIn('employees.id', $dataa);
-        // }
+        if ($dataa) {
+            $query->whereNotIn('employees.id', $dataa);
+        }
         if ($nid) {
             $query->whereRaw("employees.nid like '%$nid%'");
         }

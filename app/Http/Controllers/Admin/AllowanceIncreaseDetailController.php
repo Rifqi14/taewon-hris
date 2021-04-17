@@ -138,29 +138,29 @@ class AllowanceIncreaseDetailController extends Controller
     public function store(Request $request)
     {
         DB::beginTransaction();
-        if(count($request->employee_id) > 0)
+        if(count($request->employee_allowance_id) > 0)
         {
             // dd($request->employee_id);
-            foreach($request->employee_id as $item => $v)
+            foreach($request->employee_allowance_id as $item => $v)
             {
                 $allowanceincrease = AllowanceIncrease::where('id', $request->allowance_increase_id)->first();
-                $employeeallowance = EmployeeAllowance::where('employee_id', $request->employee_id[$item])->where('allowance_id', $allowanceincrease->allowance_id)->first();
+                $employeeallowance = EmployeeAllowance::where('id', $v)->first();
                 $upcoming_amount = 0;
                 if ($employeeallowance->type == 'percentage' && $allowanceincrease->type_value == 'Percentage') {
-                    $upcoming_amount = (int)$request->current_salary[$item] + $allowanceincrease->value;
+                    $upcoming_amount = $employeeallowance->value + $allowanceincrease->value;
                 }else if($allowanceincrease->type_value == 'Percentage')
                 {
-                    $upcoming_amount = (int)$request->current_salary[$item] + ($request->current_salary[$item] * ($allowanceincrease->value / 100));
+                    $upcoming_amount = $employeeallowance->value + ($employeeallowance->value * ($allowanceincrease->value / 100));
                 } else {
-                    $upcoming_amount = (int)$request->current_salary[$item] + $allowanceincrease->value;
+                    $upcoming_amount = $employeeallowance->value + $allowanceincrease->value;
                 }
                 // DB::beginTransaction();
                 $allowanceincreasedetail = AllowanceIncreaseDetail::create([
-                    'employee_id'           => $request->employee_id[$item],
+                    'employee_id'           => $employeeallowance->employee_id,
                     'allowance_increase_id' => $allowanceincrease->id,
-                    'current_salery'        => $request->current_salary[$item],
+                    'current_salery'        => $employeeallowance->value,
                     'amount'                => $upcoming_amount,
-                    'type'                  => $allowanceincrease->type_value,
+                    'type'                  => $employeeallowance->type,
                 ]);
                 if ($allowanceincreasedetail) {
                     $employeeallowance->value = $upcoming_amount;

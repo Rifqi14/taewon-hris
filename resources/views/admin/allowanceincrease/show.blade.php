@@ -402,7 +402,7 @@
                     },
                     {
                         render: function (data, type, row) {
-                            if(row.type == 'Nominal'){
+                            if(row.type == 'nominal'){
                                 return `Rp ${(accounting.formatMoney(row.current_salery,'',0, '.', ','))}`
                             }else{
                                 return `${row.current_salery}%`
@@ -412,7 +412,7 @@
                     },
                     {
                         render: function (data, type, row) {
-                            if(row.type == 'Nominal'){
+                            if(row.type == 'nominal'){
                                 return `Rp ${(accounting.formatMoney(row.amount,'',0, '.', ','))}`
                             }else{
                                 return `${row.amount}%`
@@ -479,7 +479,7 @@
                         var workgroup = $("#form_career select[name='workgroup_id[]']").val();
                         var nid = $('#form_career input[name=nid]').val();
                         var allowance = $('#allowance-id-history').val();
-                        data.allownce_increase_id = {{$allowanceincrease->id}};
+                        data.allowance_increase_id = {{$allowanceincrease->id}};
                         data.allowance_id = {{$allowanceincrease->allowance_id}};
                         data.year = {{$allowanceincrease->year}};
                         data.month = {{$allowanceincrease->month}};
@@ -529,9 +529,7 @@
                     {
                         render: function (data, type, row) {
                             // if (row.status == 0) {
-                            return `<input type="checkbox" name="employee_id[]" value="${row.id}" class="checkcok" autocomplete="off" />
-                                    <input type="hidden" name="current_salary[]" value="${row.current_salary}">
-                                    <input type="hidden" name="employess[]" value="${row.id}">
+                            return `<input type="checkbox" name="employee_allowance_id[]" value="${row.id}" class="checkcok" autocomplete="off" />
                             `
                             // } else {
                             // return `<span class="badge badge-success"><i class="fa fa-check"></i></span>`
