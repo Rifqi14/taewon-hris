@@ -258,9 +258,10 @@
     <script src="{{asset('adminlte/component/bootstrap-fileinput/themes/explorer-fas/theme.min.js')}}"></script>
     <script src="{{asset('adminlte/component/daterangepicker/moment.min.js')}}"></script>
     <script src="{{asset('adminlte/component/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
+    
+    <script src="{{asset('accounting/accounting.min.js')}}"></script>
     <script>
         $(document).ready(function () {
-           
 // $('.select2').select2();
             $('#employee_name').select2({
                 allowClear:true,
@@ -399,19 +400,26 @@
                         },
                         targets: [2]
                     },
-                    // {
-                    //     render: function (data, type, row) {
-                    //         // if (row.status == 0) {
-                    //         return `<input type="checkbox" name="employee_id[]" value="${row.id}" class="checkcok" autocomplete="off" />
-                    //                 <input type="hidden" name="current_salary[]" value="${row.current_salary}">
-                    //                 <input type="hidden" name="employess[]" value="${row.id}">
-                    //         `
-                    //         // } else {
-                    //         // return `<span class="badge badge-success"><i class="fa fa-check"></i></span>`
-                    //         // }
-                    //     },
-                    //     targets: [5]
-                    // },
+                    {
+                        render: function (data, type, row) {
+                            if(row.type == 'Nominal'){
+                                return `Rp ${(accounting.formatMoney(row.current_salery,'',0, '.', ','))}`
+                            }else{
+                                return `${row.current_salery}%`
+                            }
+                        },
+                        targets: [3]
+                    },
+                    {
+                        render: function (data, type, row) {
+                            if(row.type == 'Nominal'){
+                                return `Rp ${(accounting.formatMoney(row.amount,'',0, '.', ','))}`
+                            }else{
+                                return `${row.amount}%`
+                            }
+                        },
+                        targets: [4]
+                    },
                     {
                         render: function (data, type, row) {
                             return `<div class="dropdown">
@@ -437,10 +445,10 @@
                         data: "department"
                     },
                     {
-                        data: "current_salery", render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' )
+                        data: "current_salery"
                     },
                     {
-                        data: "amount", render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' )
+                        data: "amount"
                     },
                     // {
                     //     data: "id"
@@ -475,6 +483,7 @@
                         data.allowance_id = {{$allowanceincrease->allowance_id}};
                         data.year = {{$allowanceincrease->year}};
                         data.month = {{$allowanceincrease->month}};
+                        data.type = `{{$allowanceincrease->type_value}}`;
                         data.employee_id = employee_id;
                         data.departments = department;
                         data.position = position;
@@ -509,6 +518,16 @@
                     },
                     {
                         render: function (data, type, row) {
+                            if(row.type == 'nominal'){
+                                return `Rp ${(accounting.formatMoney(row.current_salary,'',0, '.', ','))}`
+                            }else{
+                                return `${row.current_salary}%`
+                            }
+                        },
+                        targets: [3]
+                    },
+                    {
+                        render: function (data, type, row) {
                             // if (row.status == 0) {
                             return `<input type="checkbox" name="employee_id[]" value="${row.id}" class="checkcok" autocomplete="off" />
                                     <input type="hidden" name="current_salary[]" value="${row.current_salary}">
@@ -531,7 +550,7 @@
                         data: "department_name"
                     },
                     {
-                        data: "current_salary", render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' )
+                        data: "current_salary"
                     },
                     {
                         data: "id"

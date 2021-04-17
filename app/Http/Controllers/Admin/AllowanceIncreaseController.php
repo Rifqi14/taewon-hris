@@ -87,6 +87,7 @@ class AllowanceIncreaseController extends Controller
         $workgroup = $request->workgroup;
         $position = $request->position;
         $year = $request->year;
+        $type = $request->type;
         $allowance_id = $request->allowance_id;
         $month = date('m',mktime($request->month));
 
@@ -116,6 +117,9 @@ class AllowanceIncreaseController extends Controller
         $query->where('employee_allowances.year', $year);
         $query->where('employee_allowances.allowance_id', $allowance_id);
         $query->where('employee_allowances.month', $month);
+        if($type == 'Nominal'){
+            $query->where('employee_allowances.type', 'nominal');
+        }
         if ($employee_id) {
             $query->where('employees.id', $employee_id);
         }
@@ -160,6 +164,9 @@ class AllowanceIncreaseController extends Controller
         $query->where('employee_allowances.year', $year);
         $query->where('employee_allowances.allowance_id', $allowance_id);
         $query->where('employee_allowances.month', $month);
+        if ($type == 'Nominal') {
+            $query->where('employee_allowances.type', 'nominal');
+        }
         if ($employee_id) {
             $query->where('employees.id', $employee_id);
         }
