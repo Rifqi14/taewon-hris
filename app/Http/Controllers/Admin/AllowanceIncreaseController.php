@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\AllowanceIncrease;
-use App\Models\Workgroup;
+use App\Models\WorkGroup;
 use App\Models\Title;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
