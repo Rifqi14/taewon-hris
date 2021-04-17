@@ -227,7 +227,7 @@
                                             <th style="text-align:center" width="10">#</th>
                                             <th width="250">Employee</th>
                                             <th width="250">Position</th>
-                                            <th width="200">Current Sallary</th>
+                                            <th width="200">Current Allowance</th>
                                             <th><input type="checkbox" value="" id="checkAll" autocomplete="off" />
                                             </th>
                                         </tr>
