@@ -84,8 +84,6 @@
                         <div class="card-header">
                             <h3 class="card-title">Other</h3>
                             <div class="pull-right card-tools">
-                                <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}"
-                                    title="Simpan"><i class="fa fa-save"></i></button>
                                 <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
                                         class="fa fa-reply"></i></a>
                             </div>
@@ -128,8 +126,8 @@
                                         <th style="text-align:center" width="10">#</th>
                                         <th width="250">Employee</th>
                                         <th width="250">Position</th>
-                                        <th width="100">Current Salary</th>
-                                        <th width="100">Upcoming Salary</th>
+                                        <th width="100">Current Allowance</th>
+                                        <th width="100">Upcoming Allowance</th>
                                         {{-- <th><input type="checkbox" value="" id="deletemassal" autocomplete="off" /></th> --}}
                                         <th width="100">Action</th>
                                     </tr>

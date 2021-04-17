@@ -158,7 +158,7 @@ class AllowanceIncreaseDetailController extends Controller
                     'amount'                => $upcoming_amount
                 ]);
                 if ($allowanceincreasedetail) {
-                    $employeeallowance = EmployeeAllowance::where('employee_id', $request->employee_id[$item])->first();
+                    $employeeallowance = EmployeeAllowance::where('employee_id', $request->employee_id[$item])->where('allowance_id', $allowanceincrease->allowance_id)->first();
                     $employeeallowance->value = $upcoming_amount;
                     $employeeallowance->save();
                     // dd($employeeallowance);
@@ -241,14 +241,10 @@ class AllowanceIncreaseDetailController extends Controller
         try {
             $allowanceincreasedetail = AllowanceIncreaseDetail::find($id);
             $allowanceincrease = AllowanceIncrease::where('id', $allowanceincreasedetail->allowance_increase_id)->first();
-            $emloyeeallowance = EmployeeAllowance::where('employee_id', $allowanceincreasedetail->employee_id)->first();
+            $emloyeeallowance = EmployeeAllowance::where('employee_id', $allowanceincreasedetail->employee_id)->where('allowance_id', $allowanceincrease->allowance_id)->first();
             // dd($allowanceincrease->type_value);
-
-            $coba1 = $emloyeeallowance->value;
-            $coba2 = $allowanceincreasedetail->current_salery;
-            $upcoming_amount = $coba1 - $coba2;
             
-            $emloyeeallowance->value = $upcoming_amount;
+            $emloyeeallowance->value = $allowanceincreasedetail->current_salery;
             $emloyeeallowance->save();
             $allowanceincreasedetail->delete();
 
