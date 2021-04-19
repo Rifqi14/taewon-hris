@@ -491,10 +491,11 @@
 		});
     var data = [];
     @if ($allowance->allowanceworkingtime)
-    @foreach ($allowance->allowanceworkingtime as $value)
-    data.push({id: '{{ $value->workingtime_id }}', text: '{{ $value->workingtime->description }}'});
-    @endforeach
+      @foreach ($allowance->allowanceworkingtime as $value)
+        data.push({id: '{{ $value->workingtime_id }}', text: '{{ $value->workingtime->description }}'});
+      @endforeach
     @endif
+    $('#working_time').select2('data', data).trigger('change');
     $(document).on("change", "#category", function () {
 			var value = $(this).val();
 			var val = $('#working_type').val();
