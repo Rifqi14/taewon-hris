@@ -274,7 +274,7 @@ class SPLController extends Controller
         try {
             $spl = Spl::find($id);
             $spl->delete();
-        } catch (\Illuminate\Database\QueryException $e) {
+        }catch (\Illuminate\Database\QueryException $e) {
             return response()->json([
                 'status'     => false,
                 'message'     => 'Data has been used to another page'
@@ -386,6 +386,8 @@ class SPLController extends Controller
                     'finish_overtime' => $spl->finish_overtime,
                     'status' => 1
                 ]);
+                $splimport->duration = floor((strtotime($spl->finish_overtime) - strtotime($spl->start_overtime)) / (60*60));
+                $splimport->save();
                 if (!$splimport) {
                     DB::rollback();
                     return response()->json([
