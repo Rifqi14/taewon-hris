@@ -158,8 +158,6 @@ class SPLController extends Controller
             'status' => $request->status,
         ]);
         $spl->duration = floor((strtotime($dateTimeFinish) - strtotime($dateTimeStart)) / (60*60));
-        // $jam = floor($spl->duration/(60*60));
-        // dd($spl);
         $spl->save();
         if (!$spl) {
             return response()->json([
@@ -193,7 +191,6 @@ class SPLController extends Controller
     public function durationupdate(Request $request)
     {
         if (isset($request->duration)) {
-            // dd($request->working_shift);
             $duration = Spl::find($request->spl_id);
             $duration->duration = $request->duration;
             $duration->save();
@@ -204,10 +201,6 @@ class SPLController extends Controller
                 'results'     => route('spl.index'),
             ], 200);
         }
-        // return response()->json([
-        //     'status'     => true,
-        //     'results'     => 'Berhasil Simpan Data',
-        // ], 200);
     }
     public function edit($id)
     {
@@ -376,26 +369,27 @@ class SPLController extends Controller
         $spls = json_decode($request->spls);
         DB::beginTransaction();
         foreach ($spls as $spl) {
-            // $check = Spl::where('nik', $spl->nik)->first();
-            // if (!$check) {
-                $splimport = Spl::create([
-                    'employee_id' => $spl->employee_id,
-                    'nik' => $spl->nik,
-                    'spl_date' => $spl->date,
-                    'start_overtime' => $spl->start_overtime,
-                    'finish_overtime' => $spl->finish_overtime,
-                    'status' => 1
-                ]);
-                $splimport->duration = floor((strtotime($spl->finish_overtime) - strtotime($spl->start_overtime)) / (60*60));
-                $splimport->save();
-                if (!$splimport) {
-                    DB::rollback();
-                    return response()->json([
-                        'status' => false,
-                        'message'   => $splimport
-                    ], 400);
-                }
-            // }
+            $check = Spl::where('spl_date', $spl->date)->first();
+            if($check){
+                $check->delete();
+            }
+            $splimport = Spl::create([
+                'employee_id' => $spl->employee_id,
+                'nik' => $spl->nik,
+                'spl_date' => $spl->date,
+                'start_overtime' => $spl->start_overtime,
+                'finish_overtime' => $spl->finish_overtime,
+                'status' => 1
+            ]);
+            $splimport->duration = floor((strtotime($spl->finish_overtime) - strtotime($spl->start_overtime)) / (60*60));
+            $splimport->save();
+            if (!$splimport) {
+                DB::rollback();
+                return response()->json([
+                    'status' => false,
+                    'message'   => $splimport
+                ], 400);
+            }
         }
         DB::commit();
         return response()->json([
