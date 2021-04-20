@@ -440,11 +440,7 @@
           },targets: [7]
           },
           { render: function ( data, type, row ) {
-            if (row.status == 0) {
               return `<input type="checkbox" class="checkbox" name="approve[]" id="check_${row.id}" data-id="${row.id}" value="${row.id}">`
-            } else {
-              return `<span class="badge badge-success"><i class="fa fa-check"></i></span>`
-            }
             },targets: [8]
           }
       ],

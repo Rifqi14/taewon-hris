@@ -23,6 +23,9 @@
         <h3 class="card-title">Import Preview</h3>
         <!-- tools card -->
         <div class="pull-right card-tools">
+          <a href="{{ asset('import/Employee.xlsx') }}" class="btn btn-{{ config('configs.app_theme') }} text-white btn-sm" data-toggle="tooltip" title="Download Template">
+              <i class="fa fa-download"></i>
+          </a>
           <a onclick="addImport()" class="btn btn-{{ config('configs.app_theme') }} text-white btn-sm"
             data-toggle="tooltip" title="Import data">
             <i class="fa fa-file-import"></i>

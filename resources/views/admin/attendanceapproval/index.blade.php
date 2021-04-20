@@ -133,7 +133,6 @@
                 <tr>
                   <th width="10">No</th>
                   <th width="50">Date</th>
-                  <th width="50">Scheme</th>
                   <th width="50">Department<br>Position</th>
                   <th width="50">Workgroup</th>
                   <th width="100">Employee</th>
@@ -522,29 +521,25 @@
       },
       columnDefs:[
           {
-              orderable: false,targets:[0,10,11]
+              orderable: false,targets:[0,9,10]
           },
-          { className: "text-center", targets: [0,1,7,8,9] },
+          { className: "text-center", targets: [0,1,6,7,8] },
           { render: function ( data, type, row ) {
             var date = new Date(row.attendance_date);
             return `${row.attendance_date} <br> <span class="text-bold ${row.day == 'Off' ? 'text-red' : ''}">${dayName(row.attendance_date)}</span>`;
           },targets: [1]
           },
           { render: function ( data, type, row ) {
-            return `<span class="text-blue">${row.scheme_name ? row.scheme_name : '-'}</span>`;
+            return `<span>${row.department_name} <br> ${row.title_name}</span>`;
           },targets: [2]
           },
           { render: function ( data, type, row ) {
-            return `<span>${row.department_name} <br> ${row.title_name}</span>`;
-          },targets: [3]
-          },
-          { render: function ( data, type, row ) {
             return `${row.name}<br>${row.nid}`;
-          },targets: [5]
+          },targets: [4]
           },
           { render: function ( data, type, row ) {
             return `<span class="text-blue">${row.description ? row.description : '-'}</span>`;
-          },targets: [6]
+          },targets: [5]
           },
           { render: function ( data, type, row ) {
             if (row.attendance_in) {
@@ -556,7 +551,7 @@
             } else {
               return '<span class="text-red text-bold">?</span>';
             }
-          },targets: [7]
+          },targets: [6]
           },
           { render: function ( data, type, row ) {
             if (row.attendance_out) {
@@ -568,11 +563,11 @@
             } else {
               return '<span class="text-red text-bold">?</span>';
             }
-          },targets: [8]
+          },targets: [7]
           },
           { render: function ( data, type, row ) {
               return `WT: ${row.adj_working_time} Hours<br>OT: ${row.adj_over_time} Hours`
-          },targets: [9]
+          },targets: [8]
           },
           { render: function ( data, type, row ) {
             if (row.status == 0) {
@@ -580,7 +575,7 @@
             } else {
               return '<span class="badge badge-success">Already Approval</span>'
             }
-          },targets: [10]
+          },targets: [9]
           },
           { render: function ( data, type, row ) {
             if (row.status == 0) {
@@ -588,7 +583,7 @@
             } else {
               return `<span class="badge badge-success"><i class="fa fa-check"></i></span>`
             }
-            },targets: [11]
+            },targets: [10]
           },
           { render: function ( data, type, row ) {
               return `<div class="dropdown">
@@ -598,13 +593,12 @@
                       <ul class="dropdown-menu dropdown-menu-right">
                           <li><a class="dropdown-item" href="{{url('admin/attendanceapproval')}}/${row.id}/detail"><i class="fa fa-search"></i> Detail</a></li>
                       </ul></div>`
-          },targets: [12]
+          },targets: [11]
           }
       ],
       columns: [
           { data: "no", className: "align-middle text-center" },
           { data: "attendance_date", className: "align-middle text-center" },
-          { data: "scheme_name", className: "scheme align-middle text-center" },
           { data: "department_name", className: "align-middle text-center" },
           { data: "workgroup_name", className: "align-middle text-center" },
           { data: "name", className: "align-middle text-left"},

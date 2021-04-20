@@ -570,5 +570,11 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/allowanceincreasedetail/read', 'Admin\AllowanceIncreaseDetailController@read')->name('allowanceincreasedetail.read');
         // Route::get('/allowanceincrease/reademployee', 'Admin\AllowanceIncreaseController@reademployee')->name('allowanceincrease.reademployee');
         Route::resource('/allowanceincreasedetail', 'Admin\AllowanceIncreaseDetailController');
+
+        // //Route Allowance Config
+        // Route::get('/allowanceconfig/read', 'Admin\AllowanceConfigController@read')->name('allowanceconfig.read');
+        // Route::get('/allowanceconfig/selectworkgroup', 'Admin\AllowanceConfigController@selectworkgroup')->name('allowanceconfig.selectworkgroup');
+        // Route::get('/allowanceconfig/selectallowance', 'Admin\AllowanceConfigController@selectallowance')->name('allowanceconfig.selectallowance');
+        // Route::resource('/allowanceconfig', 'Admin\AllowanceConfigController');
     });
 });
