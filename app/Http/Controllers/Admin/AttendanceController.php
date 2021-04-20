@@ -409,8 +409,8 @@ class AttendanceController extends Controller
     {
         $query = DB::table('break_times');
         $query->select('break_times.*');
-        $query->leftJoin('break_time_lines', 'break_time_lines.breaktime_id', '=', 'break_times.id');
-        $query->where('break_time_lines.workgroup_id', '=', $workgroup);
+        $query->leftJoin('breaktime_departments', 'breaktime_departments.breaktime_id', '=', 'break_times.id');
+        $query->where('breaktime_departments.department_id', '=', $workgroup);
 
         return $query->get();
     }
@@ -1124,7 +1124,8 @@ class AttendanceController extends Controller
                             'message'     => 'Working Shift for this day ' . $adjustment->day . ' not found. Please check master shift.'
                         ], 400);
                     }
-                    $breaktimes = $this->get_breaktime($employee->workgroup_id);
+                    $breaktimes = $this->get_breaktime($employee->department_id);
+                    // dd($breaktimes);
                     if (!$breaktimes) {
                         return response()->json([
                             'status'     => false,
@@ -1173,7 +1174,7 @@ class AttendanceController extends Controller
                     $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime); //menghitung total istirahat jam kerja
                     $getbreakovertime = getBreaktimeOvertime($breaktimes, $attendance_hour, $getworkingtime); //menghitung istirahat jam lembur
 
-                    // dd($getbreakworkingtime, $breaktimes, $attendance_hour, $getworkingtime);
+                    // dd($getbreakovertime);
 
                     $workhour = $getworkingtime->workhour;
                     $min_workhour = $getworkingtime->min_workhour;

@@ -141,8 +141,8 @@ if (!function_exists('getBreaktimeOvertime')) {
     $time_finish = $time_max_out_shift;
     $between = array();
     $breaktime = 0;
-    $cutOffCross = changeDateFormat('H:i:s', '15:00:00');
-    $cutOffDay  = changeDateFormat('H:i:s', '09:00:00');
+    // $cutOffCross = changeDateFormat('H:i:s', '15:00:00');
+    // $cutOffDay  = changeDateFormat('H:i:s', '09:00:00');
     $nextDay = Carbon::parse($datetime_in)->addDays(1);
     $finishNow = changeDateFormat('Y-m-d H:i:s', Carbon::parse($datetime_in)->toDateString() . ' ' . $time_max_out_shift);
     $finishTomorrow = changeDateFormat('Y-m-d H:i:s', $nextDay->toDateString() . ' ' . $time_max_out_shift);
@@ -166,6 +166,8 @@ if (!function_exists('getBreaktimeOvertime')) {
       $dateIn = $time_finish_shift > $break->start_time ? $nextDay->toDateString() : $datetime_in;
       $start_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->start_time);
       $finish_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->finish_time);
+
+     
       // if ($time_max_out_shift < $time_start_shift) {
       //   $day_start_break = 
       // } else {
@@ -185,13 +187,14 @@ if (!function_exists('getBreaktimeOvertime')) {
       // }
       $diff = Carbon::parse($finishShift)->diffInHours(Carbon::parse($datetime_out));
       $diffBreak = Carbon::parse($datetime_out)->diffInMinutes(Carbon::parse($finish_break));
+      // echo 'Date in :'.$dateIn . '<br/>' . 'start break :' . $start_break . '<br/>' . 'finish break :' . $finish_break . '<br/>' . 'diff :' . $diff . '<br/>' . 'diff break :' . $diffBreak. '<br/>' . 'finish shift :' . $finishShift. '<br/>' . 'Date time out:' . $datetime_out . '<br/>';
       if ((($finishShift <= $start_break) && ($finish_break < $datetime_out)) && $diff >= 2 && $diffBreak > 30) {
         $between[] = $break;
       } else {
         continue;
       }
     }
-
+    // dd($between);
     foreach ($between as $value) {
       $breaktime += $value->breaktime;
     }

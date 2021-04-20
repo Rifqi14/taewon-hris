@@ -658,6 +658,7 @@
 							<div class="col-3 col-sm-2">
 								<div class="nav flex-column nav-tabs h-100" id="vert-tabs-tab" role="tablist" aria-orientation="vertical">
 									<a class="nav-link active" id="vert-tabs-home-tab" data-toggle="pill" href="#vert-tabs-home" role="tab" aria-controls="vert-tabs-home" aria-selected="true">Basic Salary</a>
+									<a class="nav-link" id="vert-tabs-gross-tab" data-toggle="pill" href="#vert-tabs-gross" role="tab" aria-controls="vert-tabs-gross" aria-selected="true">Gross Salary</a>
 									<a class="nav-link" id="vert-tabs-profile-tab" data-toggle="pill" href="#vert-tabs-profile" role="tab" aria-controls="vert-tabs-profile" aria-selected="false">Allowance</a>
 									@if (strpos($employee->department->path,'Driver') !== false)
 									<a class="nav-link" id="driver-allowance-tab" data-toggle="pill" href="#tabs-driver-allowance" role="tab" aria-controls="vert-tabs-messages" aria-selected="false">Driver Allowance</a>
@@ -688,6 +689,57 @@
 												</tr>
 											</thead>
 										</table>
+									</div>
+									<div class="tab-pane fade" id="vert-tabs-gross" role="tabpanel" aria-labelledby="vert-tabs-gross-tab">
+										<div class="card-header">
+											<p class="card-title">Gross Salary</p>
+										</div>
+										<div class="card-body">
+											<div class="form-group row">
+												<label for="period" class="col-sm-2 col-md-1 form-label">Period</label>
+												<div class="col-sm-5 col-md-2">
+													<select class="form-control select2" name="month-gross" id="month-gross">
+														<option value="01" @if (date('m', time())=="01" ) selected @endif>January</option>
+														<option value="02" @if (date('m', time())=="02" ) selected @endif>February</option>
+														<option value="03" @if (date('m', time())=="03" ) selected @endif>Maret</option>
+														<option value="04" @if (date('m', time())=="04" ) selected @endif>April</option>
+														<option value="05" @if (date('m', time())=="05" ) selected @endif>Mei</option>
+														<option value="06" @if (date('m', time())=="06" ) selected @endif>Juni</option>
+														<option value="07" @if (date('m', time())=="07" ) selected @endif>July</option>
+														<option value="08" @if (date('m', time())=="08" ) selected @endif>Agustus</option>
+														<option value="09" @if (date('m', time())=="09" ) selected @endif>September</option>
+														<option value="10" @if (date('m', time())=="10" ) selected @endif>Oktober</option>
+														<option value="11" @if (date('m', time())=="11" ) selected @endif>November</option>
+														<option value="12" @if (date('m', time())=="12" ) selected @endif>Desember</option>
+													</select>
+												</div>
+												<div class="col-sm-5 col-md-2">
+													@php
+													$thn_skr = date('Y');
+													@endphp
+													<select class="form-control select2" name="year-gross" id="year-gross">
+														@for ($i = $thn_skr; $i >= 1991; $i--)
+														<option value="{{ $i }}">{{ $i }}</option>
+														@endfor
+													</select>
+												</div>
+											</div>
+												<table class="table table-striped table-bordered" id="gross-table" style="width: 100%">
+													<thead>
+														<tr>
+														<th width="10">No</th>
+														<th width="600">Description</th>
+														<th width="200">Total</th>
+														</tr>
+													</thead>
+													<tfoot>
+														<tr>
+														<th colspan="2" class="text-right">Total</th>
+														<th id="gross" data-gross="1400"></th>
+														</tr>
+													</tfoot>
+												</table>
+										</div>
 									</div>
 									<div class="tab-pane fade" id="vert-tabs-profile" role="tabpanel" aria-labelledby="vert-tabs-profile-tab">
 										<div class="card-header">
@@ -1998,6 +2050,12 @@ $(document).on('change', '#month-driver', function() {
 $(document).on('change', '#year-driver', function() {
 	dataTableDriver.draw();
 });
+$(document).on('change', '#month-gross', function() {
+	dataTableGross.draw();
+});
+$(document).on('change', '#year-gross', function() {
+	dataTableGross.draw();
+});
 
 $('#form-search').submit(function(e){
 	e.preventDefault();
@@ -2051,6 +2109,7 @@ function dayName(date) {
 }
 // End of Custom Function
 // View Data Attendance
+
 dataTable = $('.datatable').DataTable({
 	stateSave:true,
 	processing: true,
@@ -5337,7 +5396,57 @@ $(document).ready(function(){
 		});
 	});
 	// End Salary
+  dataTableGross = $('#gross-table').DataTable({
+    stateSave:true,
+    processing:true,
+    serverSide:true,
+    filter:false,
+    info:false,
+    lengthChange:false,
+    paging: false,
+    responsive:true,
+    ordering: false,
+    ajax: {
+      url: "{{route('salaryreportdetail.employeegross')}}",
+      type: "GET",
+      data:function(data){
+       data.employee_id = {{$employee->id}};
+	   data.month = $('select[name=month-gross]').val();
+	   data.year = $('select[name=year-gross]').val();
+      }
+    },
+    columnDefs:[
+      { orderable: false,targets:[0,1,2] },
+      { className: "text-right", targets: [2] },
+      { render: function(data, type, row) {
+        var total = $.fn.dataTable.render.number( '.', ',', 0, ' Rp. ' ).display(data);
+        if (row.description == 'Potongan absen') {
+          return `<span class="text-danger">( ${total} )</span>`;
+        }
+        return `${total}`;
+      }, targets:[2]}
+    ],
+    columns: [
+      { data: "no" },
+      { data: "description" },
+      { data: "total"}
+    ],
+    footerCallback: function(row, data, start, end, display) {
+      var api = this.api(), data;
 
+      var intVal = function ( i ) {
+          return typeof i === 'string' ? i.replace(/[\$,]/g, '')*1 : typeof i === 'number' ? i : 0;
+      };
+
+      total = api.column( 2 ).data().reduce( function (a, b) { return intVal(a) + intVal(b);}, 0 );
+
+      pageTotal = api.column( 2, { page: 'current'} ).data().reduce( function (a, b) {return intVal(a) + intVal(b);}, 0 );
+      var numFormat = $.fn.dataTable.render.number('.', ',', 0, 'Rp. ' ).display;
+
+      $( api.column( 2 ).footer() ).html(numFormat(total));
+      $('#gross').attr('data-gross', total);
+    }
+});
 	// Allowance
 	$("#allowance_id").select2({
 		ajax: {

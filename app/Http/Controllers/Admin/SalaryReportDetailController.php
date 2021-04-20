@@ -50,6 +50,51 @@ class SalaryReportDetailController extends Controller
             'data'              => $data
         ], 200);
     }
+    public function employeegross(Request $request)
+    {
+        $start = 0;
+        $length = $request->length;
+        $employee = $request->employee_id;
+        $month = $request->month;
+        $year = $request->year;
+
+        // dd($month, $year);
+        // Count Data
+        $report_id = SalaryReport::where('employee_id', $employee)->first();
+        // dd($report_id);
+        $query = DB::table('salary_report_details');
+        $query->select('salary_report_details.*', 'salary_reports.period');
+        $query->leftJoin('salary_reports', 'salary_reports.id', '=', 'salary_report_details.salary_report_id');
+        $query->where('salary_reports.employee_id', '=', $employee);
+        $query->where('salary_report_details.salary_report_id', '=', $report_id->id);
+        $query->where('salary_report_details.type', '=', 1);
+        $query->whereMonth('salary_reports.period', '=', $month);
+        $query->whereYear('salary_reports.period', '=', $year);
+        $recordsTotal = $query->count();
+
+        // Select Pagination
+        $query = DB::table('salary_report_details');
+        $query->select('salary_report_details.*', 'salary_reports.period');
+        $query->leftJoin('salary_reports', 'salary_reports.id', '=', 'salary_report_details.salary_report_id');
+        $query->where('salary_reports.employee_id', '=', $employee);
+        $query->where('salary_report_details.salary_report_id', '=', $report_id->id);
+        $query->where('salary_report_details.type', '=', 1);
+        $query->whereMonth('salary_reports.period', '=', $month);
+        $query->whereYear('salary_reports.period', '=', $year);
+        $query->orderBy('created_at', 'asc');
+        $details = $query->get();
+
+        $data = [];
+        foreach ($details as $detail) {
+            $detail->no     = ++$start;
+            $detail->total  = $detail->total;
+            $data[]         = $detail;
+        }
+        return response()->json([
+            'draw'              => $request->draw,
+            'data'              => $data
+        ], 200);
+    }
 
     public function read_deduction(Request $request)
     {

@@ -399,6 +399,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::resource('/salaryreport', 'Admin\SalaryReportController');
         //Route Salary report detail
         Route::get('/salaryreportdetail/read_gross', 'Admin\SalaryReportDetailController@read_gross')->name('salaryreportdetail.read_gross');
+        Route::get('/salaryreportdetail/employeegross', 'Admin\SalaryReportDetailController@employeegross')->name('salaryreportdetail.employeegross');
         Route::get('/salaryreportdetail/read_deduction', 'Admin\SalaryReportDetailController@read_deduction')->name('salaryreportdetail.read_deduction');
         Route::resource('/salaryreportdetail', 'Admin\SalaryReportDetailController');
         // Route Overtime
