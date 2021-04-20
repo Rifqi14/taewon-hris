@@ -70,7 +70,7 @@
         <div class="modal-body">
           <form id="form-duration" action="{{ route('spl.durationupdate') }}" class="form-horizontal no-gutters" method="post" autocomplete="off">
             {{ csrf_field() }}
-            <input type="text" name="spl_id" id="spl_id">
+            <input type="hidden" name="spl_id" id="spl_id">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
@@ -164,79 +164,79 @@
 			$('#form-duration input[name=duration]').attr('value', data.duration);
 		}
 		});
-		$("#form-duration").validate({
-			errorElement: 'div',
-			errorClass: 'invalid-feedback',
-			focusInvalid: false,
-			highlight: function (e) {
-				$(e).closest('.form-group').removeClass('has-success').addClass('was-validated has-error');
-			},
+		// $("#form-duration").validate({
+		// 	errorElement: 'div',
+		// 	errorClass: 'invalid-feedback',
+		// 	focusInvalid: false,
+		// 	highlight: function (e) {
+		// 		$(e).closest('.form-group').removeClass('has-success').addClass('was-validated has-error');
+		// 	},
 
-			success: function (e) {
-				$(e).closest('.form-group').removeClass('has-error').addClass('has-success');
-				$(e).remove();
-			},
-			errorPlacement: function (error, element) {
-				if(element.is(':file')) {
-				error.insertAfter(element.parent().parent().parent());
-				}else
-				if(element.parent('.input-group').length) {
-				error.insertAfter(element.parent());
-				}
-				else
-				if (element.attr('type') == 'checkbox') {
-				error.insertAfter(element.parent());
-				}
-				else{
-				error.insertAfter(element);
-				}
-			},
-			submitHandler: function() {
-				$.ajax({
-				url:$('#form-duration').attr('action'),
-				method:'post',
-				data: new FormData($('#form-duration')[0]),
-				processData: false,
-				contentType: false,
-				dataType: 'json',
-				beforeSend:function(){
-					$('.overlay').removeClass('d-none');
-				}
-				}).done(function(response){
-					$('.overlay').addClass('d-none');
-					if(response.status){
-						dataTable.draw();
-						$('#edit-duration').modal('hide');
-						$('#form-duration input[name=spl_id]').attr('value', '');
-						$('#form-duration input[name=duration]').attr('value', '0');;
-						$.gritter.add({
-							title: 'Success!',
-							text: response.message,
-							class_name: 'gritter-success',
-							time: 1000,
-						});
-					}
-					else{
-						$.gritter.add({
-							title: 'Warning!',
-							text: response.message,
-							class_name: 'gritter-warning',
-							time: 1000,
-						});
-					}
-					return;
-				}).fail(function(response){
-					$('.overlay').addClass('d-none');
-					var response = response.responseJSON;
-					$.gritter.add({
-						title: 'Error!',
-						text: response.message,
-						class_name: 'gritter-error',
-						time: 1000,
-					});
-				});
-			}
-		});
+		// 	success: function (e) {
+		// 		$(e).closest('.form-group').removeClass('has-error').addClass('has-success');
+		// 		$(e).remove();
+		// 	},
+		// 	errorPlacement: function (error, element) {
+		// 		if(element.is(':file')) {
+		// 		error.insertAfter(element.parent().parent().parent());
+		// 		}else
+		// 		if(element.parent('.input-group').length) {
+		// 		error.insertAfter(element.parent());
+		// 		}
+		// 		else
+		// 		if (element.attr('type') == 'checkbox') {
+		// 		error.insertAfter(element.parent());
+		// 		}
+		// 		else{
+		// 		error.insertAfter(element);
+		// 		}
+		// 	},
+		// 	submitHandler: function() {
+		// 		$.ajax({
+		// 		url:$('#form-duration').attr('action'),
+		// 		method:'post',
+		// 		data: new FormData($('#form-duration')[0]),
+		// 		processData: false,
+		// 		contentType: false,
+		// 		dataType: 'json',
+		// 		beforeSend:function(){
+		// 			$('.overlay').removeClass('d-none');
+		// 		}
+		// 		}).done(function(response){
+		// 			$('.overlay').addClass('d-none');
+		// 			if(response.status){
+		// 				dataTable.draw();
+		// 				$('#edit-duration').modal('hide');
+		// 				$('#form-duration input[name=spl_id]').attr('value', '');
+		// 				$('#form-duration input[name=duration]').attr('value', '0');;
+		// 				$.gritter.add({
+		// 					title: 'Success!',
+		// 					text: response.message,
+		// 					class_name: 'gritter-success',
+		// 					time: 1000,
+		// 				});
+		// 			}
+		// 			else{
+		// 				$.gritter.add({
+		// 					title: 'Warning!',
+		// 					text: response.message,
+		// 					class_name: 'gritter-warning',
+		// 					time: 1000,
+		// 				});
+		// 			}
+		// 			return;
+		// 		}).fail(function(response){
+		// 			$('.overlay').addClass('d-none');
+		// 			var response = response.responseJSON;
+		// 			$.gritter.add({
+		// 				title: 'Error!',
+		// 				text: response.message,
+		// 				class_name: 'gritter-error',
+		// 				time: 1000,
+		// 			});
+		// 		});
+		// 	}
+		// });
 		$(document).on('click','.delete',function(){
 			var id = $(this).data('id');
 			bootbox.confirm({
