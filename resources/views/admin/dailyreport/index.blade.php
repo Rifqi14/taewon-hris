@@ -135,11 +135,7 @@
               <div class="col-md-2">
                 <div class="form-group">
                   <label class="control-label" for="overtime">Overtime</label>
-                  <select name="overtime" id="overtime" class="form-control" style="width: 100%" aria-hidden="true" data-placeholder="Select Overtime">
-                    <option value=""></option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
+                  <input type="text" name="overtime" id="overtime" class="form-control" placeholder="Overtime">
                 </div>
               </div>
               <div class="col-md-2">
@@ -158,6 +154,7 @@
                 <tr>
                   <th width="10">No</th>
                   <th width="50">Date</th>
+                  <th width="50">Scheme</th>
                   <th width="50">Department<br>Position</th>
                   <th width="50">Workgroup</th>
                   <th width="100">Employee</th>
@@ -497,9 +494,9 @@
         });
     });
   }
-  $('#overtime').select2({
-    allowClear:true,
-  });
+  // $('#overtime').select2({
+  //   allowClear:true,
+  // });
   $('#status').select2({
     allowClear:true,
   });
@@ -524,7 +521,7 @@
             var to = $('input[name=to]').val();
             var department = $('input[name=department]').val();
             var workgroup = $('input[name=workgroup]').val();
-            var overtime = $('select[name=overtime]').val();
+            var overtime = $('input[name=overtime]').val();
             var status = $('select[name=status]').val();
             data.employee_id = employee_id;
             data.nid = nid;
@@ -538,25 +535,29 @@
       },
       columnDefs:[
           {
-              orderable: false,targets:[0,9,11]
+              orderable: false,targets:[0,10,11]
           },
-          { className: "text-center", targets: [0,1,6,7,8] },
+          { className: "text-center", targets: [0,1,7,8,9] },
           { render: function ( data, type, row ) {
             var date = new Date(row.attendance_date);
             return `${row.attendance_date} <br> <span class="text-bold ${row.day == 'Off' ? 'text-red' : ''}">${dayName(row.attendance_date)}</span>`;
           },targets: [1]
           },
           { render: function ( data, type, row ) {
-            return `<span>${row.department_name} <br> ${row.title_name}</span>`;
+            return `<span class="text-blue">${row.scheme_name ? row.scheme_name : '-'}</span>`;
           },targets: [2]
           },
           { render: function ( data, type, row ) {
+            return `<span>${row.department_name} <br> ${row.title_name}</span>`;
+          },targets: [3]
+          },
+          { render: function ( data, type, row ) {
             return `${row.name}<br>${row.nid}`;
-          },targets: [4]
+          },targets: [5]
           },
           { render: function ( data, type, row ) {
             return `<span class="text-blue">${row.description ? row.description : '-'}</span>`;
-          },targets: [5]
+          },targets: [6]
           },
           { render: function ( data, type, row ) {
             if (row.attendance_in) {
@@ -568,7 +569,7 @@
             } else {
               return '<span class="text-red text-bold">?</span>';
             }
-          },targets: [6]
+          },targets: [7]
           },
           { render: function ( data, type, row ) {
             if (row.attendance_out) {
@@ -580,11 +581,11 @@
             } else {
               return '<span class="text-red text-bold">?</span>';
             }
-          },targets: [7]
+          },targets: [8]
           },
           { render: function ( data, type, row ) {
               return `WT: ${row.adj_working_time} Hours<br>OT: ${row.adj_over_time} Hours`
-          },targets: [8]
+          },targets: [9]
           },
           { render: function ( data, type, row ) {
             if (row.status == -1) {
@@ -592,11 +593,11 @@
             } else if (row.status == 1) {
               return '<span class="badge badge-success">Approved</span>'
             }
-          },targets: [9]
+          },targets: [10]
           },
           { render: function ( data, type, row ) {
               return `<label class="customcheckbox"><input data-id="${data}" value="${row.id}" type="checkbox" name="approve[]"><span class="checkmark"></span></label>`
-            },targets: [10]
+            },targets: [11]
           },
           { render: function ( data, type, row ) {
               return `<div class="dropdown">
@@ -606,12 +607,13 @@
                       <ul class="dropdown-menu dropdown-menu-right">
                           <li><a class="dropdown-item" href="{{url('admin/attendanceapproval')}}/${row.id}/detail"><i class="fa fa-search"></i> Detail</a></li>
                       </ul></div>`
-          },targets: [11]
+          },targets: [12]
           }
       ],
       columns: [
         { data: "no", className: "align-middle text-center" },
         { data: "attendance_date", className: "align-middle text-center" },
+        { data: "scheme_name", className: "scheme align-middle text-center" },
         { data: "department_name", className: "align-middle text-center" },
         { data: "workgroup_name", className: "align-middle text-center" },
         { data: "name", className: "align-middle text-left"},
@@ -859,7 +861,7 @@
     $(document).on('change', '#workgroup', function() {
       dataTable.draw();
     });
-    $(document).on('change', '#overtime', function() {
+    $(document).on('keyup', '#overtime', function() {
       dataTable.draw();
     });
     $(document).on('change', '#status', function() {

@@ -167,6 +167,9 @@ class AttendanceApprovalController extends Controller
         if (!$from && $to) {
             $query->where('attendances.attendance_date', '<=', $to);
         }
+        if ($overtime) {
+            $query->where('attendances.adj_over_time', $overtime);
+        }
         if ($employee_id) {
             $query->whereRaw("upper(employees.name) like '%$employee_id%'");
         }
@@ -186,11 +189,7 @@ class AttendanceApprovalController extends Controller
         if ($workgroup) {
             $query->whereIn('employees.workgroup_id', $workgroup);
         }
-        if ($overtime == 'yes') {
-            $query->whereIn('attendances.adj_over_time', '>', 0);
-        } elseif ($overtime == 'no') {
-            $query->whereIn('attendances.adj_over_time', '=', 0);
-        }
+        
         $recordsTotal = $query->count();
 
         //Select Pagination
@@ -216,6 +215,9 @@ class AttendanceApprovalController extends Controller
         if (!$from && $to) {
             $query->where('attendances.attendance_date', '<=', $to);
         }
+        if ($overtime) {
+            $query->where('attendances.adj_over_time', $overtime);
+        }
         if ($employee_id) {
             $query->whereRaw("upper(employees.name) like '%$employee_id%'");
         }
@@ -235,11 +237,7 @@ class AttendanceApprovalController extends Controller
         if ($workgroup) {
             $query->whereIn('employees.workgroup_id', $workgroup);
         }
-        if ($overtime == 'yes') {
-            $query->whereIn('attendances.adj_over_time', '>', 0);
-        } elseif ($overtime == 'no') {
-            $query->whereIn('attendances.adj_over_time', '=', 0);
-        }
+        
         // $query->where('employees.status', 1);
         $query->offset($start);
         $query->limit($length);

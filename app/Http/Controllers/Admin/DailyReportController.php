@@ -85,6 +85,9 @@ class DailyReportController extends Controller
         if ($status) {
             $query->where('attendances.status', $status);
         }
+        if ($overtime) {
+            $query->where('attendances.adj_over_time', $overtime);
+        }
         if ($from && $to) {
             $query->whereBetween('attendances.attendance_date', [$from, $to]);
         }
@@ -107,11 +110,7 @@ class DailyReportController extends Controller
         if ($workgroup) {
             $query->whereIn('employees.workgroup_id', $workgroup);
         }
-        if ($overtime == 'yes') {
-            $query->where('attendances.adj_over_time', '>', 0);
-        }elseif ($overtime == 'no') {
-                $query->where('attendances.adj_over_time', '=', 0);
-        }
+        
         $recordsTotal = $query->count();
 
         //Select Pagination
@@ -135,6 +134,9 @@ class DailyReportController extends Controller
         if ($nid) {
             $query->whereRaw("employees.nid like '%$nid%'");
         }
+        if ($overtime) {
+            $query->where('attendances.adj_over_time', $overtime);
+        }
         if ($department) {
             $string = '';
             foreach ($department as $dept) {
@@ -148,11 +150,7 @@ class DailyReportController extends Controller
         if ($workgroup) {
             $query->whereIn('employees.workgroup_id', $workgroup);
         }
-        if ($overtime == 'yes') {
-            $query->where('attendances.adj_over_time', '>', 0);
-        }elseif ($overtime == 'no') {
-                $query->where('attendances.adj_over_time', '=', 0);
-        }
+        
         $query->offset($start);
         $query->limit($length);
         $query->orderBy($sort, $dir);
