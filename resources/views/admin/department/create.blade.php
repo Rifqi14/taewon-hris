@@ -43,8 +43,25 @@
                   <input class="form-control" id="parent_id" data-placeholder="Pilih Parent" name="parent_id">
                 </div>
               </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Order Number <b class="text-danger"></b></label>
+                  <input type="number" class="form-control" name="order_number" placeholder="Order Number">
+                </div>
+              </div>
             </div>
-            <div style="height: 23px;"></div>
+            <div class="row">
+              <div class="col-sm-6">
+                <!-- text input -->
+                <div class="form-group">
+                  <label>Dashboard <b class="text-danger">*</b></label>
+                  <select name="dashboard" id="dashboard" class="form-control select2">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                  </select>
+                </div>
+              </div>
+            </div>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-refresh fa-spin"></i>
@@ -77,13 +94,14 @@
               <div class="col-sm-12">
                 <div class="form-group">
                   <label>Status <b class="text-danger">*</b></label>
-                  <select name="status" id="status" class="form-control select2" data-placeholder="Select Status">
+                  <select name="status" id="status" class="form-control" data-placeholder="Select Status">
                     <option value="1">Active</option>
                     <option value="0">Non Active</option>
                   </select>
                 </div>
               </div>
             </div>
+            <div style="height: 60px;"></div>
           </form>
         </div>
         <div class="overlay d-none">
@@ -99,6 +117,7 @@
   <script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
   <script>
     $(document).ready(function(){
+          $('.select2').select2();
           $("#status").select2();
           $( "#parent_id" ).select2({
             ajax: {

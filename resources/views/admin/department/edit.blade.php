@@ -48,8 +48,25 @@
                     value="">
                 </div>
               </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Order Number <b class="text-danger">*</b></label>
+                  <input type="number" class="form-control" name="order_number" value="{{ $department->order_number }}"
+                    placeholder="Order Number">
+                </div>
+              </div>
             </div>
-            <div style="height: 23px;"></div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Dashboard <b class="text-danger">*</b></label>
+                  <select class="form-control select2" id="dashboard" required name="dashboard">
+                    <option value="no" @if($department->dashboard == 'no') selected @endif>No</option>
+                    <option value="yes" @if($department->dashboard == 'yes') selected @endif>Yes</option>
+                  </select>
+                </div>
+              </div>
+            </div>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-refresh fa-spin"></i>
@@ -84,13 +101,14 @@
               <div class="col-sm-12">
                 <div class="form-group">
                   <label>Status <b class="text-danger">*</b></label>
-                  <select class="form-control select2" id="status" required name="status">
+                  <select class="form-control" id="status" required name="status">
                     <option value="1" @if($department->status == '1') selected @endif>Active</option>
                     <option value="0" @if($department->status == '0') selected @endif>Tidak Active</option>
                   </select>
                 </div>
               </div>
             </div>
+            <div style="height: 60px;"></div>
           </form>
         </div>
         <div class="overlay d-none">
@@ -107,6 +125,7 @@
 <script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
 <script>
   $(document).ready(function(){
+      $('.select2').select2();
       $('#status').select2();
       $( "#parent_id" ).select2({
         ajax: {

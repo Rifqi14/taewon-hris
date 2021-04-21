@@ -49,6 +49,7 @@ class DepartmentController extends Controller
         $query->whereRaw("upper(departments.path) like '%$name%'");
         $query->offset($start);
         $query->limit($length);
+        $query->orderBy('order_number', $dir);
         $query->orderBy('path', $dir);
         $departments = $query->get();
 
@@ -153,6 +154,8 @@ class DepartmentController extends Controller
             'parent_id' => $request->parent_id ? $request->parent_id : 0,
             'notes' => $request->notes,
             'status' => $request->status,
+            'order_number' => $request->order_number,
+            'dashboard' => $request->dashboard,
         ]);
         if ($request->code) {
             $department->code = $request->code;
@@ -225,6 +228,8 @@ class DepartmentController extends Controller
 
         $department = Department::find($id);
         $department->name = $request->name;
+        $department->order_number = $request->order_number;
+        $department->dashboard = $request->dashboard;
         $department->parent_id = $request->parent_id ? $request->parent_id : 0;
         $department->save();
         $department->path = implode(' -> ', $this->createPath($id, []));
