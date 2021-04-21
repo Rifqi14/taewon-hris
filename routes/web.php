@@ -577,5 +577,10 @@ Route::group(['prefix' => 'admin'], function () {
         // Route::get('/allowanceconfig/selectworkgroup', 'Admin\AllowanceConfigController@selectworkgroup')->name('allowanceconfig.selectworkgroup');
         // Route::get('/allowanceconfig/selectallowance', 'Admin\AllowanceConfigController@selectallowance')->name('allowanceconfig.selectallowance');
         // Route::resource('/allowanceconfig', 'Admin\AllowanceConfigController');
+
+        // Route Department Shift
+        Route::get('/overtimeschemedepartment/read', 'Admin\OvertimeschemeDepartmentController@read')->name('overtimeschemedepartment.read');
+        Route::post('/overtimeschemedepartment/updateall', 'Admin\OvertimeschemeDepartmentController@updateAll')->name('overtimeschemedepartment.updateall');
+        Route::resource('/overtimeschemedepartment', 'Admin\OvertimeschemeDepartmentController');
     });
 });

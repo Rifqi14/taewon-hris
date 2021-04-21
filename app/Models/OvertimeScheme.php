@@ -11,4 +11,8 @@ class OvertimeScheme extends Model
     {
         return $this->hasMany('App\Models\OvertimeSchemeList', 'overtime_scheme_id', 'id');
     }
+    public function overtimeschemedepartment()
+    {
+        return $this->hasMany(OvertimeschemeDepartment::class, '');
+    }
 }

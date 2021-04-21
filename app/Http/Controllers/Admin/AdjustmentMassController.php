@@ -52,6 +52,8 @@ class AdjustmentMassController extends Controller
         $department = $request->department;
         $workgroup = $request->workgroup;
         $overtime = $request->overtime;
+        $workingtime = $request->workingtime;
+        $checkincheckout = $request->checkincheckout;
         $month = $request->month;
         $year = $request->year;
         $from = $request->from ? Carbon::parse($request->from)->startOfDay()->toDateTimeString() : null;
@@ -98,10 +100,23 @@ class AdjustmentMassController extends Controller
         if ($workgroup) {
             $query->whereIn('employees.workgroup_id', $workgroup);
         }
-        if ($overtime == 'yes') {
-            $query->where('attendances.adj_over_time', '>', 0);
-        } elseif ($overtime == 'no') {
-            $query->where('attendances.adj_over_time', '=', 0);
+        if ($overtime) {
+            $query->where('attendances.adj_over_time', $overtime);
+        }
+        if ($checkincheckout == 'checkin') {
+            $query->where("attendances.attendance_in", '!=', null)->where("attendances.attendance_out", null);
+        }
+        if ($checkincheckout == 'checkout') {
+            $query->where("attendances.attendance_out", '!=', null)->where("attendances.attendance_in", null);
+        }
+        if ($checkincheckout == 'checkin_checkout') {
+            $query->where("attendances.attendance_in", '!=', null)->where("attendances.attendance_out", '!=', null);
+        }
+        if ($checkincheckout == '!checkin_checkout') {
+            $query->where("attendances.attendance_in", null)->where("attendances.attendance_out", null);
+        }
+        if ($workingtime) {
+            $query->whereIn('attendances.workingtime_id', $workingtime);
         }
         $recordsTotal = $query->count();
 
@@ -146,10 +161,23 @@ class AdjustmentMassController extends Controller
         if ($workgroup) {
             $query->whereIn('employees.workgroup_id', $workgroup);
         }
-        if ($overtime == 'yes') {
-            $query->where('attendances.adj_over_time', '>', 0);
-        } elseif ($overtime == 'no') {
-            $query->where('attendances.adj_over_time', '=', 0);
+        if ($overtime) {
+            $query->where('attendances.adj_over_time', $overtime);
+        }
+        if ($checkincheckout == 'checkin') {
+            $query->where("attendances.attendance_in", '!=', null)->where("attendances.attendance_out", null);
+        }
+        if ($checkincheckout == 'checkout') {
+            $query->where("attendances.attendance_out", '!=', null)->where("attendances.attendance_in", null);
+        }
+        if ($checkincheckout == 'checkin_checkout') {
+            $query->where("attendances.attendance_in", '!=', null)->where("attendances.attendance_out", '!=', null);
+        }
+        if ($checkincheckout == '!checkin_checkout') {
+            $query->where("attendances.attendance_in", null)->where("attendances.attendance_out", null);
+        }
+        if ($workingtime) {
+            $query->whereIn('attendances.workingtime_id', $workingtime);
         }
         // $query->offset($start);
         // $query->limit($length);
@@ -185,7 +213,8 @@ class AdjustmentMassController extends Controller
             $employees = Employee::all();
             $departments = Department::all();
             $workgroups = WorkGroup::all();
-            return view('admin.adjustmentmass.index', compact('employees', 'departments', 'workgroups'));
+            $workingtimes = WorkingTime::all();
+            return view('admin.adjustmentmass.index', compact('employees', 'departments', 'workgroups', 'workingtimes'));
         }
     }
 

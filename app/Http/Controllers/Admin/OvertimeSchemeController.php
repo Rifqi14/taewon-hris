@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\OvertimeSchemeList;
 use App\Models\OvertimeScheme;
+use App\Models\OvertimeschemeDepartment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
@@ -124,6 +125,19 @@ class OvertimeSchemeController extends Controller
             'working_time'  => $request->working_time
         ]);
         if ($overtime) {
+            foreach ($request->department_id as $key => $department) {
+                $Department = OvertimeschemeDepartment::create([
+                    'overtime_scheme_id'    => $overtime->id,
+                    'department_id'         => $department
+                ]);
+                if (!$Department) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status'    => false,
+                        'message'   => $Department
+                    ], 400);
+                }
+            }
             foreach ($request->workday as $key => $value) {
                 foreach ($request->overtime_rules as $key1 => $value1) {
                     $list = OvertimeSchemeList::create([
