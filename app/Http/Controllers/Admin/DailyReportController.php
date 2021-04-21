@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\EmployeeDetailAllowance;
 use App\Models\Overtime;
+use App\Models\Workingtime;
 use App\Models\Employee;
 use App\Models\WorkingtimeDetail;
 use Carbon\Carbon;
@@ -68,6 +69,8 @@ class DailyReportController extends Controller
         $workgroup = $request->workgroup ? explode(',', $request->workgroup) : null;
         $overtime = $request->overtime;
         $status = $request->status;
+        $workingtime = $request->workingtime;
+        $checkincheckout = $request->checkincheckout;
         $month = $request->month;
         $year = $request->year;
         $from = $request->from ? Carbon::parse($request->from)->startOfDay()->toDateTimeString() : null;
@@ -97,6 +100,18 @@ class DailyReportController extends Controller
         if ($nid) {
             $query->whereRaw("employees.nid like '%$nid%'");
         }
+        if ($checkincheckout == 'checkin') {
+            $query->where("attendances.attendance_in", '!=', null)->where("attendances.attendance_out", null);
+        }
+        if ($checkincheckout == 'checkout') {
+            $query->where("attendances.attendance_out", '!=', null)->where("attendances.attendance_in", null);
+        }
+        if ($checkincheckout == 'checkin_checkout') {
+            $query->where("attendances.attendance_in", '!=', null)->where("attendances.attendance_out", '!=', null);
+        }
+        if ($checkincheckout == '!checkin_checkout') {
+            $query->where("attendances.attendance_in", null)->where("attendances.attendance_out", null);
+        }
         if ($department) {
             $string = '';
             foreach ($department as $dept) {
@@ -109,6 +124,9 @@ class DailyReportController extends Controller
         }
         if ($workgroup) {
             $query->whereIn('employees.workgroup_id', $workgroup);
+        }
+        if ($workingtime) {
+            $query->whereIn('attendances.workingtime_id', $workingtime);
         }
         
         $recordsTotal = $query->count();
@@ -150,7 +168,21 @@ class DailyReportController extends Controller
         if ($workgroup) {
             $query->whereIn('employees.workgroup_id', $workgroup);
         }
-        
+        if ($workingtime) {
+            $query->whereIn('attendances.workingtime_id', $workingtime);
+        }
+        if ($checkincheckout == 'checkin') {
+            $query->where("attendances.attendance_in", '!=', null)->where("attendances.attendance_out", null);
+        }
+        if ($checkincheckout == 'checkout') {
+            $query->where("attendances.attendance_out", '!=', null)->where("attendances.attendance_in", null);
+        }
+        if ($checkincheckout == 'checkin_checkout') {
+            $query->where("attendances.attendance_in", '!=', null)->where("attendances.attendance_out", '!=', null);
+        }
+        if ($checkincheckout == '!checkin_checkout') {
+            $query->where("attendances.attendance_in", null)->where("attendances.attendance_out", null);
+        }
         $query->offset($start);
         $query->limit($length);
         $query->orderBy($sort, $dir);
@@ -204,7 +236,8 @@ class DailyReportController extends Controller
         $emp->select('employees.*');
         $emp->where('status', 1);
         $employees = $emp->get();
-        return view('admin.dailyreport.index', compact('employees'));
+        $workingtimes = Workingtime::all();
+        return view('admin.dailyreport.index', compact('employees', 'workingtimes'));
     }
 
     /**

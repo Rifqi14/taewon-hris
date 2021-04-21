@@ -123,6 +123,28 @@
                   <input type="text" class="form-control" id="overtime" placeholder="Overtime" name="overtime">
                 </div>
               </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label" for="shift_workingtime">Shift</label>
+                  <select name="shift_workingtime" id="shift_workingtime" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Select Shift">
+                    @foreach ($workingtimes as $workingtime)
+                    <option value="{{ $workingtime->id }}">{{ $workingtime->description }}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label" for="checkincheckout">Check In Status</label>
+                  <select name="checkincheckout" id="checkincheckout" class="form-control select2" style="width: 100%" aria-hidden="true" data-placeholder="Select Check In Status">
+                    <option value=""></option>
+                    <option value="checkin">Check In Only</option>
+                    <option value="checkout">Check Out Only</option>
+                    <option value="checkin_checkout">Check In and Check Out</option>
+                    <option value="!checkin_checkout">No Check In and Check Out</option>
+                  </select>
+                </div>
+              </div>
             </div>
             <table class="table table-striped table-bordered datatable" style="width: 100%">
               <thead>
@@ -504,6 +526,8 @@
               var nid = $('input[name=nid]').val();
               var department = $('select[name=department]').val();
               var workgroup = $('select[name=workgroup]').val();
+              var workingtime = $('select[name=shift_workingtime]').val();
+              var checkincheckout = $('select[name=checkincheckout]').val();
               var overtime = $('input[name=overtime]').val();
               var from = $('input[name=from]').val();
               var to = $('input[name=to]').val();
@@ -514,6 +538,8 @@
               data.department = department;
               data.workgroup = workgroup;
               data.overtime = overtime;
+              data.workingtime = workingtime;
+              data.checkincheckout = checkincheckout;
           }
       },
       columnDefs:[
@@ -817,6 +843,12 @@
       dataTable.draw();
     });
     $(document).on('change', '#workgroup', function() {
+      dataTable.draw();
+    });
+    $(document).on('change', '#shift_workingtime', function() {
+      dataTable.draw();
+    });
+    $(document).on('change', '#checkincheckout', function() {
       dataTable.draw();
     });
     $(document).on('keyup', '#overtime', function() {

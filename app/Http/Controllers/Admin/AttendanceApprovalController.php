@@ -138,7 +138,9 @@ class AttendanceApprovalController extends Controller
         $nid = $request->nid;
         $department = $request->department;
         $workgroup = $request->workgroup;
+        $workingtime = $request->workingtime;
         $overtime = $request->overtime;
+        $checkincheckout = $request->checkincheckout;
         $month = $request->month;
         $year = $request->year;
         $from = $request->from ? Carbon::parse($request->from)->startOfDay()->toDateTimeString() : null;
@@ -176,6 +178,18 @@ class AttendanceApprovalController extends Controller
         if ($nid) {
             $query->whereRaw("employees.nid like '%$nid%'");
         }
+        if ($checkincheckout == 'checkin') {
+            $query->where("attendances.attendance_in", '!=', null)->where("attendances.attendance_out", null);
+        }
+        if ($checkincheckout == 'checkout') {
+            $query->where("attendances.attendance_out", '!=', null)->where("attendances.attendance_in", null);
+        }
+        if ($checkincheckout == 'checkin_checkout') {
+            $query->where("attendances.attendance_in", '!=', null)->where("attendances.attendance_out", '!=', null);
+        }
+        if ($checkincheckout == '!checkin_checkout') {
+            $query->where("attendances.attendance_in", null)->where("attendances.attendance_out", null);
+        }
         if ($department) {
             $string = '';
             foreach ($department as $dept) {
@@ -188,6 +202,9 @@ class AttendanceApprovalController extends Controller
         }
         if ($workgroup) {
             $query->whereIn('employees.workgroup_id', $workgroup);
+        }
+        if ($workingtime) {
+            $query->whereIn('attendances.workingtime_id', $workingtime);
         }
         
         $recordsTotal = $query->count();
@@ -224,6 +241,18 @@ class AttendanceApprovalController extends Controller
         if ($nid) {
             $query->whereRaw("employees.nid like '%$nid%'");
         }
+        if ($checkincheckout == 'checkin') {
+            $query->where("attendances.attendance_in", '!=', null)->where("attendances.attendance_out", null);
+        }
+        if ($checkincheckout == 'checkout') {
+            $query->where("attendances.attendance_out", '!=', null)->where("attendances.attendance_in", null);
+        }
+        if ($checkincheckout == 'checkin_checkout') {
+            $query->where("attendances.attendance_in", '!=', null)->where("attendances.attendance_out", '!=', null);
+        }
+        if ($checkincheckout == '!checkin_checkout') {
+            $query->where("attendances.attendance_in", null)->where("attendances.attendance_out", null);
+        }
         if ($department) {
             $string = '';
             foreach ($department as $dept) {
@@ -236,6 +265,9 @@ class AttendanceApprovalController extends Controller
         }
         if ($workgroup) {
             $query->whereIn('employees.workgroup_id', $workgroup);
+        }
+        if ($workingtime) {
+            $query->whereIn('attendances.workingtime_id', $workingtime);
         }
         
         // $query->where('employees.status', 1);
@@ -335,7 +367,8 @@ class AttendanceApprovalController extends Controller
         $query->orderBy('path','asc');
         $departments = $query->get();
         $workgroups = WorkGroup::all();
-        return view('admin.attendanceapproval.index', compact('employees', 'departments', 'workgroups'));
+        $workingtimes = Workingtime::all();
+        return view('admin.attendanceapproval.index', compact('employees', 'departments', 'workgroups', 'workingtimes'));
     }
 
     /**
