@@ -10,4 +10,8 @@ class WorkgroupAllowance extends Model
     public function allowance() {
         return $this->hasOne('App\Models\Allowance', 'id', 'allowance_id');
     }
+    public function workgroup()
+    {
+        return $this->hasOne('App\Models\WorkGroup', 'id', 'workgroup_id');
+    }
 }
