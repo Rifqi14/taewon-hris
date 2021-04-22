@@ -2,4 +2,4 @@ include: 'https://gitlab.com/x4v13r/gitlab-ci/raw/master/ssh.yml'
 
 deploy:
   script:
-    - ssh_run "daksaerp" "daksaerp.com" "$SSH_PRIVATE_KEY" "bash www/taewon.daksaerp.com/rundeploy.sh"
+    - ssh_run "daksaerp" "daksaerp.com" "$SSH_PRIVATE_KEY" "bash www/taewon.daksaerp.com/scripts/rundeploy.sh"
