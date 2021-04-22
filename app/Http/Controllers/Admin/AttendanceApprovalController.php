@@ -21,6 +21,7 @@ use App\Models\LeaveSetting;
 use App\Models\Overtime;
 use App\Models\Workingtime;
 use App\Models\OvertimeSchemeList;
+use App\Models\OvertimeschemeDepartment;
 use App\Models\WorkGroup;
 use App\Models\WorkingtimeDetail;
 use Carbon\Carbon;
@@ -668,6 +669,7 @@ class AttendanceApprovalController extends Controller
                         $overtime = Overtime::where('date', $approve->attendance_date)->where('employee_id', $approve->employee_id);
                         $overtime->delete();
                         $rules = OvertimeSchemeList::select('hour', 'amount')->where('overtime_scheme_id', '=', $approve->overtime_scheme_id)->groupBy('hour','amount')->get();
+                        $schema_department = OvertimeschemeDepartment::where('overtime_scheme_id', '=', $approve->overtime_scheme_id)->first();
                         // dd($rules);
                         if ($rules) {
                             // if ($approve->day != 'Off') {

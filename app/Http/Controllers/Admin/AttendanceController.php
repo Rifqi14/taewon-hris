@@ -441,6 +441,17 @@ class AttendanceController extends Controller
         return $query->first();
     }
 
+    public function overtimeSchemeList($department_id, $day)
+    {
+        $query = DB::table('overtime_scheme_lists');
+        $query->select('overtime_scheme_lists.*');
+        $query->leftJoin('overtime_schemes', 'overtime_schemes.id', '=', 'overtime_scheme_lists.overtime_scheme_id');
+        $query->leftJoin('overtimescheme_departments', 'overtimescheme_departments.overtime_scheme_id', '=', 'overtime_schemes.id');
+        $query->where('overtimescheme_departments.department_id', $department_id);
+        $query->where('overtime_scheme_lists.recurrence_day', $day);
+        
+        return $query->first();
+    }
 
     public function storemass(Request $request)
     {
@@ -1099,7 +1110,9 @@ class AttendanceController extends Controller
                 }
                 $date = $update->attendance_date;
                 $update->day = (in_array($date, $exception_date)) ? 'Off' : changeDateFormat('D', $date);
-                $overtime_list = OvertimeSchemeList::where('recurrence_day', '=', $update->day)->first();
+                // $overtime_list = OvertimeSchemeList::where('recurrence_day', '=', $update->day)->first();
+                $overtime_list = $this->overtimeSchemeList($employee->department_id, $update->day);
+                // dd($overtime_list);
                 if (!$overtime_list) {
                     return response()->json([
                         'status'    => false,
