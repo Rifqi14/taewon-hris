@@ -56,9 +56,9 @@ class AdjustmentMassController extends Controller
         $checkincheckout = $request->checkincheckout;
         $month = $request->month;
         $year = $request->year;
+        $status = $request->status;
         $from = $request->from ? Carbon::parse($request->from)->startOfDay()->toDateTimeString() : null;
         $to = $request->to ? Carbon::parse($request->to)->endOfDay()->toDateTimeString() : null;
-
         //Count Data
         $query = DB::table('attendances');
         $query->select('attendances.*', 'employees.name as name', 'employees.nid as nid', 'workingtimes.working_time_type as working_type', 'workingtimes.description as description', 'departments.name as department_name', 'titles.name as title_name', 'work_groups.name as workgroup_name');
@@ -67,7 +67,7 @@ class AdjustmentMassController extends Controller
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('work_groups', 'work_groups.id', '=', 'employees.workgroup_id');
-        $query->where('attendances.status', '!=', -1);
+        $query->where('attendances.status', $status);;
         $query->whereNotNull('attendances.workingtime_id');
         if ($month) {
             $query->whereMonth('attendances.attendance_date', $month);
@@ -87,6 +87,9 @@ class AdjustmentMassController extends Controller
         if ($nid) {
             $query->whereRaw("employees.nid like '%$nid%'");
         }
+        // if ($status) {
+        //     $query->where('attendances.status', $status);
+        // }
         if ($department) {
             $string = '';
             foreach ($department as $dept) {
@@ -118,6 +121,7 @@ class AdjustmentMassController extends Controller
         if ($workingtime) {
             $query->whereIn('attendances.workingtime_id', $workingtime);
         }
+        
         $recordsTotal = $query->count();
 
         //Select Pagination
@@ -128,8 +132,11 @@ class AdjustmentMassController extends Controller
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('work_groups', 'work_groups.id', '=', 'employees.workgroup_id');
-        $query->where('attendances.status', '!=', -1);
+        $query->where('attendances.status', $status);
         $query->whereNotNull('attendances.workingtime_id');
+        // if ($status) {
+        //     $query->where('attendances.status', $status);
+        // }
         if ($month) {
             $query->whereMonth('attendances.attendance_date', $month);
         }
@@ -179,6 +186,7 @@ class AdjustmentMassController extends Controller
         if ($workingtime) {
             $query->whereIn('attendances.workingtime_id', $workingtime);
         }
+        
         // $query->offset($start);
         // $query->limit($length);
         $query->orderBy($sort, $dir);

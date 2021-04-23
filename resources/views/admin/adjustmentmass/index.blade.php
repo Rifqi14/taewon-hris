@@ -107,6 +107,16 @@
                   </select>
                 </div>
               </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label" for="status">Status</label>
+                  <select name="status" id="status" class="form-control select2" style="width: 100%" data-placeholder="Select Status" aria-hidden="true">
+                    {{-- <option value=""></option> --}}
+                    <option value="1" selected >Already Approval</option>
+                    <option value="0">Waiting Approval</option>
+                  </select>
+                </div>
+              </div>
             </div>
             <table class="table table-striped table-bordered datatable" style="width: 100%">
               <thead>
@@ -393,6 +403,7 @@
               var overtime = $('input[name=overtime]').val();
               var workingtime = $('select[name=shift_workingtime]').val();
               var checkincheckout = $('select[name=checkincheckout]').val();
+              var status = $('select[name=status]').val();
               var from = $('input[name=from]').val();
               var to = $('input[name=to]').val();
               data.employee_id = employee_id;
@@ -404,6 +415,7 @@
               data.overtime = overtime;
               data.workingtime = workingtime;
               data.checkincheckout = checkincheckout;
+              data.status = status;
           }
       },
       columnDefs:[
@@ -499,6 +511,9 @@
     dataTable.draw();
   });
   $(document).on('keyup', '#overtime', function() {
+    dataTable.draw();
+  });
+  $(document).on('change', '#status', function() {
     dataTable.draw();
   });
   $(document).on('apply.daterangepicker', function() {

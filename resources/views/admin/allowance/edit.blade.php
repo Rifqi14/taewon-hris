@@ -111,6 +111,26 @@
                       value="">
                   </div>
                 </div>
+                <div class="col-sm-3">
+									<div class="form-group">
+										<label>Prorate</label>
+										<select name="prorate" id="prorate" class="form-control select2" style="width: 100%" aria-hidden="true">
+											<option value="yes" @if ($allowance->prorate == 'yes') selected @endif>Yes</option>
+											<option value="no"  @if ($allowance->prorate == 'no') selected @endif>No</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-sm-3">
+									<div class="form-group">
+										<label>THR</label>
+										<select name="thr" id="thr" class="form-control select2" style="width: 100%" aria-hidden="true">
+											<option value="yes" @if ($allowance->thr == 'yes') selected @endif>Yes</option>
+											<option value="no" @if ($allowance->thr == 'no') selected @endif>No</option>
+										</select>
+									</div>
+								</div>
+              </div>
+              <div class="row">
                 <div class="col-md-6 formula-bpjs-section d-none">
                     <div class="form-group">
                       <label for="formula-bpjs" class="control-label">Formula BPJS <b class="text-danger">*</b></label>
@@ -120,23 +140,24 @@
                       @endforeach
                       </select>
                     </div>
-                  </div>
+                </div>
                 <div class="col-sm-6 working-time-section d-none">
                   <div class="form-group">
                     <label>Working Time</label>
                     <input type="text" class="form-control" placeholder="Working Time" id="working_time" name="working_time" value="{{ $allowance->workingtime_id }}">
                   </div>
                 </div>
-              </div>
-              <div class="row days-devisor-section d-none">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>Days Devisor</label>
-                    <input type="text" class="form-control" id="days_devisor" name="days_devisor" placeholder="Days Devisor" value="{{ $allowance->days_devisor }}">
+                <div class="row days-devisor-section d-none">
+                  <div class="col-sm-6">
+                    <!-- text input -->
+                    <div class="form-group">
+                      <label>Days Devisor</label>
+                      <input type="text" class="form-control" id="days_devisor" name="days_devisor" placeholder="Days Devisor" value="{{ $allowance->days_devisor }}">
+                    </div>
                   </div>
                 </div>
-              </div>
+             </div>
+              
             </div>
         </div>
         <div class="overlay d-none">
