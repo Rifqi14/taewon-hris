@@ -24,7 +24,9 @@ class ConfigController extends Controller
     public function update(Request $request)
     {
         $fields = [
-            'app_name', 'app_copyright', 'app_logo', 'app_icon', 'app_theme', 'company_name', 'company_email', 'company_phone', 'company_address', 'email_push', 'language','cut_off'
+            'app_name', 'app_copyright', 'app_logo', 'app_icon', 'app_theme',
+            'company_name', 'company_email', 'company_phone', 'company_address',
+            'email_push', 'language','cut_off', 'setting_prorate', 'type_prorate', 'thr'
         ];
         $validator = Validator::make($request->all(), [
             'app_name'        => 'required',
@@ -36,7 +38,10 @@ class ConfigController extends Controller
             'company_email'   => 'required|email',
             'company_phone'   => 'required',
             'company_address' => 'required',
-            'cut_off'         => 'required'
+            'cut_off'         => 'required',
+            'setting_prorate' => 'required',
+            'type_prorate'    => 'required',
+            'thr'             => 'required'  
         ]);
 
         if ($validator->fails()) {

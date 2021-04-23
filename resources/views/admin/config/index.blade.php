@@ -51,6 +51,22 @@
               <option value="navy" @if(config('configs.app_theme')=='navy' ) selected @endif>Navy</option>
             </select>
           </div>
+          <div class="form-group">
+            <label for="setting_prorate">{{ __('config.setting_prorate') }}</label>
+            <select name="setting_prorate" id="setting_prorate" class="form-control select2" placeholder="Choose Setting Prorate">
+              @foreach (config('enums.setting_prorates') as $key => $item)
+              <option value="{{ $key }}" @if (config('configs.setting_prorate')==$key) selected @endif>{{ $item }}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="type_prorate">{{ __('config.type_prorate') }}</label>
+            <select name="type_prorate" id="type_prorate" class="form-control select2" placeholder="Choose Setting Prorate">
+              @foreach (config('enums.type_prorates') as $key => $item)
+              <option value="{{ $key }}" @if (config('configs.type_prorate')==$key) selected @endif>{{ $item }}</option>
+              @endforeach
+            </select>
+          </div>
         </div>
         <div class="col-md-6">
           {{-- <div class="form-group">
@@ -109,6 +125,15 @@
                 @php 
               }
           @endphp
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="thr">{{ __('config.thr') }}</label>
+        <select name="thr" id="thr" class="form-control select2" placeholder="Choose Setting Prorate">
+          @foreach (config('enums.thr') as $key => $item)
+          <option value="{{ $key }}" @if (config('configs.thr')==$key) selected @endif>{{ $item }}</option>
+          @endforeach
         </select>
       </div>
   </div>

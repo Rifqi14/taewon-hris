@@ -5,6 +5,18 @@ return [
         'en'    => "English",
         'id'    => "Indonesia",
     ],
+    'setting_prorates' => [
+        'full'      => "Full",
+        'partially' => "Partially",
+    ],
+    'type_prorates' => [
+        'basic_sallary'      => "Basic Salary",
+        'basic_allowance'     => "Basic Salary + Allowance",
+    ],
+    'thr' => [
+        'basic_sallary'      => "Basic Salary",
+        'basic_allowance'     => "Basic Salary + Allowance",
+    ],
     'equipment_types' => [
         'equipment' => "Equipment",
         'parent' => "Parent"

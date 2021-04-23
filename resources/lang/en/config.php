@@ -26,5 +26,8 @@ return [
     'push_notif'    => 'Email Push Notification',
     'theme'         => 'Theme',
     'language'      => 'Language',
+    'setting_prorate'=> 'Prorate Setting',
+    'type_prorate'  => 'Prorate Type',
+    'thr'           =>  'THR'
 
 ];
