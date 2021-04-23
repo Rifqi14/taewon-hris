@@ -220,7 +220,7 @@
               <th width="200">Group</th>
               <th width="10">
               <div class="customcheckbox">
-                <input type="checkbox" name="checkall" class="checkall" id="checkall">
+                <input type="checkbox" name="checkall" class="checkall" id="checkall" onclick="checkAll(this)">
               </div>
               </th>
             </tr>
@@ -664,7 +664,7 @@
 				{ className: 'text-right', targets: [0] },
 				{ className: 'text-center', targets: [4] },
 				{ render: function( data, type, row ) {
-				return `<label class="customcheckbox checked"><input value="${row.id}" type="checkbox" name="allowanceID[]" checked><span class="checkmark"></span></label>`
+				return `<label class="customcheckbox checked"><input value="${row.id}" type="checkbox" name="allowanceID[]" onclick="updateAllowance(this)" checked><span class="checkmark"></span></label>`
 				}, targets: [4] }
 			],
 			columns: [
