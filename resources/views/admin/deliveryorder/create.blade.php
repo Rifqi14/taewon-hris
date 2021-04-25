@@ -86,7 +86,7 @@
             </div>
             <div class="form-group col-sm-6">
               <div class="row">
-                <label class="col-sm-3 label-controls" for="departure_time">Departure Time</label>
+                <label class="col-sm-3 label-controls" for="departure_time">Departure Date</label>
                 <div class="col-sm-8 controls">
                   <div class="input-group">
                     <div class="input-group-prepend">
@@ -94,7 +94,37 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
                     </div>
-                    <input type="text" name="departure_time" class="form-control datepicker" placeholder="Departure Time" required />
+                    <input type="text" name="departure_date" class="form-control datepicker" placeholder="Departure Date" required />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-sm-6">
+              <div class="row">
+                <label class="col-sm-3 label-controls" for="departure_time">Departure Time</label>
+                <div class="col-sm-8 controls">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="fas fa-clock"></i>
+                      </span>
+                    </div>
+                    <input type="text" name="departure_time" class="form-control timepicker" placeholder="Departure Time" required />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-sm-6">
+              <div class="row">
+                <label class="col-sm-3 label-controls" for="arrived_time">Arrived Date</label>
+                <div class="col-sm-8 controls">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="far fa-calendar-alt"></i>
+                      </span>
+                    </div>
+                    <input type="text" name="arrived_date" class="form-control datepicker" placeholder="Arrived Date" required />
                   </div>
                 </div>
               </div>
@@ -106,10 +136,10 @@
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
-                        <i class="far fa-calendar-alt"></i>
+                        <i class="fas fa-clock"></i>
                       </span>
                     </div>
-                    <input type="text" name="arrived_time" class="form-control datepicker" placeholder="Arrived Time" required />
+                    <input type="text" name="arrived_time" class="form-control timepicker" placeholder="Arrived Time" required />
                   </div>
                 </div>
               </div>
@@ -235,12 +265,12 @@
     // });
     $('.datepicker').daterangepicker({
       singleDatePicker: true,
-      timePicker: true,
-      timePicker24Hour: true,
+      timePicker: false,
+      timePicker24Hour: false,
       timePickerIncrement: 1,
       timePickerSeconds: false,
       locale: {
-      format: 'DD/MM/YYYY HH:mm'
+      format: 'DD/MM/YYYY'
       }
     });
     $('.timepicker').daterangepicker({
