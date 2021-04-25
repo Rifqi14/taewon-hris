@@ -21,7 +21,7 @@
 		}
 
 		@page {
-			size: 13cm 18cm;
+			size: 13cm 20cm;
 			/* size: A2; */
 			/* width: 9.5cm;
 			height: 13.5cm; */
