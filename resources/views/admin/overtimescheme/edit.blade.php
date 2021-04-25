@@ -4,6 +4,38 @@
 <link rel="stylesheet" href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}">
 <link rel="stylesheet" href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}">
 <link rel="stylesheet" href="{{asset('adminlte/component/bootstrap-fileinput/themes/explorer-fas/theme.min.css')}}">
+<style type="text/css">
+	.customcheckbox {
+		width: 22px;
+		height: 22px;
+		background: url("/img/green.png") no-repeat;
+		background-position-x: 0%;
+		background-position-y: 0%;
+		cursor: pointer;
+		margin: 0 auto;
+	}
+
+	.customcheckbox.checked {
+		background-position: -48px 0;
+	}
+
+	.customcheckbox:hover {
+		background-position: -24px 0;
+	}
+
+	.customcheckbox.checked:hover {
+		background-position: -48px 0;
+	}
+
+	.customcheckbox input {
+		cursor: pointer;
+		opacity: 0;
+		scale: 1.6;
+		width: 22px;
+		height: 22px;
+		margin: 0;
+	}
+</style>
 @endsection
 @push('breadcrump')
 <li class="breadcrumb-item"><a href="{{ route('overtimescheme.index') }}">Overtime Scheme</a></li>
@@ -58,65 +90,93 @@
   </div>
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
-      <div class="card-header">
-        <h3 class="card-title">Edit Overtime Rules</h3>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-rule-tab" data-toggle="tab" href="#nav-rule" role="tab" aria-controls="nav-rule" aria-selected="true">Rule</a>
+        <a class="nav-item nav-link" id="nav-department-tab" data-toggle="tab" href="#nav-department" role="tab" aria-controls="nav-department" aria-selected="false">Department</a>
       </div>
-      <div class="card-body">
-        <div class="form-group row">
-          <label for="recurrence" class="col-sm-2 col-form-label">Workdays</label>
-          <div class="col-sm-6">
-            <select name="workday[]" id="workday" class="form-control select2" style="width: 100%" multiple="multiple" required>
-              <option value="Mon">Monday</option>
-              <option value="Tue">Tuesday</option>
-              <option value="Wed">Wednesday</option>
-              <option value="Thu">Thursday</option>
-              <option value="Fri">Friday</option>
-              <option value="Sat">Saturday</option>
-              <option value="Off">Day Off</option>
-            </select>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-rule" role="tabpanel" aria-labelledby="nav-rule-tab">
+          <div class="card-header">
+            <h3 class="card-title">Edit Overtime Rules</h3>
           </div>
-        </div>
-        <table class="table table-striped table-bordered datatable" id="workday_table" style="width: 100%; height: 100%">
-          <thead>
-            <tr>
-              <th width="10">No</th>
-              <th width="100">Hour</th>
-              <th width="200">Amount</th>
-              <th width="10">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            @if (count($list) > 0 && $overtime->overtimelist->first()->recurrence_day != null)
-                @foreach ($list as $key => $item)
+          <div class="card-body">
+            <div class="form-group row">
+              <label for="recurrence" class="col-sm-2 col-form-label">Workdays</label>
+              <div class="col-sm-6">
+                <select name="workday[]" id="workday" class="form-control select2" style="width: 100%" multiple="multiple" required>
+                  <option value="Mon">Monday</option>
+                  <option value="Tue">Tuesday</option>
+                  <option value="Wed">Wednesday</option>
+                  <option value="Thu">Thursday</option>
+                  <option value="Fri">Friday</option>
+                  <option value="Sat">Saturday</option>
+                  <option value="Off">Day Off</option>
+                </select>
+              </div>
+            </div>
+            <table class="table table-striped table-bordered datatable" id="workday_table" style="width: 100%; height: 100%">
+              <thead>
                 <tr>
-                  <td class="text-center align-middle number">{{ $key + 1 }}</td>
+                  <th width="10">No</th>
+                  <th width="100">Hour</th>
+                  <th width="200">Amount</th>
+                  <th width="10">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @if (count($list) > 0 && $overtime->overtimelist->first()->recurrence_day != null)
+                    @foreach ($list as $key => $item)
+                    <tr>
+                      <td class="text-center align-middle number">{{ $key + 1 }}</td>
+                      <td class="text-center align-middle">
+                        <div class="form-group mb-0"><input type="hidden" name="overtime_rules[{{ $key }}]" /><input type="number" placeholder="Hour"
+                            name="hour[{{ $key }}]" value="{{ $item->hour }}" class="form-control" required /></div>
+                      </td>
+                      <td class="text-center align-middle">
+                        <div class="form-group mb-0"><input type="number" placeholder="Amount" name="amount[{{ $key }}]" step="0.01" class="form-control" value="{{ $item->amount }}" required /></div>
+                      </td>
+                      <td class="text-center align-middle"><a href="javascript:void(0)"
+                          onclick="addList()" class="fa fa-plus fa-lg d-inline"></a> / <a href="javascript:void(0)" class="fa fa-trash fa-lg d-inline remove"></td>
+                    </tr>
+                    @endforeach
+                @else
+                <tr>
+                  <td class="text-center align-middle number">1</td>
                   <td class="text-center align-middle">
-                    <div class="form-group mb-0"><input type="hidden" name="overtime_rules[{{ $key }}]" /><input type="number" placeholder="Hour"
-                        name="hour[{{ $key }}]" value="{{ $item->hour }}" class="form-control" required /></div>
+                    <div class="form-group mb-0"><input type="hidden" name="overtime_rules[0]" /><input type="number" placeholder="Hour"
+                        name="hour[0]" class="form-control" required /></div>
                   </td>
                   <td class="text-center align-middle">
-                    <div class="form-group mb-0"><input type="number" placeholder="Amount" name="amount[{{ $key }}]" step="0.01" class="form-control" value="{{ $item->amount }}" required /></div>
+                    <div class="form-group mb-0"><input type="number" placeholder="Amount" name="amount[0]" step="0.1" class="form-control" required /></div>
                   </td>
                   <td class="text-center align-middle"><a href="javascript:void(0)"
-                      onclick="addList()" class="fa fa-plus fa-lg d-inline"></a> / <a href="javascript:void(0)" class="fa fa-trash fa-lg d-inline remove"></td>
+                      onclick="addList()" class="fa fa-plus fa-lg d-inline"></a></td>
                 </tr>
-                @endforeach
-            @else
-            <tr>
-              <td class="text-center align-middle number">1</td>
-              <td class="text-center align-middle">
-                <div class="form-group mb-0"><input type="hidden" name="overtime_rules[0]" /><input type="number" placeholder="Hour"
-                    name="hour[0]" class="form-control" required /></div>
-              </td>
-              <td class="text-center align-middle">
-                <div class="form-group mb-0"><input type="number" placeholder="Amount" name="amount[0]" step="0.1" class="form-control" required /></div>
-              </td>
-              <td class="text-center align-middle"><a href="javascript:void(0)"
-                  onclick="addList()" class="fa fa-plus fa-lg d-inline"></a></td>
-            </tr>
-            @endif
-          </tbody>
-        </table>
+                @endif
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-pane fade show" id="nav-department" role="tabpanel" aria-labelledby="nav-department-tab">
+						<div class="card-header">
+							<h3 class="card-title">Department</h3>
+						</div>
+						<div class="card-body">
+							<table class="table table-striped table-bordered datatable" id="department-table" style="width: 100%">
+								<thead>
+									<tr>
+										<th class="text-center align-middle">No</th>
+										<th width="400">Department Name</th>
+										<th class="text-center align-middle">
+											<div class="customcheckbox">
+												<input type="checkbox" name="checkall" onclick="checkAll(this)" class="checkall">
+											</div>
+										</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
       </div>
       <div class="overlay d-none">
         <i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -129,6 +189,7 @@
 
 @push('scripts')
 <script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
+<script src="{{asset('adminlte/component/dataTables/js/datatables.min.js')}}"></script>
 <script src="{{asset('adminlte/component/daterangepicker/moment.min.js')}}"></script>
 <script src="{{asset('adminlte/component/daterangepicker/daterangepicker.js')}}"></script>
 <script>
@@ -137,7 +198,148 @@
     @if ($day)
       $("#workday").select2('data',{!! json_encode($day) !!}).trigger('change');
     @endif
+    $(document).on('click', '.customcheckbox input', function() {
+			if ($(this).is(':checked')) {
+				$(this).parent().addClass('checked');
+			} else {
+				$(this).parent().removeClass('checked');
+			}
+		});
+		$(document).on('change', '.checkall', function() {
+			if (this.checked) {
+				$('input[name^=department_id]').prop('checked', true);
+				$('input[name^=department_id]').parent().addClass('checked');
+			} else {
+				$('input[name^=department_id]').prop('checked', false);
+				$('input[name^=department_id]').parent().removeClass('checked');
+			}
+		});
+    dataTableDepartment = $("#department-table").DataTable({
+			stateSave: true,
+			processing: true,
+			serverSide: true,
+			filter: false,
+			info: false,
+			lengtChange: true,
+			responsive: true,
+			order: [[1, "asc"]],
+			lengthMenu: [ 100, 250, 500, 1000 ],
+			ajax: {
+				url: "{{ route('overtimeschemedepartment.read') }}",
+				type: "GET",
+				data: function(data) {
+					data.overtime_scheme_id = `{{ $overtime->id }}`;
+				}
+			},
+			columnDefs: [
+				{ orderable: false, targets: [0,1,2] },
+				{ className: "text-center", targets: [0,2] },
+				{ render: function ( data, type, row ) {
+              return row.departmentovertimescheme.length > 0 ? `<label class="customcheckbox checked"><input value="${row.id}" type="checkbox" onclick="updateDepartment(this)" name="department_id[]" checked><span class="checkmark"></span></label>` : `<label class="customcheckbox"><input value="${row.id}" type="checkbox" onclick="updateDepartment(this)" name="department_id[]"><span class="checkmark"></span></label>`
+            },targets: [2] }
+			],
+			columns: [
+				{ data: "no" },
+				{ data: "name" },
+				{ data: "id" },
+			]
+		});
   });
+  function checkAll(data) {
+		$.ajax({
+			url: `{{ route('overtimeschemedepartment.updateall') }}`,
+			method: 'post',
+			data: {
+				_token: "{{ csrf_token() }}",
+				overtime_scheme_id: `{{ $overtime->id }}`,
+				status: data.checked ? 1 : 0,
+			},
+			dataType: 'json',
+			beforeSend: function() {
+				$('.overlay').removeClass('d-none');
+			}
+		}).done(function(response) {
+			$('.overlay').addClass('d-none');
+			if (response.status) {
+				$.gritter.add({
+					title: 'Success!',
+					text: response.message,
+					class_name: 'gritter-success',
+					time: 1000,
+				});
+			} else {
+				$.gritter.add({
+					title: 'Warning!',
+					text: response.message,
+					class_name: 'gritter-warning',
+					time: 1000,
+				});
+			}
+			return;
+		}).fail(function(response) {
+			$('.overlay').addClass('d-none');
+			var response = response.responseJSON;
+			$.gritter.add({
+				title: 'Error!',
+				text: response.message,
+				class_name: 'gritter-error',
+				time: 1000,
+			});
+		});
+	}
+	function updateDepartment(data) {
+		var overtime_scheme_id, department_id, status;
+		if (data.checked) {
+			overtime_scheme_id	= `{{ $overtime->id }}`;
+			department_id		=	data.value;
+			status					= 1;
+		} else {
+			overtime_scheme_id	= `{{ $overtime->id }}`;
+			department_id		=	data.value;
+			status					= 0;
+		}
+		$.ajax({
+			url: `{{ route('overtimeschemedepartment.store') }}`,
+			method: 'post',
+			data: {
+				_token: "{{ csrf_token() }}",
+				overtime_scheme_id: overtime_scheme_id,
+				department_id: department_id,
+				status: status,
+			},
+			dataType: 'json',
+			beforeSend: function() {
+				$('.overlay').removeClass('d-none');
+			}
+		}).done(function(response) {
+			$('.overlay').addClass('d-none');
+			if (response.status) {
+				$.gritter.add({
+					title: 'Success!',
+					text: response.message,
+					class_name: 'gritter-success',
+					time: 1000,
+				});
+			} else {
+				$.gritter.add({
+					title: 'Warning!',
+					text: response.message,
+					class_name: 'gritter-warning',
+					time: 1000,
+				});
+			}
+			return;
+		}).fail(function(response) {
+			$('.overlay').addClass('d-none');
+			var response = response.responseJSON;
+			$.gritter.add({
+				title: 'Error!',
+				text: response.message,
+				class_name: 'gritter-error',
+				time: 1000,
+			});
+		});
+	}
   function addList() {
     var length = $('#workday_table tr').length - 1;
     var number = $('#workday_table tr').length;

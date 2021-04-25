@@ -47,6 +47,9 @@ class Allowance extends Model
     {
         return $this->belongsToMany(Allowance::class, 'allowance_details', 'allowance_id', 'allowancedetail_id')->withTimestamps();
     }
-
+    public function allowanceconfigdetail()
+    {
+        return $this->hasMany(AllowanceConfigDetail::class, 'allowance_id', 'id');
+    }
 
 }

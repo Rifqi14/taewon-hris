@@ -34,6 +34,10 @@ class Department extends Model
     {
         return $this->hasMany(DepartmentShift::class, 'department_id', 'id');
     }
+    public function departmentovertimescheme()
+    {
+        return $this->hasMany(OvertimeschemeDepartment::class, 'department_id', 'id');
+    }
 
     public function breaktimedepartment()
     {

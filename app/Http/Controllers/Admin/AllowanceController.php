@@ -176,7 +176,9 @@ class AllowanceController extends Controller
             'basic_salary'  => $request->basic_salary,
             'notes'         => $request->notes,
             'formula_bpjs'  => $request->formula_bpjs,
-            'status'        => $request->status
+            'status'        => $request->status,
+            'thr'           => $request->thr,
+            'prorate'       => $request->prorate   
         ]);
         if ($allowance) {
             if(isset($request->working_time))
@@ -358,6 +360,8 @@ class AllowanceController extends Controller
         $allowance->notes               = $request->notes;
         $allowance->formula_bpjs        = $request->formula_bpjs;
         $allowance->status              = $request->status;
+        $allowance->thr                 = $request->thr;
+        $allowance->prorate             = $request->prorate;
         $allowance->save();
         if ($allowance) {
             if ($request->working_time) {
