@@ -1532,4 +1532,11 @@ class EmployeesController extends Controller
             ], 400);
         }
     }
+    public function printmass(Request $request)
+    {
+        $id = json_decode($request->id);
+        $employees = Employee::with('department')->with('workgroup')->whereIn('id', $id)->get();
+        // dd($employee);
+        return view('admin.employees.print', compact('employees'));
+    }
 }
