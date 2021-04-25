@@ -23,6 +23,9 @@
         <h3 class="card-title">Import Preview</h3>
         <!-- tools card -->
         <div class="pull-right card-tools">
+          <a href="{{ asset('import/Spl.xlsx') }}" class="btn btn-{{ config('configs.app_theme') }} text-white btn-sm" data-toggle="tooltip" title="Download Template">
+            <i class="fa fa-download"></i>
+          </a>
           <a onclick="addImport()" class="btn btn-{{ config('configs.app_theme') }} text-white btn-sm"
             data-toggle="tooltip" title="Import data">
             <i class="fa fa-file-import"></i>
@@ -43,8 +46,10 @@
                 <th width="100">Date</th>
                 <th width="100">Employee Name</th>
                 <th width="100">NIK Taewon</th>
-                <th width="50">Start Overtime</th>
-                <th width="100">Finish Overtime</th>
+                <th width="50">Start Date</th>
+                <th width="50">Start Time</th>
+                <th width="100">Finish Date</th>
+                <th width="100">Finish Time</th>
                 <th width="50">Error Message</th>
                 <th width="50">#</th>
             </tr>
@@ -113,8 +118,10 @@
             this.date,
             this.employee_name,
             this.nik,
-            this.start_overtime,
-            this.finish_overtime,
+            this.start_date,
+            this.start_time,
+            this.finish_date,
+            this.finish_time,
             this.error_message,
             this.status,
           ]).draw(false);
@@ -145,17 +152,17 @@
           order: [[ 0, "asc" ]],
           columnDefs: [
               {
-                  orderable: false,targets:[0,1,2,3,4,5]
+                  orderable: false,targets:[0,1,2,3,4,5,6,7]
               },
               { render: function ( data, type, row ) {
-                  if (row[6] == 1) {
+                  if (row[8] == 1) {
                     return '<span class="badge badge-success"><i class="fa fa-check"></i></span>';
                   } else {
                     return '<span class="badge badge-danger"><i class="fa fa-times"></i></span>';
                   }
-                },targets: [6]
+                },targets: [8]
               },
-              { className: "text-center", targets: [6] },
+              { className: "text-center", targets: [8] },
           ],
       });
 

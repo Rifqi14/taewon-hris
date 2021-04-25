@@ -146,18 +146,20 @@ class SPLController extends Controller
                 'message'     => $validator->errors()->first()
             ], 400);
         }
-        $dateTimeStart = str_replace('/','-',$request->start_overtime);
-        $dateTimeFinish = str_replace('/','-',$request->finish_overtime);
+        // $dateTimeStart = str_replace('/','-',$request->start_overtime);
+        // $dateTimeFinish = str_replace('/','-',$request->finish_overtime);
         $spl = Spl::create([
             'employee_id' => $request->employee_name,
             'nik' => $request->nik,
             'spl_date' => $request->spl_date,
-            'start_overtime' => $dateTimeStart,
-            'finish_overtime' => $dateTimeFinish,
+            'start_date' => $request->start_date,
+            'start_time' => $request->start_time,
+            'finish_date' => $request->finish_date,
+            'finish_time' => $request->finish_time,
             'notes' => $request->notes,
             'status' => $request->status,
         ]);
-        $spl->duration = floor((strtotime($dateTimeFinish) - strtotime($dateTimeStart)) / (60*60));
+        $spl->duration = floor((strtotime($request->finish_time) - strtotime($request->start_time)) / (60*60));
         $spl->save();
         if (!$spl) {
             return response()->json([
@@ -231,17 +233,19 @@ class SPLController extends Controller
                 'message'     => $validator->errors()->first()
             ], 400);
         }
-        $dateTimeStart = str_replace('/','-',$request->start_overtime);
-        $dateTimeFinish = str_replace('/','-',$request->finish_overtime);
+        // $dateTimeStart = str_replace('/','-',$request->start_overtime);
+        // $dateTimeFinish = str_replace('/','-',$request->finish_overtime);
         $spl = Spl::find($id);
         $spl->employee_id = $request->employee_name;
         $spl->spl_date = $request->spl_date;
         $spl->nik = $request->nik;
-        $spl->start_overtime = $request->start_overtime;
-        $spl->finish_overtime = $request->finish_overtime;
+        $spl->start_date = $request->start_date;
+        $spl->start_time = $request->start_time;
+        $spl->finish_date = $request->finish_date;
+        $spl->finish_time = $request->finish_time;
         $spl->notes = $request->notes;
         $spl->status = $request->status;
-        $spl->duration = floor((strtotime($dateTimeFinish) - strtotime($dateTimeStart)) / (60*60));
+        $spl->duration = floor((strtotime($request->finish_time) - strtotime($request->start_time)) / (60*60));
         $spl->save();
 
         if (!$spl) {
@@ -314,15 +318,30 @@ class SPLController extends Controller
                     $date = date('Y-m-d', strtotime($sheet->getCellByColumnAndRow(0, $row)->getValue()));
                 }
                 $employee_name = strtoupper($sheet->getCellByColumnAndRow(2, $row)->getValue());
+                // if (is_numeric($sheet->getCellByColumnAndRow(3, $row)->getValue())){
+                //     $start_overtime = date('Y-m-d H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(3, $row)->getValue())));
+                // }else{
+                //     $start_overtime = date('Y-m-d H:i:s', strtotime($sheet->getCellByColumnAndRow(3, $row)->getValue()));
+                // }
                 if (is_numeric($sheet->getCellByColumnAndRow(3, $row)->getValue())){
-                    $start_overtime = date('Y-m-d H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(3, $row)->getValue())));
+                    $start_date = date('Y-m-d', \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(3, $row)->getValue()));
                 }else{
-                    $start_overtime = date('Y-m-d H:i:s', strtotime($sheet->getCellByColumnAndRow(3, $row)->getValue()));
+                    $start_date = date('Y-m-d', strtotime($sheet->getCellByColumnAndRow(3, $row)->getValue()));
                 }
                 if (is_numeric($sheet->getCellByColumnAndRow(4, $row)->getValue())){
-                    $finish_overtime = date('Y-m-d H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(4, $row)->getValue())));
+                    $start_time = date('H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(4, $row)->getValue())));
                 }else{
-                    $finish_overtime = date('Y-m-d H:i:s', strtotime($sheet->getCellByColumnAndRow(4, $row)->getValue()));
+                    $start_time = date('H:i:s', strtotime($sheet->getCellByColumnAndRow(4, $row)->getValue()));
+                }
+                if (is_numeric($sheet->getCellByColumnAndRow(5, $row)->getValue())){
+                    $finish_date = date('Y-m-d', \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(5, $row)->getValue()));
+                }else{
+                    $finish_date = date('Y-m-d', strtotime($sheet->getCellByColumnAndRow(5, $row)->getValue()));
+                }
+                if (is_numeric($sheet->getCellByColumnAndRow(6, $row)->getValue())){
+                    $finish_time = date('H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(6, $row)->getValue())));
+                }else{
+                    $finish_time = date('H:i:s', strtotime($sheet->getCellByColumnAndRow(6, $row)->getValue()));
                 }
                 $employee = Employee::whereRaw("upper(name) like '%$employee_name%'")->first();
                 $status = 1;
@@ -341,8 +360,10 @@ class SPLController extends Controller
                     'employee_name' => $employee_name,
                     'employee_id' => $employee ? $employee->id : null,
                     'nik' => $nid,
-                    'start_overtime' => $start_overtime,
-                    'finish_overtime' => $finish_overtime,
+                    'start_date' => $start_date,
+                    'start_time' => $start_time,
+                    'finish_date' => $finish_date,
+                    'finish_time' => $finish_time,
                     'error_message' => $error_message,
                     'status' => $status
                 );
@@ -377,11 +398,13 @@ class SPLController extends Controller
                 'employee_id' => $spl->employee_id,
                 'nik' => $spl->nik,
                 'spl_date' => $spl->date,
-                'start_overtime' => $spl->start_overtime,
-                'finish_overtime' => $spl->finish_overtime,
+                'start_date' => $spl->start_date,
+                'start_time' => $spl->start_time,
+                'finish_date' => $spl->finish_date,
+                'finish_time' => $spl->finish_time,
                 'status' => 1
             ]);
-            $splimport->duration = floor((strtotime($spl->finish_overtime) - strtotime($spl->start_overtime)) / (60*60));
+            $splimport->duration = floor((strtotime($spl->finish_time) - strtotime($spl->start_time)) / (60*60));
             $splimport->save();
             if (!$splimport) {
                 DB::rollback();

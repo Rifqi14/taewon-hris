@@ -44,8 +44,10 @@
 								<th width="10">#</th>
 								<th width="100">NIK</th>
 								<th width="100">Employee Name</th>
-								<th width="100">Start Overtime</th>
-								<th width="100">Finish Overtime</th>
+								<th width="100">Start Date</th>
+								<th width="100">Start Time</th>
+								<th width="100">Finish Date</th>
+								<th width="100">Finish Time</th>
 								<th width="10">Duration</th>
 								<th width="100">Status</th>
 								<th width="10">Action</th>
@@ -119,14 +121,14 @@
 					orderable: false,targets:[0]
 				},
 				{ className: "text-right", targets: [0] },
-				{ className: "text-center", targets: [3,4,5,6,7] },
+				{ className: "text-center", targets: [3,4,5,6,7,8,9] },
                 { render: function(data, type, row) {
                     if (data == 1) {
                         return '<span class="badge badge-success">Active</span>';
                     } else {
                         return '<span class="badge badge-danger">Non Active</span>';
                     }
-                }, targets:[6]},
+                }, targets:[8]},
 				{ render: function ( data, type, row ) {
 					return `<div class="dropdown">
 					<button class="btn  btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -136,15 +138,17 @@
 					<li><a class="dropdown-item" href="{{url('admin/spl')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
 					<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
 					</ul></div>`
-				},targets: [7]
+				},targets: [9]
 				}
 			],
 			columns: [
 			{ data: "no" },
 			{ data: "nik" },
 			{ data: "employee_name" },
-			{ data: "start_overtime" },
-			{ data: "finish_overtime" },
+			{ data: "start_date" },
+			{ data: "start_time" },
+			{ data: "finish_date" },
+			{ data: "finish_time" },
 			{ data: "duration", className: "duration align-middle text-center" },
 			{ data: "status" },
 			{ data: "id" },

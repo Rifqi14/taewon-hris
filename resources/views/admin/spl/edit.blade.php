@@ -44,14 +44,26 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label>Start Overtime <b class="text-danger">*</b></label>
-                            <input placeholder="Start Overtime" name="start_overtime" id="start_overtime" class="form-control timepicker" value="{{ date('d/m/Y H:i:s',strtotime($spl->start_overtime)) }}"/>
+                            <label>Start Date <b class="text-danger">*</b></label>
+                            <input placeholder="Start Date" name="start_date" id="start_date" class="form-control" value="{{ date('d/m/Y',strtotime($spl->start_date)) }}"/>
+                        </div>
+                    </div>
+					<div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Start Time <b class="text-danger">*</b></label>
+                            <input placeholder="Start Time" name="start_time" id="start_time" class="form-control timepicker" value="{{ date('H:i:s',strtotime($spl->start_time)) }}"/>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label>Finish Overtime <b class="text-danger">*</b></label>
-                            <input placeholder="Finish Overtime" name="finish_overtime" id="finish_overtime" class="form-control timepicker" value="{{ date('d/m/Y H:i:s',strtotime($spl->finish_overtime)) }}"/>
+                            <label>Finish Date <b class="text-danger">*</b></label>
+                            <input placeholder="Finish Date" name="finish_date" id="finish_date" class="form-control" value="{{ date('d/m/Y',strtotime($spl->finish_date)) }}"/>
+                        </div>
+                    </div>
+					<div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Finish Time <b class="text-danger">*</b></label>
+                            <input placeholder="Finish Time" name="finish_time" id="finish_time" class="form-control timepicker" value="{{ date('H:i:s',strtotime($spl->finish_time)) }}"/>
                         </div>
                     </div>
                 </div>
@@ -90,6 +102,7 @@
                             </select>
                         </div>
                     </div>
+					<div style="height: 165px;"></div>
 				</div>
 			</div>
 			<div class="overlay d-none">
@@ -123,31 +136,43 @@
                 $(this).closest("form").validate().form();
             }
         })
-		$('#start_overtime').daterangepicker({
+		$('.timepicker').daterangepicker({
 			singleDatePicker: true,
 			timePicker: true,
 			timePicker24Hour: true,
 			timePickerIncrement: 1,
 			timePickerSeconds: false,
 			locale: {
-				format: 'DD/MM/YYYY HH:mm:ss'
+				format: 'HH:mm'
+			}
+		}).on('show.daterangepicker', function(ev, picker) {
+      		picker.container.find('.calendar-table').hide();
+		});
+		$('#start_date').daterangepicker({
+			singleDatePicker: true,
+			timePicker: true,
+			timePicker24Hour: true,
+			timePickerIncrement: 1,
+			timePickerSeconds: false,
+			locale: {
+				format: 'DD/MM/YYYY'
 			}
 		},
 		function(chosen_date) {
-            $('#start_overtime').val(chosen_date.format('DD/MM/YYYY HH:mm:ss'));
+            $('#start_date').val(chosen_date.format('DD/MM/YYYY'));
         });
-		$('#finish_overtime').daterangepicker({
+		$('#finish_date').daterangepicker({
 			singleDatePicker: true,
 			timePicker: true,
 			timePicker24Hour: true,
 			timePickerIncrement: 1,
 			timePickerSeconds: false,
 			locale: {
-				format: 'DD/MM/YYYY HH:mm:ss'
+				format: 'DD/MM/YYYY'
 			}
 		},
 		function(chosen_date) {
-            $('#finish_overtime').val(chosen_date.format('DD/MM/YYYY HH:mm:ss'));
+            $('#finish_date').val(chosen_date.format('DD/MM/YYYY'));
         });
         $('#employee_name').select2({
             ajax: {
