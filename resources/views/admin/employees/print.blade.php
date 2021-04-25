@@ -88,7 +88,7 @@
 	<div class="card">
 		<div class="sub-card">
 			<div class="logo">
-				<img src="{{asset('img/logo-perusahaan.png')}}" alt="">
+				<img src="{{asset(config('configs.app_logo'))}}" alt="">
 			</div>
 			<div class="picture">
 				@if($employee->photo == 'img/no-image.png')
