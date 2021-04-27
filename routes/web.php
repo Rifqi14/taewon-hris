@@ -583,5 +583,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/overtimeschemedepartment/read', 'Admin\OvertimeschemeDepartmentController@read')->name('overtimeschemedepartment.read');
         Route::post('/overtimeschemedepartment/updateall', 'Admin\OvertimeschemeDepartmentController@updateAll')->name('overtimeschemedepartment.updateall');
         Route::resource('/overtimeschemedepartment', 'Admin\OvertimeschemeDepartmentController');
+
+        //Route Warning Letter
+        Route::get('/warningletter/read', 'Admin\WarningLetterController@read')->name('warningletter.read');
+        Route::resource('/warningletter', 'Admin\WarningLetterController');
     });
 });
