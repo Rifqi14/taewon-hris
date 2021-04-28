@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use App\Models\Spl;
 use App\Models\Employee;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
@@ -79,23 +80,49 @@ class SPLController extends Controller
         $query = $request->search['value'];
         $sort = $request->columns[$request->order[0]['column']]['data'];
         $dir = $request->order[0]['dir'];
+        $employee_id = strtoupper(str_replace("'","''",$request->employee_id));
+        $nid = strtoupper($request->nid);
+        $start_date = $request->start_date ? Carbon::parse(changeSlash($request->start_date))->endOfDay()->toDateTimeString() : '';
+        $finish_date = $request->finish_date ? Carbon::parse(changeSlash($request->finish_date))->endOfDay()->toDateTimeString() : '';
 
         //Count Data
         $query = DB::table('spls');
         $query->select(
             'spls.*',
-            'employees.name as employee_name'
+            'employees.name as employee_name',
+            'employees.nid as nid'
         );
         $query->leftJoin('employees', 'employees.id', '=', 'spls.employee_id');
+        if ($employee_id != "") {
+            $query->whereRaw("upper(employees.name) like '%$employee_id%'");
+        }
+        if ($nid) {
+            $query->whereRaw("employees.nid like '%$nid%'");
+        }
+        if ($start_date && $finish_date) {
+            $query->whereRaw("spls.start_date >= '$start_date'");
+            $query->whereRaw("spls.finish_date <= '$finish_date'");
+        }
         $recordsTotal = $query->count();
 
         //Select Pagination
         $query = DB::table('spls');
         $query->select(
             'spls.*',
-            'employees.name as employee_name'
+            'employees.name as employee_name',
+            'employees.nid as nid'
         );
         $query->leftJoin('employees', 'employees.id', '=', 'spls.employee_id');
+        if ($employee_id != "") {
+            $query->whereRaw("upper(employees.name) like '%$employee_id%'");
+        }
+        if ($nid) {
+            $query->whereRaw("employees.nid like '%$nid%'");
+        }
+        if ($start_date && $finish_date) {
+            $query->whereRaw("spls.start_date >= '$start_date'");
+            $query->whereRaw("spls.finish_date <= '$finish_date'");
+        }
         $query->offset($start);
         $query->limit($length);
         $query->orderBy($sort, $dir);
@@ -115,7 +142,12 @@ class SPLController extends Controller
     }
     public function index()
     {
-        return view('admin.spl.index');
+        $query = DB::table('employees');
+        $query->select('employees.*');
+        $query->where('employees.status', 1);
+        $query->orderBy('employees.name', 'asc');
+        $employees = $query->get();
+        return view('admin.spl.index', compact('employees'));
     }
 
     /**
