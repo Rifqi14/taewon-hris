@@ -582,5 +582,15 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/overtimeschemedepartment/read', 'Admin\OvertimeschemeDepartmentController@read')->name('overtimeschemedepartment.read');
         Route::post('/overtimeschemedepartment/updateall', 'Admin\OvertimeschemeDepartmentController@updateAll')->name('overtimeschemedepartment.updateall');
         Route::resource('/overtimeschemedepartment', 'Admin\OvertimeschemeDepartmentController');
+        // Route THR Report
+        Route::get('/thrreport/read', 'Admin\ThrReportController@read')->name('thrreport.read');
+        Route::post('/thrreport/quickupdate', 'Admin\ThrReportController@quickupdate')->name('thrreport.quickupdate');
+        // Route::post('/thrreport/updateall', 'Admin\ThrReportController@updateAll')->name('thrreport.updateall');
+        Route::resource('/thrreport', 'Admin\ThrReportController');
+
+        // Route THR Report Detail
+        Route::get('/thrreportdetail/read', 'Admin\ThrReportDetailController@read')->name('thrreportdetail.read');
+        // Route::post('/thrreport/updateall', 'Admin\ThrReportController@updateAll')->name('thrreport.updateall');
+        // Route::resource('/thrreport', 'Admin\ThrReportController');
     });
 });
