@@ -3,10 +3,16 @@
 @section('title', 'Warning Letter')
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
+<link href="{{asset('adminlte/component/jquery-ui/jquery-ui.min.css')}}" rel="stylesheet">
 <style>
-	.duration:hover {
-		cursor: pointer;
-	}
+	.ui-state-active{
+        background: #28a745 !important;
+        border-color: #28a745 !important;
+    }
+    .ui-menu {
+        overflow: auto;
+        height:200px;
+    }
 </style>
 @endsection
 
@@ -23,21 +29,65 @@
 					<h3 class="card-title">Warning Letter</h3>
 					<!-- tools box -->
 					<div class="pull-right card-tools">
-                        {{-- <a href="{{route('spl.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" 
-                            data-toggle="tooltip" title="Import" style="cursor: pointer;">
-                            <i class="fa fa-file-import"></i>
-                        </a> --}}
 						<a href="{{route('warningletter.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white"
 							data-toggle="tooltip" title="Tambah">
 							<i class="fa fa-plus"></i>
-						</a>
-						<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
-							<i class="fa fa-search"></i>
 						</a>
 					</div>
 					<!-- /. tools -->
 				</div>
 				<div class="card-body">
+					<div class="row">
+						<div class="col-md-4">
+							<div class="form-group">
+								<label class="control-label" for="employee_id">Employee Name</label>
+								<input type="text" name="employee_name" id="employee_name" class="form-control" placeholder="Employee Name">
+							</div>
+							<div id="employee-container"></div>
+						</div>
+						<div class="col-md-4">
+						  <div class="form-group">
+							<label class="control-label" for="nik">NIK</label>
+							<input type="text" name="nik" id="nik" class="form-control" placeholder="NIK" multiple>
+						  </div>
+						</div>
+						<div class="col-md-4">
+							<div class="col-md-12">
+							<div class="form-group">
+								<label class="control-label" for="department">Department</label>
+								<select name="department" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Department">
+									@foreach ($departments as $department)
+									<option value="{{ $department->name }}">{{ $department->path }}</option>
+									@endforeach
+								</select>
+							</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="col-md-12">
+							<div class="form-group">
+								<label class="control-label" for="type">Position</label>
+								<select name="position" id="position" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Position">
+									@foreach ($titles as $title)
+									<option value="{{ $title->id }}">{{ $title->name }}</option>
+									@endforeach
+								</select>
+							</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="col-md-12">
+							  <div class="form-group">
+								<label class="control-label" for="workgroup">Status</label>
+								<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Status">
+									<option value=""></option>
+									<option value="1" selected>Active</option>
+									<option value="0">Non Active</option>
+								  </select>
+							  </div>
+							</div>
+						  </div>
+					</div>
 					<table class="table table-striped table-bordered datatable" style="width:100%">
 						<thead>
 							<tr>
@@ -63,8 +113,8 @@
 @endsection
 
 @push('scripts')
+<script src="{{asset('adminlte/component/jquery-ui/jquery-ui.min.js')}}"></script>
 <script src="{{asset('adminlte/component/dataTables/js/datatables.min.js')}}"></script>
-<script src="{{asset('assets/js/plugins/bootbox/bootbox.min.js')}}"></script>
 <script type="text/javascript">
 	function filter(){
 		$('#add-filter').modal('show');
@@ -83,7 +133,16 @@
 				url: "{{route('warningletter.read')}}",
 				type: "GET",
 				data:function(data){
-					
+					var employee_id = $('input[name=employee_name]').val();
+					var nid = $('input[name=nik]').val();
+					var department = $('select[name=department]').val();
+					var position = $('select[name=position]').val();
+					var status = $('select[name=status]').val();
+					data.employee_id = employee_id;
+					data.nid = nid;
+					data.department = department;
+					data.position = position;
+					data.status = status;
 				}
 			},
 			columnDefs:[
@@ -93,10 +152,10 @@
 				{ className: "text-right", targets: [0] },
 				{ className: "text-center", targets: [3,4,5,6,7] },
                 { render: function(data, type, row) {
-                    if (data == 0) {
-                        return '<span class="badge badge-warning">Waiting Approval</span>';
+                    if (data == 1) {
+                        return '<span class="badge badge-success">Active</span>';
                     } else {
-                        return '<span class="badge badge-success">Approval</span>';
+                        return '<span class="badge badge-danger">Non Active</span>';
                     }
                 }, targets:[6]},
 				{ render: function ( data, type, row ) {
@@ -122,10 +181,50 @@
 			{ data: "id" },
 			]
 		});
-		$('#form-search').submit(function(e){
-			e.preventDefault();
-			dataTable.draw();
-			$('#add-filter').modal('hide');
+		$(".select2").select2({
+			allowClear: true
+		});
+		$(document).ready(function(){
+			var employees = [
+				@foreach($employees as $employee)
+                	"{!!$employee->name!!}",
+            	@endforeach
+			];
+			$( "input[name=employee_name]" ).autocomplete({
+			source: employees,
+			minLength:0,
+			appendTo: '#employee-container',
+			select: function(event, response) {
+				if(event.preventDefault(), 0 !== response.item.id){
+					$(this).val(response.item.value);
+					dataTable.draw();
+				}
+			}
+			}).focus(function () {
+				$(this).autocomplete("search");
+			});
+			$("input[name=employee_name]").keydown(function(event){
+				if(event.keyCode == 13) {
+					event.preventDefault();
+					$('input[name=employee_name]').autocomplete('close');
+					return false;
+				}
+			});
+			$(document).on('keyup', '#employee_name', function() {
+				dataTable.draw();
+			});
+			$(document).on('keyup', '#nik', function() {
+				dataTable.draw();
+			});
+			$(document).on('change', '#department', function() {
+				dataTable.draw();
+			});
+			$(document).on('change', '#position', function() {
+				dataTable.draw();
+			});
+			$(document).on('change', '#status', function() {
+				dataTable.draw();
+			});
 		});
 		$(document).on('click','.delete',function(){
 			var id = $(this).data('id');

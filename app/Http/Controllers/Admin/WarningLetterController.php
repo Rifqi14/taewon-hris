@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\DB;
 use App\Models\WarningLetter;
+use App\Models\Employee;
+use App\Models\Title;
 use Illuminate\Support\Facades\Validator;
 
 class WarningLetterController extends Controller
@@ -27,16 +29,19 @@ class WarningLetterController extends Controller
         $query = $request->search['value'];
         $sort = $request->columns[$request->order[0]['column']]['data'];
         $dir = $request->order[0]['dir'];
-        // $from = $request->from ? Carbon::parse($request->from)->startOfDay()->toDateTimeString() : null;
-        // $to = $request->to ? Carbon::parse($request->to)->endOfDay()->toDateTimeString() : null;
-        $nik = $request->nik;
-        $name = strtoupper(str_replace("'","''",$request->name));
+        $employee_id = strtoupper(str_replace("'","''",$request->employee_id));
+        $nid = $request->nid;
+        $departments = $request->department;
+        $position = $request->position;
+        $status = $request->status;
 
         // Count Data
         $query = DB::table('warning_letters');
         $query->select(
             'warning_letters.*',
             'employees.name as employee_name',
+            'employees.status as status',
+            'employees.title_id as title_id',
             'employees.nid as employee_id',
             'employees.join_date as join_date',
             'titles.name as title_name',
@@ -45,11 +50,27 @@ class WarningLetterController extends Controller
         $query->leftJoin('employees', 'employees.id', '=', 'warning_letters.employee_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
-        if ($name) {
-            $query->whereRaw("upper(employees.name) like '%$name%'");
+        if ($employee_id) {
+            $query->whereRaw("upper(employees.name) like '%$employee_id%'");
         }
-        if ($nik) {
-            $query->whereRaw("employees.nid like '%$nik%'");
+        if ($nid) {
+            $query->whereRaw("employees.nid like '%$nid%'");
+        }
+        if ($departments) {
+            $string = '';
+            foreach ($departments as $department) {
+                $string .= "departments.path like '%$department%'";
+                if (end($departments) != $department) {
+                    $string .= ' or ';
+                }
+            }
+            $query->whereRaw('(' . $string . ')');
+        }
+        if ($position) {
+            $query->whereIn('employees.title_id', $position);
+        }
+        if ($status) {
+            $query->whereIn('employees.status', $status);
         }
         $recordsTotal = $query->get()->count();
 
@@ -58,6 +79,8 @@ class WarningLetterController extends Controller
         $query->select(
             'warning_letters.*',
             'employees.name as employee_name',
+            'employees.status as status',
+            'employees.title_id as title_id',
             'employees.nid as employee_id',
             'employees.join_date as join_date',
             'titles.name as title_name',
@@ -66,11 +89,27 @@ class WarningLetterController extends Controller
         $query->leftJoin('employees', 'employees.id', '=', 'warning_letters.employee_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
-        if ($name) {
-            $query->whereRaw("upper(employees.name) like '%$name%'");
+        if ($employee_id) {
+            $query->whereRaw("upper(employees.name) like '%$employee_id%'");
         }
-        if ($nik) {
-            $query->whereRaw("employees.nid like '%$nik%'");
+        if ($nid) {
+            $query->whereRaw("employees.nid like '%$nid%'");
+        }
+        if ($departments) {
+            $string = '';
+            foreach ($departments as $department) {
+                $string .= "departments.path like '%$department%'";
+                if (end($departments) != $department) {
+                    $string .= ' or ';
+                }
+            }
+            $query->whereRaw('(' . $string . ')');
+        }
+        if ($position) {
+            $query->whereIn('employees.title_id', $position);
+        }
+        if ($status) {
+            $query->whereIn('employees.status', $status);
         }
         $query->offset($start);
         $query->limit($length);
@@ -95,7 +134,13 @@ class WarningLetterController extends Controller
     }
     public function index()
     {
-        return view('admin.warningletter.index');
+        $employees = Employee::all();
+        $query = DB::table('departments');
+        $query->select('departments.*');
+        $query->orderBy('path','asc');
+        $departments = $query->get();
+        $titles = Title::all();
+        return view('admin.warningletter.index', compact('employees','departments','titles'));
     }
 
     /**
@@ -126,21 +171,30 @@ class WarningLetterController extends Controller
             ], 400);
         }
         $id = $this->getLatestId();
+        $number_warning_letter = $this->getLatestId();
         DB::beginTransaction();
-        $warningletter = WarningLetter::create([
-            'id'                    => $id,
-            'employee_id'           => $request->employee_id,
-            'status'                => 0,
-            'number_warning_letter' => $request->number_warning_letter,
-            'notes'                 => $request->reason,
-            'from'                  => changeDateFormat('Y-m-d', changeSlash($request->from)),
-            'to'                    => changeDateFormat('Y-m-d', changeSlash($request->to)),
-        ]);
-        if (!$warningletter) {
+        if($number_warning_letter >= 3){
             return response()->json([
-                'status' => false,
-                'message' 	=> $warningletter
+                'status' => true,
+                'message' => 'Warning Letter Lebih dari 3 kali'
             ], 400);
+        }else{
+            $warningletter = WarningLetter::create([
+                'id'                    => $id,
+                'employee_id'           => $request->employee_id,
+                'status'                => $request->status,
+                'number_warning_letter' => $number_warning_letter,
+                'notes'                 => $request->reason,
+                'from'                  => changeDateFormat('Y-m-d', changeSlash($request->from)),
+                'to'                    => changeDateFormat('Y-m-d', changeSlash($request->to)),
+            ]);
+            // $warningletter = WarningLetter::where('id', $id);
+            if (!$warningletter) {
+                return response()->json([
+                    'status' => false,
+                    'message' 	=> $warningletter
+                ], 400);
+            }
         }
         DB::commit();
         return response()->json([
