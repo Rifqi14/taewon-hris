@@ -23,6 +23,9 @@
         <h3 class="card-title">Import Preview</h3>
         <!-- tools card -->
         <div class="pull-right card-tools">
+          <a href="{{ asset('import/Deliveryorder.xlsx') }}" class="btn btn-{{ config('configs.app_theme') }} text-white btn-sm" data-toggle="tooltip" title="Download Template">
+            <i class="fa fa-download"></i>
+          </a>
           <a onclick="addImport()" class="btn btn-{{ config('configs.app_theme') }} text-white btn-sm"
             data-toggle="tooltip" title="Import data">
             <i class="fa fa-file-import"></i>
@@ -45,7 +48,9 @@
               <th width="100">Type Truck</th>
               <th width="50">Kloter</th>
               <th width="100">Customer</th>
+              <th width="100">Departure Date</th>
               <th width="100">Departure Time</th>
+              <th width="100">Arrived Date</th>
               <th width="100">Arrived Time</th>
               <th width="100">Error Message</th>
               <th width="50">#</th>
@@ -117,7 +122,9 @@
             this.type_truck,
             this.kloter,
             this.customer,
+            this.departure_date,
             this.departure_time,
+            this.arrived_date,
             this.arrived_time,
             this.error_message,
             this.status,
@@ -149,17 +156,17 @@
           order: [[ 0, "asc" ]],
           columnDefs: [
               {
-                  orderable: false,targets:[0,1,2,3,4,5,6,7,8]
+                  orderable: false,targets:[0,1,2,3,4,5,6,7,8,9,10]
               },
               { render: function ( data, type, row ) {
-                  if (row[8] == 1) {
+                  if (row[10] == 1) {
                     return '<span class="badge badge-success"><i class="fa fa-check"></i></span>';
                   } else {
                     return '<span class="badge badge-danger"><i class="fa fa-times"></i></span>';
                   }
-                },targets: [8]
+                },targets: [10]
               },
-              { className: "text-center", targets: [8] },
+              { className: "text-center", targets: [10] },
           ],
       });
 

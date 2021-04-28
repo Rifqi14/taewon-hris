@@ -887,7 +887,7 @@
 														<th width="10">Value</th>
 														<th width="10">RIT</th>
 														<th width="10">Total</th>
-														<th width="10">Action</th>
+														{{-- <th width="10">Action</th> --}}
 													</tr>
 												</thead>
 												<tfoot>
@@ -895,8 +895,6 @@
 														<td colspan="5" class="text-right"><b>Grand Total</b></td>
 														<td>
 															<span id="total" class="text-right" placeholder="Total"></span>
-														</td>
-														<td>
 														</td>
 													</tr>
 												</tfoot>
@@ -5991,9 +5989,9 @@ $(document).ready(function(){
 		},
 		columnDefs:[
 			{
-				orderable: false,targets:[0,1,2,3,4,5,6]
+				orderable: false,targets:[0,1,2,3,4,5]
 			},
-			{ className: "text-right", targets: [0,5,6] },
+			{ className: "text-right", targets: [0,5] },
 			{ className: "text-center", targets: [2,3,4] },
 			// { render: function(data, type, row) {
 			// 	if (row.truck == 'fuso') {
@@ -6010,17 +6008,17 @@ $(document).ready(function(){
 			{ render: function(data, type, row) {
 				return `${row.date}<br><small> Type Kendaraan ${row.truck}</small>`;
 			}, targets:[1]},
-			{ render: function ( data, type, row ) {
-				return `<div class="dropdown">
-					<button type="button" class="btn  btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-					<i class="fa fa-bars"></i>
-					</button>
-					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a class="dropdown-item detaildriver" href="#" data-date="${row.date}" data-driver="${row.driver_id}" data-truck="${row.truck}" data-group="${row.rule}"><i class="fas fa-search mr-2"></i> Detail</a></li>
-					</ul>
-					</div>`
-			},targets: [6]
-			}
+			// { render: function ( data, type, row ) {
+			// 	return `<div class="dropdown">
+			// 		<button type="button" class="btn  btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+			// 		<i class="fa fa-bars"></i>
+			// 		</button>
+			// 		<ul class="dropdown-menu dropdown-menu-right">
+			// 			<li><a class="dropdown-item detaildriver" href="#" data-date="${row.date}" data-driver="${row.driver_id}" data-truck="${row.truck}" data-group="${row.rule}"><i class="fas fa-search mr-2"></i> Detail</a></li>
+			// 		</ul>
+			// 		</div>`
+			// },targets: [6]
+			// }
 		],
 		columns: [
 			{ data: "no" },
@@ -6028,8 +6026,8 @@ $(document).ready(function(){
 			{ data: "group" },
 			{ data: "value", render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' ) },
 			{ data: "group"},
-			{ data: "total_value", render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' )},
-			{ data: "id" },
+			{ data: "total_value", render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' )}
+			// { data: "id" },
 
 		],
 		footerCallback: function(row, data, start, end, display, grand_total) {
@@ -6088,10 +6086,10 @@ $(document).ready(function(){
 			],
 			columns: [
 				{ data: "no" },
-				{ data: "departure_time" },
-				{ data: "arrived_time" },
-				{ data: "police_no" },
-				{ data: "customer" }
+				{ data: "departure_date" },
+				{ data: "arrived_date" },
+				{ data: "police_no" }
+				// { data: "customer" }
 
 			],
 			footerCallback: function(row, data, start, end, display, grand_total) {

@@ -266,6 +266,12 @@
         {className: "text-center", targets: [3]},
         {className: "text-left", targets: [4]},
         { render: function(data, type, row) {
+            return `${row.departure_date}<br><small>${row.departure_time}</small>`;
+        }, targets:[1]},
+        { render: function(data, type, row) {
+            return `${row.arrived_date}<br><small>${row.arrived_time}</small>`;
+        }, targets:[2]},
+        { render: function(data, type, row) {
             return `<a class="edit" data-id="${row.id}" href="#">${row.driver_name}</a><br><small>${row.nid}</small>`;
         }, targets:[4]},
         { render: function(data, type, row) {

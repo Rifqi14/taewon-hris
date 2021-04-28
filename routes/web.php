@@ -168,6 +168,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/employees/detail', 'Admin\EmployeesController@detail')->name('employees.detail');
         Route::get('/employees/readattendance', 'Admin\EmployeesController@readattendance')->name('employees.readattendance');
         Route::get('/employees/import', 'Admin\EmployeesController@import')->name('employees.import');
+        Route::get('/employees/printmass', 'Admin\EmployeesController@printmass')->name('employees.printmass');
         Route::post('/employees/export', 'Admin\EmployeesController@export')->name('employees.export');
         Route::post('/employees/preview', 'Admin\EmployeesController@preview')->name('employees.preview');
         Route::post('employees/notactive/{id}', 'Admin\EmployeesController@notactive')->name('employees.notactive');
@@ -592,5 +593,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/thrreportdetail/read', 'Admin\ThrReportDetailController@read')->name('thrreportdetail.read');
         // Route::post('/thrreport/updateall', 'Admin\ThrReportController@updateAll')->name('thrreport.updateall');
         // Route::resource('/thrreport', 'Admin\ThrReportController');
+
+        //Route Warning Letter
+        Route::get('/warningletter/read', 'Admin\WarningLetterController@read')->name('warningletter.read');
+        Route::resource('/warningletter', 'Admin\WarningLetterController');
     });
 });

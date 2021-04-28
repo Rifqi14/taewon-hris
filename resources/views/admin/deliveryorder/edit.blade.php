@@ -87,7 +87,7 @@
             </div>
             <div class="form-group col-sm-6">
               <div class="row">
-                <label class="col-sm-3 label-controls" for="departure_time">Departure Time</label>
+                <label class="col-sm-3 label-controls" for="departure_time">Departure Date</label>
                 <div class="col-sm-8 controls">
                   <div class="input-group">
                     <div class="input-group-prepend">
@@ -95,7 +95,37 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
                     </div>
-                    <input type="text" name="departure_time" class="form-control" id="departure_time" placeholder="Departure Time" required value="{{ date('d/m/Y H:i:s', strtotime($deliveryorder->departure_time)) }}" />
+                    <input type="text" name="departure_date" class="form-control datepicker" id="departure_date" placeholder="Departure Date" required value="{{ date('d/m/Y', strtotime($deliveryorder->departure_date)) }}" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-sm-6">
+              <div class="row">
+                <label class="col-sm-3 label-controls" for="departure_time">Departure Time</label>
+                <div class="col-sm-8 controls">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="fas fa-clock"></i>
+                      </span>
+                    </div>
+                    <input type="text" name="departure_time" class="form-control timepicker" id="departure_time" placeholder="Departure Time" required value="{{ date('H:i:s', strtotime($deliveryorder->departure_time)) }}" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-sm-6">
+              <div class="row">
+                <label class="col-sm-3 label-controls" for="arrived_time">Arrived Date</label>
+                <div class="col-sm-8 controls">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="far fa-calendar-alt"></i>
+                      </span>
+                    </div>
+                    <input type="text" name="arrived_date" class="form-control datepicker" id="arrived_date" placeholder="Arrived Date" required value="{{ date('d/m/Y', strtotime($deliveryorder->arrived_date)) }}" />
                   </div>
                 </div>
               </div>
@@ -107,10 +137,10 @@
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
-                        <i class="far fa-calendar-alt"></i>
+                        <i class="fas fa-clock"></i>
                       </span>
                     </div>
-                    <input type="text" name="arrived_time" class="form-control" id="arrived_time" placeholder="Arrived Time" required value="{{ date('d/m/Y H:i:s', strtotime($deliveryorder->arrived_time)) }}" />
+                    <input type="text" name="arrived_time" class="form-control timepicker" id="arrived_time" placeholder="Arrived Time" required value="{{ date('H:i:s', strtotime($deliveryorder->arrived_time)) }}" />
                   </div>
                 </div>
               </div>
@@ -268,38 +298,38 @@
     });
     $('.datepicker').daterangepicker({
       singleDatePicker: true,
-      timePicker: true,
+      timePicker: false,
       timePickerIncrement: 1,
       locale: {
-      format: 'DD/MM/YYYY HH:mm:ss'
+      format: 'DD/MM/YYYY'
       }
     });
-    $('#departure_time').daterangepicker({
-			singleDatePicker: true,
-			timePicker: true,
-			timePicker24Hour: true,
-			timePickerIncrement: 1,
-			timePickerSeconds: false,
-			locale: {
-				format: 'DD/MM/YYYY HH:mm:ss'
-			}
-		},
-		function(chosen_date) {
-      $('#departure_time').val(chosen_date.format('DD/MM/YYYY HH:mm:ss'));
-    });
-    $('#arrived_time').daterangepicker({
-			singleDatePicker: true,
-			timePicker: true,
-			timePicker24Hour: true,
-			timePickerIncrement: 1,
-			timePickerSeconds: false,
-			locale: {
-				format: 'DD/MM/YYYY HH:mm:ss'
-			}
-		},
-		function(chosen_date) {
-      $('#arrived_time').val(chosen_date.format('DD/MM/YYYY HH:mm:ss'));
-    });
+    // $('#departure_time').daterangepicker({
+		// 	singleDatePicker: true,
+		// 	timePicker: true,
+		// 	timePicker24Hour: true,
+		// 	timePickerIncrement: 1,
+		// 	timePickerSeconds: false,
+		// 	locale: {
+		// 		format: 'DD/MM/YYYY'
+		// 	}
+		// },
+		// function(chosen_date) {
+    //   $('#departure_time').val(chosen_date.format('DD/MM/YYYY'));
+    // });
+    // $('#arrived_time').daterangepicker({
+		// 	singleDatePicker: true,
+		// 	timePicker: true,
+		// 	timePicker24Hour: true,
+		// 	timePickerIncrement: 1,
+		// 	timePickerSeconds: false,
+		// 	locale: {
+		// 		format: 'DD/MM/YYYY HH:mm:ss'
+		// 	}
+		// },
+		// function(chosen_date) {
+    //   $('#arrived_time').val(chosen_date.format('DD/MM/YYYY HH:mm:ss'));
+    // });
     $('.timepicker').daterangepicker({
       singleDatePicker: true,
       timePicker: true,

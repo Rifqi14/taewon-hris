@@ -291,8 +291,10 @@ class DeliveryOrderController extends Controller
             'driver_id'     => $request->driver_id,
             'police_no'     => $request->police_no,
             'partner_id'    => $request->customer,
-            'departure_time'=> changeDateFormat('Y-m-d H:i:s', changeSlash($request->departure_time)),
-            'arrived_time'  => changeDateFormat('Y-m-d H:i:s', changeSlash($request->arrived_time)),
+            'departure_date'=> changeDateFormat('Y-m-d', changeSlash($request->departure_date)),
+            'departure_time'=> $request->departure_time,
+            'arrived_date'  => changeDateFormat('Y-m-d', changeSlash($request->arrived_date)),
+            'arrived_time'  => $request->arrived_time,
             'group'         => $request->kloter
         ]);
         $partner_rit = Partner::find($request->customer);
@@ -474,7 +476,9 @@ class DeliveryOrderController extends Controller
         $deliveryorder->police_no       = $request->police_no;
         $deliveryorder->partner_id      = $request->customer;
         $deliveryorder->group           = $request->kloter;
+        $deliveryorder->departure_date  = $request->departure_date;
         $deliveryorder->departure_time  = $request->departure_time;
+        $deliveryorder->arrived_date    = $request->arrived_date;
         $deliveryorder->arrived_time    = $request->arrived_time;
         $deliveryorder->save();
         if (!$deliveryorder) {
@@ -544,18 +548,28 @@ class DeliveryOrderController extends Controller
         for ($row = 2; $row <= $highestRow; $row++) {
             $driver_name    = strtoupper($sheet->getCellByColumnAndRow(0, $row)->getValue());
             $police_no      = $sheet->getCellByColumnAndRow(1, $row)->getValue();
-            $type_truck     = strtoupper($sheet->getCellByColumnAndRow(2, $row)->getValue());
+            $type_truck     = strtolower($sheet->getCellByColumnAndRow(2, $row)->getValue());
             $kloter         = $sheet->getCellByColumnAndRow(3, $row)->getValue();
             $customer       = strtoupper($sheet->getCellByColumnAndRow(4, $row)->getValue());
             if (is_numeric($sheet->getCellByColumnAndRow(5, $row)->getValue())){
-                $departure_time = date('Y-m-d H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(5, $row)->getValue())));
+                $departure_date = date('Y-m-d', \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(5, $row)->getValue()));
             }else{
-                $departure_time = date('Y-m-d H:i:s', strtotime($sheet->getCellByColumnAndRow(5, $row)->getValue()));
+                $departure_date = date('Y-m-d', strtotime($sheet->getCellByColumnAndRow(5, $row)->getValue()));
             }
             if (is_numeric($sheet->getCellByColumnAndRow(6, $row)->getValue())){
-                $arrived_time = date('Y-m-d H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(6, $row)->getValue())));
+                $departure_time = date('H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(6, $row)->getValue())));
             }else{
-                $arrived_time = date('Y-m-d H:i:s', strtotime($sheet->getCellByColumnAndRow(6, $row)->getValue()));
+                $departure_time = date('H:i:s', strtotime($sheet->getCellByColumnAndRow(6, $row)->getValue()));
+            }
+            if (is_numeric($sheet->getCellByColumnAndRow(7, $row)->getValue())){
+                $arrived_date = date('Y-m-d', \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(7, $row)->getValue()));
+            }else{
+                $arrived_date = date('Y-m-d', strtotime($sheet->getCellByColumnAndRow(7, $row)->getValue()));
+            }
+            if (is_numeric($sheet->getCellByColumnAndRow(8, $row)->getValue())){
+                $arrived_time = date('H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(8, $row)->getValue())));
+            }else{
+                $arrived_time = date('H:i:s', strtotime($sheet->getCellByColumnAndRow(8, $row)->getValue()));
             }
             $partner = Partner::whereRaw("upper(name) like '%$customer%'")->first();
             $driver = Employee::whereRaw("upper(name) like '%$driver_name%'")->get()->first();
@@ -594,7 +608,9 @@ class DeliveryOrderController extends Controller
                     'kloter' => $kloter,
                     'customer' => $customer,
                     'customer_id' => $partner ? $partner->id : null,
+                    'departure_date' => $departure_date,
                     'departure_time' => $departure_time,
+                    'arrived_date' => $arrived_date,
                     'arrived_time' => $arrived_time,
                     'error_message' => $error_message,
                     'status' => $status
@@ -642,7 +658,9 @@ class DeliveryOrderController extends Controller
                     'type_truck' => $deliveryorder->type_truck,
                     'group' => $deliveryorder->kloter,
                     'partner_id' => $deliveryorder->customer_id,
+                    'departure_date' => $deliveryorder->departure_date, 
                     'departure_time' => $deliveryorder->departure_time, 
+                    'arrived_date' => $deliveryorder->arrived_date, 
                     'arrived_time' => $deliveryorder->arrived_time 
                 ]);
             if ($doimport) {

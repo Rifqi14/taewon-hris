@@ -14,6 +14,27 @@
         overflow: auto;
         height:200px;
     }
+	.customcheckbox {
+        width: 22px;
+        height: 22px;
+        background: url("/img/green.png") no-repeat;
+        background-position-x: 0%;
+        background-position-y: 0%;
+        cursor: pointer;
+        margin: 0 auto;
+    }
+
+    .customcheckbox.checked {
+        background-position: -48px 0;
+    }
+	.customcheckbox input {
+        cursor: pointer;
+        opacity: 0;
+        scale: 1.6;
+        width: 22px;
+        height: 22px;
+        margin: 0;
+    }
 </style>
 @endsection
 
@@ -37,6 +58,7 @@
 						<a href="{{route('employees.create')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="Tambah"><i class="fa fa-plus"></i></a>
 
 					<a href="{{route('employees.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="Import" style="cursor: pointer;"><i class="fa fa-file-import"></i></a>
+					<a href="javascript:void(0)" onclick="printmass()" class="btn btn-sm btn-info text-white" title="Print Mass"><i class="fa fa-print"></i></a>
 					<a href="javascript:void(0)" onclick="exportemployee()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="Export" style="cursor: pointer;"><i class="fa fa-download"></i></a>
 					<!-- <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
 						<i class="fa fa-search"></i>
@@ -178,6 +200,11 @@
 							<th width="150">Department</th>
 							<th width="200">Position</th>
 							<th width="250">Workgroup Combination</th>
+							<th>
+								<div class="customcheckbox">
+									<input type="checkbox" class="checkall">
+								</div>
+							</th>
 							<th width="100">Action</th>
 						</tr>
 					</thead>
@@ -228,6 +255,23 @@
 		</div>
 	</div>
 </div>
+<div class="modal fade" id="print-mass" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header no-print">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h4 class="modal-title">Print</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <iframe id="bodyReplace" scrolling="no" allowtransparency="true"
+                        style="width: 69%; border-width: 0px; position: relative; margin: 0 auto; display: block;"
+                        onload="this.style.height=(this.contentDocument.body.scrollHeight+45) + 'px';"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -243,6 +287,46 @@
 	// });
 	// $("#month").select2();
 	// $("#year").select2();
+	function printmass() {
+        var ids = [];
+        $('input[name^=checksalary]').each(function () {
+            if (this.checked) {
+                ids.push($(this).data('id'));
+            }
+        });
+        if (ids.length <= 0) {
+            $.gritter.add({
+                title: 'Warning!',
+                text: 'No data has been selected yet',
+                class_name: 'gritter-error',
+                time: 1000,
+            });
+            return false;
+        }
+        printpreview(ids);
+    }
+	function printpreview(ids) {
+        $('.overlay').removeClass('d-none');
+        $.ajax({
+            url: "{{ route('employees.printmass') }}",
+            method: 'GET',
+            data: {
+                id: JSON.stringify(ids)
+            },
+            success: function (response) {
+                $('.overlay').addClass('d-none');
+                dataTable.draw();
+                $('.customcheckbox').removeClass('checked');
+                $('.customcheckbox input').prop('checked', false);
+                var iframe = document.getElementById('bodyReplace');
+                iframe = iframe.contentWindow || (iframe.contentDocument.document || iframe
+                    .contentDocument);
+                iframe.document.open();
+                iframe.document.write(response);
+                iframe.document.close();
+            }
+        });
+    }
 	function exportemployee() {
     $.ajax({
         url: "{{ route('employees.export') }}",
@@ -330,10 +414,10 @@
 			},
 			columnDefs:[
 			{
-				orderable: false,targets:[0]
+				orderable: false,targets:[0,6]
 			},
 			{ className: "text-right", targets: [0] },
-			{ className: "text-center", targets: [6] },
+			{ className: "text-center", targets: [6,7] },
 			{
 				render: function ( data, type, row ) {
 					if (row.status == 1) {
@@ -351,6 +435,14 @@
 				return `<a href="{{url('admin/employees')}}/${row.id}/">${row.name}</a>`;
 				},targets: [2]
 			},
+			{
+				render: function (data, type, row) {
+				return `<label class="customcheckbox">
+				<input data-id="${data}" type="checkbox" name="checksalary[]" value="${row.id}"><span class="checkmark"></span>
+				</label>`
+				},
+				targets: [6]
+			},
 			{ render: function ( data, type, row ) {
 				return `<div class="dropdown">
 				<button class="btn  btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -360,7 +452,7 @@
 				<li><a class="dropdown-item edit" href="javascript:void(0)" data-id="${row.id}"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
 				<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
 				</ul></div>`
-			},targets: [6]
+			},targets: [7]
 		}
 		],
 		columns: [
@@ -381,6 +473,9 @@
 		},
 		{ 
 			data: "workgroup_name" 
+		},
+		{ 
+			data: "id" 
 		},
 		{ 
 			data: "id" 
@@ -451,6 +546,22 @@
 			});
 			$(document).on('keyup', '#nid', function() {
 				dataTable.draw();
+			});
+			$(document).on('click', '.customcheckbox input', function () {
+				if ($(this).is(':checked')) {
+					$(this).parent().addClass('checked');
+				} else {
+					$(this).parent().removeClass('checked');
+				}
+			});
+			$(document).on('change', '.checkall', function () {
+				if (this.checked) {
+					$('input[name^=checksalary]').prop('checked', true);
+					$('input[name^=checksalary]').parent().addClass('checked');
+				} else {
+					$('input[name^=checksalary]').prop('checked', false);
+					$('input[name^=checksalary]').parent().removeClass('checked');
+				}
 			});
 			$(document).on('change', '#department', function() {
 				dataTable.draw();

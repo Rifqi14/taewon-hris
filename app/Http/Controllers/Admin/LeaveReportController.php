@@ -260,6 +260,7 @@ class LeaveReportController extends Controller
         $sheet->setCellValue('G1', 'From');
         $sheet->setCellValue('H1', 'To');
         $sheet->setCellValue('I1', 'Status');
+        $sheet->setCellValue('J1', 'Note');
 
         $row_number = 2;
         foreach ($leaves as $key => $leave) {
@@ -272,9 +273,10 @@ class LeaveReportController extends Controller
             $sheet->setCellValue('G' . $row_number, $leave->start_date);
             $sheet->setCellValue('H' . $row_number, $leave->finish_date);
             $sheet->setCellValue('I' . $row_number, $leave->status == 1 ? 'Approved' : 'Rejected');
+            $sheet->setCellValue('J' . $row_number, $leave->notes);
             $row_number++;
         }
-        foreach (range('A', 'I') as $column) {
+        foreach (range('A', 'J') as $column) {
             $sheet->getColumnDimension($column)->setAutoSize(true);
         }
         $sheet->getPageSetup()->setFitToWidth(1);
