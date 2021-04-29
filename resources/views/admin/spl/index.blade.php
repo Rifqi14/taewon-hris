@@ -3,10 +3,17 @@
 @section('title', 'SPL | Surat Pengajuan Lembur')
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
+<link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
+<link href="{{asset('adminlte/component/jquery-ui/jquery-ui.min.css')}}" rel="stylesheet">
 <style>
-	.duration:hover {
-		cursor: pointer;
-	}
+	.ui-state-active{
+        background: #28a745 !important;
+        border-color: #28a745 !important;
+    }
+    .ui-menu {
+        overflow: auto;
+        height:200px;
+    }
 </style>
 @endsection
 
@@ -31,13 +38,63 @@
 							data-toggle="tooltip" title="Tambah">
 							<i class="fa fa-plus"></i>
 						</a>
-						<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
-							<i class="fa fa-search"></i>
-						</a>
 					</div>
 					<!-- /. tools -->
 				</div>
 				<div class="card-body">
+					<div class="row">
+						<div class="col-md-4">
+							<div class="form-group">
+								<label class="control-label" for="employee_id">Employee Name</label>
+								<input type="text" name="employee_id" id="employee_id" class="form-control filter" placeholder="Employee Name">
+								{{-- <select name="driver_id" id="driver_id" class="form-control select2 filter" style="width: 100%" aria-hidden="true"  data-placeholder="Driver Name">
+									<option value=""></option>
+									@foreach ($employees as $employee)
+									<option value="{{ $employee->id }}">{{ $employee->name }}</option>
+									@endforeach
+								</select> --}}
+							</div>
+							<div id="employee-container"></div>
+						</div>
+						<div class="col-md-4">
+						  <div class="form-group">
+							<label class="control-label" for="nik">NIK</label>
+							<input type="text" name="nik" id="nik" class="form-control filter" placeholder="NIK" multiple>
+						  </div>
+						</div>
+						<div class="form-row col-md-4">
+						  <div class="col-md-6">
+							<div class="form-group">
+							  <label class="control-label" for="start_date">Start Date</label>
+							  <div class="controls">
+								<div class="input-group">
+								  <div class="input-group-prepend">
+									<span class="input-group-text">
+									  <i class="far fa-calendar-alt"></i>
+									</span>
+								  </div>
+								  <input type="text" name="start_date" id="start_date" class="form-control filter" placeholder="Start Date">
+								</div>
+							  </div>
+							</div>
+						  </div>
+						  <div class="col-md-6">
+						  <div class="form-group">
+							<label class="control-label" for="finish_date">Finish Date</label>
+							<div class="controls">
+							  <div class="input-group">
+								<div class="input-group-prepend">
+								  <span class="input-group-text">
+									<i class="far fa-calendar-alt"></i>
+								  </span>
+								</div>
+								<input type="text" name="finish_date" id="finish_date" class="form-control datepicker filter" placeholder="Finish Date">
+							  </div>
+							</div>
+						  </div>
+						</div>
+						</div>
+					  </div>
 					<table class="table table-striped table-bordered datatable" style="width:100%">
 						<thead>
 							<tr>
@@ -62,42 +119,44 @@
 		</div>
 	</div>
 </div>
-<div class="modal fade" id="edit-duration" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Duration</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        </div>
-        <div class="modal-body">
-          <form id="form-duration" action="{{ route('spl.durationupdate') }}" class="form-horizontal no-gutters" method="post" autocomplete="off">
-            {{ csrf_field() }}
-            <input type="hidden" name="spl_id" id="spl_id">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label class="control-label" for="duration">Duration</label>
-                  <input type="text" class="form-control" name="duration" id="duration" placeholder="Duration" value="0">
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button form="form-duration" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i class="fa fa-save"></i></button>
-        </div>
-      </div>
-    </div>
-  </div>
 @endsection
 
 @push('scripts')
 <script src="{{asset('adminlte/component/dataTables/js/datatables.min.js')}}"></script>
-<script src="{{asset('assets/js/plugins/bootbox/bootbox.min.js')}}"></script>
+<script src="{{asset('adminlte/component/daterangepicker/moment.min.js')}}"></script>
+<script src="{{asset('adminlte/component/daterangepicker/daterangepicker.js')}}"></script>
+<script src="{{asset('adminlte/component/jquery-ui/jquery-ui.min.js')}}"></script>
 <script type="text/javascript">
 	function filter(){
 		$('#add-filter').modal('show');
 	}
+	$(document).ready(function(){
+		var employees = [
+			@foreach($employees as $employee)
+				"{!!$employee->name!!}",
+			@endforeach
+		];
+		$( "input[name=employee_id]" ).autocomplete({
+		source: employees,
+		minLength:0,
+		appendTo: '#employees-container',
+		select: function(event, response) {
+			if(event.preventDefault(), 0 !== response.item.id){
+				$(this).val(response.item.value);
+				dataTable.draw();
+			}
+		}
+		}).focus(function () {
+			$(this).autocomplete("search");
+		});
+		$("input[name=employee_id]").keydown(function(event){
+			if(event.keyCode == 13) {
+				event.preventDefault();
+				$('input[name=employee_id]').autocomplete('close');
+				return false;
+			}
+		});
+	});
 	$(function(){
 		dataTable = $('.datatable').DataTable( {
 			stateSave:true,
@@ -112,8 +171,10 @@
 				url: "{{route('spl.read')}}",
 				type: "GET",
 				data:function(data){
-					var working_time_type = $('#form-search').find('select[name=working_time_type]').val();
-					data.working_time_type = working_time_type;
+					data.employee_id = $('input[name=employee_id]').val();
+					data.nid = $('input[name=nik]').val();
+					data.start_date = $('input[name=start_date]').val();
+					data.finish_date = $('input[name=finish_date]').val();
 				}
 			},
 			columnDefs:[
@@ -149,25 +210,43 @@
 			{ data: "start_time" },
 			{ data: "finish_date" },
 			{ data: "finish_time" },
-			{ data: "duration", className: "duration align-middle text-center" },
+			{ data: "duration" },
 			{ data: "status" },
 			{ data: "id" },
 			]
 		});
-		$('#form-search').submit(function(e){
-			e.preventDefault();
+		$(document).on('change keyup keydown keypress focus', '.filter', function() {
 			dataTable.draw();
-			$('#add-filter').modal('hide');
-		})
-		$('.datatable').on('click', '.duration', function() {
-		var data = dataTable.row(this).data();
-		// console.table(data);
-		if (data) {
-			$('#edit-duration').modal('show');
-			$('#form-duration input[name=spl_id]').attr('value', data.id);
-			$('#form-duration input[name=duration]').attr('value', data.duration);
-		}
 		});
+		$('#start_date').daterangepicker({
+			autoUpdateInput: false,
+			singleDatePicker: true,
+			timePicker: false,
+			timePickerIncrement: 30,
+			locale: {
+			format: 'DD/MM/YYYY'
+			}
+		}, function(chosen_date) {
+			$('#start_date').val(chosen_date.format('DD/MM/YYYY'));
+			dataTable.draw();
+		});
+		$('.datepicker').daterangepicker({
+				singleDatePicker: true,
+				timePicker: false,
+				timePickerIncrement: 1,
+				locale: {
+				format: 'DD/MM/YYYY'
+			}
+		});
+		// $('.datatable').on('click', '.duration', function() {
+		// var data = dataTable.row(this).data();
+		// // console.table(data);
+		// if (data) {
+		// 	$('#edit-duration').modal('show');
+		// 	$('#form-duration input[name=spl_id]').attr('value', data.id);
+		// 	$('#form-duration input[name=duration]').attr('value', data.duration);
+		// }
+		// });
 		// $("#form-duration").validate({
 		// 	errorElement: 'div',
 		// 	errorClass: 'invalid-feedback',
