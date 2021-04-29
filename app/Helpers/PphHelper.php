@@ -40,6 +40,94 @@ if (!function_exists('getGrossSalaryAfterPositionAllowance')) {
     return $grossNew;
   }
 }
+
+if(!function_exists('getGrossSalaryJoinMonth')){
+
+  /**
+   * Function helper to get gross salary additional join date
+   *
+   * @param float $grossSalary gross salary send from salary_reports table (gross_salary) column
+   * @param integer $multipleMonth
+   * @return float
+   */
+  function getGrossSalaryJoinMonth(float $grossSalary, $multipleMonth){
+    $grossJoinMonth = $grossSalary * $multipleMonth;
+
+    return $grossJoinMonth;
+  }
+}
+if(!function_exists('getTotal')){
+
+  /**
+   * grt total after additional gross salary join month and thr
+   *
+   * @param float $grossJoinMonth
+   * @param float $thr
+   * @return float
+   */
+  function getTotal(float $grossJoinMonth, float $thr){
+    $total = $grossJoinMonth + $thr;
+    return $total;
+  }
+}
+if(!function_exists('getTotalPositionAllowance')){
+
+  /**
+   * Additional Total and Percentage
+   *
+   * @param float $total
+   * @return float   
+   * */
+  function getTotalPositionAllowance(float $total){
+    $total_position_allowance = $total * PERCENTAGE_POSITION_ALLOWANCE;
+
+    return $total_position_allowance;
+  }
+}
+if(!function_exists('getNetSalaryThr')){
+
+  /**
+   * net salary dedecution from total and total position allowance
+   *
+   * @param float $total
+   * @param float $total_position_allowance
+   * @return float
+   */
+  function getNetSalaryThr(float $total, float $total_position_allowance)
+  {
+    $netSalary = $total - $total_position_allowance;
+
+    return $netSalary;
+  }
+}
+if(!function_exists('getPkpThr')){
+
+  /**
+   * get pkp deduction from net salary and ptkp
+   *
+   * @param float $netSalary
+   * @param float $ptkp
+   * @return float
+   */
+  function getPkpThr(float $netSalary, float $ptkp){
+    $pkp = $netSalary - $ptkp;
+
+    return $pkp;
+  }
+}
+if(!function_exists('getTarifThr')){
+
+  /**
+   * get Tarif additional pkp
+   *
+   * @param float $pkp
+   * @return float
+   */
+  function getTarifThr(float $pkp){
+    $tarif = $pkp * PERCENTAGE_POSITION_ALLOWANCE;
+    return $tarif;
+  }
+}
 if (!function_exists('getMultiplierMonth')) {
   /**
    * Function helper to get multiplier month
