@@ -726,8 +726,8 @@ class SalaryReportController extends Controller
         if ($exists) {
           $delete = $exists->delete();
         }
-        $dt = Carbon::createFromFormat('Y-m', $year . '-' . $month);
-        $checkDate = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $month . '-' . $year);
+        $dt            = Carbon::createFromFormat('Y-m', $year . '-' . $month);
+        $checkDate     = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $month . '-' . $year);
         $checkJoinDate = Employee::where('employees.status', 1)->where('employees.join_date', '<=', $checkDate)->find($employee->id);
         if ($checkJoinDate) {
           $period = changeDateFormat('Y-m-d', 01 . '-' . $month . '-' . $year);
@@ -741,26 +741,26 @@ class SalaryReportController extends Controller
           ]);
   
           if ($salaryreport) {
-            $basesalary = $this->get_employee_salary($employee->id);
-            $penaltyallowance = $this->getPenaltyAllowance($employee->id, $month, $year);
-            $allowance = $this->get_additional_allowance($employee->id, $month, $year);
-            $alphaPenalty = $this->getAlphaData($employee->id, $month, $year);
-            $deduction = $this->get_deduction($employee->id, $month, $year);
-            $overtime = $this->get_overtime($employee->id, $month, $year);
-            $attendance = $this->get_attendance($employee->id, $month, $year);
-            $driverallowance = $this->get_driver_allowance($employee->id, $month, $year);
-            $leave = $this->get_leave($employee->id, $month, $year);
-            $ptkp = $this->get_pkp($employee->ptkp);
-            $alpha = $this->get_alpha($employee->id, $month, $year);
+            $basesalary           = $this->get_employee_salary($employee->id);
+            $penaltyallowance     = $this->getPenaltyAllowance($employee->id, $month, $year);
+            $allowance            = $this->get_additional_allowance($employee->id, $month, $year);
+            $alphaPenalty         = $this->getAlphaData($employee->id, $month, $year);
+            $deduction            = $this->get_deduction($employee->id, $month, $year);
+            $overtime             = $this->get_overtime($employee->id, $month, $year);
+            $attendance           = $this->get_attendance($employee->id, $month, $year);
+            $driverallowance      = $this->get_driver_allowance($employee->id, $month, $year);
+            $leave                = $this->get_leave($employee->id, $month, $year);
+            $ptkp                 = $this->get_pkp($employee->ptkp);
+            $alpha                = $this->get_alpha($employee->id, $month, $year);
             $attendance_allowance = $this->get_attendance_allowance($employee->id, $month, $year);
-            $pph = $this->getPPhAllowance($employee->id, $month, $year);
+            $pph                  = $this->getPPhAllowance($employee->id, $month, $year);
             if ($basesalary) {
-              $periode_salary = changeDateFormat('Y-m', $year . '-' . $month);
-              $join_date = changeDateFormat('Y-m', $employee->join_date);
-              $resign_date = changeDateFormat('Y-m', $employee->resign_date);
-              $daily_salary = $basesalary->amount / 30;
+              $periode_salary   = changeDateFormat('Y-m', $year . '-' . $month);
+              $join_date        = changeDateFormat('Y-m', $employee->join_date);
+              $resign_date      = changeDateFormat('Y-m', $employee->resign_date);
+              $daily_salary     = $basesalary->amount / 30;
               $attendance_count = count($attendance);
-              $readConfigs = Config::where('option', 'setting_prorate')->first();
+              $readConfigs      = Config::where('option', 'setting_prorate')->first();
               if ($readConfigs->value == 'full') {
 
                 $date1 = $employee->join_date;
@@ -768,9 +768,9 @@ class SalaryReportController extends Controller
 
                 $diff = abs(strtotime($date2) - strtotime($date1));
 
-                $years = floor($diff / (365 * 60 * 60 * 24));
+                $years  = floor($diff / (365 * 60 * 60 * 24));
                 $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
-                $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+                $days   = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
 
                 if ($join_date == $periode_salary) {
                   SalaryReportDetail::create([
@@ -955,23 +955,23 @@ class SalaryReportController extends Controller
                   'message'   => 'PTKP for this employee name ' . $employee->name . ' not found. Please set PTKP or uncheck PPh 21 allowance for this generate month.'
                 );
               }
-              $gross = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
-              $deduction = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
-              $positionAllowance = getPositionAllowance($gross);
+              $gross                             = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
+              $deduction                         = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
+              $positionAllowance                 = getPositionAllowance($gross);
               $grossSalaryAfterPositionAllowance = getGrossSalaryAfterPositionAllowance($gross, $positionAllowance);
-              $multiplierMonth = getMultiplierMonth($employee->join_date);
-              $grossSalaryPerYear = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
-              $pkps = getPKP($grossSalaryPerYear, $ptkp->value);
-              $pph21Yearly = getPPH21Yearly($pkps, $employee->npwp);
+              $multiplierMonth                   = getMultiplierMonth($employee->join_date);
+              $grossSalaryPerYear                = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
+              $pkps                              = getPKP($grossSalaryPerYear, $ptkp->value);
+              $pph21Yearly                       = getPPH21Yearly($pkps, $employee->npwp);
 
               //PPH Gaji + THR
-              $grossSalaryJoinMonth = getGrossSalaryJoinMonth($gross, $multiplierMonth);
-              $getThr = $this->getThrReport($month, $year, $employee->id);
-              $total = getTotal($grossSalaryJoinMonth, $getThr->amount);
+              $grossSalaryJoinMonth   = getGrossSalaryJoinMonth($gross, $multiplierMonth);
+              $getThr                 = $this->getThrReport($month, $year, $employee->id);
+              $total                  = getTotal($grossSalaryJoinMonth, $getThr->amount);
               $totalPositionAllowance = getTotalPositionAllowance($total);
-              $netSalaryThr = getNetSalaryThr($total, $totalPositionAllowance);
-              $pkpThr = getPkpThr($netSalaryThr, $ptkp->value);
-              $tarifThr = getTarifThr($pkpThr);
+              $netSalaryThr           = getNetSalaryThr($total, $totalPositionAllowance);
+              $pkpThr                 = getPkpThr($netSalaryThr, $ptkp->value);
+              $tarifThr               = getTarifThr($pkpThr);
 
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
@@ -1053,8 +1053,8 @@ class SalaryReportController extends Controller
           $delete = $exists->delete();
         }
 
-        $dt = Carbon::createFromFormat('Y-m', $year . '-' . $month);
-        $checkDate = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $month . '-' . $year);
+        $dt            = Carbon::createFromFormat('Y-m', $year . '-' . $month);
+        $checkDate     = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $month . '-' . $year);
         $checkJoinDate = Employee::where('employees.status', 1)->where('employees.join_date', '<=', $checkDate)->find($employee->id);
         if ($checkJoinDate) {
           $period = changeDateFormat('Y-m-d', 01 . '-' . $month . '-' . $year);
@@ -1067,26 +1067,26 @@ class SalaryReportController extends Controller
             'status'        => -1
           ]);
           if ($salaryreport) {
-            $basesalary = $this->get_employee_salary($employee->id);
-            $penaltyallowance = $this->getPenaltyAllowance($employee->id, $month, $year);
-            $allowance = $this->get_additional_allowance($employee->id, $month, $year);
-            $alphaPenalty = $this->getAlphaData($employee->id, $month, $year);
-            $deduction = $this->get_deduction($employee->id, $month, $year);
-            $overtime = $this->get_overtime($employee->id, $month, $year);
-            $attendance = $this->get_attendance($employee->id, $month, $year);
-            $leave = $this->get_leave($employee->id, $month, $year);
-            $driverallowance = $this->get_driver_allowance($employee->id, $month, $year);
-            $ptkp = $this->get_pkp($employee->ptkp);
-            $alpha = $this->get_alpha($employee->id, $month, $year);
+            $basesalary           = $this->get_employee_salary($employee->id);
+            $penaltyallowance     = $this->getPenaltyAllowance($employee->id, $month, $year);
+            $allowance            = $this->get_additional_allowance($employee->id, $month, $year);
+            $alphaPenalty         = $this->getAlphaData($employee->id, $month, $year);
+            $deduction            = $this->get_deduction($employee->id, $month, $year);
+            $overtime             = $this->get_overtime($employee->id, $month, $year);
+            $attendance           = $this->get_attendance($employee->id, $month, $year);
+            $leave                = $this->get_leave($employee->id, $month, $year);
+            $driverallowance      = $this->get_driver_allowance($employee->id, $month, $year);
+            $ptkp                 = $this->get_pkp($employee->ptkp);
+            $alpha                = $this->get_alpha($employee->id, $month, $year);
             $attendance_allowance = $this->get_attendance_allowance($employee->id, $month, $year);
-            $pph = $this->getPPhAllowance($employee->id, $month, $year);
+            $pph                  = $this->getPPhAllowance($employee->id, $month, $year);
             if ($basesalary) {
-              $periode_salary = changeDateFormat('Y-m', $year . '-' . $month);
-              $join_date = changeDateFormat('Y-m', $employee->join_date);
-              $resign_date = changeDateFormat('Y-m', $employee->resign_date);
-              $daily_salary = $basesalary->amount / 30;
+              $periode_salary   = changeDateFormat('Y-m', $year . '-' . $month);
+              $join_date        = changeDateFormat('Y-m', $employee->join_date);
+              $resign_date      = changeDateFormat('Y-m', $employee->resign_date);
+              $daily_salary     = $basesalary->amount / 30;
               $attendance_count = count($attendance);
-              $readConfigs = Config::where('option', 'setting_prorate')->first();
+              $readConfigs      = Config::where('option', 'setting_prorate')->first();
               if ($readConfigs->value == 'full') {
 
                 $date1 = $employee->join_date;
@@ -1282,23 +1282,23 @@ class SalaryReportController extends Controller
                   'message'   => 'PTKP for this employee name ' . $employee->name . ' not found. Please set PTKP or uncheck PPh 21 allowance for this generate month.'
                 );
               }
-              $gross = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
-              $deduction = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
-              $positionAllowance = getPositionAllowance($gross);
+              $gross                             = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
+              $deduction                         = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
+              $positionAllowance                 = getPositionAllowance($gross);
               $grossSalaryAfterPositionAllowance = getGrossSalaryAfterPositionAllowance($gross, $positionAllowance);
-              $multiplierMonth = getMultiplierMonth($employee->join_date);
-              $grossSalaryPerYear = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
-              $pkps = getPKP($grossSalaryPerYear, $ptkp->value);
-              $pph21Yearly = getPPH21Yearly($pkps, $employee->npwp);
+              $multiplierMonth                   = getMultiplierMonth($employee->join_date);
+              $grossSalaryPerYear                = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
+              $pkps                              = getPKP($grossSalaryPerYear, $ptkp->value);
+              $pph21Yearly                       = getPPH21Yearly($pkps, $employee->npwp);
 
               //PPH Gaji + THR
-              $grossSalaryJoinMonth = getGrossSalaryJoinMonth($gross, $multiplierMonth);
-              $getThr = $this->getThrReport($month, $year, $employee->id);
-              $total = getTotal($grossSalaryJoinMonth, $getThr->amount);
-              $totalPositionAllowance = getTotalPositionAllowance($total);
-              $netSalaryThr = getNetSalaryThr($total, $totalPositionAllowance);
-              $pkpThr = getPkpThr($netSalaryThr, $ptkp->value);
-              $tarifThr = getTarifThr($pkpThr);
+              $grossSalaryJoinMonth             = getGrossSalaryJoinMonth($gross, $multiplierMonth);
+              $getThr                           = $this->getThrReport($month, $year, $employee->id);
+              $total                            = getTotal($grossSalaryJoinMonth, $getThr->amount);
+              $totalPositionAllowance           = getTotalPositionAllowance($total);
+              $netSalaryThr                     = getNetSalaryThr($total, $totalPositionAllowance);
+              $pkpThr                           = getPkpThr($netSalaryThr, $ptkp->value);
+              $tarifThr                         = getTarifThr($pkpThr);
 
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
@@ -1377,8 +1377,8 @@ class SalaryReportController extends Controller
           $delete = $exists->delete();
         }
 
-        $dt = Carbon::createFromFormat('Y-m', $year . '-' . $month);
-        $checkDate = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $month . '-' . $year);
+        $dt            = Carbon::createFromFormat('Y-m', $year . '-' . $month);
+        $checkDate     = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $month . '-' . $year);
         $checkJoinDate = Employee::where('employees.status', 1)->where('employees.join_date', '<=', $checkDate)->find($employee->id);
         if ($checkJoinDate) {
           $period = changeDateFormat('Y-m-d', 01 . '-' . $month . '-' . $year);
@@ -1391,26 +1391,26 @@ class SalaryReportController extends Controller
             'status'        => -1
           ]);
           if ($salaryreport) {
-            $basesalary = $this->get_employee_salary($employee->id);
-            $penaltyallowance = $this->getPenaltyAllowance($employee->id, $month, $year);
-            $allowance = $this->get_additional_allowance($employee->id, $month, $year);
-            $alphaPenalty = $this->getAlphaData($employee->id, $month, $year);
-            $deduction = $this->get_deduction($employee->id, $month, $year);
-            $overtime = $this->get_overtime($employee->id, $month, $year);
-            $attendance = $this->get_attendance($employee->id, $month, $year);
-            $leave = $this->get_leave($employee->id, $month, $year);
-            $alpha = $this->get_alpha($employee->id, $month, $year);
-            $driverallowance = $this->get_driver_allowance($employee->id, $month, $year);
-            $ptkp = $this->get_pkp($employee->ptkp);
+            $basesalary           = $this->get_employee_salary($employee->id);
+            $penaltyallowance     = $this->getPenaltyAllowance($employee->id, $month, $year);
+            $allowance            = $this->get_additional_allowance($employee->id, $month, $year);
+            $alphaPenalty         = $this->getAlphaData($employee->id, $month, $year);
+            $deduction            = $this->get_deduction($employee->id, $month, $year);
+            $overtime             = $this->get_overtime($employee->id, $month, $year);
+            $attendance           = $this->get_attendance($employee->id, $month, $year);
+            // $leave = $this->get_leave($employee->id, $month, $year);
+            // $alpha = $this->get_alpha($employee->id, $month, $year);
+            $driverallowance      = $this->get_driver_allowance($employee->id, $month, $year);
+            $ptkp                 = $this->get_pkp($employee->ptkp);
             $attendance_allowance = $this->get_attendance_allowance($employee->id, $month, $year);
-            $pph = $this->getPPhAllowance($employee->id, $month, $year);
+            $pph                  = $this->getPPhAllowance($employee->id, $month, $year);
             if ($basesalary) {
-              $periode_salary = changeDateFormat('Y-m', $year . '-' . $month);
-              $join_date = changeDateFormat('Y-m', $employee->join_date);
-              $resign_date = changeDateFormat('Y-m', $employee->resign_date);
-              $daily_salary = $basesalary->amount / 30;
+              $periode_salary   = changeDateFormat('Y-m', $year . '-' . $month);
+              $join_date        = changeDateFormat('Y-m', $employee->join_date);
+              $resign_date      = changeDateFormat('Y-m', $employee->resign_date);
+              $daily_salary     = $basesalary->amount / 30;
               $attendance_count = count($attendance);
-              $readConfigs = Config::where('option', 'setting_prorate')->first();
+              $readConfigs      = Config::where('option', 'setting_prorate')->first();
               if ($readConfigs->value == 'full') {
 
                 $date1 = $employee->join_date;
@@ -1418,9 +1418,9 @@ class SalaryReportController extends Controller
 
                 $diff = abs(strtotime($date2) - strtotime($date1));
 
-                $years = floor($diff / (365 * 60 * 60 * 24));
+                $years  = floor($diff / (365 * 60 * 60 * 24));
                 $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
-                $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+                $days   = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
 
                 if ($join_date == $periode_salary) {
                   SalaryReportDetail::create([
@@ -1605,23 +1605,23 @@ class SalaryReportController extends Controller
                   'message'   => 'PTKP for this employee name ' . $employee->name . ' not found. Please set PTKP or uncheck PPh 21 allowance for this generate month.'
                 );
               }
-              $gross = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
-              $deduction = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
-              $positionAllowance = getPositionAllowance($gross);
+              $gross                             = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
+              $deduction                         = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
+              $positionAllowance                 = getPositionAllowance($gross);
               $grossSalaryAfterPositionAllowance = getGrossSalaryAfterPositionAllowance($gross, $positionAllowance);
-              $multiplierMonth = getMultiplierMonth($employee->join_date);
-              $grossSalaryPerYear = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
-              $pkps = getPKP($grossSalaryPerYear, $ptkp->value);
-              $pph21Yearly = getPPH21Yearly($pkps, $employee->npwp);
+              $multiplierMonth                   = getMultiplierMonth($employee->join_date);
+              $grossSalaryPerYear                = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
+              $pkps                              = getPKP($grossSalaryPerYear, $ptkp->value);
+              $pph21Yearly                       = getPPH21Yearly($pkps, $employee->npwp);
 
               //PPH Gaji + THR
-              $grossSalaryJoinMonth = getGrossSalaryJoinMonth($gross, $multiplierMonth);
-              $getThr = $this->getThrReport($month, $year, $employee->id);
-              $total = getTotal($grossSalaryJoinMonth, $getThr->amount);
+              $grossSalaryJoinMonth   = getGrossSalaryJoinMonth($gross, $multiplierMonth);
+              $getThr                 = $this->getThrReport($month, $year, $employee->id);
+              $total                  = getTotal($grossSalaryJoinMonth, $getThr->amount);
               $totalPositionAllowance = getTotalPositionAllowance($total);
-              $netSalaryThr = getNetSalaryThr($total, $totalPositionAllowance);
-              $pkpThr = getPkpThr($netSalaryThr, $ptkp->value);
-              $tarifThr = getTarifThr($pkpThr);
+              $netSalaryThr           = getNetSalaryThr($total, $totalPositionAllowance);
+              $pkpThr                 = getPkpThr($netSalaryThr, $ptkp->value);
+              $tarifThr               = getTarifThr($pkpThr);
 
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
@@ -1742,10 +1742,10 @@ class SalaryReportController extends Controller
       DB::beginTransaction();
       
       foreach ($request->employee_name as $view_employee) {
-        $dt = Carbon::createFromFormat('Y-m', $request->year . '-' . $request->montly);
-        $checkDate = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $request->montly . '-' . $request->year);
+        $dt            = Carbon::createFromFormat('Y-m', $request->year . '-' . $request->montly);
+        $checkDate     = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $request->montly . '-' . $request->year);
         $checkJoinDate = Employee::select('employees.*')->where('employees.status', 1)->where('employees.join_date', '<=', $checkDate)->find($view_employee);
-        $exists = $this->check_periode($request->montly, $request->year, $view_employee);
+        $exists        = $this->check_periode($request->montly, $request->year, $view_employee);
         if ($exists) {
           $delete = $exists->delete();
         }
@@ -1760,24 +1760,25 @@ class SalaryReportController extends Controller
             'status'        => -1
           ]);
           if ($salaryreport) {
-            $basesalary = $this->get_employee_salary($view_employee);
-            $alphaPenalty = $this->getAlphaData($view_employee, $request->montly, $request->year);
-            $allowance = $this->get_additional_allowance($view_employee, $request->montly, $request->year);
-            $deduction = $this->get_deduction($view_employee, $request->montly, $request->year);
-            $overtime = $this->get_overtime($view_employee, $request->montly, $request->year);
-            $attendance = $this->get_attendance($view_employee, $request->montly, $request->year);
+            $basesalary           = $this->get_employee_salary($view_employee);
+            $alphaPenalty         = $this->getAlphaData($view_employee, $request->montly, $request->year);
+            $allowance            = $this->get_additional_allowance($view_employee, $request->montly, $request->year);
+            $deduction            = $this->get_deduction($view_employee, $request->montly, $request->year);
+            $overtime             = $this->get_overtime($view_employee, $request->montly, $request->year);
+            // $attendance = $this->get_attendance($view_employee, $request->montly, $request->year);
             // $leave = $this->get_leave($view_employee, $request->montly, $request->year);
             // $alpha = $this->get_alpha($view_employee, $request->montly, $request->year);
-            $driverallowance = $this->get_driver_allowance($view_employee, $request->montly, $request->year);
-            $penaltyallowance = $this->getPenaltyAllowance($view_employee, $request->montly, $request->year);
-            $employee = Employee::with('department')->with('title')->find($view_employee);
-            $ptkp = $this->get_pkp($employee->ptkp);
+            $driverallowance      = $this->get_driver_allowance($view_employee, $request->montly, $request->year);
+            $penaltyallowance     = $this->getPenaltyAllowance($view_employee, $request->montly, $request->year);
+            $employee             = Employee::with('department')->with('title')->find($view_employee);
+            $ptkp                 = $this->get_pkp($employee->ptkp);
             $attendance_allowance = $this->get_attendance_allowance($view_employee, $request->montly, $request->year);
-            $pph = $this->getPPhAllowance($view_employee, $request->montly, $request->year);
+            $pph                  = $this->getPPhAllowance($view_employee, $request->montly, $request->year);
+
             if ($basesalary) {
               $periode_salary = changeDateFormat('Y-m', $request->year . '-' . $request->montly);
-              $join_date = changeDateFormat('Y-m', $employee->join_date);
-              $resign_date = changeDateFormat('Y-m', $employee->resign_date);
+              $join_date      = changeDateFormat('Y-m', $employee->join_date);
+              $resign_date    = changeDateFormat('Y-m', $employee->resign_date);
               // $daily_salary = $basesalary->amount / 30;
               // $attendance_count = count($attendance);
               $readConfigs = Config::where('option', 'setting_prorate')->first();
@@ -1788,9 +1789,9 @@ class SalaryReportController extends Controller
 
                 $diff = abs(strtotime($date2) - strtotime($date1));
 
-                $years = floor($diff / (365 * 60 * 60 * 24));
+                $years  = floor($diff / (365 * 60 * 60 * 24));
                 $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
-                $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+                $days   = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
 
                 if($join_date == $periode_salary)
                 {
@@ -1997,23 +1998,23 @@ class SalaryReportController extends Controller
                   'message'   => 'PTKP for this employee name ' . $employee->name . ' not found. Please set PTKP or uncheck PPh 21 allowance for this generate month.'
                 ], 400);
               }
-              $gross = $this->gross_salary($id) ? $this->gross_salary($id) : 0;
-              $deduction = $this->deduction_salary($id) ? $this->deduction_salary($id) : 0;
-              $positionAllowance = getPositionAllowance($gross);
+              $gross                             = $this->gross_salary($id) ? $this->gross_salary($id) : 0;
+              $deduction                         = $this->deduction_salary($id) ? $this->deduction_salary($id) : 0;
+              $positionAllowance                 = getPositionAllowance($gross);
               $grossSalaryAfterPositionAllowance = getGrossSalaryAfterPositionAllowance($gross, $positionAllowance);
-              $multiplierMonth = getMultiplierMonth($employee->join_date);
-              $grossSalaryPerYear = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
-              $pkps = getPKP($grossSalaryPerYear, $ptkp->value);
-              $pph21Yearly = getPPH21Yearly($pkps, $employee->npwp);
+              $multiplierMonth                   = getMultiplierMonth($employee->join_date);
+              $grossSalaryPerYear                = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
+              $pkps                              = getPKP($grossSalaryPerYear, $ptkp->value);
+              $pph21Yearly                       = getPPH21Yearly($pkps, $employee->npwp);
               
               //PPH Gaji + THR
-              $grossSalaryJoinMonth = getGrossSalaryJoinMonth($gross, $multiplierMonth);
-              $getThr = $this->getThrReport($request->monthly, $request->year, $employee->id);
-              $total = getTotal($grossSalaryJoinMonth, $getThr->amount);
+              $grossSalaryJoinMonth   = getGrossSalaryJoinMonth($gross, $multiplierMonth);
+              $getThr                 = $this->getThrReport($request->monthly, $request->year, $employee->id);
+              $total                  = getTotal($grossSalaryJoinMonth, $getThr->amount);
               $totalPositionAllowance = getTotalPositionAllowance($total);
-              $netSalaryThr = getNetSalaryThr($total, $totalPositionAllowance);
-              $pkpThr = getPkpThr($netSalaryThr, $ptkp->value);
-              $tarifThr = getTarifThr($pkpThr);
+              $netSalaryThr           = getNetSalaryThr($total, $totalPositionAllowance);
+              $pkpThr                 = getPkpThr($netSalaryThr, $ptkp->value);
+              $tarifThr               = getTarifThr($pkpThr);
     
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
