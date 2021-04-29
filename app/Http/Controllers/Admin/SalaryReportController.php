@@ -55,7 +55,6 @@ const LABEL_PPH_YEARLY            = 'PPh 21 (Yearly)';
 const LABEL_PPH_MONTHLY           = 'Potongan PPh 21';
 const LABEL_PPH_TOTAL             = 'PPH Total';
 const LABEL_PPH_THR               = 'PPH 21 + THR';
-
 class SalaryReportController extends Controller
 {
   function __construct()
@@ -964,6 +963,16 @@ class SalaryReportController extends Controller
               $grossSalaryPerYear = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
               $pkps = getPKP($grossSalaryPerYear, $ptkp->value);
               $pph21Yearly = getPPH21Yearly($pkps, $employee->npwp);
+
+              //PPH Gaji + THR
+              $grossSalaryJoinMonth = getGrossSalaryJoinMonth($gross, $multiplierMonth);
+              $getThr = $this->getThrReport($month, $year, $employee->id);
+              $total = getTotal($grossSalaryJoinMonth, $getThr->amount);
+              $totalPositionAllowance = getTotalPositionAllowance($total);
+              $netSalaryThr = getNetSalaryThr($total, $totalPositionAllowance);
+              $pkpThr = getPkpThr($netSalaryThr, $ptkp->value);
+              $tarifThr = getTarifThr($pkpThr);
+
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
@@ -999,6 +1008,15 @@ class SalaryReportController extends Controller
                 'type'              => 0,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
+              ]);
+              SalaryReportDetail::create([
+                'salary_report_id' => $salaryreport->id,
+                'employee_id'      => $employee->id,
+                'description'      => LABEL_PPH_THR,
+                'total'            => $tarifThr > 0 ? $tarifThr - $pph21Yearly : 0,
+                'type'             => 0,
+                'status'           => 'Draft',
+                'is_added'         => 'NO'
               ]);
             }
             $salaryreport->gross_salary = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
@@ -1272,6 +1290,16 @@ class SalaryReportController extends Controller
               $grossSalaryPerYear = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
               $pkps = getPKP($grossSalaryPerYear, $ptkp->value);
               $pph21Yearly = getPPH21Yearly($pkps, $employee->npwp);
+
+              //PPH Gaji + THR
+              $grossSalaryJoinMonth = getGrossSalaryJoinMonth($gross, $multiplierMonth);
+              $getThr = $this->getThrReport($month, $year, $employee->id);
+              $total = getTotal($grossSalaryJoinMonth, $getThr->amount);
+              $totalPositionAllowance = getTotalPositionAllowance($total);
+              $netSalaryThr = getNetSalaryThr($total, $totalPositionAllowance);
+              $pkpThr = getPkpThr($netSalaryThr, $ptkp->value);
+              $tarifThr = getTarifThr($pkpThr);
+
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
@@ -1307,6 +1335,15 @@ class SalaryReportController extends Controller
                 'type'              => 0,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
+              ]);
+              SalaryReportDetail::create([
+                'salary_report_id' => $salaryreport->id,
+                'employee_id'      => $employee->id,
+                'description'      => LABEL_PPH_THR,
+                'total'            => $tarifThr > 0 ? $tarifThr - $pph21Yearly : 0,
+                'type'             => 0,
+                'status'           => 'Draft',
+                'is_added'         => 'NO'
               ]);
             }
             $salaryreport->gross_salary = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
@@ -1576,6 +1613,16 @@ class SalaryReportController extends Controller
               $grossSalaryPerYear = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
               $pkps = getPKP($grossSalaryPerYear, $ptkp->value);
               $pph21Yearly = getPPH21Yearly($pkps, $employee->npwp);
+
+              //PPH Gaji + THR
+              $grossSalaryJoinMonth = getGrossSalaryJoinMonth($gross, $multiplierMonth);
+              $getThr = $this->getThrReport($month, $year, $employee->id);
+              $total = getTotal($grossSalaryJoinMonth, $getThr->amount);
+              $totalPositionAllowance = getTotalPositionAllowance($total);
+              $netSalaryThr = getNetSalaryThr($total, $totalPositionAllowance);
+              $pkpThr = getPkpThr($netSalaryThr, $ptkp->value);
+              $tarifThr = getTarifThr($pkpThr);
+
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
@@ -1608,6 +1655,15 @@ class SalaryReportController extends Controller
                 'employee_id'       => $employee->id,
                 'description'       => LABEL_PPH_MONTHLY,
                 'total'             => ($pph21Yearly / $multiplierMonth) > 0 ? $pph21Yearly / $multiplierMonth : 0,
+                'type'              => 0,
+                'status'            => 'Draft',
+                'is_added'          => 'NO'
+              ]);
+              SalaryReportDetail::create([
+                'salary_report_id'  => $salaryreport->id,
+                'employee_id'       => $employee->id,
+                'description'       => LABEL_PPH_THR,
+                'total'             => $tarifThr > 0 ? $tarifThr - $pph21Yearly : 0,
                 'type'              => 0,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
@@ -1999,7 +2055,7 @@ class SalaryReportController extends Controller
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
                 'description'       => LABEL_PPH_THR,
-                'total'             => $tarifThr > 0 ? $tarifThr - $pph21Yearly : 0,
+                'total'             => $tarifThr > 0 ? $tarifThr - $pph21Yearly :0,
                 'type'              => 0,
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
