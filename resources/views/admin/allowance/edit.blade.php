@@ -115,7 +115,7 @@
 									<div class="form-group">
 										<label>Prorate</label>
 										<select name="prorate" id="prorate" class="form-control select2" style="width: 100%" aria-hidden="true">
-											<option value="yes" @if ($allowance->prorate == 'Yes') selected @endif>Yes</option>
+											<option value="Yes" @if ($allowance->prorate == 'Yes') selected @endif>Yes</option>
 											<option value="No"  @if ($allowance->prorate == 'No') selected @endif>No</option>
 										</select>
 									</div>
