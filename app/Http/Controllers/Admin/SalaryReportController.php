@@ -2250,7 +2250,7 @@ class SalaryReportController extends Controller
               
               //PPH Gaji + THR
               $grossSalaryJoinMonth   = getGrossSalaryJoinMonth($gross, $multiplierMonth);
-              $getThr                 = $this->getThrReport($request->monthly, $request->year, $employee->id);
+              $getThr                 = $this->getThrReport($request->montly, $request->year, $employee->id);
               $total                  = getTotal($grossSalaryJoinMonth, $getThr->amount);
               $totalPositionAllowance = getTotalPositionAllowance($total);
               $netSalaryThr           = getNetSalaryThr($total, $totalPositionAllowance);
