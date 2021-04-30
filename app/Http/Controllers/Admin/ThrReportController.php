@@ -9,6 +9,7 @@ use App\Models\Title;
 use App\Models\Employee;
 use App\Models\EmployeeSalary;
 use App\Models\Attendance;
+use App\Models\Config;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -225,7 +226,24 @@ class ThrReportController extends Controller
 
         return $exists;
     }
+    public function getAllowanceThr($id, $month, $year)
+    {
+        $query = DB::table('employee_allowances');
+        $query->selectRaw("sum(employee_allowances.value::numeric) as allowance_value");
+        $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
+        $query->where('employee_allowances.employee_id', '=', $id);
+        $query->where('allowances.thr', '=', 'Yes');
+        $query->where('employee_allowances.month', '=', $month);
+        $query->where('employee_allowances.year', '=', $year);
+        $allowances = $query->get();
 
+        $data = [];
+        foreach ($allowances as $allowance) {
+            $data[] = $allowance;
+        }
+
+        return $data;
+    }
     public function get_additional_allowance($id, $month, $year)
     {
         $query = DB::table('employee_allowances');
@@ -734,13 +752,16 @@ class ThrReportController extends Controller
                     $delete = $exists->delete();
                 }
                 if($checkJoinDate){
-                    $date1 = $checkJoinDate->join_date;
-                    $date2 = date('Y-m-d');
+                    $date1 = date("Y-m", strtotime($checkJoinDate->join_date));
+                    $date1 = $date1."-31";
+                    $date2 = date('Y-m');
+                    $date2 = $date2 . "-01";
 
-                    $diff = abs(strtotime("+1months", strtotime($date2)) - strtotime($date1));
+                    $diff = abs(strtotime($date2) - strtotime($date1));
 
                     $years = floor($diff / (365 * 60 * 60 * 24));
                     $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+                    $months = $months + 1;
                     $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
                     
                     // dd($date1, $date2,$diff,$months);
@@ -756,16 +777,21 @@ class ThrReportController extends Controller
                     if($thrreport){
                         $basesalary = $this->get_employee_salary($view_employee);
                         $allowance = $this->get_additional_allowance($view_employee, $request->montly, $request->year);
-                        // dd($allowance);
+                        $configThr = Config::where('option', 'thr')->first();
                         $employee = Employee::with('department')->with('title')->find($view_employee);
-                        if($basesalary && $allowance){
-                            foreach($allowance as $key => $value){
+
+                        if($configThr->value == 'basic_allowance'){
+                            if ($basesalary) {
+                                $amount_allowance = 0;
+                                foreach ($allowance as $key => $value) {
+                                   $amount_allowance = $amount_allowance +  $value->value;
+                                }
                                 if ($thrreport->period < 12) {
                                     $thrdetail = ThrReportDetail::create([
                                         'thr_report_id'        => $thrreport->id,
                                         'employee_id'          => $employee->id,
                                         'description'          => 'THR Basic + Allowance',
-                                        'total'                => number_format((float)(($basesalary->amount + $value->value) / 12 * $thrreport->period), 2, '.', ''),
+                                        'total'                => number_format((float)(($basesalary->amount + $amount_allowance) / 12 * $thrreport->period), 2, '.', ''),
                                         'is_added'             => 'No'
                                     ]);
                                     $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
@@ -781,8 +807,8 @@ class ThrReportController extends Controller
                                     $thrdetail = ThrReportDetail::create([
                                         'thr_report_id'        => $thrreport->id,
                                         'employee_id'          => $employee->id,
-                                        'description'          => 'THR Basic + Allowance 02',
-                                        'total'                => number_format((float)(($basesalary->amount + $value->value) / 12 * 12), 2, '.', ''),
+                                        'description'          => 'THR Basic + Allowance',
+                                        'total'                => number_format((float)(($basesalary->amount + $amount_allowance) / 12 * 12), 2, '.', ''),
                                         'is_added'             => 'No'
                                     ]);
                                     $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
@@ -796,21 +822,21 @@ class ThrReportController extends Controller
                                         ], 400);
                                     }
                                 }
-                            }     
-                        }else{
+                            }
+                        } else {
                             if ($thrreport->period < 12) {
                                 $thrdetail = ThrReportDetail::create([
                                     'thr_report_id'        => $thrreport->id,
                                     'employee_id'          => $employee->id,
-                                    'description'          => 'THR Basic 03',
+                                    'description'          => 'THR Basic',
                                     'total'                => number_format((float)($basesalary->amount / 12 * $thrreport->period), 2, '.', ''),
                                     'is_added'             => 'No'
                                 ]);
 
                                 $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
                                 $thrreport->save();
-                                
-                                
+
+
                                 if (!$thrdetail) {
                                     DB::rollBack();
                                     return response()->json([
@@ -818,12 +844,11 @@ class ThrReportController extends Controller
                                         'message'   => $thrdetail
                                     ], 400);
                                 }
-                               
                             } else {
                                 $thrdetail = ThrReportDetail::create([
                                     'thr_report_id'        => $thrreport->id,
                                     'employee_id'          => $employee->id,
-                                    'description'          => 'THR Basic 04',
+                                    'description'          => 'THR Basic',
                                     'total'                => number_format((float)($basesalary->amount / 12 * 12), 2, '.', ''),
                                     'is_added'             => 'No'
                                 ]);
@@ -839,6 +864,7 @@ class ThrReportController extends Controller
                                 }
                             }
                         }
+                        
                         
                     }elseif (!$thrreport){
                         DB::rollBack();

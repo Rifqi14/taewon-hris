@@ -55,7 +55,7 @@ const LABEL_NET_SALARY_YEAR       = 'Net Salary (Yearly)';
 const LABEL_PPH_YEARLY            = 'PPh 21 (Yearly)';
 const LABEL_PPH_MONTHLY           = 'Potongan PPh 21';
 const LABEL_PPH_TOTAL             = 'PPH Total';
-const LABEL_PPH_THR               = 'PPH 21 + THR';
+const LABEL_PPH_THR               = 'PPH 21 THR';
 class SalaryReportController extends Controller
 {
   function __construct()
