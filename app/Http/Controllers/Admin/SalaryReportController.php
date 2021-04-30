@@ -518,8 +518,8 @@ class SalaryReportController extends Controller
   }
   public function getAllowanceProrate($id, $month, $year)
   {
-    $query = DB::table('employee_allowances.*');
-    $query->selectRaw("SUM(value) as allowance_value");
+    $query = DB::table('employee_allowances');
+    $query->selectRaw("sum(employee_allowances.value::numeric) as allowance_value");
     $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
     $query->where('employee_allowances.employee_id', '=', $id);
     $query->where('allowances.prorate','=', 'Yes');
