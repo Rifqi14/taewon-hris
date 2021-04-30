@@ -114,8 +114,8 @@
 									<div class="form-group">
 										<label>Prorate</label>
 										<select name="prorate" id="prorate" class="form-control select2" style="width: 100%" aria-hidden="true">
-											<option value="yes">Yes</option>
-											<option value="no">No</option>
+											<option value="Yes">Yes</option>
+											<option value="No">No</option>
 										</select>
 									</div>
 								</div>
@@ -123,8 +123,8 @@
 									<div class="form-group">
 										<label>THR</label>
 										<select name="thr" id="thr" class="form-control select2" style="width: 100%" aria-hidden="true">
-											<option value="yes">Yes</option>
-											<option value="no">No</option>
+											<option value="Yes">Yes</option>
+											<option value="No">No</option>
 										</select>
 									</div>
 								</div>

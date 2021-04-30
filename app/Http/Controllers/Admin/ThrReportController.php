@@ -234,7 +234,7 @@ class ThrReportController extends Controller
         $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
         $query->leftJoin('allowance_categories', 'allowance_categories.key', '=', 'allowances.category');
         $query->leftJoin('group_allowances', 'group_allowances.id', 'allowances.group_allowance_id');
-        $query->where('allowances.thr', '=', 'yes');
+        $query->where('allowances.thr', '=', 'Yes');
         $query->where('employee_allowances.employee_id', '=', $id);
         $query->where('employee_allowances.month', '=', $month);
         $query->where('employee_allowances.year', '=', $year);

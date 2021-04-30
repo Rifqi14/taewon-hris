@@ -115,8 +115,8 @@
 									<div class="form-group">
 										<label>Prorate</label>
 										<select name="prorate" id="prorate" class="form-control select2" style="width: 100%" aria-hidden="true">
-											<option value="yes" @if ($allowance->prorate == 'yes') selected @endif>Yes</option>
-											<option value="no"  @if ($allowance->prorate == 'no') selected @endif>No</option>
+											<option value="yes" @if ($allowance->prorate == 'Yes') selected @endif>Yes</option>
+											<option value="no"  @if ($allowance->prorate == 'No') selected @endif>No</option>
 										</select>
 									</div>
 								</div>
@@ -124,8 +124,8 @@
 									<div class="form-group">
 										<label>THR</label>
 										<select name="thr" id="thr" class="form-control select2" style="width: 100%" aria-hidden="true">
-											<option value="yes" @if ($allowance->thr == 'yes') selected @endif>Yes</option>
-											<option value="no" @if ($allowance->thr == 'no') selected @endif>No</option>
+											<option value="yes" @if ($allowance->thr == 'Yes') selected @endif>Yes</option>
+											<option value="no" @if ($allowance->thr == 'No') selected @endif>No</option>
 										</select>
 									</div>
 								</div>

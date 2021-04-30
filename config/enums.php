@@ -10,11 +10,11 @@ return [
         'partially' => "Partially",
     ],
     'type_prorates' => [
-        'basic_sallary'      => "Basic Salary",
+        'basic_salary'      => "Basic Salary",
         'basic_allowance'     => "Basic Salary + Allowance",
     ],
     'thr' => [
-        'basic_sallary'      => "Basic Salary",
+        'basic_salary'      => "Basic Salary",
         'basic_allowance'     => "Basic Salary + Allowance",
     ],
     'equipment_types' => [
