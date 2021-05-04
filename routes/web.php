@@ -597,5 +597,9 @@ Route::group(['prefix' => 'admin'], function () {
         //Route Warning Letter
         Route::get('/warningletter/read', 'Admin\WarningLetterController@read')->name('warningletter.read');
         Route::resource('/warningletter', 'Admin\WarningLetterController');
+
+        //Route Salary Deduction
+        Route::get('/salarydeduction/read', 'Admin\SalaryDeductionController@read')->name('salarydeduction.read');
+        Route::resource('/salarydeduction', 'Admin\SalaryDeductionController');
     });
 });
