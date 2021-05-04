@@ -516,6 +516,22 @@ class SalaryReportController extends Controller
 
     return $data;
   }
+  public function get_salarydeduction($id, $month, $year)
+  {
+    $query = DB::table('salary_deductions');
+    $query->select('salary_deductions.*');
+    $query->where('employee_id', '=', $id);
+    $query->whereMonth('date', '=', $month);
+    $query->whereYear('date', '=', $year);
+    $salary_deductions = $query->get();
+
+    $data = [];
+    foreach ($salary_deductions as $salary_deduction) {
+      $data[] = $salary_deduction;
+    }
+
+    return $data;
+  }
   public function getAllowanceProrate($id, $month, $year)
   {
     $query = DB::table('employee_allowances');
@@ -774,6 +790,7 @@ class SalaryReportController extends Controller
             $attendance_allowance = $this->get_attendance_allowance($employee->id, $month, $year);
             $pph                  = $this->getPPhAllowance($employee->id, $month, $year);
             $allowance_prorates   = $this->getAllowanceProrate($employee->id, $month, $year);
+            $salary_deduction     = $this->get_salarydeduction($employee->id, $month, $year);
             if ($basesalary) {
               $periode_salary   = changeDateFormat('Y-m', $year . '-' . $month);
               $join_date        = changeDateFormat('Y-m', $employee->join_date);
@@ -945,6 +962,19 @@ class SalaryReportController extends Controller
                     'is_added'          => 'NO'
                   ]);
                 }
+              }
+            }
+            if($salary_deduction){
+              foreach ($salary_deduction as $key => $value) {
+                  SalaryReportDetail::create([
+                    'salary_report_id'  => $salaryreport->id,
+                    'employee_id'       => $employee->id,
+                    'description'       => $value->description,
+                    'total'             => $value->nominal,
+                    'type'              => 0,
+                    'status'            => 'Salary Deduction',
+                    'is_added'          => 'NO'
+                  ]);
               }
             }
             if ($overtime && $employee->overtime == 'yes') {
@@ -1155,7 +1185,8 @@ class SalaryReportController extends Controller
             $alpha                = $this->get_alpha($employee->id, $month, $year);
             $attendance_allowance = $this->get_attendance_allowance($employee->id, $month, $year);
             $pph                  = $this->getPPhAllowance($employee->id, $month, $year);
-            $allowance_prorates = $this->getAllowanceProrate($employee->id, $month, $year);
+            $allowance_prorates   = $this->getAllowanceProrate($employee->id, $month, $year);
+            $salary_deduction     = $this->get_salarydeduction($employee->id, $month, $year);
             if ($basesalary) {
               $periode_salary   = changeDateFormat('Y-m', $year . '-' . $month);
               $join_date        = changeDateFormat('Y-m', $employee->join_date);
@@ -1327,6 +1358,19 @@ class SalaryReportController extends Controller
                     'is_added'          => 'NO'
                   ]);
                 }
+              }
+            }
+            if ($salary_deduction) {
+              foreach ($salary_deduction as $key => $value) {
+                SalaryReportDetail::create([
+                  'salary_report_id'  => $salaryreport->id,
+                  'employee_id'       => $employee->id,
+                  'description'       => $value->description,
+                  'total'             => $value->nominal,
+                  'type'              => 0,
+                  'status'            => 'Salary Deduction',
+                  'is_added'          => 'NO'
+                ]);
               }
             }
             if ($overtime && $employee->overtime == 'yes') {
@@ -1535,6 +1579,7 @@ class SalaryReportController extends Controller
             $attendance_allowance = $this->get_attendance_allowance($employee->id, $month, $year);
             $pph                  = $this->getPPhAllowance($employee->id, $month, $year);
             $allowance_prorates   = $this->getAllowanceProrate($employee->id, $month, $year);
+            $salary_deduction     = $this->get_salarydeduction($employee->id, $month, $year);
 
             if ($basesalary) {
               $periode_salary   = changeDateFormat('Y-m', $year . '-' . $month);
@@ -1683,6 +1728,7 @@ class SalaryReportController extends Controller
                 }
               }
             }
+
             if ($deduction) {
               foreach ($deduction as $key => $value) {
                 if ($value->group_allowance_id) {
@@ -1707,6 +1753,20 @@ class SalaryReportController extends Controller
                     'is_added'          => 'NO'
                   ]);
                 }
+              }
+            }
+
+            if ($salary_deduction) {
+              foreach ($salary_deduction as $key => $value) {
+                SalaryReportDetail::create([
+                  'salary_report_id'  => $salaryreport->id,
+                  'employee_id'       => $employee->id,
+                  'description'       => $value->description,
+                  'total'             => $value->nominal,
+                  'type'              => 0,
+                  'status'            => 'Salary Deduction',
+                  'is_added'          => 'NO'
+                ]);
               }
             }
             if ($overtime && $employee->overtime == 'yes') {
@@ -1963,6 +2023,8 @@ class SalaryReportController extends Controller
             $attendance_allowance = $this->get_attendance_allowance($view_employee, $request->montly, $request->year);
             $pph                  = $this->getPPhAllowance($view_employee, $request->montly, $request->year);
             $allowance_prorates   = $this->getAllowanceProrate($view_employee, $request->montly, $request->year);
+            $salary_deduction     = $this->get_salarydeduction($view_employee, $request->montly, $request->year);
+
 
             if ($basesalary) {
               $periode_salary = changeDateFormat('Y-m', $request->year . '-' . $request->montly);
@@ -2142,6 +2204,19 @@ class SalaryReportController extends Controller
                     'is_added'          => 'NO'
                   ]);
                 }
+              }
+            }
+            if ($salary_deduction) {
+              foreach ($salary_deduction as $key => $value) {
+                SalaryReportDetail::create([
+                  'salary_report_id' => $salaryreport->id,
+                  'employee_id'      => $employee->id,
+                  'description'      => $value->description,
+                  'total'            => $value->nominal,
+                  'type'             => 0,
+                  'status'           => 'Salary Deduction',
+                  'is_added'         => 'NO'
+                ]);
               }
             }
             if ($overtime && $employee->overtime == 'yes') {
