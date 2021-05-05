@@ -18,7 +18,7 @@
         <div class="card-header" style="height: 57px;">
           <h3 class="card-title">Salary Deduction Data</h3>
         </div>
-        <div class="card-body" style="height:225px">
+        <div class="card-body">
           <form id="form" action="{{ route('salarydeduction.update', ['id'=>$salarydeduction->id]) }}" method="post" autocomplete="off">
             {{ csrf_field() }}
             <input type="hidden" name="_method" value="put">
@@ -32,8 +32,40 @@
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
+                  <label>NIK <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" id="nik" name="nik" placeholder="NIK" value="{{$salarydeduction->nik}}" readonly required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <!-- text input -->
+                <div class="form-group">
+                  <label>Position <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control select2" required name="position" id="position" value="{{$salarydeduction->title->name}}" readonly placeholder="Position">
+                  <input type="hidden" id="title_id" name="title_id" value="{{$salarydeduction->title_id}}">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Department <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" name="department" id="department" value="{{$salarydeduction->department->name}}" placeholder="Department" readonly required>
+                  <input type="hidden" id="department_id" name="department_id" value="{{$salarydeduction->department_id}}">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Workgroup <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" name="workgroup" id="workgroup" value="{{$salarydeduction->workgroup->name}}" placeholder="Workgroup" readonly required>
+                  <input type="hidden" id="workgroup_id" name="workgroup_id" value="{{$salarydeduction->workgroup_id}}">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
                   <label>Nominal <b class="text-danger">*</b></label>
-                  <input type="number" class="form-control" name="nominal" value="{{$salarydeduction->nominal }}" placeholder="Nominal" required>
+                  <input type="number" class="form-control" name="nominal" placeholder="Nominal" value="{{$salarydeduction->nominal}}" required>
                 </div>
               </div>
             </div>
@@ -54,7 +86,7 @@
                 class="fa fa-reply"></i></a>
           </div>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="height:289px">
           <form role="form">
             <div class="row">
               <div class="col-sm-12">
@@ -120,6 +152,13 @@
                   option.push({
                   id:item.id,
                   text: `${item.name}`,
+                  nik: item.nik,
+                  department_id: item.department_id,
+                  title_id: item.title_id,
+                  workgroup_id: item.workgroup_id,
+                  department: item.department_name,
+                  title: item.title_name,
+                  workgroup: item.workgroup_name
                   });
               });
               return {
@@ -143,6 +182,21 @@
       });
       $("#employee_id").select2('data',{id:{{$salarydeduction->employee_id}},text:'{{$salarydeduction->employee->name}}'}).trigger('change');
       $(document).on("change", "#employee_id", function () {
+        var nik = $(this).select2('data').nik;
+        var title_id = $(this).select2('data').title_id;
+        var department_id = $(this).select2('data').department_id;
+        var workgroup_id = $(this).select2('data').workgroup_id;
+        var department = $(this).select2('data').department;
+        var title = $(this).select2('data').title;
+        var workgroup = $(this).select2('data').workgroup;
+            // alert(stock);
+        $('#nik').attr("value",nik);
+        $('#title_id').attr("value",title_id);
+        $('#department_id').attr("value",department_id);
+        $('#workgroup_id').attr("value",workgroup_id);
+        $('#department').attr("value",department);
+        $('#position').attr("value",title);
+        $('#workgroup').attr("value",workgroup);
         if (!$.isEmptyObject($('#form').validate().submitted)) {
           $('#form').validate().form();
         }

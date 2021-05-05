@@ -97,10 +97,14 @@ class SalaryDeductionController extends Controller
         }
 
         $salarydeduction = SalaryDeduction::create([
-            'employee_id' => $request->employee_id,
-            'date'        => date('Y-m-d', strtotime($request->date)),
-            'nominal'     => $request->nominal,
-            'description' => $request->description
+            'employee_id'  => $request->employee_id,
+            'date'         => date('Y-m-d', strtotime($request->date)),
+            'nominal'      => $request->nominal,
+            'description'  => $request->description,
+            'nik'          => $request->nik,
+            'title_id'     => $request->title_id,
+            'department_id'=> $request->department_id,
+            'workgroup_id' => $request->workgroup_id
         ]);
 
         if (!$salarydeduction) {
@@ -163,10 +167,14 @@ class SalaryDeductionController extends Controller
         }
         
         $salarydeduction = SalaryDeduction::find($id);
-        $salarydeduction->employee_id = $request->employee_id;
-        $salarydeduction->date        = $request->date;
-        $salarydeduction->nominal     = $request->nominal;
-        $salarydeduction->description = $request->description;
+        $salarydeduction->employee_id   = $request->employee_id;
+        $salarydeduction->date          = $request->date;
+        $salarydeduction->nominal       = $request->nominal;
+        $salarydeduction->description   = $request->description;
+        $salarydeduction->nik           = $request->nik;
+        $salarydeduction->title_id      = $request->title_id;
+        $salarydeduction->department_id = $request->department_id;
+        $salarydeduction->workgroup_id  = $request->workgroup_id;
         $salarydeduction->save();
 
         if (!$salarydeduction) {
