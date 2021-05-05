@@ -156,6 +156,23 @@
             </div>
           </div>
           <div class="row">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label>Coordinate Slip</label>
+								<select name="coordinate[]" id="coordinate" multiple="multiple" class="form-control select2" Placeholder="Coordinate" style="width: 100%" aria-hidden="true">
+									<option value=""></option>
+									<option value="3.3" @if (in_array('3.3', $leavesetting->coordinate)) selected @endif>3.3</option>
+									<option value="3.4" @if (in_array('3.4', $leavesetting->coordinate)) selected @endif>3.4</option>
+									<option value="3.5"  @if (in_array('3.5', $leavesetting->coordinate)) selected @endif>3.5</option>
+									<option value="3.6"  @if (in_array('3.6', $leavesetting->coordinate)) selected @endif>3.6</option>
+									<option value="5.1"  @if (in_array('5.1', $leavesetting->coordinate)) selected @endif>5.1</option>
+									<option value="5.2"  @if (in_array('5.2', $leavesetting->coordinate)) selected @endif>5.2</option>
+									<option value="5.3"  @if (in_array('5.3', $leavesetting->coordinate)) selected @endif>5.3</option>
+								</select>
+							</div>
+						</div>
+					</div>
+          <div class="row">
             <div class="col-sm-12">
               <div class="form-group">
                 <label>Status</label>

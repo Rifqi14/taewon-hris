@@ -156,6 +156,7 @@ class LeaveSettingController extends Controller
                 'message'       => 'Leave switch day off already exist. You can\' create leave switch day off more then one.'
             ], 400);
         }
+        // dd($request->coordinate);
         $leavesetting = LeaveSetting::create([
             'id'            => $id,
             'leave_name'    => $request->leave_name,
@@ -166,7 +167,8 @@ class LeaveSettingController extends Controller
             'label_color'   => $request->label_color,
             'note'          => $request->note,
             'status'        => $request->status,
-            'description'   => $request->description
+            'description'   => $request->description,
+            'coordinate' 	=> implode(',', $request->coordinate)
         ]);
         if ($request->reset_time == 'specificdate') {
             $leavesetting->specific_date = $request->date;
@@ -329,7 +331,10 @@ class LeaveSettingController extends Controller
     {
         $leavesetting = LeaveSetting::with('parent')->with('leavedetail')->with('leavedepartment')->find($id);
         $department = Department::all()->count();
+
+        // return response()->json($coordinate);
         if ($leavesetting) {
+            $leavesetting->coordinate = explode(',', $leavesetting->coordinate);
             return view('admin.leavesetting.edit', compact('leavesetting', 'department'));
         } else {
             abort(404);
@@ -378,6 +383,7 @@ class LeaveSettingController extends Controller
         $leavesetting->save();
         $leavesetting->path = implode(' -> ', $this->createPath($id, []));
         $leavesetting->level = count($this->createLevel($id, []));
+        $leavesetting->coordinate = implode(',', $request->coordinate);
         $leavesetting->save();
         $this->updatePath($id);
         $this->updateLevel($id);
