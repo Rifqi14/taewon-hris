@@ -72,7 +72,7 @@
 													<!-- text input -->
 													<div class="form-group">
 														<label>NIK Bosung</label>
-														<input type="text" class="form-control" placeholder="NIK Bosung" name="nid" value="{{ $employee->nid}}">
+														<input type="text" class="form-control" placeholder="NIK Bosung" name="nid" value="{{ $employee->nid}}" readonly>
 													</div>
 												</div>
 											</div>

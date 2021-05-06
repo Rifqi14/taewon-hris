@@ -46,8 +46,8 @@
                                         <!-- text input -->
                                         <div class="form-group">
                                             <label>NIK Taewon <b class="text-danger">*</b></label>
-                                            <input type="text" class="form-control" placeholder="NIK"
-                                                name="nid" required>
+                                            <input type="text" class="form-control" placeholder="Otomatic"
+                                                name="nid" readonly>
                                         </div>
                                     </div>
                                 </div>

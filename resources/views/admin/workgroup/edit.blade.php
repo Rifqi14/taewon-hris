@@ -34,6 +34,14 @@
 						<div class="col-sm-6">
 							<!-- text input -->
 							<div class="form-group">
+								<label>Combination Code</label>
+								<input type="text" class="form-control" name="code" id="code" placeholder="Combination Code"
+									value="{{ $workgroup->code }}">
+							</div>
+						</div>
+						{{-- <div class="col-sm-6">
+							<!-- text input -->
+							<div class="form-group">
 								<label>Penalty Type</label>
 								<select name="penalty" id="penalty" class="form-control select2" style="width: 100%" aria-hidden="true">
 									@foreach (config('enums.penalty_type') as $key => $value)
@@ -41,17 +49,10 @@
 									@endforeach
 								</select>
 							</div>
-						</div>
+						</div> --}}
 					</div>
 					<div class="row">
-						<div class="col-sm-6">
-							<!-- text input -->
-							<div class="form-group">
-								<label>Combination Code</label>
-								<input type="text" class="form-control" name="code" id="code" placeholder="Combination Code"
-									value="{{ $workgroup->code }}">
-							</div>
-						</div>
+						
 						<div class="col-sm-6">
 							<div class="form-group">
 								<label>Combination Name</label>

@@ -137,7 +137,7 @@ class WorkgroupController extends Controller
             'name'          => $request->name,
             'description'   => $request->description,
             'status'        => $request->status,
-            'penalty'       => $request->penalty
+            'penalty'       => 'basic_salary'
         ]);
         if (!$workgroup) {
             return response()->json([
@@ -269,11 +269,10 @@ class WorkgroupController extends Controller
 
         $workgroup = WorkGroup::find($id);
         $workgroup->workgroupmaster_id = $request->workgroup_id;
-        $workgroup->code = $request->code;
-        $workgroup->name = $request->name;
-        $workgroup->description = $request->description;
-        $workgroup->status = $request->status;
-        $workgroup->penalty = $request->penalty;
+        $workgroup->code               = $request->code;
+        $workgroup->name               = $request->name;
+        $workgroup->description        = $request->description;
+        $workgroup->status             = $request->status;
         $workgroup->save();
         if (!$workgroup) {
             return response()->json([

@@ -3,11 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Alfa6661\AutoNumber\AutoNumberTrait;
 
 class Employee extends Model
 {
+    use AutoNumberTrait;
     protected $guarded = [];
 
+    public function getAutoNumberOptions()
+    {
+        return [
+            'nid' => [
+                'format' => date('Y') . date('m').'?',// autonumber format. '?' will be replaced with the generated number.
+                'length' => 2 // The number of digits in an autonumber
+            ],
+        ];
+    }
     public function place()
     {
         return $this->hasOne('App\Models\Region', 'id', 'place_of_birth');

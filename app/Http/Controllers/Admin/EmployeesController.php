@@ -639,6 +639,9 @@ class EmployeesController extends Controller
      */
     public function create()
     {
+        // $employee = Employee::latest('id')->first();
+        // $nik_system = date('Y').date('m').substr($employee->nik,6);
+        // return response()->json($nik_system);
         return view('admin.employees.create');
     }
 
@@ -651,28 +654,27 @@ class EmployeesController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'      => 'required',
-            // 'nid'      => 'required',
-            'department_id'      => 'required',
-            'title_id' => 'required',
-            'workgroup_id' => 'required',
-            'grade_id'      => 'required',
-            'nik' => 'required',
-            'place_of_birth'      => 'required',
-            'birth_date'      => 'required',
-            'ptkp'      => 'required',
-            'phone'      => 'required',
-            'address'      => 'required',
-            'province_id'      => 'required',
-            'region_id'      => 'required',
-            'emergency_contact_no'      => 'required',
-            'emergency_contact_name'      => 'required',
-            'calendar_id'      => 'required'
+            'name'                 => 'required',
+            'nik'                  => 'required',
+            'department_id'        => 'required',
+            'title_id'             => 'required',
+            'workgroup_id'         => 'required',
+            'grade_id'             => 'required',
+            'place_of_birth'       => 'required',
+            'birth_date'           => 'required',
+            'ptkp'                 => 'required',
+            'phone'                => 'required',
+            'address'              => 'required',
+            'province_id'          => 'required',
+            'region_id'            => 'required',
+            'emergency_contact_no' => 'required',
+            'emergency_contact_name'=> 'required',
+            'calendar_id'           => 'required'
         ]);
 
-        $validator->sometimes('nid', 'required', function($request){
-            return $request->status == 1;
-        });
+        // $validator->sometimes('nid', 'required', function($request){
+        //     return $request->status == 1;
+        // });
 
         if ($validator->fails()) {
             return response()->json([
@@ -680,55 +682,57 @@ class EmployeesController extends Controller
                 'message'   => $validator->errors()->first()
             ], 400);
         }
-        $nid = $request->nid;
-        $check = Employee::whereRaw("upper(nid) = '$nid'")->first();
-        if ($check) {
-            return response()->json([
-                'status'    => false,
-                'message'   => 'NID Already Exist'
-            ], 400);
-        }
+        // $nid = $request->nid;
+        // $check = Employee::whereRaw("upper(nid) = '$nid'")->first();
+        // if ($check) {
+        //     return response()->json([
+        //         'status'    => false,
+        //         'message'   => 'NID Already Exist'
+        //     ], 400);
+        // }
         DB::beginTransaction();
         $employee = Employee::create([
-            'name' => $request->name,
-            'nid' => $request->nid,
-            'department_id' => $request->department_id,
-            'title_id' => $request->title_id,
-            'workgroup_id' => $request->workgroup_id,
-            'grade_id' => $request->grade_id,
-            'nik' => $request->nik,
-            'npwp' => $request->npwp ? $request->npwp : '',
-            'place_of_birth' => $request->place_of_birth,
-            'birth_date' => $request->birth_date ? dbDate($request->birth_date) : null,
-            'gender' => $request->gender,
-            'mother_name' => $request->mother_name ? $request->mother_name : '',
-            'bpjs_tenaga_kerja' => $request->bpjs_tenaga_kerja ? $request->bpjs_tenaga_kerja : '',
-            'ptkp' => $request->ptkp,
-            'phone' => $request->phone,
-            'email' => $request->email ? $request->email : '',
-            'address' => $request->address,
-            'province_id' => $request->province_id,
-            'region_id' => $request->region_id,
-            'account_no' => $request->account_no ? $request->account_no : '',
-            'account_bank' => $request->account_bank ? $request->account_bank : '',
-            'account_name' => $request->account_name ? $request->account_name : '',
-            'emergency_contact_no' => $request->emergency_contact_no,
+            'name'                   => $request->name,
+            'nik'                    => $request->nik,
+            'department_id'          => $request->department_id,
+            'title_id'               => $request->title_id,
+            'workgroup_id'           => $request->workgroup_id,
+            'grade_id'               => $request->grade_id,
+            'npwp'                   => $request->npwp ? $request->npwp : '',
+            'place_of_birth'         => $request->place_of_birth,
+            'birth_date'             => $request->birth_date ? dbDate($request->birth_date) : null,
+            'gender'                 => $request->gender,
+            'mother_name'            => $request->mother_name ? $request->mother_name : '',
+            'bpjs_tenaga_kerja'      => $request->bpjs_tenaga_kerja ? $request->bpjs_tenaga_kerja : '',
+            'ptkp'                   => $request->ptkp,
+            'phone'                  => $request->phone,
+            'email'                  => $request->email ? $request->email : '',
+            'address'                => $request->address,
+            'province_id'            => $request->province_id,
+            'region_id'              => $request->region_id,
+            'account_no'             => $request->account_no ? $request->account_no : '',
+            'account_bank'           => $request->account_bank ? $request->account_bank : '',
+            'account_name'           => $request->account_name ? $request->account_name : '',
+            'emergency_contact_no'   => $request->emergency_contact_no,
             'emergency_contact_name' => $request->emergency_contact_name,
-            'working_time_type' => $request->working_time_type,
-            'working_time' => $request->working_time ? $request->working_time : null,
-            'calendar_id' => $request->calendar_id,
-            'tax_calculation' => $request->tax_calculation,
-            'photo' => '',
-            'status' => $request->status,
-            'notes' => $request->notes ? $request->notes : '',
-            'join' => $request->join,
-            'outsourcing_id' => $request->outsourcing_id ? $request->outsourcing_id : null,
-            'overtime' => $request->overtime,
-            'spl' => $request->spl,
-            'timeout' => $request->timeout,
-            'join_date' => $request->join_date ? dbDate($request->join_date) : null,
-            'resign_date' => $request->resign_date ? dbDate($request->resign_date) : null,
+            'working_time_type'      => $request->working_time_type,
+            'working_time'           => $request->working_time ? $request->working_time : null,
+            'calendar_id'            => $request->calendar_id,
+            'tax_calculation'        => $request->tax_calculation,
+            'photo'                  => '',
+            'status'                 => $request->status,
+            'notes'                  => $request->notes ? $request->notes : '',
+            'join'                   => $request->join,
+            'outsourcing_id'         => $request->outsourcing_id ? $request->outsourcing_id : null,
+            'overtime'               => $request->overtime,
+            'spl'                    => $request->spl,
+            'timeout'                => $request->timeout,
+            'join_date'              => $request->join_date ? dbDate($request->join_date) : null,
+            'resign_date'            => $request->resign_date ? dbDate($request->resign_date) : null,
         ]);
+
+        // $employee->nik = $employee->nik_system;
+        // $employee->save();
 
         if (!$employee) {
             DB::rollback();
@@ -946,28 +950,27 @@ class EmployeesController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name'      => 'required',
-            // 'nid'      => 'required',
-            'department_id'      => 'required',
-            'title_id' => 'required',
-            'workgroup_id' => 'required',
-            'grade_id'      => 'required',
-            'nik' => 'required',
-            'place_of_birth'      => 'required',
-            'birth_date'      => 'required',
-            'ptkp'      => 'required',
-            'phone'      => 'required',
-            'address'      => 'required',
-            'province_id'      => 'required',
-            'region_id'      => 'required',
-            'emergency_contact_no'      => 'required',
-            'emergency_contact_name'      => 'required',
-            'calendar_id'      => 'required'
+            'name'                  => 'required',
+            'nik'                   => 'required',
+            'department_id'         => 'required',
+            'title_id'              => 'required',
+            'workgroup_id'          => 'required',
+            'grade_id'              => 'required',
+            'place_of_birth'        => 'required',
+            'birth_date'            => 'required',
+            'ptkp'                  => 'required',
+            'phone'                 => 'required',
+            'address'               => 'required',
+            'province_id'           => 'required',
+            'region_id'             => 'required',
+            'emergency_contact_no'  => 'required',
+            'emergency_contact_name'=> 'required',
+            'calendar_id'           => 'required'
         ]);
 
-        $validator->sometimes('nid', 'required', function($request){
-            return $request->status == 1;
-        });
+        // $validator->sometimes('nid', 'required', function($request){
+        //     return $request->status == 1;
+        // });
 
         if ($validator->fails()) {
             return response()->json([
@@ -976,43 +979,42 @@ class EmployeesController extends Controller
             ], 400);
         }
         $employee = Employee::find($id);
-        $employee->name   = $request->name;
-        $employee->nid = $request->nid;
-        $employee->department_id  = $request->department_id;
-        $employee->title_id  = $request->title_id;
-        $employee->workgroup_id = $request->workgroup_id;
-        $employee->grade_id = $request->grade_id;
-        $employee->nik   = $request->nik;
-        $employee->npwp = $request->npwp ? $request->npwp : '';
-        $employee->place_of_birth = $request->place_of_birth;
-        $employee->birth_date = $request->birth_date ? dbDate($request->birth_date) : null;
-        $employee->gender = $request->gender;
-        $employee->mother_name = $request->mother_name;
-        $employee->bpjs_tenaga_kerja = $request->bpjs_tenaga_kerja;
-        $employee->phone = $request->phone;
-        $employee->email = $request->email ? $request->email : '';
-        $employee->address = $request->address;
-        $employee->province_id = $request->province_id;
-        $employee->region_id = $request->region_id;
-        $employee->account_bank = $request->account_bank ? $request->account_bank : '';
-        $employee->account_no = $request->account_no ? $request->account_no : '';
-        $employee->account_name = $request->account_name ? $request->account_name : '';
-        $employee->emergency_contact_no = $request->emergency_contact_no;
+        $employee->name                   = $request->name;
+        $employee->nik                    = $request->nik;
+        $employee->department_id          = $request->department_id;
+        $employee->title_id               = $request->title_id;
+        $employee->workgroup_id           = $request->workgroup_id;
+        $employee->grade_id               = $request->grade_id;
+        $employee->npwp                   = $request->npwp ? $request->npwp : '';
+        $employee->place_of_birth         = $request->place_of_birth;
+        $employee->birth_date             = $request->birth_date ? dbDate($request->birth_date) : null;
+        $employee->gender                 = $request->gender;
+        $employee->mother_name            = $request->mother_name;
+        $employee->bpjs_tenaga_kerja      = $request->bpjs_tenaga_kerja;
+        $employee->phone                  = $request->phone;
+        $employee->email                  = $request->email ? $request->email : '';
+        $employee->address                = $request->address;
+        $employee->province_id            = $request->province_id;
+        $employee->region_id              = $request->region_id;
+        $employee->account_bank           = $request->account_bank ? $request->account_bank : '';
+        $employee->account_no             = $request->account_no ? $request->account_no : '';
+        $employee->account_name           = $request->account_name ? $request->account_name : '';
+        $employee->emergency_contact_no   = $request->emergency_contact_no;
         $employee->emergency_contact_name = $request->emergency_contact_name;
-        $employee->working_time_type = $request->working_time_type;
-        $employee->working_time = $request->working_time ? $request->working_time : null;
-        $employee->calendar_id = $request->calendar_id;
-        $employee->tax_calculation = $request->tax_calculation;
-        $employee->status = $request->status;
-        $employee->ptkp = $request->ptkp;
-        $employee->notes = $request->notes ? $request->notes : '';
-        $employee->join = $request->join;
-        $employee->outsourcing_id = $request->outsourcing_id;
-        $employee->join_date = $request->join_date ? dbDate($request->join_date) : null;
-        $employee->resign_date = $request->resign_date ? dbDate($request->resign_date) : null;
-        $employee->overtime = $request->overtime;
-        $employee->timeout = $request->timeout;
-        $employee->spl = $request->spl;
+        $employee->working_time_type      = $request->working_time_type;
+        $employee->working_time           = $request->working_time ? $request->working_time : null;
+        $employee->calendar_id            = $request->calendar_id;
+        $employee->tax_calculation        = $request->tax_calculation;
+        $employee->status                 = $request->status;
+        $employee->ptkp                   = $request->ptkp;
+        $employee->notes                  = $request->notes ? $request->notes : '';
+        $employee->join                   = $request->join;
+        $employee->outsourcing_id         = $request->outsourcing_id;
+        $employee->join_date              = $request->join_date ? dbDate($request->join_date) : null;
+        $employee->resign_date            = $request->resign_date ? dbDate($request->resign_date) : null;
+        $employee->overtime               = $request->overtime;
+        $employee->timeout                = $request->timeout;
+        $employee->spl                    = $request->spl;
         $employee->save();
 
         if (!$employee) {
