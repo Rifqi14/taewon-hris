@@ -166,17 +166,6 @@ class AllowanceController extends Controller
         }
         DB::beginTransaction();
 
-        if($request->coordinate > 0){
-            $cek_coordinate = Allowance::where('coordinate', $request->coordinate)->first();
-
-            if ($cek_coordinate) {
-                return response()->json([
-                    'status'    => false,
-                    'message'   => 'Coordinate has been used' . $cek_coordinate->name
-                ], 400);
-            }
-        }
-
         $allowance = Allowance::create([
             'allowance'     => $request->allowance,
             'category'      => $request->category,
@@ -191,7 +180,6 @@ class AllowanceController extends Controller
             'status'        => $request->status,
             'thr'           => $request->thr,
             'prorate'       => $request->prorate,
-            'coordinate'    => $request->coordinate   
         ]);
         if ($allowance) {
             if(isset($request->working_time))
@@ -360,16 +348,6 @@ class AllowanceController extends Controller
             ], 400);
         }
 
-        if ($request->coordinate > 0) {
-            $cek_coordinate = Allowance::where('coordinate', $request->coordinate)->first();
-
-            if ($cek_coordinate) {
-                return response()->json([
-                    'status'    => false,
-                    'message'   => 'Coordinate has been used'. $cek_coordinate->name
-                ], 400);
-            }
-        }
         DB::beginTransaction();
         $allowance = Allowance::find($id);
         $allowance->allowance           = $request->allowance;
@@ -385,7 +363,6 @@ class AllowanceController extends Controller
         $allowance->status              = $request->status;
         $allowance->thr                 = $request->thr;
         $allowance->prorate             = $request->prorate;
-        $allowance->coordinate          = $request->coordinate;
         $allowance->save();
         if ($allowance) {
             if ($request->working_time) {

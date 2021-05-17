@@ -182,24 +182,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-sm-12">
-							<div class="form-group">
-								<label>Coordinate Slip</label>
-								<select name="coordinate" id="coordinate" class="form-control select2" Placeholder="Coordinate" style="width: 100%" aria-hidden="true">
-									<option value=""></option>
-									<option value="1.2">1.2</option>
-									<option value="1.3">1.3</option>
-									<option value="1.4">1.4</option>
-									<option value="4.3">4.3</option>
-									<option value="4.4">4.4</option>
-									<option value="4.5">4.5</option>
-									<option value="5.4">5.4</option>
-									<option value="5.5">5.5</option>
-								</select>
-							</div>
-						</div>
-					</div>
+					
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="form-group">

@@ -85,6 +85,24 @@
                 </div>
               </div>
             </div>
+             <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Coordinate Slip</label>
+                  <select name="coordinate" id="coordinate" class="form-control select2" Placeholder="Coordinate" style="width: 100%" aria-hidden="true">
+                    <option value=""></option>
+                    <option value="1.2" @if ($groupAllowance->coordinate == "1.2") selected @endif>1.2</option>
+                    <option value="1.3" @if ($groupAllowance->coordinate == "1.3") selected @endif>1.3</option>
+                    <option value="1.4" @if ($groupAllowance->coordinate == "1.4") selected @endif>1.4</option>
+                    <option value="4.3" @if ($groupAllowance->coordinate == "4.3") selected @endif>4.3</option>
+                    <option value="4.4" @if ($groupAllowance->coordinate == "4.4") selected @endif>4.4</option>
+                    <option value="4.5" @if ($groupAllowance->coordinate == "4.5") selected @endif>4.5</option>
+                    <option value="5.4" @if ($groupAllowance->coordinate == "5.4") selected @endif>5.4</option>
+                    <option value="5.5" @if ($groupAllowance->coordinate == "5.5") selected @endif>5.5</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </form>
         </div>
         <div class="overlay d-none">

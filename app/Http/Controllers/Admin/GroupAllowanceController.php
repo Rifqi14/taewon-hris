@@ -121,13 +121,24 @@ class GroupAllowanceController extends Controller
             ], 400);
         }
         DB::beginTransaction();
+        if ($request->coordinate > 0) {
+            $cek_coordinate = GroupAllowance::where('coordinate', $request->coordinate)->first();
+
+            if ($cek_coordinate) {
+                return response()->json([
+                    'status'    => false,
+                    'message'   => 'Coordinate has been used' . $cek_coordinate->name
+                ], 400);
+            }
+        }
         $groupAllowance = GroupAllowance::create([
             'code'          => '',
             'site_id'       => Session::get('site_id'),
             'name'          => $request->group_allowance,
             'notes'         => $request->notes,
             'status'        => $request->status,
-            'group_type'    => $request->type
+            'group_type'    => $request->type,
+            'coordinate'    => $request->coordinate
         ]);
         if ($request->code) {
             $groupAllowance->code = $request->code;
@@ -198,12 +209,23 @@ class GroupAllowanceController extends Controller
             ], 400);
         }
 
+        if ($request->coordinate > 0) {
+            $cek_coordinate = GroupAllowance::where('coordinate', $request->coordinate)->first();
+
+            if ($cek_coordinate) {
+                return response()->json([
+                    'status'    => false,
+                    'message'   => 'Coordinate has been used' . $cek_coordinate->name
+                ], 400);
+            }
+        }
         $groupAllowance = GroupAllowance::find($id);
         $groupAllowance->code = $request->code;
         $groupAllowance->name = $request->group_allowance;
         $groupAllowance->notes = $request->notes;
         $groupAllowance->status = $request->status;
         $groupAllowance->group_type = $request->type;
+        $groupAllowance->coordinate = $request->coordinate;
         $groupAllowance->save();
 
         if (!$groupAllowance) {
