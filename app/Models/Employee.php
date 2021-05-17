@@ -13,7 +13,7 @@ class Employee extends Model
     public function getAutoNumberOptions()
     {
         return [
-            'nid' => [
+            'nid_system' => [
                 'format' => date('Y') . date('m').'?',// autonumber format. '?' will be replaced with the generated number.
                 'length' => 2 // The number of digits in an autonumber
             ],

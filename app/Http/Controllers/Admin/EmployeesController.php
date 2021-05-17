@@ -720,6 +720,7 @@ class EmployeesController extends Controller
             'calendar_id'            => $request->calendar_id,
             'tax_calculation'        => $request->tax_calculation,
             'photo'                  => '',
+            'nid'                    => '',
             'status'                 => $request->status,
             'notes'                  => $request->notes ? $request->notes : '',
             'join'                   => $request->join,
@@ -731,6 +732,13 @@ class EmployeesController extends Controller
             'resign_date'            => $request->resign_date ? dbDate($request->resign_date) : null,
         ]);
 
+        if ($request->nid) {
+            $employee->nid = $request->nid;
+            $employee->save();
+        } else {
+            $employee->nid = $employee->nid_system;
+            $employee->save();
+        }
         // $employee->nik = $employee->nik_system;
         // $employee->save();
 
@@ -1250,7 +1258,7 @@ class EmployeesController extends Controller
             if (!$check) {
                 $employeeimport = Employee::create([
                     'name'                  => $employee->name,
-                    'nid'                   => $employee->nid,
+                    'nid'                   => '',
                     'title_id'              => $employee->title_id,
                     'department_id'         => $employee->department_id,
                     'workgroup_id'          => $employee->workgroup_id,
@@ -1285,6 +1293,13 @@ class EmployeesController extends Controller
                     'status'                => 1,
                     'photo'                 => 'img/no-image.png'
                 ]);
+                if ($employee->nid) {
+                    $employeeimport->nid = $employee->nid;
+                    $employeeimport->save();
+                } else {
+                    $employeeimport->nid = $employeeimport->nid_system;
+                    $employee->save();
+                }
                 $query = LeaveDepartment::where('department_id', $employee->department_id);
                 $leavedepartment = $query->get();
                 if ($leavedepartment) {

@@ -47,7 +47,7 @@
                                         <div class="form-group">
                                             <label>NIK Taewon <b class="text-danger">*</b></label>
                                             <input type="text" class="form-control" placeholder="Otomatic"
-                                                name="nid" readonly>
+                                                name="nid">
                                         </div>
                                     </div>
                                 </div>
