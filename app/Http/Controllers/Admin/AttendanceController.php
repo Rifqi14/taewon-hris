@@ -1190,7 +1190,17 @@ class AttendanceController extends Controller
                     // dd($getbreakovertime);
 
                     $workhour = $getworkingtime->workhour;
+                    $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance_in) . ' ' . $getworkingtime->start);
+                    $cek_minworkhour = roundedTime(countWorkingTime($start_shift, $attendance_out));
+
                     $min_workhour = $getworkingtime->min_workhour;
+                    
+                    if($cek_minworkhour >= $min_workhour){
+                        $min_workhour = $getworkingtime->min_workhour;
+                    }else{
+                        $min_workhour = $cek_minworkhour;
+                    }
+                    // if($adjustment->attendance_out)
                     //overtime
 
                     // WT && OT
@@ -1764,7 +1774,15 @@ class AttendanceController extends Controller
                 $getbreakworkingtime   = getBreaktimeWorkingtime($breaktimes, ['attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out], $workingtimeDetail);
                 $getbreakovertime       = getBreaktimeOvertime($breaktimes, ['attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out], $workingtimeDetail);
                 $workhour               = $workingtimeDetail->workhour;
-                $min_workhour            = $workingtimeDetail->min_workhour;
+
+                $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance->attendance_in) . ' ' . $workingtimeDetail->start);
+                $cek_minworkhour = roundedTime(countWorkingTime($start_shift,$attendance->attendance_out));
+                $min_workhour = $workingtimeDetail->min_workhour;
+                if ($cek_minworkhour >= $min_workhour) {
+                    $min_workhour = $workingtimeDetail->min_workhour;
+                } else {
+                    $min_workhour = $cek_minworkhour;
+                }
 
                 if (changeDateFormat('H:i:s', $attendance->attendance_out) < $workingtimeDetail->finish) {
                     $adj_over_time      = 0;
