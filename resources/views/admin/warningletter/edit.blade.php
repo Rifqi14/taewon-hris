@@ -126,7 +126,7 @@
                   </div>
               </div>
             </div>
-            <div style="height: 310px;"></div>
+            <div style="height: 157px;"></div>
           </div>
         </div>
         <div class="overlay d-none">
