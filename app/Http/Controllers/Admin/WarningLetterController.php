@@ -41,7 +41,7 @@ class WarningLetterController extends Controller
             'warning_letters.*',
             'employees.name as employee_name',
             'employees.title_id as title_id',
-            'employees.nid as employee_id',
+            'employees.nid as nid',
             'employees.join_date as join_date',
             'titles.name as title_name',
             'departments.name as department_name'
@@ -49,13 +49,13 @@ class WarningLetterController extends Controller
         $query->leftJoin('employees', 'employees.id', '=', 'warning_letters.employee_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
-        if ($employee_id) {
+        if ($employee_id != '') {
             $query->whereRaw("upper(employees.name) like '%$employee_id%'");
         }
-        if ($nid) {
+        if ($nid != '') {
             $query->whereRaw("employees.nid like '%$nid%'");
         }
-        if ($departments) {
+        if ($departments != '') {
             $string = '';
             foreach ($departments as $department) {
                 $string .= "departments.path like '%$department%'";
@@ -65,11 +65,11 @@ class WarningLetterController extends Controller
             }
             $query->whereRaw('(' . $string . ')');
         }
-        if ($position) {
+        if ($position != '') {
             $query->whereIn('employees.title_id', $position);
         }
-        if ($status) {
-            $query->whereIn('warning_letters.status', $status);
+        if ($status != '') {
+            $query->where('warning_letters.status', $status);
         }
         $recordsTotal = $query->get()->count();
 
@@ -79,7 +79,7 @@ class WarningLetterController extends Controller
             'warning_letters.*',
             'employees.name as employee_name',
             'employees.title_id as title_id',
-            'employees.nid as employee_id',
+            'employees.nid as nid',
             'employees.join_date as join_date',
             'titles.name as title_name',
             'departments.name as department_name'
@@ -87,13 +87,13 @@ class WarningLetterController extends Controller
         $query->leftJoin('employees', 'employees.id', '=', 'warning_letters.employee_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
-        if ($employee_id) {
+        if ($employee_id != '') {
             $query->whereRaw("upper(employees.name) like '%$employee_id%'");
         }
-        if ($nid) {
+        if ($nid != '') {
             $query->whereRaw("employees.nid like '%$nid%'");
         }
-        if ($departments) {
+        if ($departments != '') {
             $string = '';
             foreach ($departments as $department) {
                 $string .= "departments.path like '%$department%'";
@@ -103,11 +103,11 @@ class WarningLetterController extends Controller
             }
             $query->whereRaw('(' . $string . ')');
         }
-        if ($position) {
+        if ($position != '') {
             $query->whereIn('employees.title_id', $position);
         }
-        if ($status) {
-            $query->whereIn('warning_letters.status', $status);
+        if ($status != '') {
+            $query->where('warning_letters.status', $status);
         }
         $query->offset($start);
         $query->limit($length);

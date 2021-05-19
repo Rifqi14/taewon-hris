@@ -81,7 +81,7 @@
 								<label class="control-label" for="workgroup">Status</label>
 								<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true" data-placeholder="Status">
 									<option value=""></option>
-									<option value="0" selected>Active</option>
+									<option value="0">Active</option>
 									<option value="1">Non Active</option>
 								  </select>
 							  </div>
@@ -154,7 +154,7 @@
                 { render: function(data, type, row) {
                     if (row.status == 0) {
                         return '<span class="badge badge-success">Active</span>';
-                    } if (row.status == 1) {
+                    } else {
                         return '<span class="badge badge-danger">Non Active</span>';
                     }
                 }, targets:[6]},
@@ -172,7 +172,7 @@
 			],
 			columns: [
 			{ data: "no" },
-			{ data: "employee_id" },
+			{ data: "nid" },
 			{ data: "employee_name" },
 			{ data: "title_name" },
 			{ data: "department_name" },
