@@ -95,16 +95,16 @@
         </div>
         <div class="card-body">
           <div class="row">
-            <div class="col-sm-12">
+            {{-- <div class="col-sm-12">
               <div class="form-group">
                 <label>Status</label>
                 <input type="text" class="form-control" placeholder="Status" id="status" name="status" readonly value="Waiting Approval">
               </div>
-            </div>
+            </div> --}}
             <div class="col-sm-12">
               <div class="form-group">
                 <label class="control-label" for="number_warning_letter">Number of Warning Letter</label>
-                <input type="text" class="form-control" placeholder="Number of Warning Letter" id="number_warning_letter" value="{{ $warningletter->number_warning_letter }}" name="number_warning_letter">
+                <input type="text" class="form-control" placeholder="Number of Warning Letter" id="number_warning_letter" value="{{ $warningletter->number_warning_letter }}" name="number_warning_letter" readonly>
               </div>
             </div>
             <div class="col-sm-12">
@@ -120,7 +120,7 @@
                     <div class="col-sm-6">
                       <div class="form-group">
                         <label>To</label>
-                        <input type="text" class="form-control datepicker" placeholder="To" id="to" name="to" value="{{ date('d/m/Y',strtotime($warningletter->to)) }}">
+                        <input type="text" class="form-control datepicker" placeholder="To" id="to" name="to" value="{{ date('d/m/Y',strtotime($warningletter->to)) }}" readonly>
                       </div>
                     </div>
                   </div>

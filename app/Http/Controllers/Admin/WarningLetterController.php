@@ -40,12 +40,11 @@ class WarningLetterController extends Controller
         $query->select(
             'warning_letters.*',
             'employees.name as employee_name',
-            'employees.status as status',
             'employees.title_id as title_id',
             'employees.nid as employee_id',
             'employees.join_date as join_date',
             'titles.name as title_name',
-            'departments.name as department_name',
+            'departments.name as department_name'
         );
         $query->leftJoin('employees', 'employees.id', '=', 'warning_letters.employee_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
@@ -70,7 +69,7 @@ class WarningLetterController extends Controller
             $query->whereIn('employees.title_id', $position);
         }
         if ($status) {
-            $query->whereIn('employees.status', $status);
+            $query->whereIn('warning_letters.status', $status);
         }
         $recordsTotal = $query->get()->count();
 
@@ -79,12 +78,11 @@ class WarningLetterController extends Controller
         $query->select(
             'warning_letters.*',
             'employees.name as employee_name',
-            'employees.status as status',
             'employees.title_id as title_id',
             'employees.nid as employee_id',
             'employees.join_date as join_date',
             'titles.name as title_name',
-            'departments.name as department_name',
+            'departments.name as department_name'
         );
         $query->leftJoin('employees', 'employees.id', '=', 'warning_letters.employee_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
@@ -109,7 +107,7 @@ class WarningLetterController extends Controller
             $query->whereIn('employees.title_id', $position);
         }
         if ($status) {
-            $query->whereIn('employees.status', $status);
+            $query->whereIn('warning_letters.status', $status);
         }
         $query->offset($start);
         $query->limit($length);
@@ -161,6 +159,9 @@ class WarningLetterController extends Controller
      */
     public function store(Request $request)
     {
+        $d         = strtotime("+6 months",strtotime(changeDateFormat('Y-m-d', changeSlash($request->from))));
+        $to_date =    date("Y-m-d",$d);
+
         $validator = Validator::make($request->all(), [
             'employee'      => 'required',
         ]);
@@ -170,25 +171,45 @@ class WarningLetterController extends Controller
                 'message'   => $validator->errors()->first()
             ], 400);
         }
-        $id = $this->getLatestId();
-        $number_warning_letter = $this->getLatestId();
+        $readNumbers = WarningLetter::where([
+                            ['employee_id', $request->employee_id],
+                            ['status', 0]
+                        ])->orderBy('id', 'DESC')->first();
+
+        if($readNumbers){
+            if($readNumbers->to < changeDateFormat('Y-m-d', changeSlash($request->from))){
+                DB::table('warning_letters')
+                ->where('employee_id', $readNumbers->employee_id)
+                ->update(['status' => 1]);
+            }
+        }
+        $readNumbers = WarningLetter::where([
+                            ['employee_id', $request->employee_id],
+                            ['status', 0]
+                        ])->orderBy('id', 'DESC')->first();
+
+        if($readNumbers){
+            $number_warning_letter =  $readNumbers->number_warning_letter + 1;
+        }else{
+            $number_warning_letter =  isset($readNumbers->number_warning_letter) + 1;
+        }
+        
         DB::beginTransaction();
-        if($number_warning_letter >= 3){
+        if($number_warning_letter > 3){
             return response()->json([
                 'status' => true,
                 'message' => 'Warning Letter Lebih dari 3 kali'
             ], 400);
         }else{
             $warningletter = WarningLetter::create([
-                'id'                    => $id,
+                // 'id'                    => $id,
                 'employee_id'           => $request->employee_id,
-                'status'                => $request->status,
+                'status'                => 0,
                 'number_warning_letter' => $number_warning_letter,
                 'notes'                 => $request->reason,
                 'from'                  => changeDateFormat('Y-m-d', changeSlash($request->from)),
-                'to'                    => changeDateFormat('Y-m-d', changeSlash($request->to)),
-            ]);
-            // $warningletter = WarningLetter::where('id', $id);
+                'to'                    => $to_date,
+            ]);               
             if (!$warningletter) {
                 return response()->json([
                     'status' => false,
@@ -239,6 +260,9 @@ class WarningLetterController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $d         = strtotime("+6 months",strtotime(changeDateFormat('Y-m-d', changeSlash($request->from))));
+        $to_date =    date("Y-m-d",$d);
+
         $validator = Validator::make($request->all(), [
             'employee'      => 'required'
         ]);
@@ -248,6 +272,30 @@ class WarningLetterController extends Controller
                 'message'   => $validator->errors()->first()
             ], 400);
         }
+
+        $readNumbers = WarningLetter::where([
+                            ['employee_id', $request->employee_id],
+                            ['status', 0]
+                        ])->orderBy('id', 'DESC')->first();
+
+        if($readNumbers){
+            if($readNumbers->to < changeDateFormat('Y-m-d', changeSlash($request->from))){
+                DB::table('warning_letters')
+                ->where('employee_id', $readNumbers->employee_id)
+                ->update(['status' => 1]);
+            }
+        }
+        $readNumbers = WarningLetter::where([
+                            ['employee_id', $request->employee_id],
+                            ['status', 0]
+                        ])->orderBy('id', 'DESC')->first();
+
+        if($readNumbers){
+            $number_warning_letter =  $readNumbers->number_warning_letter + 1;
+        }else{
+            $number_warning_letter =  isset($readNumbers->number_warning_letter) + 1;
+        }
+
         DB::beginTransaction();
         $warningletter = WarningLetter::find($id);
         $warningletter->employee_id = $request->employee_id;
@@ -255,7 +303,7 @@ class WarningLetterController extends Controller
         $warningletter->notes = $request->reason;
         $warningletter->number_warning_letter = $request->number_warning_letter;
         $warningletter->from = changeDateFormat('Y-m-d', changeSlash($request->from));
-        $warningletter->to = changeDateFormat('Y-m-d', changeSlash($request->to));
+        $warningletter->to = $to_date;
         $warningletter->save();
         if (!$warningletter) {
             DB::rollBack();

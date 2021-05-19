@@ -79,10 +79,10 @@
 							<div class="col-md-12">
 							  <div class="form-group">
 								<label class="control-label" for="workgroup">Status</label>
-								<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Status">
+								<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true" data-placeholder="Status">
 									<option value=""></option>
-									<option value="1" selected>Active</option>
-									<option value="0">Non Active</option>
+									<option value="0" selected>Active</option>
+									<option value="1">Non Active</option>
 								  </select>
 							  </div>
 							</div>
@@ -152,9 +152,9 @@
 				{ className: "text-right", targets: [0] },
 				{ className: "text-center", targets: [3,4,5,6,7] },
                 { render: function(data, type, row) {
-                    if (data == 1) {
+                    if (row.status == 0) {
                         return '<span class="badge badge-success">Active</span>';
-                    } else {
+                    } if (row.status == 1) {
                         return '<span class="badge badge-danger">Non Active</span>';
                     }
                 }, targets:[6]},
