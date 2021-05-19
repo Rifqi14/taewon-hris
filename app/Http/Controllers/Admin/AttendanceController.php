@@ -1190,8 +1190,11 @@ class AttendanceController extends Controller
                     // dd($getbreakovertime);
 
                     $workhour = $getworkingtime->workhour;
-                    $cek_minworkhour = roundedTime(countWorkingTime($attendance_out, $getworkingtime->start));
+                    $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance_in) . ' ' . $getworkingtime->start);
+                    $cek_minworkhour = roundedTime(countWorkingTime($start_shift, $attendance_out));
+
                     $min_workhour = $getworkingtime->min_workhour;
+                    
                     if($cek_minworkhour >= $min_workhour){
                         $min_workhour = $getworkingtime->min_workhour;
                     }else{
@@ -1772,7 +1775,8 @@ class AttendanceController extends Controller
                 $getbreakovertime       = getBreaktimeOvertime($breaktimes, ['attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out], $workingtimeDetail);
                 $workhour               = $workingtimeDetail->workhour;
 
-                $cek_minworkhour = roundedTime(countWorkingTime($attendance->attendance_out, $workingtimeDetail->start));
+                $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance->attendance_in) . ' ' . $workingtimeDetail->start);
+                $cek_minworkhour = roundedTime(countWorkingTime($start_shift,$attendance->attendance_out));
                 $min_workhour = $workingtimeDetail->min_workhour;
                 if ($cek_minworkhour >= $min_workhour) {
                     $min_workhour = $workingtimeDetail->min_workhour;
