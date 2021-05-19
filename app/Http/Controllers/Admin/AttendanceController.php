@@ -1190,7 +1190,14 @@ class AttendanceController extends Controller
                     // dd($getbreakovertime);
 
                     $workhour = $getworkingtime->workhour;
+                    $cek_minworkhour = roundedTime(countWorkingTime($attendance_out, $getworkingtime->start));
                     $min_workhour = $getworkingtime->min_workhour;
+                    if($cek_minworkhour >= $min_workhour){
+                        $min_workhour = $getworkingtime->min_workhour;
+                    }else{
+                        $min_workhour = $cek_minworkhour;
+                    }
+                    // if($adjustment->attendance_out)
                     //overtime
 
                     // WT && OT
@@ -1764,7 +1771,14 @@ class AttendanceController extends Controller
                 $getbreakworkingtime   = getBreaktimeWorkingtime($breaktimes, ['attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out], $workingtimeDetail);
                 $getbreakovertime       = getBreaktimeOvertime($breaktimes, ['attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out], $workingtimeDetail);
                 $workhour               = $workingtimeDetail->workhour;
-                $min_workhour            = $workingtimeDetail->min_workhour;
+
+                $cek_minworkhour = roundedTime(countWorkingTime($attendance->attendance_out, $workingtimeDetail->start));
+                $min_workhour = $workingtimeDetail->min_workhour;
+                if ($cek_minworkhour >= $min_workhour) {
+                    $min_workhour = $workingtimeDetail->min_workhour;
+                } else {
+                    $min_workhour = $cek_minworkhour;
+                }
 
                 if (changeDateFormat('H:i:s', $attendance->attendance_out) < $workingtimeDetail->finish) {
                     $adj_over_time      = 0;
