@@ -393,14 +393,16 @@ class AttendanceController extends Controller
         return $attendance_cutoff;
     }
 
-    public function get_workingtime($day)
+    public function get_workingtime($day, $department_id)
     {
         $query = DB::table('workingtimes');
         $query->select('workingtimes.*', 'workingtime_details.workingtime_id as workingtime_id', 'workingtime_details.start as start', 'workingtime_details.finish as finish', 'workingtime_details.min_in as min_in', 'workingtime_details.max_out as max_out', 'workingtime_details.workhour as workhour', 'workingtime_details.day as day');
         $query->leftJoin('workingtime_details', 'workingtime_details.workingtime_id', '=', 'workingtimes.id');
+        $query->leftJoin('department_shifts', 'department_shifts.workingtime_id', '=', 'workingtimes.id');
         $query->where('workingtimes.working_time_type', '!=', 'Non-Shift');
         $query->where('workingtime_details.status', '=', 1);
         $query->where('workingtime_details.day', '=', $day);
+        $query->where('department_shifts.department_id', '=', $department_id);
 
         return $query->get();
     }
@@ -423,6 +425,7 @@ class AttendanceController extends Controller
         $query->where('workingtimes.working_time_type', '=', 'Non-Shift');
         $query->where('workingtime_details.status', '=', 1);
         $query->where('workingtime_details.day', '=', $day);
+       
 
         return $query->first();
     }
@@ -628,7 +631,7 @@ class AttendanceController extends Controller
                     $attendance_in = $adjustment->attendance_in ? $adjustment->attendance_in : null;
                     $attendance_out = $adjustment->attendance_out ? $adjustment->attendance_out : null;
                     // Find closest shift
-                    $workingtimes = $this->get_workingtime($adjustment->day); //Get master shift sesuai hari
+                    $workingtimes = $this->get_workingtime($adjustment->day, $employee->department_id); //Get master shift sesuai hari
                     if (!$workingtimes) {
                         return response()->json([
                             'status'     => false,
@@ -1130,7 +1133,7 @@ class AttendanceController extends Controller
                     $attendance_in = $adjustment->attendance_in ? $adjustment->attendance_in : null;
                     $attendance_out = $adjustment->attendance_out ? $adjustment->attendance_out : null;
                     // Find closest shift
-                    $workingtimes = $this->get_workingtime($adjustment->day); //Get master shift sesuai hari
+                    $workingtimes = $this->get_workingtime($adjustment->day, $employee->department_id); //Get master shift sesuai hari
                     if (!$workingtimes) {
                         return response()->json([
                             'status'     => false,
@@ -1726,7 +1729,7 @@ class AttendanceController extends Controller
     {
         if ($attendance && $employee) {
             if ($attendance->attendance_in || $attendance->attendance_out) {
-                $getWorkingShift    = $this->get_workingtime($attendance->day);
+                $getWorkingShift    = $this->get_workingtime($attendance->day, $employee->department_id);
                 if (!$getWorkingShift) {
                     DB::rollBack();
                     return response()->json([
