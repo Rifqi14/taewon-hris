@@ -963,7 +963,15 @@ class AttendanceController extends Controller
             ], 400);
         }
         $attendances = json_decode($request->attendance);
-        $dates = cal_days_in_month(CAL_GREGORIAN, $request->month, $request->year);
+
+        if($request->period){
+            $month = date('m', strtotime($request->period));
+            $year = date('Y', strtotime($request->period));
+        }else{
+            $month = $request->month;
+            $year = $request->year;
+        }
+        $dates = cal_days_in_month(CAL_GREGORIAN, $month, $year);
         $amonth = [];
         for ($i = 1; $i <= $dates; $i++) {
             $amonth[] = $i;
