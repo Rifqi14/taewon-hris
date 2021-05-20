@@ -2218,16 +2218,16 @@ class AttendanceController extends Controller
                 $checkOutNextDay= AttendanceLog::whereBetween('attendance_date', [$attendanceIn->toDateString(), $cutOutNextDay->toDateString()])->where('employee_id', $attendance->employee_id)->where('type', 0)->get();
                 if ($checkOutNextDay->count() > 0) {
                     $attendanceOut      = $checkOutNextDay->max('attendance_date');
-                    if (!$attendanceOut) {
-                        return response()->json([
-                            'status'    => false,
-                            'message'   => $attendanceOut,
-                        ], 400);
-                    }
-                    foreach ($attendanceOut as $key => $out) {
-                        $out->attendance_id     = $attendance->id;
-                        $out->save();
-                    }
+                    // if (!$attendanceOut) {
+                    //     return response()->json([
+                    //         'status'    => false,
+                    //         'message'   => $attendanceOut,
+                    //     ], 400);
+                    // }
+                    // foreach ($attendanceOut as $key => $out) {
+                    $attendanceOut->attendance_id     = $attendance->id;
+                    $attendanceOut->save();
+                    // }
                 } else {
                     $attendanceOut      = null;
                 }
