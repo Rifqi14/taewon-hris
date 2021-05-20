@@ -34,7 +34,7 @@
         <!-- /. tools -->
       </div>
       <div class="card-body">
-        <form id="form" action="{{route('attendance.syncmass')}}">
+        <form id="form" action="{{route('attendance.newstoremass')}}">
         </form>
         <div class="row pb-3">
           <div class="col-lg-4">
