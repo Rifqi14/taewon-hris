@@ -1689,7 +1689,7 @@ class AttendanceController extends Controller
                         $attendanceOut  = $this->getAttendanceOut($checkUpdate, $attendanceIn, $employee->department_id);
                     }
                     $checkUpdate->attendance_in     = $attendanceIn;
-                    $checkUpdate->attendance_out    = $attendanceOut;
+                    $checkUpdate->attendance_out    = $attendanceOut && $attendanceOut > $attendanceIn ? $attendanceOut : null;
                     $checkUpdate->day               = in_array($checkUpdate->attendance_date, $exception_date) ? 'Off' : changeDateFormat('D', $checkUpdate->attendance_date);
 
                     $overtime_list = $this->overtimeSchemeList($employee->department_id, $checkUpdate->day);
