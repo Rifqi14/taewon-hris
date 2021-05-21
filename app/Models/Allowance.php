@@ -51,5 +51,17 @@ class Allowance extends Model
     {
         return $this->hasMany(AllowanceConfigDetail::class, 'allowance_id', 'id');
     }
+    public function allowanceovertimescheme()
+    {
+        return $this->hasMany(OvertimeAllowance::class, 'allowance_id', 'id');
+    }
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+    static function getActive()
+    {
+        return self::active()->get();
+    }
 
 }

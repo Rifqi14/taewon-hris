@@ -81,6 +81,16 @@
               </div>
               <p for="working_time" class="col-sm-2 col-form-label">Hours</p>
             </div>
+            <div class="form-group row">
+              <label for="type" class="col-sm-2 col-form-label">Type <b class="text-danger">*</b></label>
+              <div class="col-sm-6">
+                <select name="type" id="type" class="form-control select2" style="width: 100%" data-placeholder="Select Type" required>
+                  @foreach (config('enums.penalty_config_type') as $key => $item)
+                  <option value="{{ $key }}">{{ $item }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -92,6 +102,7 @@
 				<div class="nav nav-tabs" id="nav-tab" role="tablist">
 					<a class="nav-item nav-link active" id="nav-rule-tab" data-toggle="tab" href="#nav-rule" role="tab" aria-controls="nav-rule" aria-selected="true">Rule</a>
 					<a class="nav-item nav-link" id="nav-department-tab" data-toggle="tab" href="#nav-department" role="tab" aria-controls="nav-department" aria-selected="false">Department</a>
+          <a class="nav-item nav-link" id="nav-allowance-tab" data-toggle="tab" href="#nav-allowance" role="tab" aria-controls="nav-allowance" aria-selected="false">Allowance</a>
 				</div>
 				<div class="tab-content" id="nav-tabContent">
 					<div class="tab-pane fade show active" id="nav-rule" role="tabpanel" aria-labelledby="nav-rule-tab">
@@ -150,8 +161,8 @@
 										<th class="text-center align-middle">No</th>
 										<th width="400">Department Name</th>
 										<th class="text-center align-middle">
-											<div class="customcheckbox">
-												<input type="checkbox" name="checkall" class="checkall">
+											<div class="customcheckbox" id="customcheckbox_department">
+												<input type="checkbox" name="checkall" class="checkall" id="checkall">
 											</div>
 										</th>
 									</tr>
@@ -159,6 +170,28 @@
 							</table>
 						</div>
 					</div>
+          <div class="tab-pane fade show" id="nav-allowance" role="tabpanel" aria-labelledby="nav-allowance-tab">
+              <div class="card-header">
+                <h3 class="card-title">Allowance</h3>
+              </div>
+              <div class="card-body">
+                <table class="table table-striped table-bordered datatable" id="allowance-table" style="width: 100%">
+                  <thead>
+                    <tr>
+                      <th width="10">No</th>
+                      <th width="200">Allowance</th>
+                      <th width="200">Category</th>
+                      <th width="200">Group</th>
+                      <th width="10">
+                        <div class="customcheckbox" id="customcheckbox_allowance">
+                          <input type="checkbox" name="checkallallowance" class="checkall" id="checkallallowance">
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+          </div>
 				</div>
 				<div class="overlay d-none">
 					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -173,20 +206,21 @@
 <script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
 <script src="{{asset('adminlte/component/dataTables/js/datatables.min.js')}}"></script>
 <script>
+  const BASIC = 'BASIC';
   $(document).ready(function(){
     $('.select2').select2();
     $('input[name=checkall]').prop('checked', true);
 		$('input[name=checkall]').parent().addClass('checked');
 		$('input[name^=department_id]').prop('checked', true);
 		$('input[name^=department_id]').parent().addClass('checked');
-		$(document).on('click', '.customcheckbox input', function() {
+		$(document).on('click', '#customcheckbox_department input', function() {
 			if ($(this).is(':checked')) {
 				$(this).parent().addClass('checked');
 			} else {
 				$(this).parent().removeClass('checked');
 			}
 		});
-		$(document).on('change', '.checkall', function() {
+		$(document).on('change', '#checkall', function() {
 			if (this.checked) {
 				$('input[name^=department_id]').prop('checked', true);
 				$('input[name^=department_id]').parent().addClass('checked');
@@ -195,6 +229,35 @@
 				$('input[name^=department_id]').parent().removeClass('checked');
 			}
 		});
+     $('#nav-allowance-tab').addClass('d-none');
+     $(document).on('change', '#type', function() {
+      if (this.value == BASIC) {
+        $('#nav-allowance-tab').addClass('d-none');
+        $('#nav-allowance').addClass('d-none');
+      } else {
+        $('#nav-allowance-tab').removeClass('d-none');
+        $('#nav-allowance').removeClass('d-none');
+      }
+    }).trigger('change');
+		$('input[name=checkallallowance]').prop('checked', true);
+		$('input[name=checkallallowance]').parent().addClass('checked');
+		$(document).on('click', '#customcheckbox_allowance input', function() {
+			if ($(this).is(':checked')) {
+				$(this).parent().addClass('checked');
+			} else {
+				$(this).parent().removeClass('checked');
+			}
+		});
+		$(document).on('change', '#checkallallowance', function() {
+			if (this.checked) {
+				$('input[name^=allowanceID]').prop('checked', true);
+				$('input[name^=allowanceID]').parent().addClass('checked');
+			} else {
+				$('input[name^=allowanceID]').prop('checked', false);
+				$('input[name^=allowanceID]').parent().removeClass('checked');
+			}
+		});
+     
   });
   function addList() {
     var length = $('#workday_table tr').length;
@@ -249,7 +312,7 @@
 				{ orderable: false, targets: [0,1,2] },
 				{ className: "text-center", targets: [0,2] },
 				{ render: function ( data, type, row ) {
-              return `<label class="customcheckbox checked"><input value="${row.id}" type="checkbox" name="department_id[]" checked><span class="checkmark"></span></label>`
+              return `<label class="customcheckbox checked" id="customcheckbox_department"><input value="${row.id}" type="checkbox" name="department_id[]" checked><span class="checkmark"></span></label>`
             },targets: [2] }
 			],
 			columns: [
@@ -257,7 +320,40 @@
 				{ data: "name" },
 				{ data: "id" },
 			]
-		});
+	});
+  dataTableAllowance = $('#allowance-table').DataTable({
+     stateSave: true,
+			processing: true,
+			serverSide: true,
+			filter: false,
+			info: false,
+			lengtChange: true,
+			responsive: true,
+			order: [[1, "asc"]],
+			lengthMenu: [ 100, 250, 500, 1000 ],
+      ajax: {
+        url: "{{ route('allowance.read') }}",
+        type: "GET",
+        data: function(data) {
+          
+        }
+      },
+      columnDefs: [
+        { orderable: false, targets: [0, 4] },
+        { className: 'text-right', targets: [0] },
+        { className: 'text-center', targets: [4] },
+        { render: function( data, type, row ) {
+          return `<label class="customcheckbox checked" id="customcheckbox_allowance"><input value="${row.id}" type="checkbox" name="allowanceID[]" checked><span class="checkmark"></span></label>`
+        }, targets: [4] }
+      ],
+      columns: [
+        { data: 'no' },
+        { data: 'allowance' },
+        { data: 'category' },
+        { data: 'groupallowance' },
+        { data: 'id' },
+      ]
+    });
   $('#form').validate({
     errorElement: 'div',
     errorClass: 'invalid-feedback',

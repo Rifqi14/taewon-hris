@@ -82,6 +82,16 @@
           </div>
           <p for="working_time" class="col-sm-2 col-form-label">Hours</p>
         </div>
+        <div class="form-group row">
+              <label for="type" class="col-sm-2 col-form-label">Type <b class="text-danger">*</b></label>
+              <div class="col-sm-6">
+                <select name="type" id="type" class="form-control select2" style="width: 100%" data-placeholder="Select Type" required>
+                  @foreach (config('enums.penalty_config_type') as $key => $item)
+                  <option value="{{ $key }}" @if ($overtime->type == $key) selected @endif>{{ $item }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
       </div>
       <div class="overlay d-none">
         <i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -93,6 +103,7 @@
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <a class="nav-item nav-link active" id="nav-rule-tab" data-toggle="tab" href="#nav-rule" role="tab" aria-controls="nav-rule" aria-selected="true">Rule</a>
         <a class="nav-item nav-link" id="nav-department-tab" data-toggle="tab" href="#nav-department" role="tab" aria-controls="nav-department" aria-selected="false">Department</a>
+        <a class="nav-item nav-link" id="nav-allowance-tab" data-toggle="tab" href="#nav-allowance" role="tab" aria-controls="nav-allowance" aria-selected="false">Allowance</a>
       </div>
       <div class="tab-content" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-rule" role="tabpanel" aria-labelledby="nav-rule-tab">
@@ -158,25 +169,47 @@
           </div>
         </div>
         <div class="tab-pane fade show" id="nav-department" role="tabpanel" aria-labelledby="nav-department-tab">
-						<div class="card-header">
-							<h3 class="card-title">Department</h3>
-						</div>
-						<div class="card-body">
-							<table class="table table-striped table-bordered datatable" id="department-table" style="width: 100%">
-								<thead>
-									<tr>
-										<th class="text-center align-middle">No</th>
-										<th width="400">Department Name</th>
-										<th class="text-center align-middle">
-											<div class="customcheckbox">
-												<input type="checkbox" name="checkall" onclick="checkAll(this)" class="checkall">
-											</div>
-										</th>
-									</tr>
-								</thead>
-							</table>
-						</div>
-					</div>
+          <div class="card-header">
+            <h3 class="card-title">Department</h3>
+          </div>
+          <div class="card-body">
+            <table class="table table-striped table-bordered datatable" id="department-table" style="width: 100%">
+              <thead>
+                <tr>
+                  <th class="text-center align-middle">No</th>
+                  <th width="400">Department Name</th>
+                  <th class="text-center align-middle">
+                    <div class="customcheckbox" id="customcheckbox_department">
+                      <input type="checkbox" name="checkall" onclick="checkAll(this)" class="checkall" id="checkall">
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+        <div class="tab-pane fade show" id="nav-allowance" role="tabpanel" aria-labelledby="nav-allowance-tab">
+              <div class="card-header">
+                <h3 class="card-title">Allowance</h3>
+              </div>
+              <div class="card-body">
+                <table class="table table-striped table-bordered datatable" id="allowance-table" style="width: 100%">
+                  <thead>
+                    <tr>
+                      <th width="10">No</th>
+                      <th width="200">Allowance</th>
+                      <th width="200">Category</th>
+                      <th width="200">Group</th>
+                      <th width="10">
+                        <div class="customcheckbox" id="customcheckbox_allowance">
+                          <input type="checkbox" name="checkallallowance" class="checkall" onclick="checkAllAllowance(this)" id="checkallallowance">
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+          </div>
       </div>
       <div class="overlay d-none">
         <i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -193,25 +226,42 @@
 <script src="{{asset('adminlte/component/daterangepicker/moment.min.js')}}"></script>
 <script src="{{asset('adminlte/component/daterangepicker/daterangepicker.js')}}"></script>
 <script>
+    const BASIC = 'BASIC';
   $(document).ready(function(){
     $('.select2').select2();
     @if ($day)
       $("#workday").select2('data',{!! json_encode($day) !!}).trigger('change');
     @endif
-    $(document).on('click', '.customcheckbox input', function() {
+    $(document).on('click', '#customcheckbox_department input', function() {
 			if ($(this).is(':checked')) {
 				$(this).parent().addClass('checked');
 			} else {
 				$(this).parent().removeClass('checked');
 			}
 		});
-		$(document).on('change', '.checkall', function() {
+		$(document).on('change', '#checkall', function() {
 			if (this.checked) {
 				$('input[name^=department_id]').prop('checked', true);
 				$('input[name^=department_id]').parent().addClass('checked');
 			} else {
 				$('input[name^=department_id]').prop('checked', false);
 				$('input[name^=department_id]').parent().removeClass('checked');
+			}
+		});
+    $(document).on('click', '#customcheckbox_allowance input', function() {
+			if ($(this).is(':checked')) {
+				$(this).parent().addClass('checked');
+			} else {
+				$(this).parent().removeClass('checked');
+			}
+		});
+		$(document).on('change', '#checkallallowance', function() {
+			if (this.checked) {
+				$('input[name^=allowanceID]').prop('checked', true);
+				$('input[name^=allowanceID]').parent().addClass('checked');
+			} else {
+				$('input[name^=allowanceID]').prop('checked', false);
+				$('input[name^=allowanceID]').parent().removeClass('checked');
 			}
 		});
     dataTableDepartment = $("#department-table").DataTable({
@@ -235,7 +285,7 @@
 				{ orderable: false, targets: [0,1,2] },
 				{ className: "text-center", targets: [0,2] },
 				{ render: function ( data, type, row ) {
-              return row.departmentovertimescheme.length > 0 ? `<label class="customcheckbox checked"><input value="${row.id}" type="checkbox" onclick="updateDepartment(this)" name="department_id[]" checked><span class="checkmark"></span></label>` : `<label class="customcheckbox"><input value="${row.id}" type="checkbox" onclick="updateDepartment(this)" name="department_id[]"><span class="checkmark"></span></label>`
+              return row.departmentovertimescheme.length > 0 ? `<label class="customcheckbox checked" id="customcheckbox_department"><input value="${row.id}" type="checkbox" onclick="updateDepartment(this)" name="department_id[]" checked><span class="checkmark"></span></label>` : `<label class="customcheckbox" id="customcheckbox_department"><input value="${row.id}" type="checkbox" onclick="updateDepartment(this)" name="department_id[]"><span class="checkmark"></span></label>`
             },targets: [2] }
 			],
 			columns: [
@@ -244,6 +294,57 @@
 				{ data: "id" },
 			]
 		});
+    dataTableAllowance = $('#allowance-table').DataTable({
+      stateSave: true,
+      processing: true,
+      serverSide: true,
+      filter: false,
+      info: false,
+      lengthChange: false,
+      responsive: true,
+      paginate: false,
+      order: [[ 1, "asc"]],
+      ajax: {
+        url: "{{ route('overtimeschemeallowance.read') }}",
+        type: "GET",
+        data: function(data) {
+          data.overtime_scheme_id = `{{ $overtime->id }}`;
+        }
+      },
+      columnDefs: [
+        { orderable: false, targets: [0, 4] },
+        { className: 'text-right', targets: [0] },
+        { className: 'text-center', targets: [4] },
+        { render: function( data, type, row ) {
+          return row.groupallowance? `${row.groupallowance.name}` : ``
+        }, targets: [3] },
+        { render: function( data, type, row ) {
+          return row.allowanceovertimescheme.length > 0 ? `<label class="customcheckbox checked" id="customcheckbox_allowance"><input value="${row.id}" type="checkbox" name="allowanceID[]" onclick="updateAllowance(this)" checked><span class="checkmark"></span></label>` : `<label class="customcheckbox" id="customcheckbox_allowance"><input value="${row.id}" type="checkbox" name="allowanceID[]" onclick="updateAllowance(this)"><span class="checkmark"></span></label>`
+        }, targets: [4] }
+      ],
+      columns: [
+        { data: 'no' },
+        { data: 'allowance' },
+        { data: 'category' },
+        { data: 'groupallowance'},
+        { data: 'id' },
+      ]
+    });
+    var type = $("#type").val();
+    console.log(type);
+    if(type == 'BASIC'){
+      $('#nav-allowance-tab').addClass('d-none');
+      $('#nav-allowance').addClass('d-none');
+    }
+     $(document).on('change', '#type', function() {
+      if (this.value == BASIC) {
+        $('#nav-allowance-tab').addClass('d-none');
+        $('#nav-allowance').addClass('d-none');
+      } else {
+        $('#nav-allowance-tab').removeClass('d-none');
+        $('#nav-allowance').removeClass('d-none');
+      }
+    }).trigger('change');
   });
   function checkAll(data) {
 		$.ajax({
@@ -305,6 +406,101 @@
 				_token: "{{ csrf_token() }}",
 				overtime_scheme_id: overtime_scheme_id,
 				department_id: department_id,
+				status: status,
+			},
+			dataType: 'json',
+			beforeSend: function() {
+				$('.overlay').removeClass('d-none');
+			}
+		}).done(function(response) {
+			$('.overlay').addClass('d-none');
+			if (response.status) {
+				$.gritter.add({
+					title: 'Success!',
+					text: response.message,
+					class_name: 'gritter-success',
+					time: 1000,
+				});
+			} else {
+				$.gritter.add({
+					title: 'Warning!',
+					text: response.message,
+					class_name: 'gritter-warning',
+					time: 1000,
+				});
+			}
+			return;
+		}).fail(function(response) {
+			$('.overlay').addClass('d-none');
+			var response = response.responseJSON;
+			$.gritter.add({
+				title: 'Error!',
+				text: response.message,
+				class_name: 'gritter-error',
+				time: 1000,
+			});
+		});
+	}
+  function checkAllAllowance(data) {
+		$.ajax({
+			url: `{{ route('overtimeschemeallowance.updateall') }}`,
+			method: 'post',
+			data: {
+				_token: "{{ csrf_token() }}",
+				overtime_scheme_id: `{{ $overtime->id }}`,
+				status: data.checked ? 1 : 0,
+			},
+			dataType: 'json',
+			beforeSend: function() {
+				$('.overlay').removeClass('d-none');
+			}
+		}).done(function(response) {
+			$('.overlay').addClass('d-none');
+			if (response.status) {
+				$.gritter.add({
+					title: 'Success!',
+					text: response.message,
+					class_name: 'gritter-success',
+					time: 1000,
+				});
+			} else {
+				$.gritter.add({
+					title: 'Warning!',
+					text: response.message,
+					class_name: 'gritter-warning',
+					time: 1000,
+				});
+			}
+			return;
+		}).fail(function(response) {
+			$('.overlay').addClass('d-none');
+			var response = response.responseJSON;
+			$.gritter.add({
+				title: 'Error!',
+				text: response.message,
+				class_name: 'gritter-error',
+				time: 1000,
+			});
+		});
+	}
+	function updateAllowance(data) {
+		var overtime_scheme_id, allowanceID, status;
+		if (data.checked) {
+			overtime_scheme_id	= `{{ $overtime->id }}`;
+			allowanceID		=	data.value;
+			status					= 1;
+		} else {
+			overtime_scheme_id	= `{{ $overtime->id }}`;
+			allowanceID		=	data.value;
+			status					= 0;
+		}
+		$.ajax({
+			url: `{{ route('overtimeschemeallowance.store') }}`,
+			method: 'post',
+			data: {
+				_token: "{{ csrf_token() }}",
+				overtime_scheme_id: overtime_scheme_id,
+				allowanceID: allowanceID,
 				status: status,
 			},
 			dataType: 'json',
