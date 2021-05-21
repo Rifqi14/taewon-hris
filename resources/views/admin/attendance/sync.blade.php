@@ -317,7 +317,6 @@
                   return false;
               }
               var attendance =[];
-              var date = new Date($("#date").val());
               $.each(items, function() {
                 attendance.push(this);
               });
@@ -328,8 +327,7 @@
                   data: {
                       _token: "{{ csrf_token() }}",
                       attendance: JSON.stringify(attendance),
-                      month: date.getMonth() + 1,
-                      year: date.getFullYear(),
+                      period: $("#date").val(),
                   },
                   beforeSend:function(){
                       $('#attendance-preview .overlay').removeClass('d-none');
