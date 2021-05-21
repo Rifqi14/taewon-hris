@@ -393,14 +393,16 @@ class AttendanceController extends Controller
         return $attendance_cutoff;
     }
 
-    public function get_workingtime($day)
+    public function get_workingtime($day, $department_id)
     {
         $query = DB::table('workingtimes');
         $query->select('workingtimes.*', 'workingtime_details.workingtime_id as workingtime_id', 'workingtime_details.start as start', 'workingtime_details.finish as finish', 'workingtime_details.min_in as min_in', 'workingtime_details.max_out as max_out', 'workingtime_details.workhour as workhour', 'workingtime_details.day as day');
         $query->leftJoin('workingtime_details', 'workingtime_details.workingtime_id', '=', 'workingtimes.id');
+        $query->leftJoin('department_shifts', 'department_shifts.workingtime_id', '=', 'workingtimes.id');
         $query->where('workingtimes.working_time_type', '!=', 'Non-Shift');
         $query->where('workingtime_details.status', '=', 1);
         $query->where('workingtime_details.day', '=', $day);
+        $query->where('department_shifts.department_id', '=', $department_id);
 
         return $query->get();
     }
@@ -423,6 +425,7 @@ class AttendanceController extends Controller
         $query->where('workingtimes.working_time_type', '=', 'Non-Shift');
         $query->where('workingtime_details.status', '=', 1);
         $query->where('workingtime_details.day', '=', $day);
+       
 
         return $query->first();
     }
@@ -628,7 +631,7 @@ class AttendanceController extends Controller
                     $attendance_in = $adjustment->attendance_in ? $adjustment->attendance_in : null;
                     $attendance_out = $adjustment->attendance_out ? $adjustment->attendance_out : null;
                     // Find closest shift
-                    $workingtimes = $this->get_workingtime($adjustment->day); //Get master shift sesuai hari
+                    $workingtimes = $this->get_workingtime($adjustment->day, $employee->department_id); //Get master shift sesuai hari
                     if (!$workingtimes) {
                         return response()->json([
                             'status'     => false,
@@ -960,7 +963,15 @@ class AttendanceController extends Controller
             ], 400);
         }
         $attendances = json_decode($request->attendance);
-        $dates = cal_days_in_month(CAL_GREGORIAN, $request->month, $request->year);
+
+        if($request->period){
+            $month = date('m', strtotime($request->period));
+            $year = date('Y', strtotime($request->period));
+        }else{
+            $month = $request->month;
+            $year = $request->year;
+        }
+        $dates = cal_days_in_month(CAL_GREGORIAN, $month, $year);
         $amonth = [];
         for ($i = 1; $i <= $dates; $i++) {
             $amonth[] = $i;
@@ -1130,7 +1141,7 @@ class AttendanceController extends Controller
                     $attendance_in = $adjustment->attendance_in ? $adjustment->attendance_in : null;
                     $attendance_out = $adjustment->attendance_out ? $adjustment->attendance_out : null;
                     // Find closest shift
-                    $workingtimes = $this->get_workingtime($adjustment->day); //Get master shift sesuai hari
+                    $workingtimes = $this->get_workingtime($adjustment->day, $employee->department_id); //Get master shift sesuai hari
                     if (!$workingtimes) {
                         return response()->json([
                             'status'     => false,
@@ -1198,7 +1209,7 @@ class AttendanceController extends Controller
                     if($cek_minworkhour >= $min_workhour){
                         $min_workhour = $getworkingtime->min_workhour;
                     }else{
-                        $min_workhour = $cek_minworkhour;
+                        $min_workhour = $cek_minworkhour - $getbreakworkingtime;
                     }
                     // if($adjustment->attendance_out)
                     //overtime
@@ -1689,7 +1700,7 @@ class AttendanceController extends Controller
                         $attendanceOut  = $this->getAttendanceOut($checkUpdate, $attendanceIn, $employee->department_id);
                     }
                     $checkUpdate->attendance_in     = $attendanceIn;
-                    $checkUpdate->attendance_out    = $attendanceOut;
+                    $checkUpdate->attendance_out    = $attendanceOut && $attendanceOut > $attendanceIn ? $attendanceOut : null;
                     $checkUpdate->day               = in_array($checkUpdate->attendance_date, $exception_date) ? 'Off' : changeDateFormat('D', $checkUpdate->attendance_date);
 
                     $overtime_list = $this->overtimeSchemeList($employee->department_id, $checkUpdate->day);
@@ -1726,7 +1737,7 @@ class AttendanceController extends Controller
     {
         if ($attendance && $employee) {
             if ($attendance->attendance_in || $attendance->attendance_out) {
-                $getWorkingShift    = $this->get_workingtime($attendance->day);
+                $getWorkingShift    = $this->get_workingtime($attendance->day, $employee->department_id);
                 if (!$getWorkingShift) {
                     DB::rollBack();
                     return response()->json([
@@ -1771,7 +1782,7 @@ class AttendanceController extends Controller
                     $work_time = roundedTime(countWorkingTime($attendance->attendance_in, $attendance->attendance_out));
                 }
 
-                $getbreakworkingtime   = getBreaktimeWorkingtime($breaktimes, ['attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out], $workingtimeDetail);
+                $getbreakworkingtime    = getBreaktimeWorkingtime($breaktimes, ['attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out], $workingtimeDetail);
                 $getbreakovertime       = getBreaktimeOvertime($breaktimes, ['attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out], $workingtimeDetail);
                 $workhour               = $workingtimeDetail->workhour;
 
@@ -1781,7 +1792,7 @@ class AttendanceController extends Controller
                 if ($cek_minworkhour >= $min_workhour) {
                     $min_workhour = $workingtimeDetail->min_workhour;
                 } else {
-                    $min_workhour = $cek_minworkhour;
+                    $min_workhour = $cek_minworkhour - $getbreakworkingtime;
                 }
 
                 if (changeDateFormat('H:i:s', $attendance->attendance_out) < $workingtimeDetail->finish) {
@@ -2218,7 +2229,13 @@ class AttendanceController extends Controller
                 $checkOutNextDay= AttendanceLog::whereBetween('attendance_date', [$attendanceIn->toDateString(), $cutOutNextDay->toDateString()])->where('employee_id', $attendance->employee_id)->where('type', 0)->get();
                 if ($checkOutNextDay->count() > 0) {
                     $attendanceOut      = $checkOutNextDay->max('attendance_date');
-                    foreach ($attendanceOut as $key => $out) {
+                    if (!$attendanceOut) {
+                        return response()->json([
+                            'status'    => false,
+                            'message'   => "Error cant get attendance out"
+                        ], 400);
+                    }
+                    foreach ($checkOutNextDay as $key => $out) {
                         $out->attendance_id     = $attendance->id;
                         $out->save();
                     }
