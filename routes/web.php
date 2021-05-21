@@ -605,5 +605,10 @@ Route::group(['prefix' => 'admin'], function () {
         //Route Salary Deduction
         Route::get('/salarydeduction/read', 'Admin\SalaryDeductionController@read')->name('salarydeduction.read');
         Route::resource('/salarydeduction', 'Admin\SalaryDeductionController');
+
+        // Route Log History
+        Route::get('/loghistory/read', 'Admin\LogHistoryController@read')->name('loghistory.read');
+        Route::get('/loghistory/select', 'Admin\LogHistoryController@select')->name('loghistory.select');
+        Route::resource('/loghistory', 'Admin\LogHistoryController')->except(['show']);
     });
 });
