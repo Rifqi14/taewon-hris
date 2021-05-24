@@ -25,7 +25,7 @@ if (!function_exists('findShift')) {
 
     asort($interval);
     $closest = key($interval);
-    if(isset($closet))
+    if(isset($closest))
     {
       return $array[$closest];
     }else{
