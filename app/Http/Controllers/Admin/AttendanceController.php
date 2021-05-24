@@ -1164,7 +1164,7 @@ class AttendanceController extends Controller
                     if (!$shift2) {
                         return response()->json([
                             'status'     => false,
-                            'message'     => 'Shift for this employee workgroup ' . $employee->name . ' not found. Please check master break.'
+                            'message'     => 'Shift for this employee workgroup ' . $employee->name . ' not found. Please check master break.'. $shift . 'Shift between',
                         ], 400);
                     }
 
