@@ -965,9 +965,8 @@ class AttendanceController extends Controller
         $attendances = json_decode($request->attendance);
 
         if($request->period){
-            $period  = Carbon::createFromFormat('Y-m-d', dbDate($request->period));
-            $month   = Carbon::createFromDate($period->month);
-            $year    = Carbon::createFromDate($period->year);
+            $month   = date('m',strtotime(dbDate($request->period)));
+            $year    = date('Y', strtotime(dbDate($request->period)));
         }else{
             $month = $request->month;
             $year = $request->year;
