@@ -981,7 +981,7 @@ class AttendanceController extends Controller
         DB::beginTransaction();
         foreach ($amonth as $key1 => $value) {
             foreach ($employees as $key => $attendance) {
-                $new_date = changeDateFormat('Y-m-d', $request->year . '-' . $request->month . '-' . $value);
+                $new_date = changeDateFormat('Y-m-d', $year . '-' . $month . '-' . $value);
                 if ($new_date <= date('Y-m-d')) {
                     $check = Attendance::where('employee_id', $attendance->id)->where('attendance_date', '=', $new_date)->first();
                     // Initiate attendance data
