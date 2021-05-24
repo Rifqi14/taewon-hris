@@ -268,63 +268,63 @@ class WorkingTimeController extends Controller
         $workingtime->notes             = $request->notes;
         $workingtime->save();
 
-        // if ($workingtime) {
-        //     $deleteDepartment = DepartmentShift::where('workingtime_id', $id);
-        //     $deleteDepartment->delete();
-        //     $delete = WorkingtimeDetail::where('workingtime_id', $id);
-        //     $delete->delete();
-        //     $departmentPath = explode(",", $request->department_id);
-        //     foreach ($departmentPath as $key => $path) {
-        //         $departmentChild = Department::where('path', 'like', "%$path%")->get();
-        //         foreach ($departmentChild as $key => $department) {
-        //             $departmentShift = DepartmentShift::create([
-        //                 'department_id'     => $department->id,
-        //                 'workingtime_id'    => $workingtime->id,
-        //             ]);
-        //             if (!$departmentShift) {
-        //                 DB::rollBack();
-        //                 return response()->json([
-        //                     'status'    => false,
-        //                     'message'   => $departmentShift
-        //                 ], 400);
-        //             }
-        //         }
-        //     }
-        //     foreach ($request->start as $key => $value) {
-        //         if ($request->start[$key] > $request->finish[$key]) {
-        //             $start = changeDateFormat('Y-m-d H:i:s', date('Y-m-d', time()) . ' ' . $request->start[$key]);
-        //             $new_finish = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $start) . ' ' . $request->finish[$key]);
-        //             $finish = date('Y-m-d H:i:s', strtotime('+1 day', strtotime($new_finish)));
-        //             $workhour = (new Carbon($start))->diff(new Carbon($finish))->format('%h');
-        //         } else {
-        //             $workhour = (new Carbon($request->finish[$key]))->diff(new Carbon($request->start[$key]))->format('%h');
-        //         }
-        //         $detail = WorkingtimeDetail::create([
-        //             'workingtime_id'    => $workingtime->id,
-        //             'start'             => isset($request->save[$key]) ? $request->start[$key] : null,
-        //             'finish'            => isset($request->save[$key]) ? $request->finish[$key] : null,
-        //             'min_in'            => isset($request->save[$key]) ? $request->min_in[$key] : null,
-        //             'max_out'           => isset($request->save[$key]) ? $request->max_out[$key] : null,
-        //             'workhour'          => isset($request->save[$key]) ? $workhour : null,
-        //             'day'               => $request->day[$key],
-        //             'status'            => isset($request->save[$key]) > 0 ? 1 : 0,
-        //             'min_workhour'      => $request->min_wt[$key]
-        //         ]);
-        //         if (!$detail) {
-        //             DB::rollBack();
-        //             return response()->json([
-        //                 'status' => false,
-        //                 'message'   => $detail
-        //             ], 400);
-        //         }
-        //     }
-        // } else {
-        //     DB::rollBack();
-        //     return response()->json([
-        //         'status' => false,
-        //         'message'   => $workingtime
-        //     ], 400);
-        // }
+        if ($workingtime) {
+            // $deleteDepartment = DepartmentShift::where('workingtime_id', $id);
+            // $deleteDepartment->delete();
+            // $delete = WorkingtimeDetail::where('workingtime_id', $id);
+            // $delete->delete();
+            // $departmentPath = explode(",", $request->department_id);
+            // foreach ($departmentPath as $key => $path) {
+            //     $departmentChild = Department::where('path', 'like', "%$path%")->get();
+            //     foreach ($departmentChild as $key => $department) {
+            //         $departmentShift = DepartmentShift::create([
+            //             'department_id'     => $department->id,
+            //             'workingtime_id'    => $workingtime->id,
+            //         ]);
+            //         if (!$departmentShift) {
+            //             DB::rollBack();
+            //             return response()->json([
+            //                 'status'    => false,
+            //                 'message'   => $departmentShift
+            //             ], 400);
+            //         }
+            //     }
+            // }
+            foreach ($request->start as $key => $value) {
+                if ($request->start[$key] > $request->finish[$key]) {
+                    $start = changeDateFormat('Y-m-d H:i:s', date('Y-m-d', time()) . ' ' . $request->start[$key]);
+                    $new_finish = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $start) . ' ' . $request->finish[$key]);
+                    $finish = date('Y-m-d H:i:s', strtotime('+1 day', strtotime($new_finish)));
+                    $workhour = (new Carbon($start))->diff(new Carbon($finish))->format('%h');
+                } else {
+                    $workhour = (new Carbon($request->finish[$key]))->diff(new Carbon($request->start[$key]))->format('%h');
+                }
+                $detail = WorkingtimeDetail::create([
+                    'workingtime_id'    => $workingtime->id,
+                    'start'             => isset($request->save[$key]) ? $request->start[$key] : null,
+                    'finish'            => isset($request->save[$key]) ? $request->finish[$key] : null,
+                    'min_in'            => isset($request->save[$key]) ? $request->min_in[$key] : null,
+                    'max_out'           => isset($request->save[$key]) ? $request->max_out[$key] : null,
+                    'workhour'          => isset($request->save[$key]) ? $workhour : null,
+                    'day'               => $request->day[$key],
+                    'status'            => isset($request->save[$key]) > 0 ? 1 : 0,
+                    'min_workhour'      => $request->min_wt[$key]
+                ]);
+                if (!$detail) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => false,
+                        'message'   => $detail
+                    ], 400);
+                }
+            }
+        } else {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message'   => $workingtime
+            ], 400);
+        }
         DB::commit();
         return response()->json([
             'status'    => true,
