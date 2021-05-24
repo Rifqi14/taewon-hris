@@ -271,8 +271,8 @@ class WorkingTimeController extends Controller
         if ($workingtime) {
             // $deleteDepartment = DepartmentShift::where('workingtime_id', $id);
             // $deleteDepartment->delete();
-            // $delete = WorkingtimeDetail::where('workingtime_id', $id);
-            // $delete->delete();
+            $delete = WorkingtimeDetail::where('workingtime_id', $id);
+            $delete->delete();
             // $departmentPath = explode(",", $request->department_id);
             // foreach ($departmentPath as $key => $path) {
             //     $departmentChild = Department::where('path', 'like', "%$path%")->get();
