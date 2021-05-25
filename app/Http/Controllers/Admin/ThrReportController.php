@@ -296,26 +296,39 @@ class ThrReportController extends Controller
                 }
                 if ($checkJoinDate) {
                     $date1 = date("Y-m", strtotime($checkJoinDate->join_date));
-                    $date1 = $date1 . "-31";
-                    $date2 = date('Y-m');
+                    $date1 = $date1 . "-01";
+                    $date2 = Carbon::createFromFormat('Y-m', $year . '-' . $month);
                     $date2 = $date2 . "-01";
 
                     $diff = abs(strtotime($date2) - strtotime($date1));
 
                     $years = floor($diff / (365 * 60 * 60 * 24));
                     $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
-                    $months = $months + 1;
                     $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+                    $total_month = ($years * 12) + $months + 1;
 
-                    $thrreport = ThrReport::create([
-                        'employee_id'       => $employee->id,
-                        'created_by'        => $user,
-                        'working_periode'   => $checkJoinDate->join_date,
-                        'period'            => $months,
-                        'year'              => $year,
-                        'month'             => $month,
-                        'status'            => -1
-                    ]);
+                    if($total_month < 12){
+                        $thrreport = ThrReport::create([
+                            'employee_id'       => $employee->id,
+                            'created_by'        => $user,
+                            'working_periode'   => $checkJoinDate->join_date,
+                            'period'            => $total_month,
+                            'year'              => $year,
+                            'month'             => $month,
+                            'status'            => -1
+                        ]);
+                    }else{
+                        $thrreport = ThrReport::create([
+                            'employee_id'       => $employee->id,
+                            'created_by'        => $user,
+                            'working_periode'   => $checkJoinDate->join_date,
+                            'period'            => 12,
+                            'year'              => $year,
+                            'month'             => $month,
+                            'status'            => -1
+                        ]);
+                    }
+                   
                     if ($thrreport) {
                         $basesalary = $this->get_employee_salary($employee->id);
                         $allowance = $this->get_additional_allowance($employee->id, $month, $year);
@@ -438,8 +451,8 @@ class ThrReportController extends Controller
                 }
                 if ($checkJoinDate) {
                     $date1 = date("Y-m", strtotime($checkJoinDate->join_date));
-                    $date1 = $date1 . "-31";
-                    $date2 = date('Y-m');
+                    $date1 = $date1 . "-01";
+                    $date2 = Carbon::createFromFormat('Y-m', $year . '-' . $month);
                     $date2 = $date2 . "-01";
 
                     $diff = abs(strtotime($date2) - strtotime($date1));
@@ -449,15 +462,29 @@ class ThrReportController extends Controller
                     $months = $months + 1;
                     $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
 
-                    $thrreport = ThrReport::create([
-                        'employee_id'       => $employee->id,
-                        'created_by'        => $user,
-                        'working_periode'   => $checkJoinDate->join_date,
-                        'period'            => $months,
-                        'year'              => $year,
-                        'month'             => $month,
-                        'status'            => -1
-                    ]);
+                    $total_month = ($years * 12) + $months + 1;
+
+                    if ($total_month < 12) {
+                        $thrreport = ThrReport::create([
+                            'employee_id'       => $employee->id,
+                            'created_by'        => $user,
+                            'working_periode'   => $checkJoinDate->join_date,
+                            'period'            => $total_month,
+                            'year'              => $year,
+                            'month'             => $month,
+                            'status'            => -1
+                        ]);
+                    } else {
+                        $thrreport = ThrReport::create([
+                            'employee_id'       => $employee->id,
+                            'created_by'        => $user,
+                            'working_periode'   => $checkJoinDate->join_date,
+                            'period'            => 12,
+                            'year'              => $year,
+                            'month'             => $month,
+                            'status'            => -1
+                        ]);
+                    }
                     if ($thrreport) {
                         $basesalary = $this->get_employee_salary($employee->id);
                         $allowance = $this->get_additional_allowance($employee->id, $month, $year);
@@ -579,8 +606,8 @@ class ThrReportController extends Controller
                 }
                 if ($checkJoinDate) {
                     $date1 = date("Y-m", strtotime($checkJoinDate->join_date));
-                    $date1 = $date1 . "-31";
-                    $date2 = date('Y-m');
+                    $date1 = $date1 . "-01";
+                    $date2 = Carbon::createFromFormat('Y-m', $year . '-' . $month);
                     $date2 = $date2 . "-01";
 
                     $diff = abs(strtotime($date2) - strtotime($date1));
@@ -590,15 +617,29 @@ class ThrReportController extends Controller
                     $months = $months + 1;
                     $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
 
-                    $thrreport = ThrReport::create([
-                        'employee_id'       => $employee->id,
-                        'created_by'        => $user,
-                        'working_periode'   => $checkJoinDate->join_date,
-                        'period'            => $months,
-                        'year'              => $year,
-                        'month'             => $month,
-                        'status'            => -1
-                    ]);
+                    $total_month = ($years * 12) + $months + 1;
+
+                    if ($total_month < 12) {
+                        $thrreport = ThrReport::create([
+                            'employee_id'       => $employee->id,
+                            'created_by'        => $user,
+                            'working_periode'   => $checkJoinDate->join_date,
+                            'period'            => $total_month,
+                            'year'              => $year,
+                            'month'             => $month,
+                            'status'            => -1
+                        ]);
+                    } else {
+                        $thrreport = ThrReport::create([
+                            'employee_id'       => $employee->id,
+                            'created_by'        => $user,
+                            'working_periode'   => $checkJoinDate->join_date,
+                            'period'            => 12,
+                            'year'              => $year,
+                            'month'             => $month,
+                            'status'            => -1
+                        ]);
+                    }
                     if ($thrreport) {
                         $basesalary = $this->get_employee_salary($employee->id);
                         $allowance = $this->get_additional_allowance($employee->id, $month, $year);
