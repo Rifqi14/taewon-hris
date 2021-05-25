@@ -763,14 +763,13 @@ class ThrReportController extends Controller
                 if($checkJoinDate){
                     $date1 = date("Y-m", strtotime($checkJoinDate->join_date));
                     $date1 = $date1."-31";
-                    $date2 = date('Y-m');
+                    $date2 = Carbon::createFromFormat('Y-m', $request->year . '-' . $request->montly);
                     $date2 = $date2 . "-01";
 
                     $diff = abs(strtotime($date2) - strtotime($date1));
 
                     $years = floor($diff / (365 * 60 * 60 * 24));
                     $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
-                    $months = $months + 1;
                     $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
                     
                     // dd($date1, $date2,$diff,$months);
@@ -778,7 +777,7 @@ class ThrReportController extends Controller
                         'employee_id'       => $view_employee,
                         'created_by'        => $request->user,
                         'working_periode'   => $checkJoinDate->join_date,
-                        'period'            => $months,
+                        'period'            => ($years * 12) + $months + 1,
                         'year'              => $request->year,
                         'month'             => $request->montly,
                         'status'            => -1
