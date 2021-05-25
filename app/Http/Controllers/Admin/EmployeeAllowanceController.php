@@ -8,6 +8,8 @@ use App\Models\Employee;
 use App\Models\WorkGroup;
 use App\Models\Allowance;
 use App\Models\WorkgroupAllowance;
+use App\Models\LogHistory;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\DB;
@@ -181,6 +183,12 @@ class EmployeeAllowanceController extends Controller
             'year' => $request->year
         ]);
         $get_allowance = Allowance::where('id', $employeeallowance->allowance_id)->first();
+
+        $employee = Employee::where('id',$request->employee_id)->first();
+        $user_id = Auth::user()->id;
+        // Basic Employee Allowance 
+        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Allowance","Add",$get_allowance->allowance,"0");
+
         if ($get_allowance->reccurance == 'monthly') {
             $employeeallowance->factor = 1;
             $employeeallowance->save();
@@ -247,6 +255,12 @@ class EmployeeAllowanceController extends Controller
                 'message'   => $validator->errors()->first()
             ], 400);
         }
+
+        $employee = Employee::where('id',$request->employee_id)->first();
+        $get_allowance = Allowance::where('id', $request->allowance_id)->first();
+        $user_id = Auth::user()->id;
+        // Basic Employee Allowance 
+        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Allowance","Edit",$get_allowance->allowance,$request->value);
 
         $employeeallowance = EmployeeAllowance::find($id);
         $employeeallowance->type      = $request->type;

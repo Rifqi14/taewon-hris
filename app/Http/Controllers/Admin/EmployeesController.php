@@ -1002,6 +1002,9 @@ class EmployeesController extends Controller
             setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Data","Edit","Account Bank",$request->account_bank);
         }
         
+        if($employee->account_no != $request->account_no){
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Data","Edit","Account No",$request->account_no);
+        }
 
         // account status
         if($employee->status != $request->status){
@@ -1011,11 +1014,11 @@ class EmployeesController extends Controller
         }
 
         // Join Date
-        if($employee->join_date != $request->join_date){
+        if($employee->join_date != date("Y-m-d",strtotime($request->join_date))){
             setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Data","Edit","Join Date",$request->join_date);
         }
         // Resign Date
-        if($employee->resign_date != $request->resign_date){
+        if($employee->resign_date != date("Y-m-d",strtotime($request->resign_date))){
             setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Data","Edit","Resign Date",$request->resign_date);
         }
 

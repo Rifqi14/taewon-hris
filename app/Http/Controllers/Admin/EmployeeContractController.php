@@ -211,12 +211,12 @@ class EmployeeContractController extends Controller
         }
 
         // Start Date
-        if($employeeCont->start_date != $request->start_date){
+        if($employeeCont->start_date != date("Y-m-d",strtotime($request->start_date))){
             setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Contract","Edit","Start Date",$request->start_date);
         }
 
         // End Date
-        if($employeeCont->end_date != $request->end_date){
+        if($employeeCont->end_date != date("Y-m-d",strtotime($request->end_date))){
             setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Contract","Edit","End Date",$request->end_date);
         }
 

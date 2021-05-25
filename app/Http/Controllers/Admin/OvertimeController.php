@@ -144,6 +144,12 @@ class OvertimeController extends Controller
         $overtime->hour = $request->hour;
         $overtime->final_salary = $request->hour * $overtime->amount * $overtime->basic_salary;
         $overtime->save();
+
+        $employee = Employee::where('id',$request->employee_id)->first();
+        $user_id = Auth::user()->id;
+        // Employee Overtimes 
+        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Overtime","Edit",$request->day,$request->hour);
+
         if (!$overtime) {
             return response()->json([
                 'success' => false,
