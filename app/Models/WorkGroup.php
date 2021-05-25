@@ -12,7 +12,11 @@ class WorkGroup extends Model
         return $this->hasOne('App\Models\WorkgroupMaster', 'id', 'workgroupmaster_id');
     }
 
-    public function breaktime(){
-        return $this->belongsToMany('App\Models\BreakTime');
+    // public function breaktime(){
+    //     return $this->belongsToMany('App\Models\BreakTime');
+    // }
+    public function breaktimeline()
+    {
+        return $this->hasMany('App\Models\BreakTimeLine', 'workgroup_id', 'id');
     }
 }
