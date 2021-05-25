@@ -295,13 +295,16 @@ class ThrReportController extends Controller
                     $delete = $exists->delete();
                 }
                 if ($checkJoinDate) {
-                    $date1 = $checkJoinDate->join_date;
-                    $date2 = date('Y-m-d');
+                    $date1 = date("Y-m", strtotime($checkJoinDate->join_date));
+                    $date1 = $date1 . "-31";
+                    $date2 = date('Y-m');
+                    $date2 = $date2 . "-01";
 
-                    $diff = abs(strtotime("+1months", strtotime($date2)) - strtotime($date1));
+                    $diff = abs(strtotime($date2) - strtotime($date1));
 
                     $years = floor($diff / (365 * 60 * 60 * 24));
                     $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+                    $months = $months + 1;
                     $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
 
                     $thrreport = ThrReport::create([
@@ -434,13 +437,16 @@ class ThrReportController extends Controller
                     $delete = $exists->delete();
                 }
                 if ($checkJoinDate) {
-                    $date1 = $checkJoinDate->join_date;
-                    $date2 = date('Y-m-d');
+                    $date1 = date("Y-m", strtotime($checkJoinDate->join_date));
+                    $date1 = $date1 . "-31";
+                    $date2 = date('Y-m');
+                    $date2 = $date2 . "-01";
 
-                    $diff = abs(strtotime("+1months", strtotime($date2)) - strtotime($date1));
+                    $diff = abs(strtotime($date2) - strtotime($date1));
 
                     $years = floor($diff / (365 * 60 * 60 * 24));
                     $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+                    $months = $months + 1;
                     $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
 
                     $thrreport = ThrReport::create([
@@ -572,13 +578,16 @@ class ThrReportController extends Controller
                     $delete = $exists->delete();
                 }
                 if ($checkJoinDate) {
-                    $date1 = $checkJoinDate->join_date;
-                    $date2 = date('Y-m-d');
+                    $date1 = date("Y-m", strtotime($checkJoinDate->join_date));
+                    $date1 = $date1 . "-31";
+                    $date2 = date('Y-m');
+                    $date2 = $date2 . "-01";
 
-                    $diff = abs(strtotime("+1months", strtotime($date2)) - strtotime($date1));
+                    $diff = abs(strtotime($date2) - strtotime($date1));
 
                     $years = floor($diff / (365 * 60 * 60 * 24));
                     $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+                    $months = $months + 1;
                     $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
 
                     $thrreport = ThrReport::create([
