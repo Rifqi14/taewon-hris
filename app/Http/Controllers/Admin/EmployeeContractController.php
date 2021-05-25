@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\EmployeeContract;
 use Illuminate\Http\Request;
+use App\Models\LogHistory;
+use App\Models\Employee;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\DB;
@@ -95,6 +98,22 @@ class EmployeeContractController extends Controller
             ], 400);
         }
 
+        $employee = Employee::where('id',$request->employee_id)->first();
+        $user_id = Auth::user()->id;
+        // No. Document
+        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Contract","Create","No. Document",$request->code);
+
+        // Start Date
+        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Contract","Create","Start Date",$request->start_date);
+
+        // End Date
+        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Contract","Create","End Date",$request->end_date);
+
+        // Status
+        $foo = $request->status;
+        $status_desc = ($foo == 0) ? "Non Active" : (($foo == 1)  ? "Active" : "Expired");
+        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Contract","Create","Status",$status_desc);
+
         $employeecontract = EmployeeContract::create([
             'employee_id' => $request->employee_id,
             'code'        => $request->code,
@@ -182,6 +201,30 @@ class EmployeeContractController extends Controller
                 'status'    => false,
                 'message'   => $validator->errors()->first()
             ], 400);
+        }
+
+        $employeeCont = EmployeeContract::where('id',$id)->first();
+        $user_id = Auth::user()->id;
+        // No. Document
+        if($employeeCont->code != $request->code){
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Contract","Edit","No. Document",$request->code);
+        }
+
+        // Start Date
+        if($employeeCont->start_date != $request->start_date){
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Contract","Edit","Start Date",$request->start_date);
+        }
+
+        // End Date
+        if($employeeCont->end_date != $request->end_date){
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Contract","Edit","End Date",$request->end_date);
+        }
+
+        // Status
+        if($employeeCont->status != $request->status){
+            $foo = $request->status;
+            $status_desc = ($foo == 0) ? "Non Active" : (($foo == 1)  ? "Active" : "Expired");
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Contract","Edit","Status",$status_desc);
         }
 
         $employeecontract = EmployeeContract::find($id);

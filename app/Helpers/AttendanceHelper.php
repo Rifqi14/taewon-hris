@@ -6,6 +6,7 @@ use App\Models\EmployeeSalary;
 use App\Models\Overtime;
 use App\Models\Config;
 use App\Models\OvertimeSchemeList;
+use App\Models\LogHistory;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -1127,4 +1128,19 @@ if (!function_exists('deleteAllowance')) {
       }
     }
   }
+}
+
+if (!function_exists('setRecordLogHistory')) {
+  function setrecordloghistory($user_id,$employee_id,$department_id,$page,$activity,$detail,$result){
+        $employee = LogHistory::create([
+            'date'                  => date('Y-m-d h:i:s'),
+            'user_id'               => $user_id,
+            'employee_id'           => $employee_id,
+            'department_id'         => $department_id,
+            'page'                  => $page,
+            'activity'              => $activity,
+            'detail'                => $detail,
+            'result'                => $result,
+        ]);
+    }
 }
