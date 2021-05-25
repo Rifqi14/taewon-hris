@@ -12,6 +12,7 @@ use App\Models\Province;
 use App\Models\Region;
 use App\Models\Title;
 use App\Models\Department;
+use App\Models\LogHistory;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\WorkgroupAllowance;
@@ -28,6 +29,7 @@ use App\Models\Overtime;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
 
@@ -986,6 +988,37 @@ class EmployeesController extends Controller
                 'message'   => $validator->errors()->first()
             ], 400);
         }
+
+        $employee = Employee::with('region')
+                    ->select('employees.*','employee_movements.title_id','titles.name as title_name')
+                    ->leftJoin('employee_movements','employee_movements.employee_id','=','employees.id')
+                    ->leftJoin('titles','titles.id','=','employee_movements.title_id')
+                    ->whereNull('finish')
+                    ->find($id);
+
+        $user_id = Auth::user()->id;
+        // account bank
+        if($employee->account_bank != $request->account_bank){
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Data","Edit","Account Bank",$request->account_bank);
+        }
+        
+
+        // account status
+        if($employee->status != $request->status){
+            $foo = $request->status;
+            $status = ($foo == 0) ? "Non Active" : (($foo == 1)  ? "Active" : "other");
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Data","Edit","Status",$status);
+        }
+
+        // Join Date
+        if($employee->join_date != $request->join_date){
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Data","Edit","Join Date",$request->join_date);
+        }
+        // Resign Date
+        if($employee->resign_date != $request->resign_date){
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Data","Edit","Resign Date",$request->resign_date);
+        }
+
         $employee = Employee::find($id);
         $employee->name                   = $request->name;
         $employee->nik                    = $request->nik;

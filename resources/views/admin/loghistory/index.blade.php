@@ -140,7 +140,7 @@
       order: [[ 1, "asc" ]],
       lengthMenu: [ 100, 250, 500, 1000, 2000 ],
       ajax: {
-        url: "{{route('attendance.read')}}",
+        url: "{{route('loghistory.read')}}",
         type: "GET",
         data:function(data){
           var employee = $('input[name=employee_id]').val();
@@ -164,27 +164,17 @@
           targets: [7],
           visible: false,
         },
-        { render: function(data, type, row) {
-            return `${row.name}<br>${row.nid}`;
-        }, targets:[2]},
-        { render: function(data, type, row) {
-          if (data == 1) {
-            return '<span class="badge badge-success">Scan In</span>';
-          } else {
-            return '<span class="badge badge-danger">Scan Out</span>';
-          }
-        }, targets:[6]}
       ],
       columns: [
         { data: "no" },
-        { data: "attendance_date" },
+        { data: "date" },
+        { data: "user_name" },
+        { data: "page" },
         { data: "name" },
-        { data: "device_name" },
-        { data: "working_group" },
-        { data: "description" },
-        { data: "type" },
-        { data: "batch_upload"},
-        { data: "batch_upload"},
+        { data: "department_name" },
+        { data: "activity" },
+        { data: "activity"},
+        { data: "result"},
       ]
     });
     $(document).ready(function(){

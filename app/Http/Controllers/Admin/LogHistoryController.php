@@ -23,6 +23,64 @@ class LogHistoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function read(Request $request)
+    {
+        $start = $request->start;
+        $length = $request->length;
+        $query = $request->search['value'];
+        $sort = $request->columns[$request->order[0]['column']]['data'];
+        $dir = $request->order[0]['dir'];
+        $employee = strtoupper(str_replace("'","''",$request->employee));
+        $nik = $request->nik;
+        $working_group = $request->working_group;
+        $status = $request->status;
+        $from = $request->from ? Carbon::parse($request->from)->startOfDay()->toDateTimeString() : null;
+        $to = $request->to ? Carbon::parse($request->to)->endOfDay()->toDateTimeString() : null;
+
+        //Count Data
+        $query = DB::table('log_histories');
+        $query->select('log_histories.*', 'employees.name as name','departments.name as department_name','users.name as user_name');
+        $query->leftJoin('employees', 'employees.id', '=', 'log_histories.employee_id');
+        $query->leftJoin('departments', 'departments.id', '=', 'log_histories.department_id');
+        $query->leftJoin('users', 'users.id', '=', 'log_histories.user_id');
+        if ($employee) {
+            $query->whereRaw("upper(employees.name) like '%$employee%'");
+        }
+        if ($from && $to) {
+            $query->whereBetween('log_histories.date', [$from, $to]);
+        }
+        $recordsTotal = $query->count();
+
+        //Select Pagination
+        $query = DB::table('log_histories');
+        $query->select('log_histories.*', 'employees.name as name','departments.name as department_name','users.name as user_name');
+        $query->leftJoin('employees', 'employees.id', '=', 'log_histories.employee_id');
+        $query->leftJoin('departments', 'departments.id', '=', 'log_histories.department_id');
+        $query->leftJoin('users', 'users.id', '=', 'log_histories.user_id');
+        if ($employee) {
+            $query->whereRaw("upper(employees.name) like '%$employee%'");
+        }
+        if ($from && $to) {
+            $query->whereBetween('log_histories.date', [$from, $to]);
+        }
+        $query->offset($start);
+        $query->limit($length);
+        $query->orderBy($sort, $dir);
+        $attendances = $query->get();
+
+        $data = [];
+        foreach ($attendances as $attendance) {
+            $attendance->no = ++$start;
+            $data[] = $attendance;
+        }
+        return response()->json([
+            'draw' => $request->draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsTotal,
+            'data' => $data
+        ], 200);
+    }
+
     public function index()
     {
         $query = DB::table('employees');
