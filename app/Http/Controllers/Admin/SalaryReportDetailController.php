@@ -10,6 +10,8 @@ use App\Models\SalaryReportDetail as ModelsSalaryReportDetail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
+use App\Models\LogHistory;
+use Illuminate\Support\Facades\Auth;
 
 class SalaryReportDetailController extends Controller
 {
@@ -212,6 +214,18 @@ class SalaryReportDetailController extends Controller
             'is_added'          => 'YES'
         ]);
         if ($detail) {
+
+        $employee = Employee::where('id',$request->employee)->first();
+        $user_id = Auth::user()->id;
+        if($detail->type == 1){
+            // Gross Salary
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Salary Report","Add","Gross Salary",$request->total);
+        }else{
+            //  Deduction 
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Salary Report","Add"," Deduction",$request->total);
+        }
+        
+
             $report = SalaryReport::find($request->id);
             $report->gross_salary = $this->gross_salary($request->id) ? $this->gross_salary($request->id) : 0;
             $report->deduction = $this->deduction_salary($request->id) ? $this->deduction_salary($request->id) : 0;
