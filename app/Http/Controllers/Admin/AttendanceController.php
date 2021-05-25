@@ -1161,14 +1161,6 @@ class AttendanceController extends Controller
                     $shift2 = findShift($shift, $attendance_hour);
                     // dd($shift2);
 
-                    if (!$shift2) {
-                        return response()->json([
-                            'status'     => false,
-                            'message'     => 'Shift for this employee workgroup ' . $employee->name . ' not found. Please check master break.',
-                            'shifts' => $shift,
-                            'attendance_hour' => $attendance_hour
-                        ], 400);
-                    }
 
                     $worktime = $this->employee_worktime($adjustment->employee_id);
 
@@ -1187,6 +1179,14 @@ class AttendanceController extends Controller
                         return response()->json([
                             'status'     => false,
                             'message'     => 'Working shift for employee name ' . $employee->name . ' and attendance date ' . $adjustment->attendance_date . ' and this day ' . $adjustment->day . ' not found. Please check master shift.'
+                        ], 400);
+                    }
+                    if (!$shift2) {
+                        return response()->json([
+                            'status'     => false,
+                            'message'     => 'Shift for this employee workgroup ' . $employee->name . ' not found. Please check master break.',
+                            'shifts' => $shift,
+                            'attendance_hour' => $attendance_hour
                         ], 400);
                     }
                     if (($getworkingtime->start >= changeDateFormat('H:i:s', $attendance_in)) && (changeDateFormat('H:i:s', $attendance_in) >= $getworkingtime->min_in)) {
