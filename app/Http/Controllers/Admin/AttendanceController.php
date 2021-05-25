@@ -1161,16 +1161,18 @@ class AttendanceController extends Controller
                     $shift2 = findShift($shift, $attendance_hour);
                     // dd($shift2);
 
-                    if (!$shift2) {
-                        return response()->json([
-                            'status'     => false,
-                            'message'     => 'Shift for this employee workgroup ' . $employee->name . ' not found. Please check master break.',
-                            'shifts' => $shift,
-                            'attendance_hour' => $attendance_hour
-                        ], 400);
-                    }
-
                     $worktime = $this->employee_worktime($adjustment->employee_id);
+
+                    if (!$worktime->working_time) {
+                        if (!$shift2) {
+                            return response()->json([
+                                'status'     => false,
+                                'message'     => 'Shift for this employee workgroup ' . $employee->name . ' not found. Please check master break.',
+                                'shifts' => $shift,
+                                'attendance_hour' => $attendance_hour
+                            ], 400);
+                        }
+                    }
 
                     $adjustment->workingtime_id = $worktime->working_time ? $worktime->working_time : $shift2->id;
                     
@@ -1189,6 +1191,7 @@ class AttendanceController extends Controller
                             'message'     => 'Working shift for employee name ' . $employee->name . ' and attendance date ' . $adjustment->attendance_date . ' and this day ' . $adjustment->day . ' not found. Please check master shift.'
                         ], 400);
                     }
+                    
                     if (($getworkingtime->start >= changeDateFormat('H:i:s', $attendance_in)) && (changeDateFormat('H:i:s', $attendance_in) >= $getworkingtime->min_in)) {
                         $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance_in) . ' ' . $getworkingtime->start);
                         $work_time = roundedTime(countWorkingTime($start_shift, $attendance_out));
