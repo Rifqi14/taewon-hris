@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\EmployeeSalary;
 use App\Models\OutsourcingDocument;
 use Illuminate\Http\Request;
+use App\Models\LogHistory;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -95,6 +96,12 @@ class SalaryEmployeeController extends Controller
                 'message'   => $validator->errors()->first()
             ], 400);
         }
+
+        $employee = Employee::where('id',$request->employee_id)->first();
+        $user_id = Auth::user()->id;
+        // Basic Salary Amount
+        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Salary","Add","Basic Salary Amount",$request->amount);
+
         $salaryemployee = EmployeeSalary::create([
             'user_id' => Auth::guard('admin')->user()->id,
             'employee_id'   => $request->employee_id,

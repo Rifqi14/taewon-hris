@@ -1002,6 +1002,9 @@ class EmployeesController extends Controller
             setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Data","Edit","Account Bank",$request->account_bank);
         }
         
+        if($employee->account_no != $request->account_no){
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Data","Edit","Account No",$request->account_no);
+        }
 
         // account status
         if($employee->status != $request->status){
