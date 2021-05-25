@@ -532,15 +532,41 @@ class SalaryReportController extends Controller
 
     return $data;
   }
+  // public function getAllowanceProrate($id, $month, $year)
+  // {
+  //   $query = DB::table('employee_allowances');
+  //   $query->selectRaw("sum(employee_allowances.value::numeric) as allowance_value");
+  //   $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
+  //   $query->where('employee_allowances.employee_id', '=', $id);
+  //   $query->where('allowances.prorate','=', 'Yes');
+  //   $query->where('employee_allowances.month', '=', $month);
+  //   $query->where('employee_allowances.year', '=', $year);
+  //    $query->where('employee_allowances.type', '!=', 'automatic');
+  //   $allowances = $query->get();
+
+  //   $data = [];
+  //   foreach ($allowances as $allowance) {
+  //     $data[] = $allowance;
+  //   }
+
+  //   return $data;
+  // }
+
   public function getAllowanceProrate($id, $month, $year)
   {
     $query = DB::table('employee_allowances');
-    $query->selectRaw("sum(employee_allowances.value::numeric) as allowance_value");
+    // $query->select('employee_allowances.*', 'allowances.allowance as description', 'allowances.group_allowance_id');
+    $query->selectRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) as allowance_value, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name");
     $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
+    $query->leftJoin('allowance_categories', 'allowance_categories.key', '=', 'allowances.category');
+    $query->leftJoin('group_allowances', 'group_allowances.id', 'allowances.group_allowance_id');
     $query->where('employee_allowances.employee_id', '=', $id);
-    $query->where('allowances.prorate','=', 'Yes');
     $query->where('employee_allowances.month', '=', $month);
     $query->where('employee_allowances.year', '=', $year);
+    $query->where('allowances.prorate', '=', 'Yes');
+    $query->where('employee_allowances.status', '=', 1);
+    $query->where('employee_allowances.type', '!=', 'automatic');
+    $query->groupBy('group_allowances.name', 'employee_allowances.is_penalty', 'allowances.group_allowance_id', 'employee_allowances.type');
     $allowances = $query->get();
 
     $data = [];
@@ -550,7 +576,6 @@ class SalaryReportController extends Controller
 
     return $data;
   }
-
   /**
    * Get employee attendance
    *
