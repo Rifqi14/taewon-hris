@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\OvertimeSchemeList;
 use App\Models\OvertimeScheme;
+use App\Models\OvertimeAllowance;
 use App\Models\OvertimeschemeDepartment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -122,7 +123,8 @@ class OvertimeSchemeController extends Controller
             'id'            => $id,
             'scheme_name'   => $request->scheme_name,
             'category'      => $request->category,
-            'working_time'  => $request->working_time
+            'working_time'  => $request->working_time,
+            'type'          => $request->type
         ]);
         if ($overtime) {
             foreach ($request->department_id as $key => $department) {
@@ -153,6 +155,20 @@ class OvertimeSchemeController extends Controller
                             'message'   => $list
                         ], 400);
                     }
+                }
+            }
+
+            foreach ($request->allowanceID as $key => $allowance) {
+                $allowance = OvertimeAllowance::create([
+                    'overtime_scheme_id'    => $overtime->id,
+                    'allowance_id'         => $allowance
+                ]);
+                if (!$allowance) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status'    => false,
+                        'message'   => $allowance
+                    ], 400);
                 }
             }
         } else {
@@ -264,6 +280,7 @@ class OvertimeSchemeController extends Controller
         $overtime->scheme_name  = $request->scheme_name;
         $overtime->category     = $request->category;
         $overtime->working_time = $request->working_time;
+        $overtime->type         = $request->type;
         $overtime->save();
         if ($overtime) {
             $list = OvertimeSchemeList::where('overtime_scheme_id', '=', $id);

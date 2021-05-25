@@ -8,7 +8,12 @@ class BreakTimeLine extends Model
 {
     protected $guarded = [];
 
+    public function breaktime()
+    {
+        return $this->belongsTo('App\Models\BreakTime', 'breaktime_id', 'id');
+    }
+    
     public function workgroup(){
-        return $this->hasOne('App\Models\WorkGroup','id','workgroup_id');
+        return $this->belongsTo('App\Models\WorkGroup');
     }
 }

@@ -965,8 +965,8 @@ class AttendanceController extends Controller
         $attendances = json_decode($request->attendance);
 
         if($request->period){
-            $month = date('m', strtotime($request->period));
-            $year = date('Y', strtotime($request->period));
+            $month   = date('m',strtotime(dbDate($request->period)));
+            $year    = date('Y', strtotime(dbDate($request->period)));
         }else{
             $month = $request->month;
             $year = $request->year;
@@ -981,7 +981,7 @@ class AttendanceController extends Controller
         DB::beginTransaction();
         foreach ($amonth as $key1 => $value) {
             foreach ($employees as $key => $attendance) {
-                $new_date = changeDateFormat('Y-m-d', $request->year . '-' . $request->month . '-' . $value);
+                $new_date = changeDateFormat('Y-m-d', $year . '-' . $month . '-' . $value);
                 if ($new_date <= date('Y-m-d')) {
                     $check = Attendance::where('employee_id', $attendance->id)->where('attendance_date', '=', $new_date)->first();
                     // Initiate attendance data
@@ -1164,7 +1164,9 @@ class AttendanceController extends Controller
                     if (!$shift2) {
                         return response()->json([
                             'status'     => false,
-                            'message'     => 'Shift for this employee workgroup ' . $employee->name . ' not found. Please check master break.'
+                            'message'     => 'Shift for this employee workgroup ' . $employee->name . ' not found. Please check master break.',
+                            'shifts' => $shift,
+                            'attendance_hour' => $attendance_hour
                         ], 400);
                     }
 
@@ -1653,7 +1655,8 @@ class AttendanceController extends Controller
 
         $attendances    = json_decode($request->attendance); /* Get request data from preview */
 
-        $period         = Carbon::createFromFormat('Y-m-d', dbDate($request->period));
+        $period         = Carbon::createFromFormat('Y-m-d'
+    );
         $firstMonth     = Carbon::createFromDate($period->year, $period->month, 1);
         $amonth         = CarbonPeriod::create($firstMonth, $period);
 

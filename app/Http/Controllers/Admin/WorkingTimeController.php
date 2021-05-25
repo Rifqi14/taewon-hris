@@ -269,27 +269,27 @@ class WorkingTimeController extends Controller
         $workingtime->save();
 
         if ($workingtime) {
-            $deleteDepartment = DepartmentShift::where('workingtime_id', $id);
-            $deleteDepartment->delete();
+            // $deleteDepartment = DepartmentShift::where('workingtime_id', $id);
+            // $deleteDepartment->delete();
             $delete = WorkingtimeDetail::where('workingtime_id', $id);
             $delete->delete();
-            $departmentPath = explode(",", $request->department_id);
-            foreach ($departmentPath as $key => $path) {
-                $departmentChild = Department::where('path', 'like', "%$path%")->get();
-                foreach ($departmentChild as $key => $department) {
-                    $departmentShift = DepartmentShift::create([
-                        'department_id'     => $department->id,
-                        'workingtime_id'    => $workingtime->id,
-                    ]);
-                    if (!$departmentShift) {
-                        DB::rollBack();
-                        return response()->json([
-                            'status'    => false,
-                            'message'   => $departmentShift
-                        ], 400);
-                    }
-                }
-            }
+            // $departmentPath = explode(",", $request->department_id);
+            // foreach ($departmentPath as $key => $path) {
+            //     $departmentChild = Department::where('path', 'like', "%$path%")->get();
+            //     foreach ($departmentChild as $key => $department) {
+            //         $departmentShift = DepartmentShift::create([
+            //             'department_id'     => $department->id,
+            //             'workingtime_id'    => $workingtime->id,
+            //         ]);
+            //         if (!$departmentShift) {
+            //             DB::rollBack();
+            //             return response()->json([
+            //                 'status'    => false,
+            //                 'message'   => $departmentShift
+            //             ], 400);
+            //         }
+            //     }
+            // }
             foreach ($request->start as $key => $value) {
                 if ($request->start[$key] > $request->finish[$key]) {
                     $start = changeDateFormat('Y-m-d H:i:s', date('Y-m-d', time()) . ' ' . $request->start[$key]);

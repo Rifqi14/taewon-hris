@@ -8,6 +8,10 @@ class BreakTime extends Model
 {
     protected $guarded = [];
 
+    // public function breaktimeline()
+    // {
+    //     return $this->hasMany('App\Models\BreakTimeLine', 'breaktime_id', 'id');
+    // }
     public function breaktimeline()
     {
         return $this->hasMany('App\Models\BreakTimeLine', 'breaktime_id', 'id');

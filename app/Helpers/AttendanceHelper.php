@@ -26,8 +26,12 @@ if (!function_exists('findShift')) {
 
     asort($interval);
     $closest = key($interval);
-
-    return $array[$closest];
+    if(isset($closest))
+    {
+      return $array[$closest];
+    }else{
+      return false;
+    }
   }
 }
 

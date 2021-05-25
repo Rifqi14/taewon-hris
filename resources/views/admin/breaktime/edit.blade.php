@@ -65,7 +65,7 @@
 						<div class="col-sm-6">
 							<div class="form-group">
 								<label>Workgroup Combination <b class="text-danger">*</b></label>
-								<input type="text" value="" multiple="multiple" name="workgroup[]" class="form-control select2" placeholder="Workgroup Combination" id="workgroup">
+								<input type="text" multiple="multiple" name="workgroup" value="{{$breaktime->wokingtime_id}}" class="form-control select2" placeholder="Workgroup Combination" id="workgroup">
 							</div>
 						</div>
 					</div>
@@ -315,20 +315,13 @@
 				$('#form').validate().form();
 			}
 		});
-
-		$.ajax({
-			url:  "{{route('breaktime.multi')}}",
-			type: 'GET',
-			dataType: 'json',
-			data: {{ $breaktime->id }},
-			success: function (result) {
-				var data = [];
-				$.each(result.results, function(key, val){
-					data.push({ id:val.workgroup_id,text:val.workgroup_name });
-				});
-				$("#workgroup").select2('data',data).trigger('change');
-			}
-		});
+		var data = [];
+		@if ($breaktime->breaktimeline)
+			@foreach ($breaktime->breaktimeline as $value)
+				data.push({id: '{{ $value->workgroup_id }}', text: '{{ $value->workgroup->name }}'});
+			@endforeach
+		@endif
+		$('#workgroup').select2('data', data).trigger('change');
 		dataTableDepartment = $("#department-table").DataTable({
 			stateSave: true,
 			processing: true,

@@ -1163,10 +1163,10 @@ class EmployeesController extends Controller
                 $emergency_contact_no   = $sheet->getCellByColumnAndRow(25, $row)->getValue();
                 $working_time_type      = $sheet->getCellByColumnAndRow(26, $row)->getValue();
                 $working_time_name      = strtoupper($sheet->getCellByColumnAndRow(27, $row)->getValue());
-                if (is_numeric($sheet->getCellByColumnAndRow(11, $row)->getValue())) {
-                    $join_date = date('Y-m-d', \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(27, $row)->getValue()));
+                if (is_numeric($sheet->getCellByColumnAndRow(28, $row)->getValue())) {
+                    $join_date = date('Y-m-d', \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(28, $row)->getValue()));
                 } else {
-                    $join_date = date('Y-m-d', strtotime($sheet->getCellByColumnAndRow(11, $row)->getValue()));
+                    $join_date = date('Y-m-d', strtotime($sheet->getCellByColumnAndRow(28, $row)->getValue()));
                 }
 
                 $overtime         = strtolower($sheet->getCellByColumnAndRow(29, $row)->getValue());

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\SalaryReportDetail;
+use App\Models\SalaryReportDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\SalaryReport;
@@ -61,12 +61,17 @@ class SalaryReportDetailController extends Controller
         // dd($month, $year);
         // Count Data
         $report_id = SalaryReport::where('employee_id', $employee)->first();
-        // dd($report_id);
+        if($report_id){
+            $salary_report_id = $report_id->id;
+        }else{
+            $salary_report_id = 0;
+        }
+        // dd($report_id, $employee);
         $query = DB::table('salary_report_details');
         $query->select('salary_report_details.*', 'salary_reports.period');
         $query->leftJoin('salary_reports', 'salary_reports.id', '=', 'salary_report_details.salary_report_id');
         $query->where('salary_reports.employee_id', '=', $employee);
-        $query->where('salary_report_details.salary_report_id', '=', $report_id->id);
+        $query->where('salary_report_details.salary_report_id', $salary_report_id);
         $query->where('salary_report_details.type', '=', 1);
         $query->whereMonth('salary_reports.period', '=', $month);
         $query->whereYear('salary_reports.period', '=', $year);
@@ -77,7 +82,7 @@ class SalaryReportDetailController extends Controller
         $query->select('salary_report_details.*', 'salary_reports.period');
         $query->leftJoin('salary_reports', 'salary_reports.id', '=', 'salary_report_details.salary_report_id');
         $query->where('salary_reports.employee_id', '=', $employee);
-        $query->where('salary_report_details.salary_report_id', '=', $report_id->id);
+        $query->where('salary_report_details.salary_report_id', $salary_report_id);
         $query->where('salary_report_details.type', '=', 1);
         $query->whereMonth('salary_reports.period', '=', $month);
         $query->whereYear('salary_reports.period', '=', $year);
