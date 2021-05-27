@@ -125,7 +125,7 @@
                 <tr>
                     <th rowspan="2" class="th-first p-0 text-content">Month</th>
                     <th class="th-slip p-0 text-content">Gaji Pokok</th>
-                    <th class="th-slip p-0 text-content">{{$coordinate12->name}}</th>
+                    <th class="th-slip p-0 text-content">{{$coordinate12 ? $coordinate12->name : 'Kosong'}}</th>
                     <th class="th-slip p-0 text-content">{{$coordinate13 ? $coordinate13->name : 'Kosong'}}</th>
                     <th class="th-slip p-0 text-content">{{$coordinate14 ? $coordinate14->name : 'Kosong'}}</th>
                     <th rowspan="2" style="width:24%; text-align:center; height:2%;" class="p-0 text-content"></th>
@@ -134,11 +134,11 @@
                 </tr>
                 <tr>
                     {{-- <td rowspan="1">Month</td> --}}
-                    <td class="p-0 text-content" style="text-align: right;">{{ number_format($salary->gross_salary, 0, '.', ',') }}</td>
+                    <td class="p-0 text-content" style="text-align: right;">{{number_format($basic_salary->total, 0, '.', ',') }}</td>
                     <td class="p-0 text-content" style="text-align: right;">{{number_format($coordinate12value, 0, '.', ',')}}</td>
 					<td class="p-0 text-content" style="text-align: right;">{{number_format($coordinate13value, 0, '.', ',')}}</td>
                     <td class="p-0 text-content" style="text-align: right;">{{number_format($coordinate14value, 0, '.', ',')}}</td>
-                    <td class="p-0 text-content" style="text-align: right;">5.144.844</td>
+                    <td class="p-0 text-content" style="text-align: right;">{{number_format($jumlah_month, 0, '.', ',')}}</td>
                 </tr>
         </table>
         <table class="table table-bordered">
