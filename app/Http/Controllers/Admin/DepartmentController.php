@@ -233,6 +233,7 @@ class DepartmentController extends Controller
         $department->dashboard = $request->dashboard;
         $department->notes = $request->notes;
         $department->status = $request->status;
+        $department->driver = $request->driver;
         $department->parent_id = $request->parent_id ? $request->parent_id : 0;
         $department->save();
         $department->path = implode(' -> ', $this->createPath($id, []));
