@@ -28,7 +28,7 @@
                 <div class="form-group">
                   <label>Code <b class="text-danger">*</b></label>
                   <input type="text" class="form-control" name="code" value="{{ $department->code }}"
-                    placeholder="Code">
+                    placeholder="Code" readonly>
                 </div>
               </div>
               <div class="col-sm-6">
@@ -63,6 +63,16 @@
                   <select class="form-control select2" id="dashboard" required name="dashboard">
                     <option value="no" @if($department->dashboard == 'no') selected @endif>No</option>
                     <option value="yes" @if($department->dashboard == 'yes') selected @endif>Yes</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <!-- text input -->
+                <div class="form-group">
+                  <label>Driver <b class="text-danger">*</b></label>
+                  <select name="driver" id="driver" class="form-control select2">
+                    <option value="no" @if($department->driver == 'no') selected @endif>No</option>
+                    <option value="yes" @if($department->driver == 'yes') selected @endif>Yes</option>
                   </select>
                 </div>
               </div>

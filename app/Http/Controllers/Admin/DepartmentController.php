@@ -156,6 +156,7 @@ class DepartmentController extends Controller
             'status' => $request->status,
             'order_number' => $request->order_number,
             'dashboard' => $request->dashboard,
+            'driver' => $request->driver,
         ]);
         if ($request->code) {
             $department->code = $request->code;
@@ -230,6 +231,8 @@ class DepartmentController extends Controller
         $department->name = $request->name;
         $department->order_number = $request->order_number;
         $department->dashboard = $request->dashboard;
+        $department->notes = $request->notes;
+        $department->status = $request->status;
         $department->parent_id = $request->parent_id ? $request->parent_id : 0;
         $department->save();
         $department->path = implode(' -> ', $this->createPath($id, []));
