@@ -58,6 +58,18 @@
                   <input class="form-control" type="email" id="email" value="{{$partner->email}}" placeholder="Email" name="email">
                 </div>
               </div>
+              <div class="col-sm-6">
+									<div class="form-group">
+										<label>Truck <b class="text-danger">*</b></label>
+										<select name="truck_id" id="truck_id" class="form-control select2" style="width: 100%"
+											aria-hidden="true" data-placeholder="Select Truck" required>
+											<option value=""></option>
+											@foreach ($trucks as $truck)
+											<option value="{{ $truck->id }}" @if($truck->id == $partner->truck_id) selected @endif>{{ $truck->name }}</option>
+											@endforeach
+										</select>
+									</div>
+								</div>
             </div>
         </div>
         <div class="overlay d-none">
@@ -115,6 +127,7 @@
   <script>
     $(document).ready(function(){
           $('#status').select2();
+          $('#truck_id').select2();
           $("#form").validate({
             errorElement: 'div',
             errorClass: 'invalid-feedback',

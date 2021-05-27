@@ -102,8 +102,8 @@ $(function(){
             {
                 orderable: false,targets:[0]
             },
-            { className: "text-right", targets: [0] },
-            { className: "text-center", targets: [2,3,4,5] },
+            { className: "text-right", targets: [0,3] },
+            { className: "text-center", targets: [4,5] },
             { render: function ( data, type, row ) {
                 return `${row.name} <br><small>${row.code}</small>`
             },targets: [1]},

@@ -13,6 +13,10 @@ class Partner extends Model
     {
         return $this->hasOne('App\Models\Site', 'id', 'site_id');
     }
+    public function truck()
+    {
+        return $this->hasOne('App\Models\Truck', 'id', 'truck_id');
+    }
     public function getAutoNumberOptions()
     {
         return [

@@ -30,7 +30,7 @@
             <thead>
               <tr>
                 <th width="10">No</th>
-                <th width="100">Driver</th>
+                <th width="100">Type</th>
                 <th width="100">Allowance</th>
                 <th width="100">Category</th>
                 <th width="10">Action</th>
@@ -55,11 +55,11 @@
           <div class="row">
             <div class="col-md-12">
               <div class="form-group">
-                <label class="control-label" for="driver">Driver</label>
+                <label class="control-label" for="driver">Type</label>
                 <select name="driver" id="driver" class="form-control select2" style="width: 100%" aria-hidden="true">
                   <option value="">All</option>
-                  <option value="pribadi">Driver Mobil Pribadi</option>
-                  <option value="truck">Driver Truck</option>
+                  <option value="pribadi">Reccurance</option>
+                  <option value="truck">Truck</option>
                 </select>
               </div>
             </div>
@@ -134,9 +134,9 @@
         { render: function ( data, type, row ) {
           var html = '';
           if (row.driver == 'pribadi') {
-            html = 'Driver Mobil Pribadi';
+            html = 'Reccurance';
           } else {
-            html = 'Driver Truck'
+            html = 'Truck'
           }
           return html;
           },targets: [1]
