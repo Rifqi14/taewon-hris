@@ -14,6 +14,7 @@ use App\Models\Title;
 use App\Models\Overtime;
 use App\Models\Attendance;
 use App\Models\WorkGroup;
+use App\Models\LeaveSetting;
 use App\Models\PphReport;
 use App\Models\PphReportDetail;
 use App\Models\EmployeeAllowance;
@@ -2512,13 +2513,109 @@ class SalaryReportController extends Controller
    */
   public function printmass(Request $request)
   {
-    // $id = json_decode($request->id);
-    // $salaries = SalaryReport::with('employee')->with('salarydetail')->whereIn('id', $id)->get();
+    $id = json_decode($request->id);
+    $salaries = SalaryReport::with('employee')->with('salarydetail')->whereIn('id', $id)->get();
+
+    $coordinate12 = GroupAllowance::where('coordinate', '1.2')->first();
+    if($coordinate12){
+      $coordinate12value = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $coordinate12->id)->get()->sum('total');
+    }else{
+      $coordinate12value = 0;
+    }
+
+    $coordinate13 = GroupAllowance::where('coordinate', '1.3')->first();
+    if($coordinate13){
+      $coordinate13value = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $coordinate13->id)->get()->sum('total');
+    }else{
+      $coordinate13value = 0;
+    }
+
+    $coordinate14 = GroupAllowance::where('coordinate', '1.4')->first();
+    if($coordinate14){
+      $coordinate14value = SalaryReportDetail::select(DB::raw("SUM(total) as total_coordinate14"))->where('salary_report_id', $id)->where('group_allowance_id', $coordinate14->id)->get();
+    }else{
+      $coordinate14value = 0;
+    }
+
+    $coordinate43 = GroupAllowance::where('coordinate', '4.3')->first();
+    if($coordinate43){
+      $coordinate43value = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $coordinate43->id)->get()->sum('total'); 
+    }else{
+      $coordinate43value = 0;
+    }
+
+    $coordinate44 = GroupAllowance::where('coordinate', '4.4')->first();
+    if($coordinate44){
+      $coordinate44value = SalaryReportDetail::select(DB::raw("SUM(total) as total_coordinate12"))->where('salary_report_id', $id)->where('group_allowance_id', $coordinate44->id)->get();
+    }else{
+      $coordinate44value = 0;
+    }
+
+    $coordinate45 = GroupAllowance::where('coordinate', '4.5')->first();
+    if($coordinate45){
+      $coordinate45value = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $coordinate45->id)->get()->sum('total');
+    }else{
+      $coordinate45value = 0;
+    }
+
+    $coordinate46 = GroupAllowance::where('coordinate', '4.6')->first();
+    if($coordinate46){
+      $coordinate46value = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $coordinate46->id)->get()->sum('total');
+    }else{
+      $coordinate46value = 0;
+    }
+
+    $coordinate54 = GroupAllowance::where('coordinate', '5.4')->first();
+    if($coordinate54){
+      $coordinate54value = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $coordinate54->id)->get()->sum('total');
+    }else{
+      $coordinate54value = 0;
+    }
+
+    $coordinate55 = GroupAllowance::where('coordinate', '5.5')->first();
+    if($coordinate55){
+      $coordinate55value = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $coordinate55->id)->get()->sum('total');
+    }else{
+      $coordinate55value = 0;
+    }
+    // $leavesetting = LeaveSetting::get();
+    // $leavesetting->coordinate = explode(',', $leavesetting->coordinate);
+    $coordinate33 = LeaveSetting::where('coordinate','like', '%3.3%')->first();
+    $coordinate34 = LeaveSetting::where('coordinate', 'like', '%3.4%')->first();
+    $coordinate35 = LeaveSetting::where('coordinate', 'like', '%3.5%')->first();
+    $coordinate36 = LeaveSetting::where('coordinate', 'like', '%3.6%')->first();
+    $coordinate51 = LeaveSetting::where('coordinate', 'like', '%5.1%')->first();
+    $coordinate52 = LeaveSetting::where('coordinate', 'like', '%5.2%')->first();
+    $coordinate53 = LeaveSetting::where('coordinate', 'like', '%.53%')->first();
+
+    // $coordinate12 = DB::table('salary_reports');
+    // $coordinate12->select('salary_reports.*', 'group_allowances.name as allowance_name');
+    // $coordinate12->leftJoin('salary_report_details', 'salary_report_details.salary_report_id', '=', 'salary_reports.id');
+    // $coordinate12->leftJoin('group_allowances', 'group_allowances.id', '=', 'salary_report_details.group_allowance_id');
+    // // $coordinate12->where('group_allowances.coordinate', '1.2');
+    // $coordinate12->whereIn('salary_reports.id', $id);
+    // $data = $coordinate12->get();
+
+    // $coordinate12 = SalaryReport::with('employee')->with(['salarydetail' => function ($q) {
+    //   $q->with(['groupAllowance' => function ($q1) {
+    //     $q1->where('name','Insentif');
+    //   }]);
+    // }])->whereIn('id', $id)->first();
+
+    // $coordinate13 = SalaryReport::with('employee')->with(['salarydetail' => function ($q) {
+    //   $q->with(['groupAllowance'])->where('coordinate', '1.3');
+    // }])->whereIn('id', $id)->first();
     // foreach ($salaries as $salary) {
     //   $salary->print_status = 1;
     //   $salary->save();
     // }
-    return view('admin.salaryreport.newprint');
+    // return response()->json($coordinate12);
+    // dd($coordinate13);
+    return view('admin.salaryreport.newprint', compact('salaries', 'coordinate12', 'coordinate13', 'coordinate14',
+  'coordinate43', 'coordinate44', 'coordinate45', 'coordinate46', 'coordinate54', 'coordinate55', 'coordinate33',
+  'coordinate34', 'coordinate35', 'coordinate36', 'coordinate51', 'coordinate52', 'coordinate53', 'coordinate12value',
+  'coordinate13value','coordinate14value','coordinate43value','coordinate44value','coordinate45value','coordinate46value',
+  'coordinate54value','coordinate55value'));
   }
 
   /**
