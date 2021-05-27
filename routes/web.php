@@ -610,5 +610,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/loghistory/read', 'Admin\LogHistoryController@read')->name('loghistory.read');
         Route::get('/loghistory/select', 'Admin\LogHistoryController@select')->name('loghistory.select');
         Route::resource('/loghistory', 'Admin\LogHistoryController')->except(['show']);
+
+        // Route Truck
+        Route::get('/truck/read', 'Admin\TruckController@read')->name('truck.read');
+        Route::get('/truck/select', 'Admin\TruckController@select')->name('truck.select');
+        Route::resource('/truck', 'Admin\TruckController')->except(['show']);
     });
 });
