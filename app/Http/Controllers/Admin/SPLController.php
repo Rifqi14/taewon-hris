@@ -422,26 +422,34 @@ class SPLController extends Controller
         foreach ($spls as $spl) {
             $check = Spl::where('spl_date', $spl->date)->where('employee_id', $spl->employee_id)->first();
             if($check){
-                $check->delete();
+                $check->start_date = $spl->start_date;
+                $check->start_time = $spl->start_time;
+                $check->finish_date = $spl->finish_date;
+                $check->finish_time = $spl->finish_time;
+                $check->duration = floor((strtotime($spl->finish_date.' '.$spl->finish_time) - strtotime($spl->start_date.' '.$spl->start_time)) / (60*60));
+                $check->save();
             }
-            $splimport = Spl::create([
-                'employee_id' => $spl->employee_id,
-                'spl_date'    => $spl->date,
-                'start_date'  => $spl->start_date,
-                'start_time'  => $spl->start_time,
-                'finish_date' => $spl->finish_date,
-                'finish_time' => $spl->finish_time,
-                'status' => 1
-            ]);
-            $splimport->duration = floor((strtotime($spl->finish_time) - strtotime($spl->start_time)) / (60*60));
-            $splimport->save();
-            if (!$splimport) {
-                DB::rollback();
-                return response()->json([
-                    'status' => false,
-                    'message'   => $splimport
-                ], 400);
+            else{
+                $splimport = Spl::create([
+                    'employee_id' => $spl->employee_id,
+                    'spl_date'    => $spl->date,
+                    'start_date'  => $spl->start_date,
+                    'start_time'  => $spl->start_time,
+                    'finish_date' => $spl->finish_date,
+                    'finish_time' => $spl->finish_time,
+                    'status' => 1
+                ]);
+                $splimport->duration = floor((strtotime($spl->finish_date.' '.$spl->finish_time) - strtotime($spl->start_date.' '.$spl->start_time)) / (60*60));
+                $splimport->save();
+                if (!$splimport) {
+                    DB::rollback();
+                    return response()->json([
+                        'status' => false,
+                        'message'   => $splimport
+                    ], 400);
+                }
             }
+            
         }
         DB::commit();
         return response()->json([
