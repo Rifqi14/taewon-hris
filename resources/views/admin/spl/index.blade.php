@@ -204,7 +204,7 @@
 			],
 			columns: [
 			{ data: "no" },
-			{ data: "nik" },
+			{ data: "nid" },
 			{ data: "employee_name" },
 			{ data: "start_date" },
 			{ data: "start_time" },

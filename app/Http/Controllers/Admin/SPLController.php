@@ -182,14 +182,13 @@ class SPLController extends Controller
         // $dateTimeFinish = str_replace('/','-',$request->finish_overtime);
         $spl = Spl::create([
             'employee_id' => $request->employee_name,
-            'nik' => $request->nik,
-            'spl_date' => $request->spl_date,
-            'start_date' => $request->start_date,
-            'start_time' => $request->start_time,
+            'spl_date'    => $request->spl_date,
+            'start_date'  => $request->start_date,
+            'start_time'  => $request->start_time,
             'finish_date' => $request->finish_date,
             'finish_time' => $request->finish_time,
-            'notes' => $request->notes,
-            'status' => $request->status,
+            'notes'       => $request->notes,
+            'status'      => $request->status,
         ]);
         $spl->duration = floor((strtotime($request->finish_time) - strtotime($request->start_time)) / (60*60));
         $spl->save();
@@ -269,15 +268,14 @@ class SPLController extends Controller
         // $dateTimeFinish = str_replace('/','-',$request->finish_overtime);
         $spl = Spl::find($id);
         $spl->employee_id = $request->employee_name;
-        $spl->spl_date = $request->spl_date;
-        $spl->nik = $request->nik;
-        $spl->start_date = $request->start_date;
-        $spl->start_time = $request->start_time;
+        $spl->spl_date    = $request->spl_date;
+        $spl->start_date  = $request->start_date;
+        $spl->start_time  = $request->start_time;
         $spl->finish_date = $request->finish_date;
         $spl->finish_time = $request->finish_time;
-        $spl->notes = $request->notes;
-        $spl->status = $request->status;
-        $spl->duration = floor((strtotime($request->finish_time) - strtotime($request->start_time)) / (60*60));
+        $spl->notes       = $request->notes;
+        $spl->status      = $request->status;
+        $spl->duration    = floor((strtotime($request->finish_time) - strtotime($request->start_time)) / (60*60));
         $spl->save();
 
         if (!$spl) {
@@ -375,7 +373,7 @@ class SPLController extends Controller
                 }else{
                     $finish_time = date('H:i:s', strtotime($sheet->getCellByColumnAndRow(6, $row)->getValue()));
                 }
-                $employee = Employee::whereRaw("upper(name) like '%$employee_name%'")->first();
+                $employee = Employee::whereRaw("upper(nid) = '$nid'")->first();
                 $status = 1;
                 $error_message = '';
                 if (!$employee) {
@@ -391,7 +389,7 @@ class SPLController extends Controller
                     'date' => $date,
                     'employee_name' => $employee_name,
                     'employee_id' => $employee ? $employee->id : null,
-                    'nik' => $nid,
+                    'nid' => $nid,
                     'start_date' => $start_date,
                     'start_time' => $start_time,
                     'finish_date' => $finish_date,
@@ -401,7 +399,7 @@ class SPLController extends Controller
                 );
                 $no++;
             }
-            // dd($data);
+            dd($data);
         }
         return response()->json([
             'status'     => true,
@@ -428,7 +426,6 @@ class SPLController extends Controller
             }
             $splimport = Spl::create([
                 'employee_id' => $spl->employee_id,
-                'nik' => $spl->nik,
                 'spl_date' => $spl->date,
                 'start_date' => $spl->start_date,
                 'start_time' => $spl->start_time,
