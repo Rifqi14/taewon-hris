@@ -2517,67 +2517,147 @@ class SalaryReportController extends Controller
     $salaries = SalaryReport::with('employee')->with('salarydetail')->whereIn('id', $id)->get();
 
     $coordinate12 = GroupAllowance::where('coordinate', '1.2')->first();
-    if($coordinate12){
-      $coordinate12value = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $coordinate12->id)->get()->sum('total');
-    }else{
-      $coordinate12value = 0.0;
-    }
-
     $coordinate13 = GroupAllowance::where('coordinate', '1.3')->first();
-    if($coordinate13){
-      $coordinate13value = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $coordinate13->id)->get()->sum('total');
-    }else{
-      $coordinate13value = 0.0;
-    }
-
     $coordinate14 = GroupAllowance::where('coordinate', '1.4')->first();
-    if($coordinate14){
-      $coordinate14value = SalaryReportDetail::select(DB::raw("SUM(total) as total_coordinate14"))->where('salary_report_id', $id)->where('group_allowance_id', $coordinate14->id)->get();
-    }else{
-      $coordinate14value = 0.0;
-    }
-
     $coordinate43 = GroupAllowance::where('coordinate', '4.3')->first();
-    if($coordinate43){
-      $coordinate43value = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $coordinate43->id)->get()->sum('total'); 
-    }else{
-      $coordinate43value = 0.0;
-    }
-
     $coordinate44 = GroupAllowance::where('coordinate', '4.4')->first();
-    if($coordinate44){
-      $coordinate44value = SalaryReportDetail::select(DB::raw("SUM(total) as total_coordinate12"))->where('salary_report_id', $id)->where('group_allowance_id', $coordinate44->id)->get();
-    }else{
-      $coordinate44value = 0.0;
-    }
-
     $coordinate45 = GroupAllowance::where('coordinate', '4.5')->first();
-    if($coordinate45){
-      $coordinate45value = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $coordinate45->id)->get()->sum('total');
-    }else{
-      $coordinate45value = 0.0;
-    }
-
     $coordinate46 = GroupAllowance::where('coordinate', '4.6')->first();
-    if($coordinate46){
-      $coordinate46value = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $coordinate46->id)->get()->sum('total');
-    }else{
-      $coordinate46value = 0.0;
-    }
-
     $coordinate54 = GroupAllowance::where('coordinate', '5.4')->first();
-    if($coordinate54){
-      $coordinate54value = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $coordinate54->id)->get()->sum('total');
-    }else{
-      $coordinate54value = 0.0;
-    }
-
     $coordinate55 = GroupAllowance::where('coordinate', '5.5')->first();
-    if($coordinate55){
-      $coordinate55value = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $coordinate55->id)->get()->sum('total');
-    }else{
-      $coordinate55value = 0.0;
+    
+    $overtimes = [];
+    $coordinate12values = [];
+    $coordinate13values = [];
+    $coordinate14values = [];
+    $coordinate43values = [];
+    $coordinate44values = [];
+    $coordinate45values = [];
+    $coordinate46values = [];
+    $coordinate54values = [];
+    $coordinate55values = [];
+    $basic_salaries = [];
+    foreach ($salaries as $salary) {
+
+      $overtime = Overtime::selectRaw("sum(case when amount = 1.5 then hour else 0 end) ot_15,
+        sum(case when amount = 2 then hour else 0 end) ot_20,
+        sum(case when amount = 3 then hour else 0 end) ot_30,
+        sum(case when amount = 4 then hour else 0 end) ot_40,
+        sum(case when amount = 1.5 then final_salary::numeric else 0 end) value_15,
+        sum(case when amount = 2 then final_salary::numeric else 0 end) value_20,
+        sum(case when amount = 3 then final_salary::numeric else 0 end) value_30,
+        sum(case when amount = 4 then final_salary::numeric else 0 end) value_40")
+        ->where('overtimes.employee_id', $salary->employee_id)
+        ->where('overtimes.month', '=', date('m', strtotime($salary->period)))
+        ->where('overtimes.year', '=', date('Y', strtotime($salary->period)))
+        ->first();
+    
+      $overtimes[$salary->id] = $overtime;
+      // Jumlah Jam Overtime
+      if($overtimes[$salary->id]){
+        $total_jam = $overtimes[$salary->id]->ot_15 + $overtimes[$salary->id]->ot_20 + $overtimes[$salary->id]->ot_30 + $overtimes[$salary->id]->ot_40;
+      }else{
+        $total_jam = 0;
+      }
+      // Total Overtime
+      if ($overtimes[$salary->id]) {
+        $value_overtime = $overtimes[$salary->id]->value_15 + $overtimes[$salary->id]->value_20 + $overtimes[$salary->id]->value_30 + $overtimes[$salary->id]->value_40;
+      } else {
+        $value_overtime = 0;
+      }
+      // Price Overtime
+      if ($value_overtime > 0) {
+        $everage_overtime = $value_overtime / $total_jam;
+      } else {
+        $everage_overtime = 0;
+      }
+      // Basic Salary
+      $basic_salary = SalaryReportDetail::where('description', 'Basic Salary')->orWhere('description', 'Basic Salary + Allowance')->where('salary_report_id', $salary->id)->first();
+      $basic_salaries[$salary->id] = $basic_salary;
+      
+      // coordinate12
+      if ($coordinate12) {
+        $coordinate12value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('group_allowance_id', $coordinate12->id)->get()->sum('total');
+      } else {
+        $coordinate12value = 0.0;
+      }
+      $coordinate12values[$salary->id] = $coordinate12value;
+
+      // coordinate13
+      if ($coordinate13) {
+        $coordinate13value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('group_allowance_id', $coordinate13->id)->get()->sum('total');
+      } else {
+        $coordinate13value = 0.0;
+      }
+      $coordinate13values[$salary->id] = $coordinate13value;
+
+      // coordinate14
+      if ($coordinate14) {
+        $coordinate14value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('group_allowance_id', $coordinate14->id)->get()->sum('total');
+      } else {
+        $coordinate14value = 0.0;
+      }
+      $coordinate14values[$salary->id] = $coordinate14value;
+
+      // coordinate43
+      if ($coordinate43) {
+        $coordinate43value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('group_allowance_id', $coordinate43->id)->get()->sum('total');
+      } else {
+        $coordinate43value = 0.0;
+      }
+      $coordinate43values[$salary->id] = $coordinate43value;
+
+      // coordinate44
+      if ($coordinate44) {
+        $coordinate44value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('group_allowance_id', $coordinate44->id)->get()->sum('total');
+      } else {
+        $coordinate44value = 0.0;
+      }
+      $coordinate44values[$salary->id] = $coordinate44value;
+
+      // coordinate45
+      if ($coordinate45) {
+        $coordinate45value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('group_allowance_id', $coordinate45->id)->get()->sum('total');
+      } else {
+        $coordinate45value = 0.0;
+      }
+      $coordinate45values[$salary->id] = $coordinate45value;
+
+      // coordinate46
+      if ($coordinate46) {
+        $coordinate46value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('group_allowance_id', $coordinate46->id)->get()->sum('total');
+      } else {
+        $coordinate46value = 0.0;
+      }
+      $coordinate46values[$salary->id] = $coordinate46value;
+
+      // coordinate54
+      if ($coordinate54) {
+        $coordinate54value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('group_allowance_id', $coordinate54->id)->get()->sum('total');
+      } else {
+        $coordinate54value = 0.0;
+      }
+      $coordinate54values[$salary->id] = $coordinate54value;
+
+      // coordinate55
+      if ($coordinate55) {
+        $coordinate55value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('group_allowance_id', $coordinate55->id)->get()->sum('total');
+      } else {
+        $coordinate55value = 0.0;
+      }
+      $coordinate55values[$salary->id] = $coordinate55value;
+
+      if ($basic_salaries[$salary->id]) {
+        $jumlah_month = $coordinate12values[$salary->id] + $coordinate13values[$salary->id] + $coordinate14values[$salary->id] + $basic_salaries[$salary->id]->total;
+      }else{
+        $jumlah_month = 0;
+      }
+      // dd($basic_salaries[$salary->id]->total);
     }
+    // dd($overtimes);
+    // $overtime->where('month', date('m', strtotime($salary->period)));
+    // $overtime->where('year', date('Y', strtotime($salary->period)));
+    //$overtime->get();
     // $leavesetting = LeaveSetting::get();
     // $leavesetting->coordinate = explode(',', $leavesetting->coordinate);
     $coordinate33 = LeaveSetting::where('coordinate','like', '%3.3%')->first();
@@ -2611,14 +2691,14 @@ class SalaryReportController extends Controller
     // }
     // return response()->json($coordinate12);
     // dd($coordinate13);
-    $basic_salary = SalaryReportDetail::where('description', 'Basic Salary')->orWhere('description', 'Basic Salary + Allowance')->where('salary_report_id', $id)->first('total');
-    $jumlah_month = $coordinate12value + $coordinate13value + $coordinate14value + $basic_salary->total;
-    // dd($basic_salary);
-    return view('admin.salaryreport.newprint', compact('salaries', 'coordinate12', 'coordinate13', 'coordinate14',
+    
+    
+    
+    return view('admin.salaryreport.newprint', compact('salaries','overtimes', 'coordinate12', 'coordinate13', 'coordinate14',
   'coordinate43', 'coordinate44', 'coordinate45', 'coordinate46', 'coordinate54', 'coordinate55', 'coordinate33',
-  'coordinate34', 'coordinate35', 'coordinate36', 'coordinate51', 'coordinate52', 'coordinate53', 'coordinate12value',
-  'coordinate13value','coordinate14value','coordinate43value','coordinate44value','coordinate45value','coordinate46value',
-  'coordinate54value','coordinate55value','basic_salary','jumlah_month'));
+  'coordinate34', 'coordinate35', 'coordinate36', 'coordinate51', 'coordinate52', 'coordinate53', 'coordinate12values',
+  'coordinate13values','coordinate14values','coordinate43values','coordinate44values','coordinate45values','coordinate46values',
+  'coordinate54values','coordinate55values','basic_salaries','jumlah_month', 'total_jam', 'value_overtime', 'everage_overtime'));
   }
 
   /**
