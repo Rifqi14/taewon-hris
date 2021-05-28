@@ -117,7 +117,7 @@
           table_item.row.add([
             this.date,
             this.employee_name,
-            this.nik,
+            this.nid,
             this.start_date,
             this.start_time,
             this.finish_date,
