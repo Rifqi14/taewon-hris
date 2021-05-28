@@ -190,7 +190,7 @@ class SPLController extends Controller
             'notes'       => $request->notes,
             'status'      => $request->status,
         ]);
-        $spl->duration = floor((strtotime(str_replace('/','-',$request->start_date).' '.$request->finish_time) - strtotime(str_replace('/','-',$request->finish_date).' '.$request->start_time)) / (60*60));
+        $spl->duration = floor((strtotime(str_replace('/','-',$request->finish_date).' '.$request->finish_time) - strtotime(str_replace('/','-',$request->start_date).' '.$request->start_time)) / (60*60));
         $spl->save();
         if (!$spl) {
             return response()->json([
@@ -275,7 +275,7 @@ class SPLController extends Controller
         $spl->finish_time = $request->finish_time;
         $spl->notes       = $request->notes;
         $spl->status      = $request->status;
-        $spl->duration    = floor((strtotime(str_replace('/','-',$request->start_date).' '.$request->finish_time) - strtotime(str_replace('/','-',$request->finish_date).' '.$request->start_time)) / (60*60));
+        $spl->duration    = floor((strtotime(str_replace('/','-',$request->finish_date).' '.$request->finish_time) - strtotime(str_replace('/','-',$request->start_date).' '.$request->start_time)) / (60*60));
         $spl->save();
 
         if (!$spl) {
