@@ -420,15 +420,15 @@ class SPLController extends Controller
         $spls = json_decode($request->spls);
         DB::beginTransaction();
         foreach ($spls as $spl) {
-            $check = Spl::where('spl_date', $spl->date)->first();
+            $check = Spl::where('spl_date', $spl->date)->where('employee_id', $spl->employee_id)->first();
             if($check){
                 $check->delete();
             }
             $splimport = Spl::create([
                 'employee_id' => $spl->employee_id,
-                'spl_date' => $spl->date,
-                'start_date' => $spl->start_date,
-                'start_time' => $spl->start_time,
+                'spl_date'    => $spl->date,
+                'start_date'  => $spl->start_date,
+                'start_time'  => $spl->start_time,
                 'finish_date' => $spl->finish_date,
                 'finish_time' => $spl->finish_time,
                 'status' => 1
