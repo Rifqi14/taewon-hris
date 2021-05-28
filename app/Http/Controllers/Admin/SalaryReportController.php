@@ -2548,6 +2548,9 @@ class SalaryReportController extends Controller
     $coordinate34values = [];
     $coordinate35values = [];
     $coordinate36values = [];
+    $coordinate51values = [];
+    $coordinate52values = [];
+    $coordinate53values = [];
     $basic_salaries = [];
     foreach ($salaries as $salary) {
 
@@ -2699,7 +2702,51 @@ class SalaryReportController extends Controller
       }else{
         $jumlah_pendapatan = 0;
       }
-      // dd($basic_salaries[$salary->id]->total);
+      // Coordinate51
+      if($coordinate51){
+          $coordinate51value = AlphaPenalty::select('alpha_penalties.*')
+          ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
+          ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
+          ->where('leaves.employee_id', $salary->employee_id)
+          ->where('leaves.status', 1)
+          ->where('leaves.leave_setting_id', $coordinate51->id)
+          ->get()->sum('penalty');
+      }else{
+        $coordinate51value = 0;
+      }
+      $coordinate51values[$salary->id] = $coordinate51value;
+
+      // Coordinate52
+      if ($coordinate52) {
+        $coordinate52value = AlphaPenalty::select('alpha_penalties.*')
+        ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
+        ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
+        ->where('leaves.employee_id', $salary->employee_id)
+          ->where('leaves.status', 1)
+          ->where('leaves.leave_setting_id', $coordinate52->id)
+          ->get()->sum('penalty');
+      } else {
+        $coordinate52value = 0;
+      }
+      $coordinate52values[$salary->id] = $coordinate52value;
+      // Coordinate53
+      if ($coordinate53) {
+        $coordinate53value = AlphaPenalty::select('alpha_penalties.*')
+        ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
+        ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
+        ->where('leaves.employee_id', $salary->employee_id)
+          ->where('leaves.status', 1)
+          ->where('leaves.leave_setting_id', $coordinate53->id)
+          ->get()->sum('penalty');
+      } else {
+        $coordinate53value = 0;
+      }
+      $coordinate53values[$salary->id] = $coordinate53value;
+
+      // Jumlah Potongan
+      $jumlah_potongan = $coordinate51values[$salary->id] + $coordinate52values[$salary->id] + $coordinate53values[$salary->id] + $coordinate54values[$salary->id] + $coordinate55values[$salary->id];
+      $grand_total = $jumlah_pendapatan - $jumlah_potongan;
+      // dd($coordinate51values[$salary->id]);
     }
     // dd($overtimes);
     // $overtime->where('month', date('m', strtotime($salary->period)));
@@ -2740,7 +2787,8 @@ class SalaryReportController extends Controller
   'coordinate34', 'coordinate35', 'coordinate36', 'coordinate51', 'coordinate52', 'coordinate53', 'coordinate12values',
   'coordinate13values','coordinate14values','coordinate43values','coordinate44values','coordinate45values','coordinate46values',
   'coordinate54values','coordinate55values','basic_salaries','jumlah_month', 'total_jam', 'value_overtime', 'everage_overtime',
-  'coordinate33values','coordinate34values','coordinate35values','coordinate36values','jumlah_pendapatan'));
+  'coordinate33values','coordinate34values','coordinate35values','coordinate36values','jumlah_pendapatan','coordinate51values',
+  'coordinate52values','coordinate53values','jumlah_potongan', 'grand_total'));
   }
 
   /**

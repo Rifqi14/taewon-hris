@@ -219,19 +219,19 @@
                 </tr>
                 <tr>
                     {{-- <td rowspan="1">Month</td> --}}
-                    <td class="p-0 text-right text-content" >1</td>
-                    <td class="p-0 text-right text-content" >1</td>
-                    <td class="p-0 text-right text-content" >1</td>
+                    <td class="p-0 text-right text-content" >{{number_format($coordinate51values[$salary->id], 0, '.', ',')}}</td>
+                    <td class="p-0 text-right text-content" >{{number_format($coordinate52values[$salary->id], 0, '.', ',')}}</td>
+                    <td class="p-0 text-right text-content" >{{number_format($coordinate53values[$salary->id], 0, '.', ',')}}</td>
                     <td class="p-0 text-right text-content" >{{number_format($coordinate54values[$salary->id], 0, '.', ',')}}</td>
                     <td class="p-0 text-right text-content" >{{number_format($coordinate55values[$salary->id], 0, '.', ',')}}</td>
                     <td class="p-0 text-right text-content" >1</td>
-                    <td class="p-0 text-right text-content" >1</td>
+                    <td class="p-0 text-right text-content" >{{number_format($jumlah_potongan, 0, '.', ',')}}</td>
                 </tr>
                 <tr>
                     <th colspan="8" class="p-0 text-right text-content">Gaji Bersih</th>
                 </tr>
                  <tr>
-                    <td colspan="8" class="p-0 text-right text-content">8.504,529</td>
+                    <td colspan="8" class="p-0 text-right text-content">{{number_format($grand_total, 0, '.', ',')}}</td>
                 </tr>
         </table>
 		{{-- <table class="gross-table" style="padding-top: 20pt">
