@@ -399,7 +399,7 @@ class SPLController extends Controller
                 );
                 $no++;
             }
-            dd($data);
+            // dd($data);
         }
         return response()->json([
             'status'     => true,
