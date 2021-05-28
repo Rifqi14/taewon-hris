@@ -28,7 +28,7 @@
 			margin: 0;
 		}
 		.text-header {
-			font-size: 13pt !important;
+			font-size: 10pt !important;
 			margin: 0;
 		}
 		.text-content {
@@ -47,10 +47,10 @@
 		}
 		.employee-table {
 			width: 100%;
-			margin-top: 16pt;
+			margin-top: 10pt;
 		}
         .employee-section {
-			margin-bottom: 15pt;
+			margin-bottom: 5pt;
 		}
         .th-slip {
 			width: 12%;
@@ -159,8 +159,8 @@
                     <td class="p-0 text-right text-content" >{{$overtimes[$salary->id]->ot_30 ? $overtimes[$salary->id]->ot_30 : 0}}</td>
                     <td class="p-0 text-right text-content" >{{$overtimes[$salary->id]->ot_40 ? $overtimes[$salary->id]->ot_40 : 0}}</td>
                     <td class="p-0 text-right text-content" >{{$total_jam}}</td>
-                    <td class="p-0 text-right text-content">{{$everage_overtime}}</td>
-                    <td class="p-0 text-right text-content" >{{$value_overtime}}</td>
+                    <td class="p-0 text-right text-content">{{number_format($everage_overtime, 0, '.', ',')}}</td>
+                    <td class="p-0 text-right text-content" >{{number_format($value_overtime, 0, '.', ',')}}</td>
                 </tr>
         </table>
         <table class="table table-bordered">
@@ -178,14 +178,14 @@
                     {{-- <td rowspan="1">Month</td> --}}
                     <td class="p-0 text-right text-content">25</td>
                     <td class="p-0 text-right text-content">6</td>
-                    <td class="p-0 text-right text-content">{{number_format($coordinate43values[$salary->id], 0, '.', ',')}}</td>
-                    <td class="p-0 text-right text-content">{{number_format($coordinate44values[$salary->id], 0, '.', ',')}}</td>
-                    <td class="p-0 text-right text-content">{{number_format($coordinate45values[$salary->id], 0, '.', ',')}}</td>
-                    <td class="p-0 text-right text-content">{{number_format($coordinate46values[$salary->id], 0, '.', ',')}}</td>
+                    <td class="p-0 text-right text-content">{{$coordinate33values[$salary->id]}}</td>
+                    <td class="p-0 text-right text-content">{{$coordinate34values[$salary->id]}}</td>
+                    <td class="p-0 text-right text-content">{{$coordinate35values[$salary->id]}}</td>
+                    <td class="p-0 text-right text-content">{{$coordinate36values[$salary->id]}}</td>
                     <td class="p-0 text-right text-content">31</td>
                 </tr>
         </table>
-        <h5><b>PENDAPATAN</b></h5>
+        <h5 class="text-header"><b>PENDAPATAN</b></h5>
         <table class="table table-bordered">
                 <tr>
                     <th rowspan="2" class="th-first p-0 text-content">Pendapatan</th>
@@ -199,13 +199,13 @@
                 </tr>
                 <tr>
                     {{-- <td rowspan="1">Month</td> --}}
-                    <td class="p-0 text-right text-content">25</td>
-                    <td class="p-0 text-right text-content">6</td>
-                    <td class="p-0 text-right text-content"></td>
-                    <td class="p-0 text-right text-content"></td>
-                    <td class="p-0 text-right text-content"></td>
-                    <td class="p-0 text-right text-content"></td>
-                    <td class="p-0 text-right text-content">31</td>
+                    <td class="p-0 text-right text-content">{{number_format($jumlah_month, 0, '.', ',')}}</td>
+                    <td class="p-0 text-right text-content">{{number_format($value_overtime, 0, '.', ',')}}</td>
+					<td class="p-0 text-right text-content">{{number_format($coordinate43values[$salary->id], 0, '.', ',')}}</td>
+                    <td class="p-0 text-right text-content">{{number_format($coordinate44values[$salary->id], 0, '.', ',')}}</td>
+                    <td class="p-0 text-right text-content">{{number_format($coordinate45values[$salary->id], 0, '.', ',')}}</td>
+                    <td class="p-0 text-right text-content">{{number_format($coordinate46values[$salary->id], 0, '.', ',')}}</td>
+                    <td class="p-0 text-right text-content">{{number_format($jumlah_pendapatan, 0, '.', ',')}}</td>
                 </tr>
                 <tr>
                     <th rowspan="2" class="p-0 text-content" style="vertical-align: middle; text-align: center;">Potongan</th>
