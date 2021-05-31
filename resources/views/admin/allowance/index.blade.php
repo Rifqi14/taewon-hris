@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Allowance')
+@section('title',__('config.alw'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Allowance</li>
+<li class="breadcrumb-item active">{{ __('config.alw') }}</li>
 @endpush
 
 @section('content')
@@ -15,11 +15,11 @@
 		<div class="col-lg-12">
 			<div class="card card-{{ config('configs.app_theme')}} card-outline">
 				<div class="card-header">
-					<h3 class="card-title">Allowance List</h3>
+					<h3 class="card-title">{{ __('config.alwlist') }}</h3>
 					<!-- tools box -->
 					<div class="pull-right card-tools">
 						<a href="{{route('allowance.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white"
-							data-toggle="tooltip" title="Tambah">
+							data-toggle="tooltip" title="{{ __('config.create') }}">
 							<i class="fa fa-plus"></i>
 						</a>
 						<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
@@ -33,10 +33,10 @@
 						<thead>
 							<tr>
 								<th width="10">No</th>
-								<th width="200">Allowance</th>
-								<th width="300">Category</th>
-								<th width="100">Status</th>
-								<th width="10">Action</th>
+								<th width="200">{{ __('config.alw') }}</th>
+								<th width="300">{{ __('config.category') }}</th>
+								<th width="100">{{ __('config.status') }}</th>
+								<th width="10">{{ __('config.act') }}</th>
 							</tr>
 						</thead>
 					</table>
@@ -62,14 +62,14 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="allowance">Allowance</label>
-								<input type="text" name="allowance" class="form-control" placeholder="Allowance">
+								<label class="control-label" for="allowance">{{ __('config.alw') }}</label>
+								<input type="text" name="allowance" class="form-control" placeholder="{{ __('config.alw') }}">
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="category">Category</label>
-								<input type="text" name="category" class="form-control" placeholder="Category">
+								<label class="control-label" for="category">{{ __('config.category') }}</label>
+								<input type="text" name="category" class="form-control" placeholder="{{ __('config.category') }}">
 							</div>
 						</div>
 					</div>

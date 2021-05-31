@@ -27,7 +27,7 @@ return [
     'theme'         => 'Theme',
     'language'      => 'Language',
     'setting_prorate'=> 'Prorate Setting',
-    'type_prorate'  => 'Prorate Type',
-    'thr'           =>  'THR'
+    'type_prorate'  =>  'Prorate Type',
+    'thr'           =>  'THR',
 
 ];

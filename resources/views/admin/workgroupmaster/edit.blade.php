@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit Work Group')
+@section('title', __('config.workgrp'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('workgroupmaster.index')}}">Work Group</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item active"><a href="{{route('workgroupmaster.index')}}">{{ __('config.workgrp') }}</a></li>
+<li class="breadcrumb-item active">{{ __('config.edt') }}</li>
 @endpush
 
 @section('content')
@@ -15,11 +15,11 @@
 	<div class="col-lg-12">
 		<div class="card card-{{ config('configs.app_theme') }} card-outline h-100">
 			<div class="card-header">
-				<h3 class="card-title">Edit Work Group</h3>
+				<h3 class="card-title">{{ __('config.edt') }} {{ __('config.workgrp') }}</h3>
 				<div class="pull-right card-tools">
-					<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="Simpan"><i
+					<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('config.save') }}"><i
 							class="fa fa-save"></i></button>
-					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
 							class="fa fa-reply"></i></a>
 				</div>
 			</div>
@@ -32,15 +32,15 @@
 						<div class="col-sm-6">
 							<!-- text input -->
 							<div class="form-group">
-								<label>Workgroup Code</label>
-								<input type="text" class="form-control" name="code" id="code" placeholder="Workgroup Code"
+								<label>{{ __('config.workcode') }}</label>
+								<input type="text" class="form-control" name="code" id="code" placeholder="{{ __('config.workcode') }}"
 									value="{{ $workgroupmaster->code }}" required>
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label>Workgroup Name</label>
-								<input type="text" class="form-control" name="name" id="name" placeholder="Workgroup Name"
+								<label>{{ __('config.workname') }}</label>
+								<input type="text" class="form-control" name="name" id="name" placeholder="{{ __('config.workname') }}"
 									value="{{ $workgroupmaster->name }}" required>
 							</div>
 						</div>

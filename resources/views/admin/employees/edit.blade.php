@@ -1243,7 +1243,7 @@
 							<div class="form-group">
 								<label for="value" class="control-label">Value</label>
 								<input type="text" class="form-control" id="value" name="value" placeholder="Value" required>
-								<input type="hidden" class="form-control" id="allowance_id" name="allowance_id">
+								<input type="hidden" class="form-control" id="get_allowance_id" name="get_allowance_id">
 							</div>
 						</div>
 						<div class="col-md-12">
@@ -5845,7 +5845,7 @@ $(document).ready(function(){
 				$('#form_allowance #type').select2('data',{id:response.data.type, text:response.data.type});
 				$('#form_allowance input[name=value]').attr('value',response.data.value);
 				$('#form_allowance input[name=factor]').attr('value',response.data.factor);
-				$('#form_allowance input[name=allowance_id]').attr('value',response.data.allowance_id);
+				$('#form_allowance input[name=get_allowance_id]').attr('value',response.data.allowance_id);
 				$('#form_allowance').attr('action',`{{url('admin/employeeallowance/')}}/${response.data.id}`);
 			}          
 		}).fail(function(response){

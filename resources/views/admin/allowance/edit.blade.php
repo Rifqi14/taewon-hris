@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit Allowance')
+@section('title', {{ __('config.alw') }})
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -40,8 +40,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('allowance.index')}}">Allowance</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item active"><a href="{{route('allowance.index')}}">{{ __('config.alw') }}</a></li>
+<li class="breadcrumb-item active">{{ __('config.edt') }}</li>
 @endpush
 
 @section('content')
@@ -53,7 +53,7 @@
     <div class="col-lg-8">
       <div class="card card-{{ config('configs.app_theme')}} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Allowance List</h3>
+          <h3 class="card-title">{{ __('config.alwlist') }}</h3>
         </div>
         <div class="card-body">
           
@@ -62,14 +62,14 @@
                 <div class="col-sm-6">
                   <!-- text input -->
                   <div class="form-group">
-                    <label>Allowance Name</label>
-                    <input type="text" class="form-control" placeholder="Allowance" id="allowance" name="allowance"
+                    <label>{{ __('config.alwname') }}</label>
+                    <input type="text" class="form-control" placeholder="{{ __('config.alwname') }}" id="allowance" name="allowance"
                       value="{{ $allowance->allowance }}">
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Category</label>
+                    <label>{{ __('config.category') }}</label>
                     <select name="category" id="category" class="form-control select2" style="width: 100%"
                       aria-hidden="true">
                       @foreach (config('enums.allowance_category') as $key=>$value)
@@ -83,21 +83,21 @@
                 <div class="col-sm-6">
                   <!-- text input -->
                   <div class="form-group">
-                    <label>Account</label>
-                    <input type="text" class="form-control" placeholder="Account" id="account" name="account"
+                    <label>{{ __('config.acocunt') }}</label>
+                    <input type="text" class="form-control" placeholder="{{ __('config.account') }}" id="account" name="account"
                       value="{{ $allowance->acc_name }}">
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Recurrence</label>
+                    <label>{{ __('config.recur') }}</label>
                     <select name="recurrence" id="recurrence" class="form-control select2" style="width: 100%"
                       aria-hidden="true">
-                      <option @if ($allowance->reccurance == 'hourly') selected @endif value="hourly">Hourly</option>
-                      <option @if ($allowance->reccurance == 'daily') selected @endif value="daily">Daily</option>
-                      <option @if ($allowance->reccurance == 'monthly') selected @endif value="monthly">Monthly</option>
-                      <option @if ($allowance->reccurance == 'yearly') selected @endif value="yearly">Yearly</option>
-											<option @if ($allowance->reccurance == 'breaktime') selected @endif value="breaktime">BreakTime</option>
+                      <option @if ($allowance->reccurance == 'hourly') selected @endif value="hourly">{{ __('config.hourly') }}</option>
+                      <option @if ($allowance->reccurance == 'daily') selected @endif value="daily">{{ __('config.alwname') }}</option>
+                      <option @if ($allowance->reccurance == 'monthly') selected @endif value="monthly">{{ __('config.monthly') }}</option>
+                      <option @if ($allowance->reccurance == 'yearly') selected @endif value="yearly">{{ __('config.yearly') }}</option>
+											<option @if ($allowance->reccurance == 'breaktime') selected @endif value="breaktime">{{ __('config.breaktm') }}</option>
                     </select>
                   </div>
                 </div>
@@ -106,8 +106,8 @@
                 <div class="col-sm-6">
                   <!-- text input -->
                   <div class="form-group">
-                    <label>Group Allowance</label>
-                    <input type="text" class="form-control" placeholder="Select Group Allowance" id="groupallowance" name="groupallowance"
+                    <label>{{ __('config.grpalw') }}</label>
+                    <input type="text" class="form-control" placeholder="Select {{ __('config.grpalw') }}" id="groupallowance" name="groupallowance"
                       value="">
                   </div>
                 </div>
@@ -115,8 +115,8 @@
 									<div class="form-group">
 										<label>Prorate</label>
 										<select name="prorate" id="prorate" class="form-control select2" style="width: 100%" aria-hidden="true">
-											<option value="Yes" @if ($allowance->prorate == 'Yes') selected @endif>Yes</option>
-											<option value="No"  @if ($allowance->prorate == 'No') selected @endif>No</option>
+											<option value="Yes" @if ($allowance->prorate == 'Yes') selected @endif>{{ __('config.yes') }}</option>
+											<option value="No"  @if ($allowance->prorate == 'No') selected @endif>{{ __('config.no') }}</option>
 										</select>
 									</div>
 								</div>
@@ -124,8 +124,8 @@
 									<div class="form-group">
 										<label>THR</label>
 										<select name="thr" id="thr" class="form-control select2" style="width: 100%" aria-hidden="true">
-											<option value="Yes" @if ($allowance->thr == 'Yes') selected @endif>Yes</option>
-											<option value="No" @if ($allowance->thr == 'No') selected @endif>No</option>
+											<option value="Yes" @if ($allowance->thr == 'Yes') selected @endif>{{ __('config.yes') }}</option>
+											<option value="No" @if ($allowance->thr == 'No') selected @endif>{{ __('config.no') }}</option>
 										</select>
 									</div>
 								</div>
@@ -168,11 +168,11 @@
     <div class="col-lg-4">
       <div class="card card-{{ config('configs.app_theme')}} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Other</h3>
+          <h3 class="card-title">{{ __('config.othe') }}</h3>
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="Simpan"><i
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('config.save') }}"><i
                 class="fa fa-save"></i></button>
-            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
                 class="fa fa-reply"></i></a>
           </div>
         </div>
@@ -181,9 +181,9 @@
             <div class="col-sm-12">
               <!-- text input -->
               <div class="form-group">
-                <label>Notes</label>
+                <label>{{ __('config.notes') }}</label>
                 <textarea class="form-control" id="notes" name="notes"
-                  placeholder="Notes"> {{ $allowance->notes }}</textarea>
+                  placeholder="{{ __('config.notes') }}"> {{ $allowance->notes }}</textarea>
               </div>
             </div>
           </div>
@@ -191,10 +191,10 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="form-group">
-                <label>Status</label>
+                <label>{{ __('config.status') }}</label>
                 <select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true">
-                  <option @if($allowance->status == 1) selected @endif value="1">Active</option>
-                  <option @if($allowance->status == 0) selected @endif value="0">Non-Active</option>
+                  <option @if($allowance->status == 1) selected @endif value="1">{{ __('config.actv') }}</option>
+                  <option @if($allowance->status == 0) selected @endif value="0">{{ __('config.noactv') }}</option>
                 </select>
               </div>
             </div>
@@ -209,16 +209,16 @@
     <div class="col-lg-12 allowance-section d-none">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header">
-          <h3 class="card-titl">Allowance</h3>
+          <h3 class="card-titl">{{ __('config.alw') }}</h3>
           </div>
           <div class="card-body">
           <table class="table table-striped table-bordered datatable" id="allowance-table" style="width: 100%">
             <thead>
             <tr>
               <th width="10">No</th>
-              <th width="200">Allowance</th>
-              <th width="200">Category</th>
-              <th width="200">Group</th>
+              <th width="200">{{ __('config.alw') }}</th>
+              <th width="200">{{ __('config.category') }}</th>
+              <th width="200">{{ __('config.grpalw') }}</th>
               <th width="10">
               <div class="customcheckbox">
                 <input type="checkbox" name="checkall" class="checkall" id="checkall" onclick="checkAll(this)">
@@ -236,7 +236,7 @@
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme')}} card-outline">
       <div class="card-header">
-        <h3 class="card-title">Rules</h3>
+        <h3 class="card-title">{{ __('config.rule') }}</h3>
         <div class="pull-right card-tools">
           <a href="#" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white add_rules" data-toggle="tooltip"
             title="Tambah">

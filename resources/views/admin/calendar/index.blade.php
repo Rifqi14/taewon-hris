@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Calendar')
+@section('title', __('config.calendar'))
 
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Calendar</li>
+<li class="breadcrumb-item active">{{ __('config.calendar') }}</li>
 @endpush
 
 @section('content')
@@ -16,10 +16,10 @@
 		<div class="col-lg-12">
 			<div class="card card-{{ config('configs.app_theme') }} card-outline">
 				<div class="card-header">
-					<h3 class="card-title">Calendar</h3>
+					<h3 class="card-title">{{ __('config.calendar') }}</h3>
 					<div class="pull-right card-tools">
 						<a href="{{ route('calendar.create') }}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white"
-							data-toggle="tooltip" title="Tambah"><i class="fa fa-plus"></i></a>
+							data-toggle="tooltip" title="{{ __('config.crt') }}"><i class="fa fa-plus"></i></a>
 						<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search"><i
 								class="fa fa-search"></i></a>
 					</div>
@@ -30,8 +30,8 @@
 							<tr>
 								<th width="10">#</th>
 								{{-- <th width="40">Code</th> --}}
-								<th width="150">Calendar Name</th>
-								<th width="250">Description</th>
+								<th width="150">{{ __('config.calname') }}</th>
+								<th width="250">{{ __('config.desc') }}</th>
 								<th width="5">Active</th>
 								<th width="5">#</th>
 							</tr>
@@ -63,14 +63,14 @@
 							</div> --}}
 							<div class="col-md-12">
 								<div class="form-group">
-									<label class="control-label" for="name">Calendar Name</label>
-									<input type="text" name="name" class="form-control" placeholder="Calendar Name">
+									<label class="control-label" for="name">{{ __('config.calname') }}</label>
+									<input type="text" name="name" class="form-control" placeholder="{{ __('config.calname') }}">
 								</div>
 							</div>
 							<div class="col-md-12">
 								<div class="form-group">
-									<label class="control-label" for="name">Description</label>
-									<input type="text" name="description" class="form-control" placeholder="Calendar Description">
+									<label class="control-label" for="name">{{ __('config.desc') }}</label>
+									<input type="text" name="description" class="form-control" placeholder="{{ __('config.desc') }}">
 								</div>
 							</div>
 						</div>

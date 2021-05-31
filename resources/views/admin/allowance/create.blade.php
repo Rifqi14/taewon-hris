@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Create Allowance')
+@section('title', __('config.alw'))
 @section('stylesheets')
 <link rel="stylesheet" href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}">
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
@@ -41,8 +41,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('allowance.index')}}">Allowance</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item"><a href="{{route('allowance.index')}}">{{ __('config.alw') }}</a></li>
+<li class="breadcrumb-item active">{{ __('config.alw') }}</li>
 @endpush
 
 
@@ -54,7 +54,7 @@
 		<div class="col-lg-8 py-2">
 			<div class="card h-100 card-{{ config('configs.app_theme') }} card-outline">
 				<div class="card-header">
-					<h3 class="card-title">Allowance List</h3>
+					<h3 class="card-title">{{ __('config.alwlist') }}</h3>
 				</div>
 				<div class="card-body">
 						<div class="box-body">
@@ -62,16 +62,16 @@
 								<div class="col-sm-6">
 									<!-- text input -->
 									<div class="form-group">
-										<label>Allowance Name</label>
-										<input type="text" class="form-control" placeholder="Allowance" id="allowance" name="allowance"
+										<label>{{ __('config.alwname') }}</label>
+										<input type="text" class="form-control" placeholder="{{ __('config.alwname') }}" id="allowance" name="allowance"
 											required>
 									</div>
 								</div>
 								<div class="col-sm-6">
 									<div class="form-group">
-										<label>Category</label>
+										<label>{{ __('config.category') }}</label>
 										<select name="category" id="category" class="form-control select2" style="width: 100%"
-											aria-hidden="true" data-placeholder="Select Category">
+											aria-hidden="true" data-placeholder="{{ __('config.slccategory') }}">
 											<option value=""></option>
 											@foreach (config('enums.allowance_category') as $key=>$value)
 											<option value="{{ $key }}">{{ $value }}</option>
@@ -84,21 +84,21 @@
 								<div class="col-sm-6">
 									<!-- text input -->
 									<div class="form-group">
-										<label>Account</label>
-										<input type="text" class="form-control" placeholder="Account" id="account" name="account">
+										<label>{{ __('config.account') }}</label>
+										<input type="text" class="form-control" placeholder="{{ __('config.account') }}" id="account" name="account">
 									</div>
 								</div>
 								<div class="col-sm-6">
 									<div class="form-group">
-										<label>Recurrence</label>
+										<label>{{ __('config.recur') }}</label>
 										<select name="recurrence" id="recurrence" class="form-control select2" style="width: 100%"
-											aria-hidden="true" data-placeholder="Select Recurrence">
+											aria-hidden="true" data-placeholder="{{ __('config.slcrecur') }}">
 											<option value=""></option>
-											<option value="hourly">Hourly</option>
-											<option value="daily">Daily</option>
-											<option value="monthly">Monthly</option>
-											<option value="yearly">Yearly</option>
-											<option value="breaktime">BreakTime</option>
+											<option value="hourly">{{ __('config.hourly') }}</option>
+											<option value="daily">{{ __('config.daily') }}</option>
+											<option value="monthly">{{ __('config.monthly') }}</option>
+											<option value="yearly">{{ __('config.year') }}</option>
+											<option value="breaktime">{{ __('config.breaktm') }}</option>
 										</select>
 									</div>
 								</div>
@@ -106,8 +106,8 @@
 							<div class="row ">
 								<div class="col-sm-6">
 									<div class="form-group">
-										<label>Group Allowance</label>
-										<input type="text" class="form-control" placeholder="Select Group Allowance" id="groupallowance" name="groupallowance">
+										<label>{{ __('config.grpalw') }}</label>
+										<input type="text" class="form-control" placeholder="Select {{ __('config.grpalw') }}e" id="groupallowance" name="groupallowance">
 									</div>
 								</div>
 								<div class="col-sm-3">
@@ -165,11 +165,11 @@
 		<div class="col-lg-4 py-2">
 			<div class="card h-100 card-{{ config('configs.app_theme') }} card-outline">
 				<div class="card-header">
-					<h3 class="card-title">Other</h3>
+					<h3 class="card-title">{{ __('config.other') }}</h3>
 					<div class="pull-right card-tools">
-						<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i
+						<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('config.save') }}"><i
 								class="fa fa-save"></i></button>
-						<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
+						<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i class="fa fa-reply"></i></a>
 					</div>
 				</div>
 				<div class="card-body">
@@ -177,8 +177,8 @@
 						<div class="col-sm-12">
 							<!-- text input -->
 							<div class="form-group">
-								<label>Notes</label>
-								<textarea class="form-control" id="notes" name="notes" placeholder="Notes"></textarea>
+								<label>{{ __('config.notes') }}</label>
+								<textarea class="form-control" id="notes" name="notes" placeholder="{{ __('config.notes') }}"></textarea>
 							</div>
 						</div>
 					</div>
@@ -186,10 +186,10 @@
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="form-group">
-								<label>Status</label>
+								<label>{{ __('config.status') }}</label>
 								<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true">
-									<option value="1">Active</option>
-									<option value="0">Non-Active</option>
+									<option value="1">{{ __('config.actv') }}</option>
+									<option value="0">{{ __('config.noactv') }}</option>
 								</select>
 							</div>
 						</div>
@@ -204,16 +204,16 @@
 		<div class="col-lg-12 allowance-section d-none">
 			<div class="card card-{{ config('configs.app_theme') }} card-outline">
 				<div class="card-header">
-				<h3 class="card-titl">Allowance</h3>
+				<h3 class="card-titl">{{ __('config.alw') }}</h3>
 				</div>
 				<div class="card-body">
 				<table class="table table-striped table-bordered datatable" id="allowance-table" style="width: 100%">
 					<thead>
 					<tr>
 						<th width="10">No</th>
-						<th width="200">Allowance</th>
-						<th width="200">Category</th>
-						<th width="200">Group</th>
+						<th width="200">{{ __('config.alw') }}</th>
+						<th width="200">{{ __('config.category') }}</th>
+						<th width="200">{{ __('config.grpalw') }}</th>
 						<th width="10">
 						<div class="customcheckbox">
 							<input type="checkbox" name="checkall" class="checkall" id="checkall">

@@ -1,21 +1,21 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Basic UMK Base')
+@section('title', __('config.baseslr'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 @push('breadcrump')
-    <li class="breadcrumb-item active">Basic UMK Base</li>
+    <li class="breadcrumb-item active">{{ __('config.baseslr') }}</li>
 @endpush
 @section('content')
 <div class="row">
     <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme')}} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Basic UMK Base</h3>
+          <h3 class="card-title">{{ __('config.baseslr') }}</h3>
           <!-- tools card -->
           <div class="pull-right card-tools">
-            <a href="{{route('basesallary.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="Tambah">
+            <a href="{{route('basesallary.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="{{ __('config.crt') }}">
               <i class="fa fa-plus"></i>
             </a>
             <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
@@ -29,8 +29,8 @@
                 <thead>
                     <tr>
                         <th width="10">#</th>
-                        <th width="100">Region</th>
-                        <th width="150">Basic UMK</th>
+                        <th width="100">{{ __('config.region') }}</th>
+                        <th width="150">{{ __('config.basicumk') }}</th>
                         <th width="10">#</th>
                     </tr>
                 </thead>
@@ -56,14 +56,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="control-label" for="province_name">Provinsi</label>
-                                <input type="text" name="province_name" class="form-control" placeholder="Role">
+                                <label class="control-label" for="province_name">{{ __('config.province') }}</label>
+                                <input type="text" name="province_name" class="form-control" placeholder="{{ __('config.province') }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="control-label" for="region_name">Nama</label>
-                                <input type="text" name="region_name" class="form-control" placeholder="Nama">
+                                <label class="control-label" for="region_name">{{ __('config.name') }}</label>
+                                <input type="text" name="region_name" class="form-control" placeholder="{{ __('config.name') }}">
                             </div>			
                         </div>
                     </div>  

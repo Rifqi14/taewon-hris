@@ -257,7 +257,7 @@ class EmployeeAllowanceController extends Controller
         }
 
         $employee = Employee::where('id',$request->employee_id)->first();
-        $get_allowance = Allowance::where('id', $request->allowance_id)->first();
+        $get_allowance = Allowance::where('id', $request->get_allowance_id)->first();
         $user_id = Auth::user()->id;
         // Basic Employee Allowance 
         setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Allowance","Edit",$get_allowance->allowance,$request->value);

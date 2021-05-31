@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Position')
+@section('title', __('config.pos'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('title.index')}}">Position</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item active"><a href="{{route('title.index')}}">{{ __('config.pos') }}</a></li>
+<li class="breadcrumb-item active">{{ __('config.crt') }}</li>
 @endpush
 
 
@@ -16,7 +16,7 @@
   <div class="col-lg-8">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <div class="card-header" style="height: 55px;">
-        <h3 class="card-title">Position Data</h3>
+        <h3 class="card-title">{{ __('config.posdata') }}</h3>
       </div>
       <div class="card-body">
         <form id="form" action="{{ route('title.store')}}" method="post">
@@ -25,14 +25,14 @@
             <div class="col-sm-6">
               <!-- text input -->
               <div class="form-group">
-                <label>Code <b class="text-danger">*</b></label>
-                <input type="text" name="code" id="code" class="form-control" placeholder="Code">
+                <label>{{ __('config.code') }} <b class="text-danger">*</b></label>
+                <input type="text" name="code" id="code" class="form-control" placeholder="{{ __('config.code') }}">
               </div>
             </div>
             <div class="col-sm-6">
               <div class="form-group">
-                <label>Name <b class="text-danger">*</b></label>
-                <input type="text" name="name" class="form-control" placeholder="Name">
+                <label>{{ __('config.name') }} <b class="text-danger">*</b></label>
+                <input type="text" name="name" class="form-control" placeholder="{{ __('config.name') }}">
               </div>
             </div>
           </div>
@@ -46,10 +46,10 @@
     <div class="col-lg-4">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Other</h3>
+          <h3 class="card-title">{{ __('config.other') }}</h3>
           <div class="pull-right card-tools">
             <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="Simpan"><i class="fa fa-save"></i></button>
-            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i class="fa fa-reply"></i></a>
           </div>
         </div>
         <div class="card-body">
@@ -57,18 +57,18 @@
             <div class="col-sm-12">
               <!-- text input -->
               <div class="form-group">
-                <label>Notes </label>
-                <textarea style="height: 120px;" class="form-control" name="notes" placeholder="Notes"></textarea>
+                <label>{{ __('config.notes') }} </label>
+                <textarea style="height: 120px;" class="form-control" name="notes" placeholder="{{ __('config.notes') }}"></textarea>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-sm-12">
               <div class="form-group">
-                <label>Status <b class="text-danger">*</b></label>
+                <label>{{ __('config.status') }} <b class="text-danger">*</b></label>
                 <select class="form-control select2" data-placeholder="Select Status" id="status" name="status">
-                  <option value="1">Active</option>
-                  <option value="0">Not Active</option> 
+                  <option value="1">{{ __('config.actv') }}</option>
+                  <option value="0">{{ __('config.noactv') }}</option> 
                 </select>
               </div>
             </div>

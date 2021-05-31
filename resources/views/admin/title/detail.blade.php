@@ -3,17 +3,17 @@
 @section('title', 'Detail Jabatan')
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('title.index')}}">Jabatan</a></li>
-<li class="breadcrumb-item active">Detail</li>
+<li class="breadcrumb-item"><a href="{{route('title.index')}}">{{ __('config.pos') }}</a></li>
+<li class="breadcrumb-item active">{{ __('config.dtl') }}</li>
 @endpush
 @section('content')
 <div class="row">
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Detail Jabatan</h3>
+                <h3 class="card-title">{{ __('config.detpos') }}</h3>
                 <div class="pull-right card-tools">
-                    <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+                    <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
                             class="fa fa-reply"></i></a>
                 </div>
             </div>
@@ -21,13 +21,13 @@
                 <input type="hidden" name="title_id" value="{{ $title->id }}">
                 <ul class="list-group list-group-unbordered">
                     <li class="list-group-item d-flex">
-                        <b class="mr-auto">Bidang</b> <span class="pull-right">{{ $title->department->name }}</span>
+                        <b class="mr-auto">{{ __('config.dep') }}</b> <span class="pull-right">{{ $title->department->name }}</span>
                     </li>
                     <li class="list-group-item d-flex">
-                        <b class="mr-auto">Nama</b> <span class="pull-right">{{ $title->name }}</span>
+                        <b class="mr-auto">{{ __('config.name') }}</b> <span class="pull-right">{{ $title->name }}</span>
                     </li>
                     <li class="list-group-item d-flex">
-                        <b class="mr-auto">Dibuat</b> <span class="pull-right">{{ $title->created_at }}</span>
+                        <b class="mr-auto">{{ __('config.created') }}</b> <span class="pull-right">{{ $title->created_at }}</span>
                     </li>
                 </ul>
 
@@ -41,7 +41,7 @@
         <div class="card">
             <div class="nav-tabs-custom tab-primary">
                 <ul class="nav nav-tabs">
-                    <li class="nav item"><a class="nav-link active" href="#subcategory" data-toggle="tab">Data Pegawai</a></li>
+                    <li class="nav item"><a class="nav-link active" href="#subcategory" data-toggle="tab">{{ __('config.empdta') }}</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="subcategory">
@@ -50,10 +50,10 @@
                                 <thead>
                                     <tr>
                                         <th style="text-align:center" width="10">#</th>
-                                        <th width="200">Nama</th>
-                                        <th width="100">NID</th>
-                                        <th width="100">Type</th>
-                                        <th width="100">Dibuat</th>
+                                        <th width="200">{{ __('config.name') }}</th>
+                                        <th width="100">{{ __('config.nid') }}</th>
+                                        <th width="100">{{ __('config.type') }}</th>
+                                        <th width="100">{{ __('config.created') }}</th>
                                 </thead>
                             </table>
                             <div class="overlay d-none">
