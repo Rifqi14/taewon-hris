@@ -65,7 +65,8 @@ class LogHistoryController extends Controller
         }
         $query->offset($start);
         $query->limit($length);
-        $query->orderBy($sort, $dir);
+        // $query->orderBy($sort, $dir);
+        $query->orderBy('log_histories.id', 'desc');
         $attendances = $query->get();
 
         $data = [];
