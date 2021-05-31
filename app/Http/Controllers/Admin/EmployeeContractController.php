@@ -85,6 +85,8 @@ class EmployeeContractController extends Controller
      */
     public function store(Request $request)
     {
+        // echo $request->status;
+        // return;
         $validator = Validator::make($request->all(), [
             'code'        => 'required',
             'start_date'  => 'required',
@@ -111,7 +113,7 @@ class EmployeeContractController extends Controller
 
         // Status
         $foo = $request->status;
-        $status_desc = ($foo == 0) ? "Non Active" : (($foo == 1)  ? "Active" : "Expired");
+        $status_desc = ($foo == "Non Active") ? "Non Active" : (($foo == "Active")  ? "Active" : "Expired");
         setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Contract","Create","Status",$status_desc);
 
         $employeecontract = EmployeeContract::create([

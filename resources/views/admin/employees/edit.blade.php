@@ -3543,7 +3543,7 @@ $(document).ready(function(){
 		$('#form_contract input[name=end_date]').attr('value','');
 		$('#form_contract textarea[name=description]').html('');
 		$('#form_contract input[name=file]').attr('value','');
-		$('#form_contract selcet[name=status]').select2('value', '');
+		$('#form_contract select[name=status]').select2("val", "");
 		$('#form_contract .invalid-feedback').each(function () { $(this).remove(); });
 		$('#form_contract .form-group').removeClass('has-error').removeClass('has-success');
 		$('#add_contract .modal-title').html('Add Contract');
