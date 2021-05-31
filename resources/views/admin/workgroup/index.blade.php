@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Work Group Combination')
+@section('title', __('config.workcomb'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Work Group Combination</li>
+<li class="breadcrumb-item active">{{ __('config.workcomb') }}</li>
 @endpush
 
 @section('content')
@@ -15,11 +15,11 @@
 		<div class="col-lg-12">
 			<div class="card card-{{ config('configs.app_theme') }} card-outline">
 				<div class="card-header">
-					<h3 class="card-title">Work Group List</h3>
+					<h3 class="card-title">{{ __('config.workgrplist') }}</h3>
 					<!-- tools box -->
 					<div class="pull-right card-tools">
 						<a href="{{route('workgroup.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white"
-							data-toggle="tooltip" title="Tambah">
+							data-toggle="tooltip" title="{{ __('config.crt') }}">
 							<i class="fa fa-plus"></i></a>
 						<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
 							<i class="fa fa-search"></i>
@@ -32,10 +32,10 @@
 						<thead>
 							<tr>
 								<th width="10">#</th>
-								<th width="150">Work Group </th>
-								<th width="100">Combination Name</th>
-								<th width="200">Description</th>
-								<th width="50">Status</th>
+								<th width="150">{{ __('config.workgrp') }}</th>
+								<th width="100">{{ __('config.combname') }}</th>
+								<th width="200">{{ __('config.desc') }}</th>
+								<th width="50">{{ __('config.status') }}</th>
 								<th width="10">Action</th>
 							</tr>
 						</thead>
@@ -62,8 +62,8 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="name">Combination Name</label>
-								<input type="text" name="name" class="form-control" placeholder="Combination Name">
+								<label class="control-label" for="name">{{ __('config.combname') }}</label>
+								<input type="text" name="name" class="form-control" placeholder="{{ __('config.combname') }}">
 							</div>
 						</div>
 					</div>

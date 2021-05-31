@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Department ')
+@section('title',  __('config.dep'))
 @section('stylesheets')
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('department.index')}}">Department</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item"><a href="{{route('department.index')}}">{{ __('config.dep') }}</a></li>
+<li class="breadcrumb-item active">{{ __('config.crt') }}</li>
 @endpush
 
 @section('content')
@@ -15,7 +15,7 @@
     <div class="col-lg-8">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header" style="height: 57px;">
-          <h3 class="card-title">Department Data</h3>
+          <h3 class="card-title">{{ __('config.depdata') }}</h3>
         </div>
         <div class="card-body">
           <form id="form" action="{{ route('department.store') }}" method="post" autocomplete="off">
@@ -24,14 +24,14 @@
               <div class="col-sm-6">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Code <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="code" id="code" placeholder="Code">
+                  <label>{{ __('config.code') }} <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" name="code" id="code" placeholder="{{ __('config.code') }}">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Name <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="name" placeholder="Name">
+                  <label>{{ __('config.name') }} <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" name="name" placeholder="{{ __('config.name') }}">
                 </div>
               </div>
             </div>
@@ -39,8 +39,8 @@
               <div class="col-sm-6">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Parent <b class="text-danger">*</b></label>
-                  <input class="form-control" id="parent_id" data-placeholder="Pilih Parent" name="parent_id">
+                  <label>{{ __('config.parent') }} <b class="text-danger">*</b></label>
+                  <input class="form-control" id="parent_id" data-placeholder="{{ __('config.chsparent') }}" name="parent_id">
                 </div>
               </div>
               <div class="col-sm-6">
@@ -81,11 +81,11 @@
     <div class="col-lg-4">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Other</h3>
+          <h3 class="card-title">{{ __('config.other') }}</h3>
           <div class="pull-right card-tools">
             <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i
                 class="fa fa-save"></i></button>
-            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
                 class="fa fa-reply"></i></a>
           </div>
         </div>
@@ -95,18 +95,18 @@
               <div class="col-sm-12">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Notes <b class="text-danger">*</b></label>
-                  <textarea class="form-control" name="notes" placeholder="Notes"></textarea>
+                  <label>{{ __('config.notes') }} <b class="text-danger">*</b></label>
+                  <textarea class="form-control" name="notes" placeholder="{{ __('config.notes') }}"></textarea>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <label>Status <b class="text-danger">*</b></label>
+                  <label>{{ __('config.status') }} <b class="text-danger">*</b></label>
                   <select name="status" id="status" class="form-control" data-placeholder="Select Status">
-                    <option value="1">Active</option>
-                    <option value="0">Non Active</option>
+                    <option value="1">{{ __('config.actv') }}</option>
+                    <option value="0">{{ __('config.noactv') }}</option>
                   </select>
                 </div>
               </div>

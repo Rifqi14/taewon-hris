@@ -28,6 +28,6 @@ return [
     'language'      => 'Bahasa',
     'setting_prorate' => 'Pengaturan Prorate',
     'type_prorate'  => 'Tipe Prorate',
-    'thr'           => 'THR'
+    'thr'           => 'THR',
 
 ];

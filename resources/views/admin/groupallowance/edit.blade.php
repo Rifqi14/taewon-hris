@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit Group Allowance')
+@section('title', __('config.grpalw'))
 @section('stylesheets')
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('groupallowance.index')}}">Group Allowance</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item"><a href="{{route('groupallowance.index')}}">{{ __('config.grpalw') }}</a></li>
+<li class="breadcrumb-item active">{{ __('config.edt') }}</li>
 @endpush
 
 @section('content')
@@ -15,7 +15,7 @@
     <div class="col-lg-8">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header" style="height: 57px;">
-          <h3 class="card-title">Edit Group Allowance</h3>
+          <h3 class="card-title">{{ __('config.edt') }} {{ __('config.grpalw') }}</h3>
         </div>
         <div class="card-body">
           <form id="form" action="{{ route('groupallowance.update',['id'=>$groupAllowance->id]) }}" method="post" autocomplete="off">
@@ -25,33 +25,33 @@
               <div class="col-sm-6">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Code <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="code" value="{{ $groupAllowance->code }}" placeholder="Code">
+                  <label>{{ __('config.code') }} <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" name="code" value="{{ $groupAllowance->code }}" placeholder="{{ __('config.code') }}">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Name <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="group_allowance" value="{{ $groupAllowance->name }}" placeholder="Group Allowance">
+                  <label>{{ __('config.alwgrp') }} <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" name="group_allowance" value="{{ $groupAllowance->name }}" placeholder="{{ __('config.alwgrp') }}">
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Type <b class="text-danger">*</b></label>
+                  <label>{{ __('config.type') }} <b class="text-danger">*</b></label>
                   <select class="form-control select2" id="type" required name="type">
-                    <option value="ADDITIONAL" @if($groupAllowance->group_type == 'ADDITIONAL') selected @endif>Additional</option>
-                    <option value="DEDUCTION" @if($groupAllowance->group_type == 'DEDUCTION') selected @endif>Deduction</option>
+                    <option value="ADDITIONAL" @if($groupAllowance->group_type == 'ADDITIONAL') selected @endif>{{ __('config.add') }}</option>
+                    <option value="DEDUCTION" @if($groupAllowance->group_type == 'DEDUCTION') selected @endif>{{ __('config.deduct') }}</option>
                   </select>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Status <b class="text-danger">*</b></label>
+                  <label>{{ __('config.status') }} <b class="text-danger">*</b></label>
                   <select class="form-control select2" id="status" required name="status">
-                    <option value="1" @if($groupAllowance->status == '1') selected @endif>Active</option>
-                    <option value="0" @if($groupAllowance->status == '0') selected @endif>Non Active</option>
+                    <option value="1" @if($groupAllowance->status == '1') selected @endif>{{ __('config.actv') }}</option>
+                    <option value="0" @if($groupAllowance->status == '0') selected @endif>{{ __('config.noactv') }}</option>
                   </select>
                 </div>
               </div>
@@ -66,11 +66,11 @@
     <div class="col-lg-4">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Other</h3>
+          <h3 class="card-title">{{ __('config.other') }}</h3>
           <!-- tools box -->
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i class="fa fa-save"></i></button>
-            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('config.save') }}"><i class="fa fa-save"></i></button>
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i class="fa fa-reply"></i></a>
           </div>
           <!-- /. tools -->
         </div>
@@ -80,8 +80,8 @@
               <div class="col-sm-12">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Notes <b class="text-danger">*</b></label>
-                  <textarea class="form-control" name="notes" placeholder="Notes" rows="5">{{ $groupAllowance->notes}}</textarea>
+                  <label>{{ __('config.notes') }} <b class="text-danger">*</b></label>
+                  <textarea class="form-control" name="notes" placeholder="{{ __('config.notes') }}" rows="5">{{ $groupAllowance->notes}}</textarea>
                 </div>
               </div>
             </div>

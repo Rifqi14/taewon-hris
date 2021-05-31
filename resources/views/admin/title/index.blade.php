@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Position')
+@section('title',  __('config.pos'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Position</li>
+<li class="breadcrumb-item active">{{ __('config.pos') }}</li>
 @endpush
 
 @section('content')
@@ -15,11 +15,11 @@
         <div class="col-lg-12">
             <div class="card card-{{config('configs.app_theme')}} card-outline">
                 <div class="card-header">
-                    <h3 class="card-title">List Position</h3>
+                    <h3 class="card-title">{{ __('config.poslist') }}</h3>
                     <!-- tools box -->
                     <div class="pull-right card-tools">
                         <a href="{{route('title.create')}}" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip"
-                            title="Tambah">
+                            title="{{ __('config.crt') }}">
                             <i class="fa fa-plus"></i>
                         </a>
                         <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
@@ -34,9 +34,9 @@
                             <tr>
                                 <th width="10">#</th>
                                 {{-- <th width="200">Code</th> --}}
-                                <th width="200">Name</th>
+                                <th width="200">{{ __('config.name') }}</th>
                                 {{-- <th width="200">Department</th> --}}
-                                <th width="100">Status</th>
+                                <th width="100">{{ __('config.status') }}</th>
                                 <th width="10">#</th>
                             </tr>
                         </thead>
@@ -62,8 +62,8 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label class="control-label" for="name">Nama</label>
-                                <input type="text" name="name" class="form-control" placeholder="Nama">
+                                <label class="control-label" for="name">{{ __('config.name') }}</label>
+                                <input type="text" name="name" class="form-control" placeholder="{{ __('config.name') }}">
                             </div>
                         </div>
                     </div>

@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit Basic UMK Base')
+@section('title',__('config.baseslr'))
 @section('stylesheets')
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('basesallary.index')}}">Basic UMK Base</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item"><a href="{{route('basesallary.index')}}">{{ __('config.baseslr') }}</a></li>
+<li class="breadcrumb-item active">{{ __('config.edt') }}</li>
 @endpush
 
 @section('content')
@@ -15,12 +15,12 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Edit Basic UMK Base</h3>
+          <h3 class="card-title">{{ __('config.edt') }} {{ __('config.baseslr') }}</h3>
           <!-- tools box -->
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="Simpan"><i
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('config.save') }}"><i
               class="fa fa-save"></i></button>
-              <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+              <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
                 class="fa fa-reply"></i></a>
               </div>
               <!-- /. tools -->
@@ -33,14 +33,14 @@
                   <div class="col-sm-6">
                     <!-- text input -->
                     <div class="form-group">
-                      <label>Region</label>
-                      <input class="form-control" id="region_id" data-placeholder="Pilih Region" name="region_id" value="{{ $basesallary->name }}">
+                      <label>{{ __('config.region') }}</label>
+                      <input class="form-control" id="region_id" data-placeholder="{{ __('config.chsregion') }}" name="region_id" value="{{ $basesallary->name }}">
                     </div>
                   </div>
                   <div class="col-sm-6">
                     <div class="form-group">
-                      <label>Sallary</label>
-                      <input type="text" class="form-control" name="sallary" value="{{ $basesallary->sallary }}" placeholder="sallary">
+                      <label>{{ __('config.slary') }}</label>
+                      <input type="text" class="form-control" name="sallary" value="{{ $basesallary->sallary }}" placeholder="{{ __('config.salary') }}">
                     </div>
                   </div>
                 </div>
