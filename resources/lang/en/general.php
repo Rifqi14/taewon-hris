@@ -29,8 +29,12 @@ return [
     'type'        => 'Type',
     'start_time'  => 'Start Time',
     'finish_time' => 'Finish Time',
+    'start_date'  => 'Start Date',
+    'finish_date' => 'Finish Date',
     'name'        => 'Name',
     'category'    => 'Category',
     'notes'       => 'Notes',
     'chs'         => 'Choose',
+    'from'        => 'From',
+    'To'          => 'To',
 ];

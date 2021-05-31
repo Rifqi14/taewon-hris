@@ -11,5 +11,6 @@ return[
     'gender'     => 'Gender',
     'biomoth'    => 'Biological Mothers Name',
     'nophone'    => 'Phone No',
+    'address'    => 'Address',
     'city'       => 'City',
 ];

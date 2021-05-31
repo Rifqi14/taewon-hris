@@ -2678,21 +2678,21 @@ class SalaryReportController extends Controller
       if ($coordinate34) {
         $coordinate34value = Leave::where('leave_setting_id', $coordinate34->id)->where('employee_id')->where('status', 1)->get()->sum('duration');
       } else {
-        $coordinate34alue = 0;
+        $coordinate34value = 0;
       }
       $coordinate34values[$salary->id] = $coordinate34value;
       // Coordinate35
       if ($coordinate35) {
         $coordinate35value = Leave::where('leave_setting_id', $coordinate35->id)->where('employee_id')->where('status', 1)->get()->sum('duration');
       } else {
-        $coordinate35alue = 0;
+        $coordinate35value = 0;
       }
       $coordinate35values[$salary->id] = $coordinate35value;
       // Coordinate34
       if ($coordinate36) {
         $coordinate36value = Leave::where('leave_setting_id', $coordinate36->id)->where('employee_id')->where('status', 1)->get()->sum('duration');
       } else {
-        $coordinate36alue = 0;
+        $coordinate36value = 0;
       }
       $coordinate36values[$salary->id] = $coordinate36value;
 
