@@ -43,11 +43,12 @@
             </div> --}}
             <div class="form-group col-sm-6">
               <div class="row">
-                <label class="col-sm-3 label-controls" for="type_truck">Type Truck</label>
+                <label class="col-sm-3 label-controls" for="truck_id">Truck</label>
                 <div class="col-sm-8 controls">
-                  <select name="type_truck" id="type_truck" class="form-control select2" style="width: 100%" required>
-                    <option value="fuso">Fuso</option>
-                    <option value="colt_diesel">Colt Diesel</option>
+                  <select name="truck_id" id="truck_id" class="form-control select2" style="width: 100%" required>
+                    @foreach($trucks as $truck)
+                    <option value="{{$truck->id}}">{{$truck->name}}</option>
+                    @endforeach
                   </select>
                 </div>
               </div>
@@ -210,7 +211,7 @@
         dataType: 'json',
         data: function (term,page) {
           return {
-            path:'Driver',
+            driver:'yes',
             name:term,
             page:page,
             limit:30,
@@ -242,6 +243,7 @@
             name:term,
             page:page,
             limit:30,
+            truck_id:$('#truck_id').val()
           };
         },
         results: function (data,page) {

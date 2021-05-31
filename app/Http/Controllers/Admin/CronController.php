@@ -333,4 +333,18 @@ class CronController extends Controller
             }
         }
     }
+
+    public function dailyAttendance(){
+        DB::beginTransaction();
+        $employees   = Employee::where('status', 1)->get();
+        $readConfigs = Config::where('option', 'cut_off')->first();
+        foreach ($employees as $employee) {
+            $attendance_date = date('Y-m-d');
+            $attendance = Attendance::where('employee_id', $employee->id)->where('attendance_date', '=', $attendance_date)->first();
+            if($attendance){
+                $exception_date = $this->employee_calendar($employee->id);
+                $date = $new_date;   
+            }
+        }
+    }
 }
