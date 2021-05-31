@@ -28,11 +28,11 @@
         <div class="card-body">
             {{ csrf_field() }}
             <div class="form-group row">
-              <label for="driver_allowance" class="col-sm-2 col-form-label">Driver</label>
+              <label for="driver_allowance" class="col-sm-2 col-form-label">Type</label>
               <div class="col-sm-6">
                 <select name="driver_allowance" id="driver_allowance" class="form-control select2" style="width: 100%" required>
-                  <option value="pribadi">Driver Mobil Pribadi</option>
-                  <option value="truck">Driver Truck</option>
+                  <option value="pribadi">Reccurance</option>
+                  <option value="truck">Truck</option>
                 </select>
               </div>
             </div>

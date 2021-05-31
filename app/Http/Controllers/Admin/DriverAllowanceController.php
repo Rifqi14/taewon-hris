@@ -86,7 +86,9 @@ class DriverAllowanceController extends Controller
      */
     public function create()
     {
-        return view('admin.driverallowance.create');
+        $departments = Department::where('driver','no')->get();
+        $trucks = Truck::where('status',1)->get();
+        return view('admin.driverallowance.create',compact('departments','trucks'));
     }
 
     public function getLatestId()

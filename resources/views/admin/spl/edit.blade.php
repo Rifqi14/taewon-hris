@@ -25,23 +25,17 @@
 			<div class="card-body">
                 <div class="row">
 					<div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Date <b class="text-danger">*</b></label>
-                            <input type="text" name="spl_date" id="spl_date" class="form-control datepicker" placeholder="Date" value=" {{ \Carbon\Carbon::parse($spl->spl_date)->format('d/m/Y')}}" required>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Employee Name <b class="text-danger">*</b></label>
+						<div class="form-group">
+							<label>Employee Name <b class="text-danger">*</b></label>
                             <input type="text" name="employee_name" id="employee_name" class="form-control" placeholder="Employee Name" required>
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>NIK <b class="text-danger">*</b></label>
-                            <input type="text" name="nik" class="form-control" placeholder="NIK" id="nik" required readonly value="{{ $spl->nik }}">
-                        </div>
-                    </div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label>Date <b class="text-danger">*</b></label>
+							<input type="text" name="spl_date" id="spl_date" class="form-control datepicker" placeholder="Date" value=" {{ \Carbon\Carbon::parse($spl->spl_date)->format('d/m/Y')}}" required>
+						</div>
+					</div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Start Date <b class="text-danger">*</b></label>
@@ -102,7 +96,7 @@
                             </select>
                         </div>
                     </div>
-					<div style="height: 165px;"></div>
+					{{-- <div style="height: 165px;"></div> --}}
 				</div>
 			</div>
 			<div class="overlay d-none">
@@ -210,8 +204,7 @@
         
         $(document).on('change', '#employee_name', function () {
             var employee_id = $('#employee_name').select2('data').id;
-            var nid = $('#employee_name').select2('data').nid;
-            $('#nik').val(`${nid}`);
+           
             $('#employee_name').val(`${employee_id}`);
         });
 		$('.select2').select2();

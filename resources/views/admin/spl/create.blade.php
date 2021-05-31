@@ -31,8 +31,8 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label>NIK <b class="text-danger">*</b></label>
-                            <input type="text" name="nik" class="form-control" placeholder="NIK" id="nik" required readonly>
+                            <label>Date <b class="text-danger">*</b></label>
+                            <input type="text" name="spl_date" id="spl_date" class="form-control datepicker" placeholder="Date" required>
                         </div>
                     </div>
                     <div class="col-sm-6">
@@ -59,12 +59,7 @@
                             <input placeholder="Finish Time" name="finish_time" id="finish_time" class="form-control timepicker"/>
                         </div>
                     </div>
-					<div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Date <b class="text-danger">*</b></label>
-                            <input type="text" name="spl_date" id="spl_date" class="form-control datepicker" placeholder="Date" required>
-                        </div>
-                    </div>
+					
                 </div>
 			</div>
 			<div class="overlay d-none">
@@ -101,7 +96,7 @@
                             </select>
                         </div>
                     </div>
-					<div style="height: 165px;"></div>
+					{{-- <div style="height: 165px;"></div> --}}
 				</div>
 			</div>
 			<div class="overlay d-none">

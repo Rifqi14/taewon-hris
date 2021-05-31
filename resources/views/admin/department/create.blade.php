@@ -61,6 +61,16 @@
                   </select>
                 </div>
               </div>
+              <div class="col-sm-6">
+                <!-- text input -->
+                <div class="form-group">
+                  <label>Driver <b class="text-danger">*</b></label>
+                  <select name="driver" id="driver" class="form-control select2">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                  </select>
+                </div>
+              </div>
             </div>
         </div>
         <div class="overlay d-none">

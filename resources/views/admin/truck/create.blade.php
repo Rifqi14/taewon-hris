@@ -1,11 +1,11 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Customer ')
+@section('title', 'Truck')
 @section('stylesheets')
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('partner.index')}}">Customer</a></li>
+<li class="breadcrumb-item"><a href="{{route('truck.index')}}">Truck</a></li>
 <li class="breadcrumb-item active">Create</li>
 @endpush
 
@@ -15,10 +15,10 @@
     <div class="col-lg-8">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header" style="height: 57px;">
-          <h3 class="card-title">Customer Data</h3>
+          <h3 class="card-title">Truck Data</h3>
         </div>
         <div class="card-body">
-          <form id="form" action="{{ route('partner.store') }}" method="post" autocomplete="off">
+          <form id="form" action="{{ route('truck.store') }}" method="post" autocomplete="off">
             {{ csrf_field() }}
             <div class="row">
               <div class="col-sm-6">
@@ -31,45 +31,9 @@
               <div class="col-sm-6">
                 <div class="form-group">
                   <label>Name <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="name" placeholder="Name" required>
+                  <input type="text" class="form-control" name="name" placeholder="Name">
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <!-- text input -->
-                <div class="form-group">
-                  <label>Rit <b class="text-danger">*</b></label>
-                  <input class="form-control" id="rit" placeholder="Rit" name="rit" required>
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <!-- text input -->
-                <div class="form-group">
-                  <label>Number Phone</label>
-                  <input class="form-control" type="number" id="phone" placeholder="Number Phone" name="phone">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <!-- text input -->
-                <div class="form-group">
-                  <label>Email</label>
-                  <input class="form-control" type="email" id="email" placeholder="Email" name="email">
-                </div>
-                
-              </div>
-              <div class="col-sm-6">
-									<div class="form-group">
-										<label>Truck <b class="text-danger">*</b></label>
-										<select name="truck_id" id="truck_id" class="form-control select2" style="width: 100%"
-											aria-hidden="true" data-placeholder="Select Truck" required>
-											<option value=""></option>
-											@foreach ($trucks as $truck)
-											<option value="{{ $truck->id }}">{{ $truck->name }}</option>
-											@endforeach
-										</select>
-									</div>
-								</div>
             </div>
         </div>
         <div class="overlay d-none">
@@ -94,24 +58,24 @@
               <div class="col-sm-12">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Address</label>
-                  <textarea class="form-control" name="address" placeholder="Address" rows="4"></textarea>
+                  <label>Notes</label>
+                  <textarea class="form-control" name="notes" placeholder="Notes"></textarea>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <label>Status</label>
-                  <select name="status" id="status" class="form-control">
+                  <label>Status <b class="text-danger">*</b></label>
+                  <select name="status" id="status" class="form-control" data-placeholder="Select Status">
                     <option value="1">Active</option>
                     <option value="0">Non Active</option>
                   </select>
                 </div>
               </div>
             </div>
+            <div style="height: 60px;"></div>
           </form>
-          <div style="height: 10px;"></div>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -126,8 +90,41 @@
   <script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
   <script>
     $(document).ready(function(){
-         $('#status').select2();
-         $('#truck_id').select2();
+          $('.select2').select2();
+          $("#status").select2();
+          $( "#parent_id" ).select2({
+            ajax: {
+              url: "{{route('department.select')}}",
+              type:'GET',
+              dataType: 'json',
+              data: function (term,page) {
+                return {
+                  name:term,
+                  page:page,
+                  limit:30,
+                };
+              },
+              results: function (data,page) {
+                var more = (page * 30) < data.total;
+                var option = [];
+                $.each(data.rows,function(index,item){
+                  option.push({
+                    id:item.id,
+                    text: `${item.name}`
+                  });
+                });
+                return {
+                  results: option, more: more,
+                };
+              },
+            },
+            allowClear: true,
+          });
+          $(document).on("change", "#parent_id", function () {
+            if (!$.isEmptyObject($('#form').validate().submitted)) {
+              $('#form').validate().form();
+            }
+          });
           $("#form").validate({
             errorElement: 'div',
             errorClass: 'invalid-feedback',

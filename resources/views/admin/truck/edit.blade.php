@@ -1,11 +1,11 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit Department')
+@section('title', 'Edit Truck')
 @section('stylesheets')
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('department.index')}}">Department</a></li>
+<li class="breadcrumb-item"><a href="{{route('truck.index')}}">Truck</a></li>
 <li class="breadcrumb-item active">Edit</li>
 @endpush
 
@@ -15,10 +15,10 @@
     <div class="col-lg-8">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header" style="height: 57px;">
-          <h3 class="card-title">Edit Department</h3>
+          <h3 class="card-title">Edit Truck</h3>
         </div>
         <div class="card-body">
-          <form id="form" action="{{ route('department.update',['id'=>$department->id]) }}" method="post"
+          <form id="form" action="{{ route('truck.update',['id'=>$truck->id]) }}" method="post"
             autocomplete="off">
             {{ csrf_field() }}
             {{ method_field('put') }}
@@ -27,53 +27,15 @@
                 <!-- text input -->
                 <div class="form-group">
                   <label>Code <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="code" value="{{ $department->code }}"
+                  <input type="text" class="form-control" name="code" value="{{ $truck->code }}"
                     placeholder="Code" readonly>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
                   <label>Name <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="name" value="{{ $department->name }}"
+                  <input type="text" class="form-control" name="name" value="{{ $truck->name }}"
                     placeholder="Name">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <!-- text input -->
-                <div class="form-group">
-                  <label>Parent <b class="text-danger">*</b></label>
-                  <input class="form-control" id="parent_id" data-placeholder="Pilih Parent" name="parent_id"
-                    value="">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <label>Order Number <b class="text-danger">*</b></label>
-                  <input type="number" class="form-control" name="order_number" value="{{ $department->order_number }}"
-                    placeholder="Order Number">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <label>Dashboard <b class="text-danger">*</b></label>
-                  <select class="form-control select2" id="dashboard" required name="dashboard">
-                    <option value="no" @if($department->dashboard == 'no') selected @endif>No</option>
-                    <option value="yes" @if($department->dashboard == 'yes') selected @endif>Yes</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <!-- text input -->
-                <div class="form-group">
-                  <label>Driver <b class="text-danger">*</b></label>
-                  <select name="driver" id="driver" class="form-control select2">
-                    <option value="no" @if($department->driver == 'no') selected @endif>No</option>
-                    <option value="yes" @if($department->driver == 'yes') selected @endif>Yes</option>
-                  </select>
                 </div>
               </div>
             </div>
@@ -103,7 +65,7 @@
                 <!-- text input -->
                 <div class="form-group">
                   <label>Notes <b class="text-danger">*</b></label>
-                  <textarea class="form-control" name="notes" placeholder="Notes">{{ $department->notes}}</textarea>
+                  <textarea class="form-control" name="notes" placeholder="Notes">{{ $truck->notes}}</textarea>
                 </div>
               </div>
             </div>
@@ -112,8 +74,8 @@
                 <div class="form-group">
                   <label>Status <b class="text-danger">*</b></label>
                   <select class="form-control" id="status" required name="status">
-                    <option value="1" @if($department->status == '1') selected @endif>Active</option>
-                    <option value="0" @if($department->status == '0') selected @endif>Tidak Active</option>
+                    <option value="1" @if($truck->status == '1') selected @endif>Active</option>
+                    <option value="0" @if($truck->status == '0') selected @endif>Tidak Active</option>
                   </select>
                 </div>
               </div>
@@ -137,42 +99,7 @@
   $(document).ready(function(){
       $('.select2').select2();
       $('#status').select2();
-      $( "#parent_id" ).select2({
-        ajax: {
-          url: "{{route('department.select')}}",
-          type:'GET',
-          dataType: 'json',
-          data: function (term,page) {
-            return {
-              name:term,
-              page:page,
-              limit:30,
-            };
-          },
-          results: function (data,page) {
-            var more = (page * 30) < data.total;
-            var option = [];
-            $.each(data.rows,function(index,item){
-              option.push({
-                id:item.id,
-                text: `${item.name}`
-              });
-            });
-            return {
-              results: option, more: more,
-            };
-          },
-        },
-        allowClear: true,
-      });
-      @if($department->parent_id)
-      $("#parent_id").select2('data',{id:{{$department->parent_id}},text:'{{$department->parent->name}}'}).trigger('change');
-      @endif
-      $(document).on("change", "#parent_id", function () {
-        if (!$.isEmptyObject($('#form').validate().submitted)) {
-          $('#form').validate().form();
-        }
-      });
+     
       $("#form").validate({
         errorElement: 'div',
         errorClass: 'invalid-feedback',

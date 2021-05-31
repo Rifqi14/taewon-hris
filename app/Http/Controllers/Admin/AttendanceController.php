@@ -328,7 +328,7 @@ class AttendanceController extends Controller
             $attendance_date = $sheet->getCellByColumnAndRow(8, $row)->getValue();
             $date_source     = $sheet->getCellByColumnAndRow(9, $row)->getValue();
             if ($personel_id) {
-                $employee = Employee::whereRaw("upper(nid) like '%$personel_id%'")->get()->first();
+                $employee = Employee::whereRaw("upper(nid) = '$personel_id'")->get()->first();
                 $data[] = array(
                     'index' => $no,
                     'employee_id'     => $employee ? $employee->id : null,

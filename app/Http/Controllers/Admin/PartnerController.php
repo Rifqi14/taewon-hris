@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Models\Partner;
+use App\Models\Truck;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -39,6 +40,7 @@ class PartnerController extends Controller
         $data = [];
         foreach($partners as $partner){
             $partner->no = ++$start;
+            $partner->rit = number_format($partner->rit,0,'.',',');
             $data[] = $partner;
         }
         return response()->json([
@@ -73,6 +75,7 @@ class PartnerController extends Controller
         $data = [];
         foreach ($partners as $partner) {
             $partner->no = ++$start;
+            $partner->rit = number_format($partner->rit,0,',','.');
             $data[] = $partner;
         }
         return response()->json([
@@ -99,7 +102,8 @@ class PartnerController extends Controller
      */
     public function create()
     {
-        return view('admin.partner.create');
+        $trucks = Truck::where('status',1)->get();
+        return view('admin.partner.create',compact('trucks'));
     }
 
     /**
@@ -112,7 +116,8 @@ class PartnerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'     => 'required',
-            'rit'      => 'required'
+            'rit'      => 'required',
+            'truck_id'      => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -131,6 +136,7 @@ class PartnerController extends Controller
             'phone'    => $request->phone,
             'rit'      => $request->rit,
             'status'   => $request->status,
+            'truck_id'   => $request->truck_id,
         ]);
         if ($request->code) {
             $partner->code = $request->code;
@@ -173,7 +179,8 @@ class PartnerController extends Controller
     public function edit($id)
     {
         $partner = Partner::find($id);
-        return view('admin.partner.edit', compact('partner'));
+        $trucks = Truck::where('status',1)->get();
+        return view('admin.partner.edit', compact('partner','trucks'));
     }
 
     /**
@@ -187,7 +194,8 @@ class PartnerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'     => 'required',
-            'rit'      => 'required'
+            'rit'      => 'required',
+            'truck_id'      => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -205,6 +213,7 @@ class PartnerController extends Controller
         $partner->phone   = $request->phone;
         $partner->rit     = $request->rit;
         $partner->status  = $request->status;
+        $partner->truck_id  = $request->truck_id;
         $partner->save();
 
         if (!$partner) {
