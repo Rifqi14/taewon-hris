@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Overtime;
 use Illuminate\Http\Request;
+use App\Models\Employee;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
