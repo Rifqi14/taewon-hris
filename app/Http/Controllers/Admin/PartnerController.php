@@ -22,17 +22,24 @@ class PartnerController extends Controller
         $start = $request->page?$request->page - 1:0;
         $length = $request->limit;
         $name = strtoupper($request->name);
+        $truck_id = $request->truck_id;
 
         //Count Data
         $query = DB::table('partners');
         $query->select('partners.*');
         $query->whereRaw("upper(name) like '%$name%'");
+        if($truck_id){
+            $query->where('truck_id',$truck_id);
+        }
         $recordsTotal = $query->count();
 
         //Select Pagination
         $query = DB::table('partners');
         $query->select('partners.*');
         $query->whereRaw("upper(name) like '%$name%'");
+        if($truck_id){
+            $query->where('truck_id',$truck_id);
+        }
         $query->offset($start);
         $query->limit($length);
         $partners = $query->get();

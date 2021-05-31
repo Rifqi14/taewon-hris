@@ -366,6 +366,7 @@ class EmployeesController extends Controller
         $path = strtoupper($request->path);
         // $list_department_multi_id = 'Driver';
         $name = strtoupper($request->name);
+        $driver = $request->driver;
         $nid = $request->nid;
 
         //Count Data
@@ -390,6 +391,9 @@ class EmployeesController extends Controller
         }
         if ($path) {
             $query->whereRaw("upper(departments.path) like '%$path%'");
+        }
+        if ($driver) {
+            $query->where("departments.driver",$driver);
         }
         if ($department_id) {
             $query->whereIn('employees.department_id', '=', $department_id);
@@ -427,6 +431,9 @@ class EmployeesController extends Controller
         }
         if ($path) {
             $query->whereRaw("upper(departments.path) like '%$path%'");
+        }
+        if ($driver) {
+            $query->where("departments.driver",$driver);
         }
         if ($department_id) {
             $query->where('employees.department_id', '=', $department_id);
