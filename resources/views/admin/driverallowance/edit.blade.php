@@ -32,11 +32,21 @@
           <label for="driver_allowance" class="col-sm-2 col-form-label">Driver</label>
           <div class="col-sm-6">
             <select name="driver_allowance" id="driver_allowance" class="form-control select2" style="width: 100%">
-              <option value="pribadi" @if ($driver->driver == 'pribadi') selected @endif>Driver Mobil Pribadi</option>
-              <option value="truck" @if ($driver->driver == 'truck') selected @endif>Driver Truck</option>
+              <option value="pribadi" @if ($driver->driver == 'pribadi') selected @endif>Recurrance</option>
+              <option value="truck" @if ($driver->driver == 'truck') selected @endif>Truck</option>
             </select>
           </div>
         </div>
+        <div class="form-group row">
+              <label for="category" class="col-sm-2 col-form-label">Department</label>
+              <div class="col-sm-6">
+                <select name="department_id" id="department_id" class="form-control select2" style="width: 100%" aria-hidden="true">
+                  @foreach ($departments as $department)
+                  <option value="{{ $department->id }}" @if($department->id == $driver->department_id) selected @endif>{{ $department->name }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
         <div class="form-group row">
           <label for="allowance" class="col-sm-2 col-form-label">Allowance</label>
           <div class="col-sm-6">
@@ -91,7 +101,7 @@
             </tr>
           </thead>
           <tbody>
-            @if (count($list) > 0 && $driver->driverlist->first()->type == null)
+            @if (count($list) > 0 && $driver->driverlist->first()->truck_id == null)
             @foreach ($list as $key => $item)
             {{-- @dump($item); --}}
             <tr>
@@ -169,10 +179,11 @@
         <div class="form-group row">
           <label for="type" class="col-sm-2 col-form-label">Type</label>
           <div class="col-sm-6">
-            <select name="type" id="type" class="form-control select2" style="width: 100%">
-              <option value="fuso" @if (count($driver->driverlist) > 0 && $driver->driverlist->first()->type == 'fuso') selected @endif>Fuso</option>
-              <option value="colt_diesel" @if (count($driver->driverlist) > 0 && $driver->driverlist->first()->type == 'colt_diesel') selected @endif>Colt Diesel</option>
-            </select>
+          <select name="truck_id" id="truck_id" class="form-control select2" style="width: 100%">
+                @foreach ($trucks as $truck)
+                  <option value="{{ $truck->id }}" @if (count($driver->driverlist) > 0 && $driver->driverlist->first()->truck_id == $truck->id) selected @endif>{{ $truck->name }}</option>
+                  @endforeach
+              </select>
           </div>
         </div>
         <table class="table table-striped table-bordered datatable" id="type_table" style="width: 100%; height: 100%">
@@ -186,7 +197,7 @@
             </tr>
           </thead>
           <tbody>
-            @if ($driver->driverlist->first()->type != null)
+            @if ($driver->driverlist->first()->truck_id != null)
             @foreach ($driver->driverlist as $key => $item)
             <tr>
               <td class="text-center align-middle">{{ $key + 1 }}</td>
@@ -284,15 +295,18 @@
         }).on('show.daterangepicker', function(ev, picker) {
           picker.container.find('.calendar-table').hide();
         });
+        $('#department_id').closest('.form-group').hide();
         break;
       case 'truck':
         $('#truck').removeClass('d-none');
         $('#pribadi').addClass('d-none');
+        $('#department_id').closest('.form-group').show();
         break;
     
       default:
         $('#truck').addClass('d-none');
         $('#pribadi').addClass('d-none');
+        $('#department_id').closest('.form-group').hide();
         break;
     }
   });
@@ -317,7 +331,7 @@
         html += '<td class="text-center align-middle"><div class="form-group mb-0"><input placeholder="Finish Time" name="finish['+length+']" class="form-control timepicker" required/></div></td>';
         // html += '<td class="text-center align-middle"><div class="input-group mb-0"><div class="input-group-prepend"><span class="input-group-text" id="currency_symbol">Rp.</span></div><input placeholder="Value" name="value['+length+']" class="form-control currency" aria-label="Value" aria-describedby="currency_symbol" required></div></td>';
         html += '<td class="align-middle"><div class="form-group mb-0"><select name="type_value" class="form-control select2" id="type_value"><option value="nominal">Nominal</option><option value="percentage">Percentage</option></select></div></td>';
-        html += '<td class="text-center align-middle"><div class="input-group mb-0"><input placeholder="Nilai" name="rit_value[]" class="form-control" aria-label="Value" aria-describedby="currency_symbol" required></div></td>';
+        html += '<td class="text-center align-middle"><div class="input-group mb-0"><input placeholder="Nilai" name="value[]" class="form-control" aria-label="Value" aria-describedby="currency_symbol" required></div></td>';
         html += '<td class="text-center align-middle"><a href="javascript:void(0)" onclick="addRecurrence()" class="fa fa-plus fa-lg d-inline"></a> / <a href="#" class="fa fa-trash fa-lg d-inline remove"></a></td>';
         html += '</tr>';
     $('#recurrence_table').append(html);

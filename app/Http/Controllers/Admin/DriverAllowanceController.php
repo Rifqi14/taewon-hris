@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\DriverAllowance;
+use App\Models\Department;
+use App\Models\Truck;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\DriverList;
@@ -86,7 +88,7 @@ class DriverAllowanceController extends Controller
      */
     public function create()
     {
-        $departments = Department::where('driver','no')->get();
+        $departments = Department::where('driver','yes')->get();
         $trucks = Truck::where('status',1)->get();
         return view('admin.driverallowance.create',compact('departments','trucks'));
     }
@@ -132,6 +134,7 @@ class DriverAllowanceController extends Controller
         $driver = DriverAllowance::create([
             'id'            => $id,
             'driver'        => $request->driver_allowance,
+            'department_id' => $request->department_id?$request->department_id:null,
             'allowance'     => $request->allowance,
             'category'      => $request->category
         ]);
@@ -160,7 +163,7 @@ class DriverAllowanceController extends Controller
                 foreach ($request->type_choose as $key => $value) {
                     $list = DriverList::create([
                         'driver_allowance_id'   => $id,
-                        'type'                  => $request->type,
+                        'truck_id'              => $request->truck_id,
                         'rit'                   => $request->rit[$key],
                         'type_value'            => $request->type_value,
                         'value'                 => str_replace(['.', ','], '', $request->rit_value[$key])
@@ -249,7 +252,9 @@ class DriverAllowanceController extends Controller
             $day[] = $value;
         }
         if ($driver) {
-            return view('admin.driverallowance.edit', compact('driver', 'list', 'day'));
+            $departments = Department::where('driver','yes')->get();
+            $trucks = Truck::where('status',1)->get();
+            return view('admin.driverallowance.edit', compact('driver', 'list', 'day','departments','trucks'));
         } else {
             abort(404);
         }
@@ -292,6 +297,7 @@ class DriverAllowanceController extends Controller
         $driver->driver         = $request->driver_allowance;
         $driver->allowance      = $request->allowance;
         $driver->category       = $request->category;
+        $driver->department_id  = $request->department_id?$request->department_id:null;
         $driver->save();
         if ($driver) {
             $lists = DriverList::where('driver_allowance_id', '=', $id);
@@ -324,7 +330,7 @@ class DriverAllowanceController extends Controller
                 foreach ($request->type_choose as $key => $value) {
                     $list = DriverList::create([
                         'driver_allowance_id'   => $id,
-                        'type'                  => $request->type,
+                        'truck_id'              => $request->truck_id,
                         'rit'                   => $request->rit[$key],
                         'type_value'            => $request->type_value,
                         'value'                 => str_replace(['.', ','], '', $request->rit_value[$key])
