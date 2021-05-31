@@ -150,7 +150,7 @@ class OvertimeController extends Controller
         $employee = Employee::where('id',$request->employee_id)->first();
         $user_id = Auth::user()->id;
         // Employee Overtimes 
-        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Overtime","Edit",$request->day,$request->hour);
+        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Overtime","Edit","Hour",$request->hour);
 
         if (!$overtime) {
             return response()->json([
