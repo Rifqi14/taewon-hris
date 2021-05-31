@@ -204,6 +204,7 @@ class EmployeeContractController extends Controller
         }
 
         $employeeCont = EmployeeContract::where('id',$id)->first();
+        $employee = Employee::where('id',$request->employee_id)->first();
         $user_id = Auth::user()->id;
         // No. Document
         if($employeeCont->code != $request->code){
