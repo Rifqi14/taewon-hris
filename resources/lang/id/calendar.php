@@ -13,5 +13,5 @@ return[
     'swcday'        => 'Pergantian Hari',
     'start_date'    => 'Tanggal Mulai',
     'finish_date'   => 'Tanggal Selesai',
-    'exc'           => 'Hari Libur',
+    'exception'     => 'Hari Libur',
 ];

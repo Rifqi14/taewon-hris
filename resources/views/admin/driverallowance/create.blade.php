@@ -37,6 +37,16 @@
               </div>
             </div>
             <div class="form-group row">
+              <label for="category" class="col-sm-2 col-form-label">Department</label>
+              <div class="col-sm-6">
+                <select name="department_id" id="department_id" class="form-control select2" style="width: 100%" aria-hidden="true">
+                  @foreach ($departments as $department)
+                  <option value="{{ $department->id }}">{{ $department->name }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
               <label for="allowance" class="col-sm-2 col-form-label">Allowance</label>
               <div class="col-sm-6">
                 <input type="text" class="form-control" name="allowance" id="allowance" required>
@@ -138,11 +148,12 @@
         </div>
         <div class="card-body">
           <div class="form-group row">
-            <label for="type" class="col-sm-2 col-form-label">Type</label>
+            <label for="truck_id" class="col-sm-2 col-form-label">Truck</label>
             <div class="col-sm-6">
-              <select name="type" id="type" class="form-control select2" style="width: 100%">
-                <option value="fuso">Fuso</option>
-                <option value="colt_diesel">Colt Diesel</option>
+              <select name="truck_id" id="truck_id" class="form-control select2" style="width: 100%">
+                @foreach ($trucks as $truck)
+                  <option value="{{ $truck->id }}">{{ $truck->name }}</option>
+                  @endforeach
               </select>
             </div>
           </div>
@@ -204,25 +215,8 @@
 <script src="{{asset('adminlte/component/daterangepicker/daterangepicker.js')}}"></script>
 <script src="{{asset('adminlte/component/jquery-mask/jquery.mask.min.js')}}"></script>
 <script>
-  $('#driver_allowance').change(function() {
-    var value = $(this).val();
-    switch (value) {
-      case 'pribadi':
-        $('#pribadi').removeClass('d-none');
-        $('#truck').addClass('d-none');
-        break;
-      case 'truck':
-        $('#truck').removeClass('d-none');
-        $('#pribadi').addClass('d-none');
-        break;
-    
-      default:
-        $('#truck').addClass('d-none');
-        $('#pribadi').addClass('d-none');
-        break;
-    }
-  });
-  $('#driver_allowance').val(this).trigger('change');
+  
+  
   function addType() {
     var length = $('#type_table tr').length;
     var html = '<tr>';
@@ -243,7 +237,7 @@
         html += '<td class="text-center align-middle"><div class="form-group mb-0"><input placeholder="Finish Time" name="finish[]" class="form-control timepicker" required/></div></td>';
         // html += '<td class="text-center align-middle"><div class="input-group mb-0"><div class="input-group-prepend"><select class="input-group-text" style="appearance:none; -webkit-appearance:none; -moz-appearance:none;" name="type_value" id="currency_symbol"><option value="nominal">Rp.</option><option value="percentage">%</option></select></div><input placeholder="Value" name="value[]" class="form-control" aria-label="Value" aria-describedby="currency_symbol" required></div></td>';
         html += '<td class="align-middle"><div class="form-group mb-0"><select name="type_value" class="form-control select2" id="type_value"><option value="nominal">Nominal</option><option value="percentage">Percentage</option></select></div></td>';
-        html += '<td class="text-center align-middle"><div class="input-group mb-0"><input placeholder="Nilai" name="rit_value[]" class="form-control" aria-label="Value" aria-describedby="currency_symbol2" required></div></td>';
+        html += '<td class="text-center align-middle"><div class="input-group mb-0"><input placeholder="Nilai" name="value[]" class="form-control" aria-label="Value" aria-describedby="currency_symbol2" required></div></td>';
         html += '<td class="text-center align-middle"><a href="javascript:void(0)" onclick="addRecurrence()" class="fa fa-plus fa-lg d-inline"></a> / <a href="#" class="fa fa-trash fa-lg d-inline remove"></a></td>';
         html += '</tr>';
     $('#recurrence_table').append(html);
@@ -261,8 +255,32 @@
     });
   }
   $(document).ready(function(){
-    $('.select2').select2();
-    $('.rupiah').mask('000.000.000.000.000.000', {reverse: true});
+    $('.select2').select2({
+      allowClear: true,
+    });
+    $('#driver_allowance').change(function() {
+      var value = $(this).val();
+      switch (value) {
+        case 'pribadi':
+          $('#pribadi').removeClass('d-none');
+          $('#truck').addClass('d-none');
+          $('#department_id').closest('.form-group').hide();
+          break;
+        case 'truck':
+          $('#truck').removeClass('d-none');
+          $('#pribadi').addClass('d-none');
+          $('#department_id').closest('.form-group').show();
+          break;
+      
+        default:
+          $('#truck').addClass('d-none');
+          $('#pribadi').addClass('d-none');
+          $('#department_id').closest('.form-group').hide();
+          break;
+      }
+    });
+    $('#driver_allowance').trigger('change');
+    //$('.rupiah').mask('000.000.000.000.000.000', {reverse: true});
   });
   $('#type_table').on('click','.remove',function(){
     $(this).parents('tr').remove();

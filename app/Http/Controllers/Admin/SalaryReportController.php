@@ -2671,7 +2671,7 @@ class SalaryReportController extends Controller
       if($coordinate33){
         $coordinate33value = Leave::where('leave_setting_id', $coordinate33->id)->where('employee_id')->where('status', 1)->get()->sum('duration');
       }else{
-        $coordinate33alue = 0;
+        $coordinate33value = 0;
       }
       $coordinate33values[$salary->id] = $coordinate33value;
       // Coordinate34
