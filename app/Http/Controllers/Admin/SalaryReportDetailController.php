@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\SalaryReportDetail;
 use Illuminate\Http\Request;
+use App\Models\Employee;
 use App\Http\Controllers\Controller;
 use App\Models\SalaryReport;
 use App\Models\SalaryReportDetail as ModelsSalaryReportDetail;
