@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Work Group Combination')
+@section('title',__('config.workcomb'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('workgroup.index')}}">Work Group Combination</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item active"><a href="{{route('workgroup.index')}}">{{ __('config.workcomb') }}</a></li>
+<li class="breadcrumb-item active">{{ __('config.edt') }}</li>
 @endpush
 
 
@@ -16,7 +16,7 @@
 	<div class="col-lg-8 pb-3">
 		<div class="card card-{{ config('configs.app_theme') }} card-outline h-100">
 			<div class="card-header">
-				<h3 class="card-title" style="padding-bottom: 12px">Work Group Combination Data</h3>
+				<h3 class="card-title" style="padding-bottom: 12px">{{ __('config.workcomb') }}</h3>
 			</div>
 			<div class="card-body">
 				<form id="form" action="{{ route('workgroup.update', ['id'=>$workgroup->id]) }}" class="form-horizontal"
@@ -27,15 +27,15 @@
 						<div class="col-sm-6">
 							<!-- text input -->
 							<div class="form-group">
-								<label>Work Group</label>
-								<input type="text" class="form-control" name="workgroup_id" id="workgroup_id" placeholder="Work Group">
+								<label>{{ __('config.workgrp') }}</label>
+								<input type="text" class="form-control" name="workgroup_id" id="workgroup_id" placeholder="{{ __('config.workgrp') }}">
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<!-- text input -->
 							<div class="form-group">
-								<label>Combination Code</label>
-								<input type="text" class="form-control" name="code" id="code" placeholder="Combination Code"
+								<label>{{ __('config.combcode') }}</label>
+								<input type="text" class="form-control" name="code" id="code" placeholder="{{ __('config.combcode') }}"
 									value="{{ $workgroup->code }}">
 							</div>
 						</div>
@@ -55,8 +55,8 @@
 						
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label>Combination Name</label>
-								<input type="text" class="form-control" name="name" id="name" placeholder="Combination Name" value="{{ $workgroup->name }}">
+								<label>{{ __('config.combname') }}</label>
+								<input type="text" class="form-control" name="name" id="name" placeholder="{{ __('config.combname') }}" value="{{ $workgroup->name }}">
 							</div>
 						</div>
 					</div>
@@ -69,11 +69,11 @@
 	<div class="col-lg-4 pb-3">
 		<div class="card card-{{ config('configs.app_theme') }} card-outline h-100">
 			<div class="card-header">
-				<h3 class="card-title">Other</h3>
+				<h3 class="card-title">{{ __('config.other') }}</h3>
 				<div class="pull-right card-tools">
-					<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="Simpan"><i
+					<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('config.save') }}"><i
 							class="fa fa-save"></i></button>
-					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
 							class="fa fa-reply"></i></a>
 				</div>
 			</div>
@@ -82,19 +82,19 @@
 					<div class="col-sm-12">
 						<!-- text input -->
 						<div class="form-group">
-							<label>Description</label>
+							<label>{{ __('config.desc') }}</label>
 							<textarea class="form-control" id="description" name="description"
-								placeholder="Notes">{{ $workgroup->description }}</textarea>
+								placeholder="{{ __('config.desc') }}">{{ $workgroup->description }}</textarea>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="form-group">
-							<label>Status</label>
+							<label>{{ __('config.status') }}</label>
 							<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true">
-								<option @if($workgroup->status == 1) selected @endif value="1">Active</option>
-								<option @if($workgroup->status == 0) selected @endif value="0">Non-Active</option>
+								<option @if($workgroup->status == 1) selected @endif value="1">{{ __('config.actv') }}</option>
+								<option @if($workgroup->status == 0) selected @endif value="0">{{ __('config.noactv') }}</option>
 							</select>
 						</div>
 					</div>
@@ -111,18 +111,18 @@
 	<div class="col-lg-12">
 		<div class="card card-{{ config('configs.app_theme') }} card-outline h-100" id="workgroup_allowance">
 			<div class="card-header">
-				<h3 class="card-title">Allowance</h3>
+				<h3 class="card-title">{{ __('config.alw') }}</h3>
 			</div>
 			<div class="card-body">
 				<table class="table table-striped table-bordered datatable" style="width:100%" id="table-allowances">
 					<thead>
 						<tr>
 							<th width="10">No</th>
-							<th width="200">Allowance</th>
-							<th width="500">Category</th>
-							<th width="150">Value</th>
-							<th width="50">Default</th>
-							<th width="100">Action</th>
+							<th width="200">{{ __('config.alw') }}</th>
+							<th width="500">{{ __('config.category') }}</th>
+							<th width="150">{{ __('config.value') }}</th>
+							<th width="50">{{ __('config.default') }}</th>
+							<th width="100">{{ __('config.action') }}</th>
 						</tr>
 					</thead>
 				</table>
@@ -152,18 +152,18 @@
 							<input type="hidden" name="allowance_id">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="type" class="control-label">Type</label>
-									<select class="form-control" data-placeholder="Type" name="type" id="type">
-										<option value="percentage">Percentage</option>
-										<option value="nominal">Nominal</option>
-										<option value="automatic">Automatic</option>
+									<label for="type" class="control-label">{{ __('config.type') }}</label>
+									<select class="form-control" data-placeholder="{{ __('config.type') }}" name="type" id="type">
+										<option value="percentage">{{ __('config.percent') }}</option>
+										<option value="nominal">{{ __('config.nominal') }}</option>
+										<option value="automatic">{{ __('config.automatic') }}</option>
 									</select>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="value" class="control-label">Value</label>
-									<input type="text" class="form-control" id="value" name="value" placeholder="Value" required>
+									<label for="value" class="control-label">{{ __('config.value') }}</label>
+									<input type="text" class="form-control" id="value" name="value" placeholder="{{ __('config.value') }}" required>
 								</div>
 							</div>
 							{{ csrf_field() }}

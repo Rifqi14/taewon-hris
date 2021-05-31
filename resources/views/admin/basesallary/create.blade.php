@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Basic UMK Salary')
+@section('title', __('config.baseslr'))
 @section('stylesheets')
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('basesallary.index')}}">Basic UMK Salary</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item"><a href="{{route('basesallary.index')}}">{{ __('config.baseslr') }}</a></li>
+<li class="breadcrumb-item active">{{ __('config.crt') }}</li>
 @endpush
 
 @section('content')
@@ -18,9 +18,9 @@
                     <h3 class="card-title">Basic UMK Data</h3>
                     <div class="pull-right card-tools">
                         <button form="form" type="submit"
-                            class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i
+                            class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('config.save') }}"><i
                                 class="fa fa-save"></i></button>
-                        <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+                        <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
                                 class="fa fa-reply"></i></a>
                     </div>
                 </div>
@@ -31,9 +31,9 @@
                             <div class="col-sm-6">
                                 <!-- text input -->
                                 <div class="form-group">
-                                    <label>Region</label>
+                                    <label>{{ __('config.region') }}</label>
                                     <input type="text" class="form-control" id="region_id" name="region_id"
-                                        data-placeholder="Pilih Region">
+                                        data-placeholder="{{ __('config.chsregion') }}">
                                 </div>
                             </div>
                             <!-- <div class="col-sm-6">
@@ -43,12 +43,12 @@
                                 </div>
                             </div> -->
                             <div class="col-sm-6">
-                            <label for="">Salary</label>
+                            <label for="">{{ __('config.salary') }}</label>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Rp.</span>
                                 </div>
-                                <input type="number" class="form-control" name="sallary" placeholder="Salary" aria-label="Amount (to the nearest dollar)">
+                                <input type="number" class="form-control" name="sallary" placeholder="{{ __('config.salary') }}" aria-label="Amount (to the nearest dollar)">
                                 <div class="input-group-append">
                                     <span class="input-group-text">,-</span>
                                 </div>

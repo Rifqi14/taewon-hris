@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Work Group Combination')
+@section('title', __('config.workcomb'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('workgroup.index')}}">Work Group Combination</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item active"><a href="{{route('workgroup.index')}}">{{ __('config.workcomb') }}</a></li>
+<li class="breadcrumb-item active">{{ __('config.crt') }}</li>
 @endpush
 
 
@@ -16,7 +16,7 @@
 	<div class="col-lg-8 pb-3">
 		<div class="card card-{{ config('configs.app_theme') }} card-outline h-100">
 			<div class="card-header">
-				<h3 class="card-title" style="padding-bottom: 12px">Work Group Combination Data</h3>
+				<h3 class="card-title" style="padding-bottom: 12px">{{ __('config.workcombdata') }}</h3>
 			</div>
 			<div class="card-body">
 				<form id="form" action="{{ route('workgroup.store') }}" class="form-horizontal" method="post"
@@ -26,15 +26,15 @@
 						<div class="col-sm-6">
 							<!-- text input -->
 							<div class="form-group">
-								<label>Work Group</label>
-								<input type="text" class="form-control" name="workgroup_id" id="workgroup_id" placeholder="Work Group">
+								<label>{{ __('config.workgrp') }}</label>
+								<input type="text" class="form-control" name="workgroup_id" id="workgroup_id" placeholder="{{ __('config.workgrp') }}">
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<!-- text input -->
 							<div class="form-group">
-								<label>Combination Code</label>
-								<input type="text" class="form-control" name="code" id="code" placeholder="Combination Code">
+								<label>{{ __('config.combcode') }}</label>
+								<input type="text" class="form-control" name="code" id="code" placeholder="{{ __('config.combcode') }}">
 							</div>
 						</div>
 						{{-- <div class="col-sm-6">
@@ -52,8 +52,8 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label>Combination Name</label>
-								<input type="text" class="form-control" name="name" id="name" placeholder="Combination Name">
+								<label>{{ __('config.combname') }}</label>
+								<input type="text" class="form-control" name="name" id="name" placeholder="{{ __('config.combname') }}">
 							</div>
 						</div>
 					</div>
@@ -66,11 +66,11 @@
 	<div class="col-lg-4 pb-3">
 		<div class="card card-{{ config('configs.app_theme') }} card-outline h-100">
 			<div class="card-header">
-				<h3 class="card-title">Other</h3>
+				<h3 class="card-title">{{ __('config.other') }}</h3>
 				<div class="pull-right card-tools">
-					<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="Simpan"><i
+					<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('config.save') }}"><i
 							class="fa fa-save"></i></button>
-					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
 							class="fa fa-reply"></i></a>
 				</div>
 			</div>
@@ -79,18 +79,18 @@
 					<div class="col-sm-12">
 						<!-- text input -->
 						<div class="form-group">
-							<label>Description</label>
-							<textarea class="form-control" id="description" name="description" placeholder="Notes"></textarea>
+							<label>{{ __('config.desc') }}</label>
+							<textarea class="form-control" id="description" name="description" placeholder="{{ __('config.desc') }}"></textarea>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="form-group">
-							<label>Status</label>
+							<label>{{ __('config.status') }}</label>
 							<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true">
-								<option value="1">Active</option>
-								<option value="0">Non-Active</option>
+								<option value="1">{{ __('config.actv') }}</option>
+								<option value="0">{{ __('config.noactv') }}</option>
 							</select>
 						</div>
 					</div>

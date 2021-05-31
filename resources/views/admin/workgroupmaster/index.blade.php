@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Work Group')
+@section('title', __('config.workgrp'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Work Group</li>
+<li class="breadcrumb-item active">{{ __('config.workgrp') }}</li>
 @endpush
 
 @section('content')
@@ -15,11 +15,11 @@
 		<div class="col-lg-12">
 			<div class="card card-{{ config('configs.app_theme') }} card-outline">
 				<div class="card-header">
-					<h3 class="card-title">Work Group</h3>
+					<h3 class="card-title">{{ __('config.workgrp') }}</h3>
 					<!-- tools box -->
 					<div class="pull-right card-tools">
 						<a href="{{route('workgroupmaster.create')}}"
-							class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="Tambah">
+							class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="{{ __('config.crt') }}">
 							<i class="fa fa-plus"></i>
 						</a>
 						<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
@@ -34,7 +34,7 @@
 							<tr>
 								<th width="5">#</th>
 								{{-- <th width="50">Code</th> --}}
-								<th width="350">Workgroup Name</th>
+								<th width="350">{{ __('config.workname') }}</th>
 								<th width="5">Action</th>
 							</tr>
 						</thead>
@@ -67,8 +67,8 @@
 						</div> --}}
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="name">Name</label>
-								<input type="text" name="name" class="form-control" placeholder="Workgroup Name">
+								<label class="control-label" for="name">{{ __('config.workname') }}</label>
+								<input type="text" name="name" class="form-control" placeholder="{{ __('config.workname') }}">
 							</div>
 						</div>
 					</div>

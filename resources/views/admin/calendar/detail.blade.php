@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Detail Calendar')
+@section('title',__('config.calendar'))
 
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
@@ -17,8 +17,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('calendar.index')}}">Calendar</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item active"><a href="{{route('calendar.index')}}">{{ __('config.calendar') }}</a></li>
+<li class="breadcrumb-item active">{{ __('config.dtl') }}</li>
 @endpush
 
 @section('content')
@@ -27,9 +27,9 @@
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <div class="card-header">
-        <h3 class="card-title">Create Calendar</h3>
+        <h3 class="card-title">{{ __('config.dtl') }} {{ __('config.callendar') }}</h3>
         <div class="pull-right card-tools">
-          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
               class="fa fa-reply"></i></a>
         </div>
       </div>
@@ -39,21 +39,21 @@
           {{ csrf_field() }}
           {{ method_field('put') }}
           <div class="form-group row">
-            <label class="col-md-2 col-xs-12 control-label" for="code">Calendar Code</label>
+            <label class="col-md-2 col-xs-12 control-label" for="code">{{ __('config.calcode') }}</label>
             <div class="col-sm-6 controls">
-              <input type="text" class="form-control" id="code" name="code" placeholder="Calendar Code"
+              <input type="text" class="form-control" id="code" name="code" placeholder="{{ __('config.calcode') }}"
                 value="{{ $calendar->code }}" readonly>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-2 col-xs-12 control-label" for="calendar_name">Calendar Name</label>
+            <label class="col-md-2 col-xs-12 control-label" for="calendar_name">{{ __('config.calname') }}</label>
             <div class="col-sm-6 controls">
               <input type="text" class="form-control" id="calendar_name" name="calendar_name"
-                placeholder="Calendar Name" value="{{ $calendar->name }}" readonly>
+                placeholder="{{ __('config.calname') }}" value="{{ $calendar->name }}" readonly>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-2 col-xs-12 col-form-label" for="label_color">Label Color</label>
+            <label class="col-sm-2 col-xs-12 col-form-label" for="label_color">{{ __('config.labelclr') }}</label>
             <div class="col-sm-6">
               <div class="input-group my-colorpicker2">
                 <input type="text" class="form-control" value="{{ $calendar->label_color }}" name="label_color"
@@ -67,9 +67,9 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-2 col-xs-12 control-label" for="calendar_desc">Calendar Description</label>
+            <label class="col-md-2 col-xs-12 control-label" for="calendar_desc">{{ __('config.desc') }}</label>
             <div class="col-sm-6 controls">
-              <textarea class="form-control" id="calendar_desc" name="calendar_desc" placeholder="Calendar Description"
+              <textarea class="form-control" id="calendar_desc" name="calendar_desc" placeholder="{{ __('config.desc') }}"
                 readonly>{{ $calendar->description }}</textarea>
             </div>
           </div>
@@ -96,7 +96,7 @@
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       {{-- Header & Tools --}}
       <div class="card-header">
-        <h3 class="card-title">Calendar</h3>
+        <h3 class="card-title">{{ __('config.calendar') }}</h3>
       </div>
       {{-- End of Header & Tools --}}
       <div class="card-body">
