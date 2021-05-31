@@ -6,6 +6,7 @@ use App\Models\EmployeeSalary;
 use App\Models\OutsourcingDocument;
 use Illuminate\Http\Request;
 use App\Models\LogHistory;
+use App\Models\Employee;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;

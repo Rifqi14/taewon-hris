@@ -12,6 +12,7 @@ use App\Models\DriverList;
 use App\Models\Config;
 use App\Models\Partner;
 use App\Models\Employee;
+use App\Models\Truck;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -271,7 +272,8 @@ class DeliveryOrderController extends Controller
      */
     public function create()
     {
-        return view('admin.deliveryorder.create');
+        $trucks = Truck::where('status',1)->get();
+        return view('admin.deliveryorder.create',compact('trucks'));
     }
 
     /**
@@ -286,7 +288,7 @@ class DeliveryOrderController extends Controller
         DB::beginTransaction();
         $deliveryorder = DeliveryOrder::create([
             // 'date'          => changeDateFormat('Y-m-d H:i:s', changeSlash($request->date)),
-            'type_truck'    => $request->type_truck,
+            'truck_id'    => $request->truck_id,
             // 'do_number'     => $request->do_number,
             'driver_id'     => $request->driver_id,
             'police_no'     => $request->police_no,
@@ -300,7 +302,7 @@ class DeliveryOrderController extends Controller
         $partner_rit = Partner::find($request->customer);
         $partner_collection = DeliveryOrder::select("delivery_orders.id")->leftJoin('partners','partners.id','=','delivery_orders.partner_id')->where('driver_id',$request->driver_id)->where('group', $request->kloter)->where('type_truck', $request->type_truck)->orderBy('partners.rit', 'desc')->get();
         // dd($partner_collection);
-        $rule_count = DriverList::where("driver_lists.type", "=", $request->type_truck)->count();
+        $rule_count = DriverList::where("driver_lists.truck_id", "=", $request->truck_id)->count();
         // dd($rule_count);
         $no = 0;
         $new = false;
@@ -330,7 +332,7 @@ class DeliveryOrderController extends Controller
             $driverallowancelist = DriverAllowanceList::create([
                 'date'          => dbDate($request->departure_time),
                 'rit'           => 100,
-                'truck'         => $request->type_truck,
+                'truck_id'         => $request->truck_id,
                 'value'         => $partner_rit->rit,
                 'driver_id'     => $request->driver_id,
                 'group'         => $request->kloter,
@@ -350,10 +352,10 @@ class DeliveryOrderController extends Controller
             $checkupdates = Driverallowancelist::where('driver_id', $request->driver_id)->where('date', dbDate($request->departure_time))->where('group', $request->kloter)->orderBy('value', 'desc')->get();
             foreach($checkupdates as $key => $checkupdate){
                 $rit = $key+1;
-                $driverlist = DriverList::where('type', $request->type_truck)->where('rit', $rit)->first();
+                $driverlist = DriverList::where('truck_id', $request->truck_id)->where('rit', $rit)->first();
 
                 if (!$driverlist) {
-                    $driverlist = DriverList::where('type', $request->type_truck)->orderBy('rit', 'desc')->first();
+                    $driverlist = DriverList::where('truck_id', $request->truck_id)->orderBy('rit', 'desc')->first();
                     
                 }
 
@@ -448,7 +450,8 @@ class DeliveryOrderController extends Controller
         $query->select('delivery_orders.*', 'deliveryorderdetail.po_number');
 
         if ($deliveryorder) {
-            return view('admin.deliveryorder.edit', compact('deliveryorder'));
+            $trucks = Truck::where('status',1)->get();
+            return view('admin.deliveryorder.edit', compact('deliveryorder','trucks'));
         } else {
             abort(404);
         }
@@ -470,15 +473,15 @@ class DeliveryOrderController extends Controller
         $driver_changed = $deliveryorder->driver_id;
         $kloter = $deliveryorder->group;
         // $deliveryorder->date            = changeDateFormat('Y-m-d H:i:s', changeSlash($request->date));
-        $deliveryorder->type_truck      = $request->type_truck;
+        $deliveryorder->truck_id      = $request->truck_id;
         // $deliveryorder->do_number       = $request->do_number;
         $deliveryorder->driver_id       = $request->driver_id;
         $deliveryorder->police_no       = $request->police_no;
         $deliveryorder->partner_id      = $request->customer;
         $deliveryorder->group           = $request->kloter;
-        $deliveryorder->departure_date  = $request->departure_date;
+        $deliveryorder->departure_date  = changeDateFormat('Y-m-d', changeSlash($request->departure_date));
         $deliveryorder->departure_time  = $request->departure_time;
-        $deliveryorder->arrived_date    = $request->arrived_date;
+        $deliveryorder->arrived_date    = changeDateFormat('Y-m-d', changeSlash($request->arrived_date));
         $deliveryorder->arrived_time    = $request->arrived_time;
         $deliveryorder->save();
         if (!$deliveryorder) {
