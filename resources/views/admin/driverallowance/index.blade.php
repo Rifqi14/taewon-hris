@@ -1,10 +1,10 @@
 @extends('admin.layouts.app')
-@section('title', 'Master Driver Allowance')
+@section('title',__('driverallowance.driverall'))
 @section('stylesheets')
 <link href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}" rel="stylesheet">
 @endsection
 @push('breadcrump')
-<li class="breadcrumb-item active">Master Driver Allowance</li>
+<li class="breadcrumb-item active">{{ __('driverallowance.driverall') }}</li>
 @endpush
 
 @section('content')
@@ -13,11 +13,11 @@
     <div class="col-lg-12">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Driver Allowance List</h3>
+          <h3 class="card-title">{{ __('driverallowance.driverall') }} {{ __('general.list') }}</h3>
           <div class="pull-right card-tools">
             <a href="{{route('driverallowance.create')}}"
               class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip"
-              title="Add Data">
+              title="{{ __('general.crt') }} Data">
               <i class="fa fa-plus"></i>
             </a>
             <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
@@ -30,10 +30,10 @@
             <thead>
               <tr>
                 <th width="10">No</th>
-                <th width="100">Type</th>
-                <th width="100">Allowance</th>
-                <th width="100">Category</th>
-                <th width="10">Action</th>
+                <th width="100">{{ __('general.type') }}</th>
+                <th width="100">{{ __('allowance.alw') }}</th>
+                <th width="100">{{ __('general.category') }}</th>
+                <th width="10">{{ __('general.act') }}</th>
               </tr>
             </thead>
           </table>
@@ -55,25 +55,25 @@
           <div class="row">
             <div class="col-md-12">
               <div class="form-group">
-                <label class="control-label" for="driver">Type</label>
+                <label class="control-label" for="driver">{{ __('general.type') }}</label>
                 <select name="driver" id="driver" class="form-control select2" style="width: 100%" aria-hidden="true">
-                  <option value="">All</option>
-                  <option value="pribadi">Reccurance</option>
-                  <option value="truck">Truck</option>
+                  <option value="">{{ __('allowance.alw') }}</option>
+                  <option value="pribadi">{{ __('allowance.rec') }}</option>
+                  <option value="truck">{{ __('driverallowance.truck') }}</option>
                 </select>
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group">
-                <label class="control-label" for="allowance">Allowance</label>
-                <input type="text" name="allowance" class="form-control" placeholder="Allowance">
+                <label class="control-label" for="allowance">{{ __('allowance.alw') }}</label>
+                <input type="text" name="allowance" class="form-control" placeholder="{{ __('allowance.alw') }}">
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group">
-                <label class="control-label" for="category">Category</label>
+                <label class="control-label" for="category">{{ __('general.category') }}</label>
                 <select name="category" id="category" class="form-control select2" style="width: 100%" aria-hidden="true">
-                  <option value="">All</option>
+                  <option value="">{{ __('allowance.alw') }}</option>
                   @foreach(config('enums.allowance_category') as $key => $value)
                   <option value="{{ $key }}">{{ $value }}</option>
                   @endforeach
@@ -116,6 +116,14 @@
       lengthChange:true,
       responsive: true,
       order: [[ 1, "asc" ]],
+      language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
       ajax: {
           url: "{{route('driverallowance.read')}}",
           type: "GET",
@@ -147,8 +155,8 @@
                           <i class="fa fa-bars"></i>
                       </button>
                       <ul class="dropdown-menu dropdown-menu-right">
-                          <li><a class="dropdown-item" href="{{url('admin/driverallowance')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-                          <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+                          <li><a class="dropdown-item" href="{{url('admin/driverallowance')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
+                          <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{ __('general.dlt') }}</a></li>
                       </ul>
                   </div>`
           },targets: [4]

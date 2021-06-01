@@ -2,8 +2,9 @@
 return [
     /**Driver Allowance */
     'driverall' => 'Tunjangan Pengemudi',
-    'recurren'  => 'Pengulangan Hari',
+    'recc_day'  => 'Pengulangan Hari',
     'rule'      => 'Rule',
     'nom'       => 'Nominal',
     'percent'   => 'Persentasi',
+    'truck'     =>  'Truk'
 ];

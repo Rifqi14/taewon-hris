@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Edit Driver Allowance')
+@section('title',__('driverallowance.driverall'))
 @section('stylesheets')
 <link rel="stylesheet" href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}">
 <link rel="stylesheet" href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}">
@@ -7,8 +7,8 @@
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 @endsection
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{ route('driverallowance.index') }}">Master Driver Allowance</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item"><a href="{{ route('driverallowance.index') }}">{{ __('driverallowance.driverall') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.edt') }}</li>
 @endpush
 
 @section('content')
@@ -17,11 +17,11 @@
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <div class="card-header">
-        <h3 class="card-title">Edit Allowance</h3>
+        <h3 class="card-title">{{ __('general.edt') }} {{ __('allowance.alw') }}</h3>
         <div class="pull-right card-tools">
-          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i
+          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i
               class="fa fa-save"></i></button>
-          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i
               class="fa fa-reply"></i></a>
         </div>
       </div>
@@ -29,16 +29,16 @@
         {{ csrf_field() }}
         {{ method_field('put') }}
         <div class="form-group row">
-          <label for="driver_allowance" class="col-sm-2 col-form-label">Driver</label>
+          <label for="driver_allowance" class="col-sm-2 col-form-label">{{ __('general.type') }}</label>
           <div class="col-sm-6">
             <select name="driver_allowance" id="driver_allowance" class="form-control select2" style="width: 100%">
-              <option value="pribadi" @if ($driver->driver == 'pribadi') selected @endif>Recurrance</option>
-              <option value="truck" @if ($driver->driver == 'truck') selected @endif>Truck</option>
+              <option value="pribadi" @if ($driver->driver == 'pribadi') selected @endif>{{ __('allowance.recur') }}</option>
+              <option value="truck" @if ($driver->driver == 'truck') selected @endif>{{ __('driverallowance.truck') }}</option>
             </select>
           </div>
         </div>
         <div class="form-group row">
-              <label for="category" class="col-sm-2 col-form-label">Department</label>
+              <label for="category" class="col-sm-2 col-form-label">{{ __('department.dep') }}</label>
               <div class="col-sm-6">
                 <select name="department_id" id="department_id" class="form-control select2" style="width: 100%" aria-hidden="true">
                   @foreach ($departments as $department)
@@ -48,13 +48,13 @@
               </div>
             </div>
         <div class="form-group row">
-          <label for="allowance" class="col-sm-2 col-form-label">Allowance</label>
+          <label for="allowance" class="col-sm-2 col-form-label">{{ __('allowance.alw') }}</label>
           <div class="col-sm-6">
             <input type="text" class="form-control" name="allowance" id="allowance" value="{{ $driver->allowance }}">
           </div>
         </div>
         <div class="form-group row">
-          <label for="category" class="col-sm-2 col-form-label">Category</label>
+          <label for="category" class="col-sm-2 col-form-label">{{ __('general.category') }}</label>
           <div class="col-sm-6">
             <select name="category" id="category" class="form-control select2" style="width: 100%" aria-hidden="true">
               @foreach(config('enums.allowance_category') as $key => $value)
@@ -72,20 +72,20 @@
   <div class="col-lg-12 d-none" id="pribadi">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <div class="card-header">
-        <h3 class="card-title">Allowance List</h3>
+        <h3 class="card-title">{{ __('allowance.alw') }} {{ __('general.list') }}</h3>
       </div>
       <div class="card-body">
         <div class="form-group row">
-          <label for="recurrence" class="col-sm-2 col-form-label">Recurrence Day</label>
+          <label for="recurrence" class="col-sm-2 col-form-label">{{ __('driverallowance.recc_day') }}</label>
           <div class="col-sm-6">
             <select name="recurrence[]" id="recurrence" class="form-control select2" style="width: 100%" multiple="multiple">
-              <option value="Mon">Monday</option>
-              <option value="Tue">Tuesday</option>
-              <option value="Wed">Wednesday</option>
-              <option value="Thu">Thursday</option>
-              <option value="Fri">Friday</option>
-              <option value="Sat">Saturday</option>
-              <option value="Sun">Sunday</option>
+              <option value="Mon">{{ __('general.mon') }}</option>
+              <option value="Tue">{{ __('general.tue') }}</option>
+              <option value="Wed">{{ __('general.wed') }}</option>
+              <option value="Thu">{{ __('general.thur') }}</option>
+              <option value="Fri">{{ __('general.fri') }}</option>
+              <option value="Sat">{{ __('general.sat') }}</option>
+              <option value="Sun">{{ __('general.sun') }}</option>
             </select>
           </div>
         </div>
@@ -93,11 +93,11 @@
           <thead>
             <tr>
               <th width="10">No</th>
-              <th width="100">Start Time</th>
-              <th width="100">Finish Time</th>
-              <th width="100">Type</th>
-              <th width="100">Value</th>
-              <th width="10">Action</th>
+              <th width="100">{{ __('general.start_time') }}</th>
+              <th width="100">{{ __('general.finish_time') }}</th>
+              <th width="100">{{ __('general.type') }}</th>
+              <th width="100">{{ __('general.value') }}</th>
+              <th width="10">{{ __('general.act') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -107,17 +107,17 @@
             <tr>
               <td class="text-center align-middle">{{ $key + 1 }}</td>
               <td class="text-center align-middle">
-                <div class="form-group mb-0"><input type="hidden" name="recurrence_choose[{{ $key }}]" /><input placeholder="Start Time" name="start[{{ $key }}]" class="form-control timepicker" required value="{{ $item->start }}" /></div>
+                <div class="form-group mb-0"><input type="hidden" name="recurrence_choose[{{ $key }}]" /><input placeholder="{{ __('general.start_time') }}" name="start[{{ $key }}]" class="form-control timepicker" required value="{{ $item->start }}" /></div>
               </td>
               <td class="text-center align-middle">
-                <div class="form-group mb-0"><input placeholder="Finish Time" name="finish[{{ $key }}]" class="form-control timepicker" required value="{{ $item->finish }}" />
+                <div class="form-group mb-0"><input placeholder="{{ __('general.finish_time') }}" name="finish[{{ $key }}]" class="form-control timepicker" required value="{{ $item->finish }}" />
                 </div>
               </td>
               <td class="align-middle">
                 <div class="form-group mb-0">
                   <select class="form-control select2" name="type_value" id="type_value">
-                    <option value="nominal" @if ($item->type_value == 'nominal') selected @endif>Nominal</option>
-                    <option value="percentage" @if ($item->type_value == 'percentage') selected @endif>Percentage</option>
+                    <option value="nominal" @if ($item->type_value == 'nominal') selected @endif>{{ __('general.nom') }}</option>
+                    <option value="percentage" @if ($item->type_value == 'percentage') selected @endif>{{ __('general.percent') }}</option>
                   </select>
                 </div>
               </td>
@@ -130,7 +130,7 @@
                       <option value="percentage" @if ($item->type_value == 'percentage') selected @endif>%</option>
                     </select> --}}
                   {{-- </div> --}}
-                  <input placeholder="Value" name="value[{{ $key }}]" class="form-control currency" aria-label="Value" aria-describedby="currency_symbol" required value="{{ $item->value }}">
+                  <input placeholder="Value" name="value[{{ $key }}]" class="form-control currency" aria-label="{{ __('general.value') }}" aria-describedby="currency_symbol" required value="{{ $item->value }}">
                 </div>
               </td>
               <td class="text-center align-middle"><a href="javascript:void(0)" onclick="addRecurrence()" class="fa fa-plus fa-lg d-inline"></a> / <a href="javascript:void(0)" class="fa fa-trash fa-lg d-inline remove"></a></td>
@@ -140,11 +140,11 @@
             <tr>
               <td class="text-center align-middle">1</td>
               <td class="text-center align-middle">
-                <div class="form-group mb-0"><input type="hidden" name="recurrence_choose[0]" /><input placeholder="Start Time"
+                <div class="form-group mb-0"><input type="hidden" name="recurrence_choose[0]" /><input placeholder="{{ __('general.start_time') }}"
                     name="start[0]" class="form-control new-timepicker" required /></div>
               </td>
               <td class="text-center align-middle">
-                <div class="form-group mb-0"><input placeholder="Finish Time" name="finish[0]" class="form-control new-timepicker" required />
+                <div class="form-group mb-0"><input placeholder="{{ __('general.finish_time') }}" name="finish[0]" class="form-control new-timepicker" required />
                 </div>
               </td>
               <td class="text-center align-middle">
@@ -156,7 +156,7 @@
                       <option value="percentage">%</option>
                     </select>
                   </div>
-                  <input placeholder="Value" name="value[0]" class="form-control currency" aria-label="Value" aria-describedby="currency_symbol" required>
+                  <input placeholder="{{ __('general.value') }}" name="value[0]" class="form-control currency" aria-label="{{ __('general.value') }}" aria-describedby="currency_symbol" required>
                 </div>
               </td>
               <td class="text-center align-middle"><a href="javascript:void(0)" onclick="addRecurrence()" class="fa fa-plus fa-lg d-inline"></a> / <a href="javascript:void(0)" class="fa fa-trash fa-lg d-inline remove"></a></td>
@@ -173,11 +173,11 @@
   <div class="col-lg-12 d-none" id="truck">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <div class="card-header">
-        <h3 class="card-title">Allowance List</h3>
+        <h3 class="card-title">{{ __('allowance.alw') }} {{ __('general.list') }}</h3>
       </div>
       <div class="card-body">
         <div class="form-group row">
-          <label for="type" class="col-sm-2 col-form-label">Type</label>
+          <label for="type" class="col-sm-2 col-form-label">{{ __('general.type') }}</label>
           <div class="col-sm-6">
           <select name="truck_id" id="truck_id" class="form-control select2" style="width: 100%">
                 @foreach ($trucks as $truck)
@@ -190,10 +190,10 @@
           <thead>
             <tr>
               <th width="10">No</th>
-              <th width="100">Rule</th>
-              <th width="100">Type</th>
-              <th width="200">Value</th>
-              <th width="10">Action</th>
+              <th width="100">{{ __('driverallowance.rule') }}</th>
+              <th width="100">{{ __('general.type') }}</th>
+              <th width="200">{{ __('general.value') }}</th>
+              <th width="10">{{ __('general.act') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -202,13 +202,13 @@
             <tr>
               <td class="text-center align-middle">{{ $key + 1 }}</td>
               <td class="text-center align-middle">
-                <div class="form-group mb-0"><input type="hidden" name="type_choose[]" /><input placeholder="Rule" name="rit[]" class="form-control" value="{{ $item->rit }}" required /></div>
+                <div class="form-group mb-0"><input type="hidden" name="type_choose[]" /><input placeholder="{{ __('driverallowance.rule') }}" name="rit[]" class="form-control" value="{{ $item->rit }}" required /></div>
               </td>
               <td class="align-middle">
                 <div class="form-group mb-0">
                   <select class="form-control select2" name="type_value" id="type_value">
-                    <option value="nominal" @if ($item->type_value == 'nominal') selected @endif>Nominal</option>
-                    <option value="percentage" @if ($item->type_value == 'percentage') selected @endif>Percentage</option>
+                    <option value="nominal" @if ($item->type_value == 'nominal') selected @endif>{{ __('general.nom') }}</option>
+                    <option value="percentage" @if ($item->type_value == 'percentage') selected @endif>{{ __('general.percent') }}</option>
                   </select>
                 </div>
               </td>
@@ -231,7 +231,7 @@
             <tr>
               <td class="text-center align-middle">1</td>
               <td class="text-center align-middle">
-                <div class="form-group mb-0"><input type="hidden" name="type_choose[]" /><input placeholder="Rule"
+                <div class="form-group mb-0"><input type="hidden" name="type_choose[]" /><input placeholder="{{ __('driverallowance.rule') }}"
                     name="rit[]" class="form-control" required /></div>
               </td>
               <td class="text-center align-middle">
@@ -314,10 +314,10 @@
     var length = $('#type_table tr').length;
     var html = '<tr>';
         html += '<td class="text-center align-middle">'+length+'</td>';
-        html += '<td class="text-center align-middle"><div class="form-group mb-0"><input type="hidden" name="type_choose[]"/><input placeholder="Rule" name="rit[]" class="form-control" required/></div></td>';
+        html += '<td class="text-center align-middle"><div class="form-group mb-0"><input type="hidden" name="type_choose[]"/><input placeholder="{{ __('driverallowance.rule') }}" name="rit[]" class="form-control" required/></div></td>';
         // html += '<td class="text-center align-middle"><div class="input-group mb-0"><div class="input-group-prepend"><span class="input-group-text" id="currency_symbol2">Rp.</span></div><input placeholder="Value" name="rit_value[]" class="form-control currency" aria-label="Value" aria-describedby="currency_symbol2" required></div></td>';
-        html += '<td class="align-middle"><div class="form-group mb-0"><select name="type_value" class="form-control select2" id="type_value"><option value="nominal">Nominal</option><option value="percentage">Percentage</option></select></div></td>';
-        html += '<td class="text-center align-middle"><div class="input-group mb-0"><input placeholder="Nilai" name="rit_value[]" class="form-control" aria-label="Value" aria-describedby="currency_symbol2" required></div></td>';
+        html += '<td class="align-middle"><div class="form-group mb-0"><select name="type_value" class="form-control select2" id="type_value"><option value="nominal">{{ __('general.nom') }}</option><option value="percentage">{{ __('general.percent') }}</option></select></div></td>';
+        html += '<td class="text-center align-middle"><div class="input-group mb-0"><input placeholder="Nilai" name="rit_value[]" class="form-control" aria-label="{{ __('general.value') }}" aria-describedby="currency_symbol2" required></div></td>';
         html += '<td class="text-center align-middle"><a href="javascript:void(0)" class="fa fa-plus fa-lg d-inline" onclick="addType()"></a> / <a href="javascript:void(0)" class="fa fa-trash fa-lg d-inline remove"></a></td>';
         html += '</tr>'
     $('#type_table').append(html);
@@ -327,11 +327,11 @@
     var number = $('#recurrence_table tr').length;
     var html = '<tr>';
         html += '<td class="text-center align-middle">'+number+'</td>';
-        html += '<td class="text-center align-middle"><div class="form-group mb-0"><input type="hidden" name="recurrence_choose['+length+']"/><input placeholder="Start Time" name="start['+length+']" class="form-control timepicker" required/></div></td>';
-        html += '<td class="text-center align-middle"><div class="form-group mb-0"><input placeholder="Finish Time" name="finish['+length+']" class="form-control timepicker" required/></div></td>';
+        html += '<td class="text-center align-middle"><div class="form-group mb-0"><input type="hidden" name="recurrence_choose['+length+']"/><input placeholder="{{ __('general.start_time') }}" name="start['+length+']" class="form-control timepicker" required/></div></td>';
+        html += '<td class="text-center align-middle"><div class="form-group mb-0"><input placeholder="{{ __('general.finish_time') }}" name="finish['+length+']" class="form-control timepicker" required/></div></td>';
         // html += '<td class="text-center align-middle"><div class="input-group mb-0"><div class="input-group-prepend"><span class="input-group-text" id="currency_symbol">Rp.</span></div><input placeholder="Value" name="value['+length+']" class="form-control currency" aria-label="Value" aria-describedby="currency_symbol" required></div></td>';
-        html += '<td class="align-middle"><div class="form-group mb-0"><select name="type_value" class="form-control select2" id="type_value"><option value="nominal">Nominal</option><option value="percentage">Percentage</option></select></div></td>';
-        html += '<td class="text-center align-middle"><div class="input-group mb-0"><input placeholder="Nilai" name="value[]" class="form-control" aria-label="Value" aria-describedby="currency_symbol" required></div></td>';
+        html += '<td class="align-middle"><div class="form-group mb-0"><select name="type_value" class="form-control select2" id="type_value"><option value="nominal">{{ __('general.nom') }}</option><option value="percentage">{{ __('general.percent') }}</option></select></div></td>';
+        html += '<td class="text-center align-middle"><div class="input-group mb-0"><input placeholder="Nilai" name="value[]" class="form-control" aria-label="{{ __('general.value') }}" aria-describedby="currency_symbol" required></div></td>';
         html += '<td class="text-center align-middle"><a href="javascript:void(0)" onclick="addRecurrence()" class="fa fa-plus fa-lg d-inline"></a> / <a href="#" class="fa fa-trash fa-lg d-inline remove"></a></td>';
         html += '</tr>';
     $('#recurrence_table').append(html);

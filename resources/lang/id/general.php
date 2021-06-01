@@ -43,6 +43,17 @@ return [
     'process'     => 'Proses',
     'other'       => 'Lainya',
     'start_date'  => 'Tanggal Mulai',
-    'finish_date' => 'Tanggal Selesai'
+    'finish_date' => 'Tanggal Selesai',
+    'data'        => 'Data',
+    'list'        => 'Daftar',
+    'add'         => 'Tambah',
+    'day'         => 'Hari',
+    'mon'         => 'Senin',
+    'tue'         => 'Selasa',
+    'wed'         => 'Rabu',
+    'thu'         => 'Kamis',
+    'fri'         => 'Jumat',
+    'sat'         => 'Sabtu',
+    'sun'         => 'Minggu',
 
 ];
