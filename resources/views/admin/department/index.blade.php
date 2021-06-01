@@ -18,10 +18,10 @@
                     <h3 class="card-title">{{ __('department.deplist') }}</h3>
                     <!-- tools box -->
                     <div class="pull-right card-tools">
-                        <a href="{{route('department.create')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="{{ __('department.crt') }}">
+                        <a href="{{route('department.create')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="{{ __('general.crt') }}">
                             <i class="fa fa-plus"></i>
                         </a>
-                        <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
+                        <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="{{ __('general.srch') }}">
                             <i class="fa fa-search"></i>
                         </a>
                     </div>
