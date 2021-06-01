@@ -5,6 +5,7 @@ return [
     'edt'         => 'Edit',
     'dlt'         => 'Delete',
     'save'        => 'Save',
+    'srch'        => 'Search',
     'actv'        => 'Active',
     'noactv'      => 'Non Active',
     'prvious'     => 'Previous',

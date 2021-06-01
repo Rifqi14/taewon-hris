@@ -5,6 +5,7 @@ return [
     'edt'         => 'Ubah',
     'dlt'         => 'Hapus',
     'save'        => 'Simpan',
+    'srch'        => 'Cari',
     'actv'        => 'Aktif',
     'noactv'      => 'Tidak Aktif',
     'prvious'     => 'Kembali',
