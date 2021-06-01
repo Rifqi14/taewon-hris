@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title',  __('config.dep'))
+@section('title', __('department.dep'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">{{ __('config.dep') }}</li>
+<li class="breadcrumb-item active">{{ __('department.dep') }}</li>
 @endpush
 
 @section('content')
@@ -15,10 +15,10 @@
         <div class="col-lg-12">
             <div class="card ">
                 <div class="card-header">
-                    <h3 class="card-title">{{ __('config.deplist') }}</h3>
+                    <h3 class="card-title">{{ __('department.deplist') }}</h3>
                     <!-- tools box -->
                     <div class="pull-right card-tools">
-                        <a href="{{route('department.create')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="{{ __('config.crt') }}">
+                        <a href="{{route('department.create')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="{{ __('department.crt') }}">
                             <i class="fa fa-plus"></i>
                         </a>
                         <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
@@ -33,8 +33,8 @@
                             <tr>
                                 <th width="10">#</th>
                                 {{-- <th width="100">Code</th> --}}
-                                <th width="200">{{ __('config.name') }}</th>
-                                <th width="100">{{ __('config.status') }}</th>
+                                <th width="200">{{ __('general.name') }}</th>
+                                <th width="100">{{ __('department.status') }}</th>
                                 <th width="50">#</th>
                             </tr>
                         </thead>
@@ -60,8 +60,8 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label class="control-label" for="name">{{ __('config.name') }}</label>
-                                <input type="text" name="name" class="form-control" placeholder="{{ __('config.name') }}">
+                                <label class="control-label" for="name">{{ __('general.name') }}</label>
+                                <input type="text" name="name" class="form-control" placeholder="{{ __('general.name') }}">
                             </div>
                         </div>
                     </div>
@@ -91,6 +91,14 @@ $(function(){
         lengthChange:true,
         responsive: true,
         order: [[ 3, "asc" ]],
+        language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
         ajax: {
             url: "{{route('department.read')}}",
             type: "GET",
@@ -108,9 +116,9 @@ $(function(){
             {
                 render: function (data, type, row) {
                     if (row.status == 1) {
-                        return `<span class="badge badge-success">Active</span>`
+                        return `<span class="badge badge-success">{{ __('general.actv') }}</span>`
                     } else {
-                        return `<span class="badge badge-danger">Non-Active</span>`
+                        return `<span class="badge badge-danger">{{ __('general.noactv') }}</span>`
                     }
                 },
                 targets: [2]
@@ -122,8 +130,8 @@ $(function(){
                         <i class="fa fa-bars"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" href="{{url('admin/department')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-                        <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+                        <li><a class="dropdown-item" href="{{url('admin/department')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
+                        <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{ __('general.dlt') }}</a></li>
                     </ul></div>`
             },targets: [3]
             }

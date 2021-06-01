@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title',  __('config.dep'))
+@section('title', __('department.dep'))
 @section('stylesheets')
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('department.index')}}">{{ __('config.dep') }}</a></li>
-<li class="breadcrumb-item active">{{ __('config.edt') }}</li>
+<li class="breadcrumb-item"><a href="{{route('department.index')}}">{{ __('general.dep') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.edt') }}</li>
 @endpush
 
 @section('content')
@@ -15,27 +15,24 @@
     <div class="col-lg-8">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header" style="height: 57px;">
-          <h3 class="card-title">{{ __('config.edt') }} {{ __('config.dep') }}</h3>
+          <h3 class="card-title">{{ __('general.edt') }} {{ __('department.dep') }}</h3>
         </div>
         <div class="card-body">
-          <form id="form" action="{{ route('department.update',['id'=>$department->id]) }}" method="post"
-            autocomplete="off">
+          <form id="form" action="{{ route('department.update',['id'=>$department->id]) }}" method="post" autocomplete="off">
             {{ csrf_field() }}
             {{ method_field('put') }}
             <div class="row">
               <div class="col-sm-6">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>{{ __('config.code') }} <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="code" value="{{ $department->code }}"
-                    placeholder="{{ __('config.code') }}" readonly>
+                  <label>{{ __('general.code') }} <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" name="code" value="{{ $department->code }}" placeholder="{{ __('general.code') }}" readonly>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>{{ __('config.name') }} <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="name" value="{{ $department->name }}"
-                    placeholder="{{ __('config.name') }}">
+                  <label>{{ __('general.name') }} <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" name="name" value="{{ $department->name }}" placeholder="{{ __('general.name') }}">
                 </div>
               </div>
             </div>
@@ -43,16 +40,14 @@
               <div class="col-sm-6">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>{{ __('config.parent') }} <b class="text-danger">*</b></label>
-                  <input class="form-control" id="parent_id" data-placeholder="{{ __('config.chsparent') }}" name="parent_id"
-                    value="">
+                  <label>{{ __('department.parent') }} <b class="text-danger">*</b></label>
+                  <input class="form-control" id="parent_id" data-placeholder="{{ __('department.chsparent') }}" name="parent_id" value="">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
                   <label>Order Number <b class="text-danger">*</b></label>
-                  <input type="number" class="form-control" name="order_number" value="{{ $department->order_number }}"
-                    placeholder="Order Number">
+                  <input type="number" class="form-control" name="order_number" value="{{ $department->order_number }}" placeholder="Order Number">
                 </div>
               </div>
             </div>
@@ -86,13 +81,11 @@
     <div class="col-lg-4">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">{{ __('config.other') }}</h3>
+          <h3 class="card-title">{{ __('department.other') }}</h3>
           <!-- tools box -->
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i
-                class="fa fa-save"></i></button>
-            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
-                class="fa fa-reply"></i></a>
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i class="fa fa-save"></i></button>
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
           </div>
           <!-- /. tools -->
         </div>
@@ -102,18 +95,18 @@
               <div class="col-sm-12">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>{{ __('config.notes') }} <b class="text-danger">*</b></label>
-                  <textarea class="form-control" name="notes" placeholder="{{ __('config.notes') }}">{{ $department->notes}}</textarea>
+                  <label>{{ __('department.notes') }} <b class="text-danger">*</b></label>
+                  <textarea class="form-control" name="notes" placeholder="{{ __('department.notes') }}">{{ $department->notes}}</textarea>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <label>{{ __('config.status') }} <b class="text-danger">*</b></label>
+                  <label>{{ __('department.status') }} <b class="text-danger">*</b></label>
                   <select class="form-control" id="status" required name="status">
-                    <option value="1" @if($department->status == '1') selected @endif>{{ __('config.actv') }}</option>
-                    <option value="0" @if($department->status == '0') selected @endif>{{ __('config.noactv') }}</option>
+                    <option value="1" @if($department->status == '1') selected @endif>{{ __('general.actv') }}</option>
+                    <option value="0" @if($department->status == '0') selected @endif>{{ __('general.noactv') }}</option>
                   </select>
                 </div>
               </div>
