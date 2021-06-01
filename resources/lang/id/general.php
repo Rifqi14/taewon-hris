@@ -3,6 +3,7 @@ return [
     /**Button */
     'crt'         => 'Tambah',
     'edt'         => 'Ubah',
+    'dlt'         => 'Hapus',
     'save'        => 'Simpan',
     'actv'        => 'Aktif',
     'noactv'      => 'Tidak Aktif',
@@ -32,5 +33,12 @@ return [
     'name'        => 'Nama',
     'category'    => 'Kategori',
     'notes'       => 'Catatan',
+    'chs'         => 'Pilih',
+    'from'        => 'Dari',
+    'To'          => 'Ke',
+    'showent'     => 'Tampilkan _MENU_ Baris',
+    'prev'        => 'Sebelumnya',
+    'next'        => 'Berikutnya',
+    'process'     => 'Proses',
 
 ];

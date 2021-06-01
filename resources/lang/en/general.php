@@ -3,6 +3,7 @@ return [
     /**Button */
     'crt'         => 'Create',
     'edt'         => 'Edit',
+    'dlt'         => 'Delete',
     'save'        => 'Save',
     'actv'        => 'Active',
     'noactv'      => 'Non Active',
@@ -37,4 +38,8 @@ return [
     'chs'         => 'Choose',
     'from'        => 'From',
     'To'          => 'To',
+    'showent'     => 'Show _MENU_ Entries',
+    'prev'        => 'Previous',
+    'next'        => 'Next',
+    'process'     => 'Processing',
 ];

@@ -3,7 +3,7 @@ return[
     /**Department */
     'dep'          => 'Departemen',
     'deplist'      => 'Daftar Departemen',
-    'showent'      => 'Menampilkan Baris',
+    'showent'      => 'Menampilkan _MENU_ Baris',
     'parent'       => 'Induk',
     'depdata'      => 'Data Departemen',
     'chsparent'    => 'Pilih Induk',
