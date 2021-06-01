@@ -69,7 +69,19 @@
 											@endforeach
 										</select>
 									</div>
-								</div>
+              </div>
+              <div class="col-sm-6">
+									<div class="form-group">
+										<label>Department <b class="text-danger">*</b></label>
+										<select name="department_id" id="department_id" class="form-control select2" style="width: 100%"
+											aria-hidden="true" data-placeholder="Select Truck" required>
+											<option value=""></option>
+											@foreach ($departments as $department)
+											<option value="{{ $department->id }}">{{ $department->name }}</option>
+											@endforeach
+										</select>
+									</div>
+              </div>
             </div>
         </div>
         <div class="overlay d-none">
@@ -128,6 +140,7 @@
     $(document).ready(function(){
          $('#status').select2();
          $('#truck_id').select2();
+         $('#department_id').select2();
           $("#form").validate({
             errorElement: 'div',
             errorClass: 'invalid-feedback',

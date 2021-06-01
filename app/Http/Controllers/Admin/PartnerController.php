@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Models\Partner;
+use App\Models\Department;
 use App\Models\Truck;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -110,7 +111,8 @@ class PartnerController extends Controller
     public function create()
     {
         $trucks = Truck::where('status',1)->get();
-        return view('admin.partner.create',compact('trucks'));
+        $departments = Department::where('driver','yes')->get();
+        return view('admin.partner.create',compact('trucks','departments'));
     }
 
     /**
@@ -125,6 +127,7 @@ class PartnerController extends Controller
             'name'     => 'required',
             'rit'      => 'required',
             'truck_id'      => 'required',
+            'department_id'      => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -144,6 +147,7 @@ class PartnerController extends Controller
             'rit'      => $request->rit,
             'status'   => $request->status,
             'truck_id'   => $request->truck_id,
+            'department_id'   => $request->department_id,
         ]);
         if ($request->code) {
             $partner->code = $request->code;
@@ -187,7 +191,8 @@ class PartnerController extends Controller
     {
         $partner = Partner::find($id);
         $trucks = Truck::where('status',1)->get();
-        return view('admin.partner.edit', compact('partner','trucks'));
+        $departments = Department::where('driver','yes')->get();
+        return view('admin.partner.edit', compact('partner','trucks','departments'));
     }
 
     /**
@@ -203,6 +208,7 @@ class PartnerController extends Controller
             'name'     => 'required',
             'rit'      => 'required',
             'truck_id'      => 'required',
+            'department_id'      => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -221,6 +227,7 @@ class PartnerController extends Controller
         $partner->rit     = $request->rit;
         $partner->status  = $request->status;
         $partner->truck_id  = $request->truck_id;
+        $partner->department_id  = $request->department_id;
         $partner->save();
 
         if (!$partner) {
