@@ -660,7 +660,7 @@
 									<a class="nav-link active" id="vert-tabs-home-tab" data-toggle="pill" href="#vert-tabs-home" role="tab" aria-controls="vert-tabs-home" aria-selected="true">Basic Salary</a>
 									<a class="nav-link" id="vert-tabs-gross-tab" data-toggle="pill" href="#vert-tabs-gross" role="tab" aria-controls="vert-tabs-gross" aria-selected="true">Gross Salary</a>
 									<a class="nav-link" id="vert-tabs-profile-tab" data-toggle="pill" href="#vert-tabs-profile" role="tab" aria-controls="vert-tabs-profile" aria-selected="false">Allowance</a>
-									@if (strpos($employee->department->path,'Driver') !== false)
+									@if ($employee->department->driver == 'yes')
 									<a class="nav-link" id="driver-allowance-tab" data-toggle="pill" href="#tabs-driver-allowance" role="tab" aria-controls="vert-tabs-messages" aria-selected="false">Driver Allowance</a>
 									@endif
 									<a class="nav-link" id="vert-tabs-messages-tab" data-toggle="pill" href="#vert-tabs-messages" role="tab" aria-controls="vert-tabs-messages" aria-selected="false">Over Time</a>
