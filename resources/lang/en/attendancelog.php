@@ -11,7 +11,7 @@ return[
     'employid' => 'Employee ID',
     'firstnm'  => 'First Name',
     'lastnm'   => 'Last Name',
-    'device'   => 'First Name',
+    'device'   => 'Device Name',
     'attentp'  => 'Attendance Type',
     'choose'   => 'Choose File',
     'browse'   => 'Browse',
