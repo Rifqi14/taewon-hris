@@ -12,8 +12,9 @@ return[
     'usetime'       => 'Use Time',
     'firstmon'      => 'First Month',
     'thirdmon'      => 'Third Month',
-    'sixthmon'      => 'Sixth Year',
+    'sixthmon'      => 'Sixth Month',
     'oneyear'       => 'First Year',
     'paid'          => 'Paid',
     'unpaid'        => 'Unpaid',
+    'specdate'      => 'Spesific Date',
 ];

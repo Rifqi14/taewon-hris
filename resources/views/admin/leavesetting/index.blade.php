@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Leave Setting')
+@section('title',__('leavesetting.leaveset'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Leave Setting</li>
+<li class="breadcrumb-item active">{{ __('leavesetting.leaveset') }}</li>
 @endpush
 
 @section('content')
@@ -15,10 +15,10 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-header">
-          <div class="card-title">List Leave Setting</div>
+          <div class="card-title">{{ __('general.list') }} {{ __('leavesetting.leaveset') }}</div>
           <div class="pull-right card-tools">
             <a href="{{route('leavesetting.create')}}"
-              class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="Add">
+              class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="{{ __('general.crt') }}">
               <i class="fa fa-plus"></i>
             </a>
             <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
@@ -31,10 +31,10 @@
             <thead>
               <tr>
                 <th width="5">#</th>
-                <th width="100">Leave Name</th>
-                <th width="50">Amount per year</th>
-                <th width="100">Description</th>
-                <th width="5">Action</th>
+                <th width="100">{{ __('leavesetting.leavename') }}</th>
+                <th width="50">{{ __('leavesetting.balyear') }}</th>
+                <th width="100">{{ __('general.desc') }}</th>
+                <th width="5">{{ __('general.act') }}</th>
               </tr>
             </thead>
           </table>
@@ -59,24 +59,24 @@
           <div class="row">
             <div class="col-md-12">
               <div class="form-group">
-                <label class="control-label" for="leave_name">Leave Name</label>
-                <input type="text" name="leave_name" class="form-control" placeholder="Leave Name">
+                <label class="control-label" for="leave_name">{{ __('leavesetting.leavename') }}</label>
+                <input type="text" name="leave_name" class="form-control" placeholder="{{ __('leavesetting.leavename') }}">
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group">
-                <label class="control-label" for="balance">Amount</label>
-                <input type="text" name="balance" class="form-control" placeholder="Amount per year">
+                <label class="control-label" for="balance">{{ __('leavesetting.balyear') }}</label>
+                <input type="text" name="balance" class="form-control" placeholder="{{ __('leavesetting.balyear') }}">
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group">
-                <label class="control-label" for="description">Description</label>
+                <label class="control-label" for="description">{{ __('general.desc') }}</label>
                 <select name="description" id="description" class="form-control select2" style="width: 100%"
                   aria-hidden="true">
                   <option value="">All</option>
-                  <option value="Paid Leave">Paid Leave</option>
-                  <option value="Unpaid Leave">Unpaid Leave</option>
+                  <option value="Paid Leave">{{ __('leavesetting.paid') }}</option>
+                  <option value="Unpaid Leave">{{ __('leavesetting.unpaid') }}</option>
                 </select>
               </div>
             </div>
@@ -109,6 +109,14 @@
       lengthChange:true,
       responsive:true,
       order: [[ 1, "asc" ]],
+      language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
       ajax: {
         url: "{{route('leavesetting.read')}}",
         type: "GET",
@@ -146,9 +154,9 @@
         },
         { render: function(data, type, row) {
             if (row.description == 1) {
-              return `<span class="badge badge-success">Paid Leave</span>`;
+              return `<span class="badge badge-success">{{ __('leavesetting.paid') }}</span>`;
             } else {
-              return `<span class="badge badge-danger">Unpaid Leave</span>`;
+              return `<span class="badge badge-danger">{{ __('leavesetting.unpaid') }}</span>`;
             }
           }, targets:[3]},
         { render: function ( data, type, row ) {
@@ -157,8 +165,8 @@
                       <i class="fa fa-bars"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                      <li><a class="dropdown-item" href="{{url('admin/leavesetting')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-                      <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+                      <li><a class="dropdown-item" href="{{url('admin/leavesetting')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
+                      <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{ __('general.dlt') }}</a></li>
                     </ul>
                   </div>`
           },targets: [4]

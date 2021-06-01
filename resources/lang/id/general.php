@@ -55,6 +55,7 @@ return [
     'fri'         => 'Jumat',
     'sat'         => 'Sabtu',
     'sun'         => 'Minggu',
-    'day_off'     => 'Hari Libur'
+    'day_off'     => 'Hari Libur',
+    'date'       => 'Tanggal',
 
 ];

@@ -57,5 +57,6 @@ return [
     'fri'         => 'Friday',
     'sat'         => 'Saturday',
     'sun'         => 'Sunday',
-    'day_off'     =>  'Day Off'
+    'day_off'     =>  'Day Off',
+    'date'        => 'Date',
 ];

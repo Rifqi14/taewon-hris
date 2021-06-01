@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit Leave Setting')
+@section('title',__('leavesetting.leaveset'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -10,8 +10,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('leavesetting.index')}}">Leave Setting</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item"><a href="{{route('leavesetting.index')}}">{{ __('leavesetting.leaveset') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.edt') }}</li>
 @endpush
 
 @section('content')
@@ -20,72 +20,72 @@
     <div class="col-lg-8">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <div class="card-title" style="padding-bottom: 7px">Data Leave Setting</div>
+          <div class="card-title" style="padding-bottom: 7px">{{ __('general.edt') }} {{ __('leavesetting.leaveset') }}</div>
         </div>
         <div class="card-body">
           {{ csrf_field() }}
           {{ method_field('put') }}
           <div class="form-group row">
-            <label class="col-sm-2 col-xs-12 col-form-label" for="leave_name">Leave Name <span class="text-red">*</span></label>
+            <label class="col-sm-2 col-xs-12 col-form-label" for="leave_name">{{ __('leavesetting.leavename') }} <span class="text-red">*</span></label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="leave_name" name="leave_name" placeholder="Leave Name" value="{{ $leavesetting->leave_name }}" required @if ($leavesetting->leave_name == 'Switch Day Off') readonly @endif>
+              <input type="text" class="form-control" id="leave_name" name="leave_name" placeholder="{{ __('leavesetting.leavename') }}" value="{{ $leavesetting->leave_name }}" required @if ($leavesetting->leave_name == 'Switch Day Off') readonly @endif>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-2 col-xs-12 col-form-label" for="parent_id">Category</label>
+            <label class="col-sm-2 col-xs-12 col-form-label" for="parent_id">{{ __('general.category') }}</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="parent_id" name="parent_id" placeholder="Category">
+              <input type="text" class="form-control" id="parent_id" name="parent_id" placeholder="{{ __('general.category') }}">
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-2 col-xs-12 col-form-label" for="balance">Balance</label>
+            <label class="col-sm-2 col-xs-12 col-form-label" for="balance">{{ __('leavesetting.balance') }}</label>
             <div class="col-sm-10">
               <div class="input-group">
                 <div class="input-group-prepend">
                   <div class="input-group-text">
                     <input type="checkbox" aria-label="Checkbox for following text input" name="unlimited" id="unlimited" @if ($leavesetting->balance == -1) checked @endif>
-                    <label class="form-check-label">&nbsp;Unlimited</label>
+                    <label class="form-check-label">&nbsp;{{ __('leavesetting.unlimit') }}</label>
                   </div>
                 </div>
-                <input type="text" class="form-control" aria-label="Text input with checkbox" id="balance" name="balance" placeholder="Balance per year" required @if ($leavesetting->balance == -1) disabled @endif value="{{ ($leavesetting->balance == -1) ? '' : $leavesetting->balance}}">
+                <input type="text" class="form-control" aria-label="Text input with checkbox" id="balance" name="balance" placeholder="{{ __('leavesetting.balyear') }}" required @if ($leavesetting->balance == -1) disabled @endif value="{{ ($leavesetting->balance == -1) ? '' : $leavesetting->balance}}">
               </div>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-2 col-xs-12 col-form-label" for="reset_time">Reset Time</label>
+            <label class="col-sm-2 col-xs-12 col-form-label" for="reset_time">{{ __('leavesetting.resetime') }}</label>
             <div class="col-sm-10">
               <select class="form-control select2" id="reset_time" name="reset_time">
-                <option @if ($leavesetting->reset_time == 'beginningyear') selected @endif value="beginningyear">Beginning Year</option>
-                <option @if ($leavesetting->reset_time == 'joindate') selected @endif value="joindate">Join Date
+                <option @if ($leavesetting->reset_time == 'beginningyear') selected @endif value="beginningyear">{{ __('leavesetting.begin') }}</option>
+                <option @if ($leavesetting->reset_time == 'joindate') selected @endif value="joindate">{{ __('leavesetting.joindate') }}
                 </option>
-                <option @if ($leavesetting->reset_time == 'specificdate') selected @endif value="specificdate">Specific Date</option>
+                <option @if ($leavesetting->reset_time == 'specificdate') selected @endif value="specificdate">{{ __('leavesetting.specdate') }}</option>
               </select>
             </div>
           </div>
           <div class="form-group row date-specific {{ ($leavesetting->reset_time == 'specificdate') ? '' : 'd-none' }}">
-            <label class="col-sm-2 col-xs-12 col-form-label" for="date">Date</label>
+            <label class="col-sm-2 col-xs-12 col-form-label" for="date">{{ __('general.date') }}</label>
             <div class="col-sm-10">
               <input type="text" name="date" id="date" class="form-control datepicker" placeholder="Date" value="{{ changeDateFormat('d/m/Y', $leavesetting->specific_date) }}">
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-2 col-xs-12 col-form-label" for="use_time">Use Time</label>
+            <label class="col-sm-2 col-xs-12 col-form-label" for="use_time">{{ __('leavesetting.usetime') }}</label>
             <div class="col-sm-10">
               <select class="form-control select2" id="use_time" name="use_time">
-                <option @if ($leavesetting->use_time == 'joindate') selected @endif value="joindate">Join Date
+                <option @if ($leavesetting->use_time == 'joindate') selected @endif value="joindate">{{ __('leavesetting.joindate') }}
                 </option>
-                <option @if ($leavesetting->use_time == 'firstmonth') selected @endif value="firstmonth">First Month
+                <option @if ($leavesetting->use_time == 'firstmonth') selected @endif value="firstmonth">{{ __('leavesetting.firstmon') }}
                 </option>
-                <option @if ($leavesetting->use_time == 'thirdmonth') selected @endif value="thirdmonth">Third Month
+                <option @if ($leavesetting->use_time == 'thirdmonth') selected @endif value="thirdmonth">{{ __('leavesetting.thirdmon') }}
                 </option>
-                <option @if ($leavesetting->use_time == 'sixthmonth') selected @endif value="sixthmonth">Sixth Month
+                <option @if ($leavesetting->use_time == 'sixthmonth') selected @endif value="sixthmonth">{{ __('leavesetting.sixthmon') }}
                 </option>
-                <option @if ($leavesetting->use_time == 'oneyear') selected @endif value="oneyear">One Year</option>
+                <option @if ($leavesetting->use_time == 'oneyear') selected @endif value="oneyear">{{ __('leavesetting.oneyear') }}</option>
               </select>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-2 col-xs-12 col-form-label" for="department">Department</label>
+            <label class="col-sm-2 col-xs-12 col-form-label" for="department">{{ __('department.dep') }}</label>
             <div class="col-sm-10">
               <div class="input-group">
                 <div class="input-group-prepend">
@@ -93,14 +93,14 @@
                     <input type="checkbox" aria-label="Checkbox for following text input" id="all" name="all">
                   </div>
                 </div>
-                <input type="text" name="department" id="department" class="form-control" placeholder="Department">
+                <input type="text" name="department" id="department" class="form-control" placeholder="{{ __('department.dep') }}">
               </div>
               <small id="departmentHelp" class="form-text text-muted">Check at checkbox to select all
                 department.</small>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-2 col-xs-12 col-form-label" for="label_color">Label Color</label>
+            <label class="col-sm-2 col-xs-12 col-form-label" for="label_color">{{ __('general.labelclr') }}</label>
             <div class="col-sm-10">
               <div class="input-group my-colorpicker2">
                 <input type="text" class="form-control" name="label_color" id="label_color" value="{{ $leavesetting->label_color }}">
@@ -113,19 +113,19 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-2 col-xs-12" for="balance">Description <span class="text-red">*</span></label>
+            <label class="col-sm-2 col-xs-12" for="balance">{{ __('general.desc') }} <span class="text-red">*</span></label>
             <div class="col-sm-10">
               <div class="form-check form-check-inline">
                 <input class="form-check-input i-checks" @if ($leavesetting->description == 1)
                 checked
                 @endif type="radio" name="description" id="description1" value="1">
-                <label class="form-check-label" for="description1">&emsp;Paid Leave</label>
+                <label class="form-check-label" for="description1">&emsp;{{ __('leavesetting.paid') }}</label>
               </div>
               <div class="form-check form-check-inline">
                 <input class="form-check-input i-checks" @if ($leavesetting->description == 0)
                 checked
                 @endif type="radio" name="description" id="description2" value="0">
-                <label class="form-check-label" for="description2">&emsp;Unpaid Leave</label>
+                <label class="form-check-label" for="description2">&emsp;{{ __('leavesetting.unpaid') }}</label>
               </div>
             </div>
           </div>
@@ -138,10 +138,10 @@
     <div class="col-md-4">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <div class="card-title">Others</div>
+          <div class="card-title">{{ __('general.other') }}</div>
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Save"><i class="fa fa-save"></i></button>
-            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
           </div>
         </div>
         <div class="card-body">
@@ -150,8 +150,8 @@
             <div class="col-sm-12">
               <!-- text input -->
               <div class="form-group">
-                <label>Note</label>
-                <textarea class="form-control" id="note" name="note" placeholder="Notes" rows="4">{{ $leavesetting->note }}</textarea>
+                <label>{{ __('general.notes') }}</label>
+                <textarea class="form-control" id="note" name="note" placeholder="{{ __('general.notes') }}s" rows="4">{{ $leavesetting->note }}</textarea>
               </div>
             </div>
           </div>
@@ -175,12 +175,12 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="form-group">
-                <label>Status</label>
+                <label>{{ __('general.status') }}</label>
                 <select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true">
                   <option @if ($leavesetting->status == 1) selected
-                    @endif value="1">Active</option>
+                    @endif value="1">{{ __('general.actv') }}</option>
                   <option @if ($leavesetting->status == 0) selected
-                    @endif value="0">Non-Active</option>
+                    @endif value="0">{{ __('general.noactv') }}</option>
                 </select>
               </div>
             </div>
