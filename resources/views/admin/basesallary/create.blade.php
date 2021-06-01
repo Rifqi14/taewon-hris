@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', __('config.baseslr'))
+@section('title', __('basesalary.baseslr'))
 @section('stylesheets')
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('basesallary.index')}}">{{ __('config.baseslr') }}</a></li>
-<li class="breadcrumb-item active">{{ __('config.crt') }}</li>
+<li class="breadcrumb-item"><a href="{{route('basesallary.index')}}">{{ __('basesalary.baseslr') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.crt') }}</li>
 @endpush
 
 @section('content')
@@ -15,13 +15,10 @@
         <div class="col-lg-12">
             <div class="card card-{{ config('configs.app_theme')}} card-outline">
                 <div class="card-header">
-                    <h3 class="card-title">Basic UMK Data</h3>
+                    <h3 class="card-title">{{ __('basesalary.baseslr') }} Data</h3>
                     <div class="pull-right card-tools">
-                        <button form="form" type="submit"
-                            class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('config.save') }}"><i
-                                class="fa fa-save"></i></button>
-                        <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
-                                class="fa fa-reply"></i></a>
+                        <button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+                        <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -31,9 +28,8 @@
                             <div class="col-sm-6">
                                 <!-- text input -->
                                 <div class="form-group">
-                                    <label>{{ __('config.region') }}</label>
-                                    <input type="text" class="form-control" id="region_id" name="region_id"
-                                        data-placeholder="{{ __('config.chsregion') }}">
+                                    <label>{{ __('basesalary.region') }}</label>
+                                    <input type="text" class="form-control" id="region_id" name="region_id" data-placeholder="{{ __('general.chsregion') }}">
                                 </div>
                             </div>
                             <!-- <div class="col-sm-6">
@@ -43,16 +39,16 @@
                                 </div>
                             </div> -->
                             <div class="col-sm-6">
-                            <label for="">{{ __('config.salary') }}</label>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Rp.</span>
+                                <label for="">{{ __('basesalary.salary') }}</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp.</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="sallary" placeholder="{{ __('basesalary.salary') }}" aria-label="Amount (to the nearest dollar)">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">,-</span>
+                                    </div>
                                 </div>
-                                <input type="number" class="form-control" name="sallary" placeholder="{{ __('config.salary') }}" aria-label="Amount (to the nearest dollar)">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">,-</span>
-                                </div>
-                            </div>
                             </div>
                         </div>
                 </div>

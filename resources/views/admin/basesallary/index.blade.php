@@ -1,72 +1,72 @@
 @extends('admin.layouts.app')
 
-@section('title', __('config.baseslr'))
+@section('title', __('basesalary.baseslr'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 @push('breadcrump')
-    <li class="breadcrumb-item active">{{ __('config.baseslr') }}</li>
+<li class="breadcrumb-item active">{{ __('basesalary.baseslr') }}</li>
 @endpush
 @section('content')
 <div class="row">
     <div class="col-lg-12">
-    <div class="card card-{{ config('configs.app_theme')}} card-outline">
-        <div class="card-header">
-          <h3 class="card-title">{{ __('config.baseslr') }}</h3>
-          <!-- tools card -->
-          <div class="pull-right card-tools">
-            <a href="{{route('basesallary.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="{{ __('config.crt') }}">
-              <i class="fa fa-plus"></i>
-            </a>
-            <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
-                <i class="fa fa-search"></i>
-              </a>
-          </div>
-          <!-- /. tools -->
+        <div class="card card-{{ config('configs.app_theme')}} card-outline">
+            <div class="card-header">
+                <h3 class="card-title">{{ __('basesalary.baseslr') }}</h3>
+                <!-- tools card -->
+                <div class="pull-right card-tools">
+                    <a href="{{route('basesallary.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="{{ __('general.crt') }}">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                    <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="{{ __('general.srch') }}">
+                        <i class="fa fa-search"></i>
+                    </a>
+                </div>
+                <!-- /. tools -->
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-bordered datatable" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th width="10">#</th>
+                            <th width="100">{{ __('basesalary.region') }}</th>
+                            <th width="150">{{ __('basesalary.basicumk') }}</th>
+                            <th width="10">#</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="overlay d-none">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
         </div>
-        <div class="card-body">
-            <table class="table table-striped table-bordered datatable" style="width:100%">
-                <thead>
-                    <tr>
-                        <th width="10">#</th>
-                        <th width="100">{{ __('config.region') }}</th>
-                        <th width="150">{{ __('config.basicumk') }}</th>
-                        <th width="10">#</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-        <div class="overlay d-none">
-            <i class="fa fa-refresh fa-spin"></i>
-        </div>
-    </div>
     </div>
 </div>
-<div class="modal fade" id="add-filter" tabindex="-1" role="dialog"  aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+<div class="modal fade" id="add-filter" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Pencarian</h4>
+                <h4 class="modal-title">{{ __('general.srch') }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
-                </button>   
-			</div>		
+                </button>
+            </div>
             <div class="modal-body">
-                <form id="form-search" autocomplete="off">	
+                <form id="form-search" autocomplete="off">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="control-label" for="province_name">{{ __('config.province') }}</label>
-                                <input type="text" name="province_name" class="form-control" placeholder="{{ __('config.province') }}">
+                                <label class="control-label" for="province_name">{{ __('general.province') }}</label>
+                                <input type="text" name="province_name" class="form-control" placeholder="{{ __('general.province') }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="control-label" for="region_name">{{ __('config.name') }}</label>
-                                <input type="text" name="region_name" class="form-control" placeholder="{{ __('config.name') }}">
-                            </div>			
+                                <label class="control-label" for="region_name">{{ __('general.name') }}</label>
+                                <input type="text" name="region_name" class="form-control" placeholder="{{ __('general.name') }}">
+                            </div>
                         </div>
-                    </div>  
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -80,7 +80,7 @@
 @push('scripts')
 <script src="{{asset('adminlte/component/dataTables/js/datatables.min.js')}}"></script>
 <script type="text/javascript">
-function filter(){
+    function filter(){
     $('#add-filter').modal('show');
 }
 $(function(){
@@ -92,6 +92,14 @@ $(function(){
         info:false,
         lengthChange:true,
         responsive: true,
+        language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            },
+        },
         order: [[ 3, "asc" ]],
         ajax: {
             url: "{{route('basesallary.read')}}",
@@ -115,8 +123,8 @@ $(function(){
                         <i class="fa fa-bars"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" href="{{url('admin/basesallary')}}/${row.id}/edit"><i class="fa fa-edit"></i> Edit</a></li>
-                        <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fa fa-trash"></i> Delete</a></li>
+                        <li><a class="dropdown-item" href="{{url('admin/basesallary')}}/${row.id}/edit"><i class="fa fa-edit"></i> {{ __('general.edt') }}</a></li>
+                        <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fa fa-trash"></i> {{ __('general.dlt') }}</a></li>
                     </ul></div>`
             },targets: [3]
             }

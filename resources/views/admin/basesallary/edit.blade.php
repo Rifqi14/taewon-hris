@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title',__('config.baseslr'))
+@section('title',__('basesalary.baseslr'))
 @section('stylesheets')
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('basesallary.index')}}">{{ __('config.baseslr') }}</a></li>
-<li class="breadcrumb-item active">{{ __('config.edt') }}</li>
+<li class="breadcrumb-item"><a href="{{route('basesallary.index')}}">{{ __('basesalary.baseslr') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.edt') }}</li>
 @endpush
 
 @section('content')
@@ -15,51 +15,49 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">{{ __('config.edt') }} {{ __('config.baseslr') }}</h3>
+          <h3 class="card-title">{{ __('general.edt') }} {{ __('basesalary.baseslr') }}</h3>
           <!-- tools box -->
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('config.save') }}"><i
-              class="fa fa-save"></i></button>
-              <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
-                class="fa fa-reply"></i></a>
-              </div>
-              <!-- /. tools -->
-            </div>
-            <div class="card-body">
-              <form id="form" action="{{ route('basesallary.update',['id'=>$basesallary->id]) }}" method="post" autocomplete="off">
-                {{ csrf_field() }}
-                {{ method_field('put') }}
-                <div class="row">
-                  <div class="col-sm-6">
-                    <!-- text input -->
-                    <div class="form-group">
-                      <label>{{ __('config.region') }}</label>
-                      <input class="form-control" id="region_id" data-placeholder="{{ __('config.chsregion') }}" name="region_id" value="{{ $basesallary->name }}">
-                    </div>
-                  </div>
-                  <div class="col-sm-6">
-                    <div class="form-group">
-                      <label>{{ __('config.slary') }}</label>
-                      <input type="text" class="form-control" name="sallary" value="{{ $basesallary->sallary }}" placeholder="{{ __('config.salary') }}">
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-            <div class="overlay d-none">
-              <i class="fa fa-refresh fa-spin"></i>
-            </div>
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
           </div>
+          <!-- /. tools -->
+        </div>
+        <div class="card-body">
+          <form id="form" action="{{ route('basesallary.update',['id'=>$basesallary->id]) }}" method="post" autocomplete="off">
+            {{ csrf_field() }}
+            {{ method_field('put') }}
+            <div class="row">
+              <div class="col-sm-6">
+                <!-- text input -->
+                <div class="form-group">
+                  <label>{{ __('basesalary.region') }}</label>
+                  <input class="form-control" id="region_id" data-placeholder="{{ __('basesalary.chsregion') }}" name="region_id" value="{{ $basesallary->name }}">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>{{ __('basesalary.salary') }}</label>
+                  <input type="text" class="form-control" name="sallary" value="{{ $basesallary->sallary }}" placeholder="{{ __('basesalary.salary') }}">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="overlay d-none">
+          <i class="fa fa-refresh fa-spin"></i>
         </div>
       </div>
     </div>
   </div>
-  @endsection
+</div>
+</div>
+@endsection
 
-  @push('scripts')
-  <script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
-  <script>
-    $(document).ready(function(){
+@push('scripts')
+<script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
+<script>
+  $(document).ready(function(){
       $( "#region_id" ).select2({
         ajax: {
           url: "{{route('region.select')}}",
@@ -161,5 +159,5 @@
         }
       });
     });
-  </script>
-  @endpush
+</script>
+@endpush
