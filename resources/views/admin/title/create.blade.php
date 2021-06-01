@@ -1,22 +1,22 @@
 @extends('admin.layouts.app')
 
-@section('title', __('config.pos'))
+@section('title', __('position.pos'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('title.index')}}">{{ __('config.pos') }}</a></li>
-<li class="breadcrumb-item active">{{ __('config.crt') }}</li>
+<li class="breadcrumb-item active"><a href="{{route('title.index')}}">{{ __('position.pos') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.crt') }}</li>
 @endpush
 
 
 @section('content')
-<div class="row"> 
+<div class="row">
   <div class="col-lg-8">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <div class="card-header" style="height: 55px;">
-        <h3 class="card-title">{{ __('config.posdata') }}</h3>
+        <h3 class="card-title">{{ __('position.posdata') }}</h3>
       </div>
       <div class="card-body">
         <form id="form" action="{{ route('title.store')}}" method="post">
@@ -25,54 +25,54 @@
             <div class="col-sm-6">
               <!-- text input -->
               <div class="form-group">
-                <label>{{ __('config.code') }} <b class="text-danger">*</b></label>
-                <input type="text" name="code" id="code" class="form-control" placeholder="{{ __('config.code') }}">
+                <label>{{ __('general.code') }} <b class="text-danger">*</b></label>
+                <input type="text" name="code" id="code" class="form-control" placeholder="{{ __('general.code') }}">
               </div>
             </div>
             <div class="col-sm-6">
               <div class="form-group">
-                <label>{{ __('config.name') }} <b class="text-danger">*</b></label>
-                <input type="text" name="name" class="form-control" placeholder="{{ __('config.name') }}">
+                <label>{{ __('general.name') }} <b class="text-danger">*</b></label>
+                <input type="text" name="name" class="form-control" placeholder="{{ __('general.name') }}">
               </div>
             </div>
           </div>
           <div style="height:165px;"></div>
-        </div>
-      </div>
-      <div class="overlay d-none">
-        <i class="fa fa-refresh fa-spin"></i>
       </div>
     </div>
-    <div class="col-lg-4">
-      <div class="card card-{{ config('configs.app_theme') }} card-outline">
-        <div class="card-header">
-          <h3 class="card-title">{{ __('config.other') }}</h3>
-          <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="Simpan"><i class="fa fa-save"></i></button>
-            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i class="fa fa-reply"></i></a>
+    <div class="overlay d-none">
+      <i class="fa fa-refresh fa-spin"></i>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card card-{{ config('configs.app_theme') }} card-outline">
+      <div class="card-header">
+        <h3 class="card-title">{{ __('position.other') }}</h3>
+        <div class="pull-right card-tools">
+          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <!-- text input -->
+            <div class="form-group">
+              <label>{{ __('general.notes') }} </label>
+              <textarea style="height: 120px;" class="form-control" name="notes" placeholder="{{ __('general.notes') }}"></textarea>
+            </div>
           </div>
         </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-sm-12">
-              <!-- text input -->
-              <div class="form-group">
-                <label>{{ __('config.notes') }} </label>
-                <textarea style="height: 120px;" class="form-control" name="notes" placeholder="{{ __('config.notes') }}"></textarea>
-              </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label>{{ __('general.status') }} <b class="text-danger">*</b></label>
+              <select class="form-control select2" data-placeholder="Select Status" id="status" name="status">
+                <option value="1">{{ __('general.actv') }}</option>
+                <option value="0">{{ __('general.noactv') }}</option>
+              </select>
             </div>
           </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="form-group">
-                <label>{{ __('config.status') }} <b class="text-danger">*</b></label>
-                <select class="form-control select2" data-placeholder="Select Status" id="status" name="status">
-                  <option value="1">{{ __('config.actv') }}</option>
-                  <option value="0">{{ __('config.noactv') }}</option> 
-                </select>
-              </div>
-            </div>
-          </div>
+        </div>
         </form>
       </div>
       <div class="overlay d-none">

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Overtime;
 use Illuminate\Http\Request;
+use App\Models\Employee;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class OvertimeController extends Controller
 {
@@ -148,7 +150,7 @@ class OvertimeController extends Controller
         $employee = Employee::where('id',$request->employee_id)->first();
         $user_id = Auth::user()->id;
         // Employee Overtimes 
-        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Overtime","Edit",$request->day,$request->hour);
+        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Employee Overtime","Edit","Hour",$request->hour);
 
         if (!$overtime) {
             return response()->json([

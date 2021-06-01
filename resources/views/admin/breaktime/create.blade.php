@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Break Time ')
+@section('title',__('breaktime.breaktime'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
@@ -39,8 +39,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('breaktime.index')}}">Break Time</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item"><a href="{{route('breaktime.index')}}">{{ __('breaktime.breaktime') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.crt') }}</li>
 @endpush
 
 @section('content')
@@ -50,34 +50,34 @@
       <div class="col-lg-8">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header" style="height: 57px;">
-            <h3 class="card-title">Break Time</h3>
+            <h3 class="card-title">{{ __('general.crt') }} {{ __('breaktime.breaktime') }}</h3>
           </div>
           <div class="card-body">
             {{ csrf_field() }}
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Break Time <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="break_time" id="break_time" placeholder="Break Time">
+                  <label>{{ __('breaktime.breaktime') }} <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" name="break_time" id="break_time" placeholder="{{ __('breaktime.breaktime') }}">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Workgroup Combination <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="workgroup" id="workgroup" data-placeholder="Workgroup Combination">
+                  <label>{{ __('workgroupcombination.workcomb') }} <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" name="workgroup" id="workgroup" data-placeholder="{{ __('workgroupcombination.workcomb') }}">
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Start Time<b class="text-danger">*</b></label>
+                  <label>{{ __('general.start_time') }}<b class="text-danger">*</b></label>
                   <input class="form-control timepicker" id="start_time" name="start_time">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Finish Time<b class="text-danger">*</b></label>
+                  <label>{{ __('general.finish_time') }}<b class="text-danger">*</b></label>
                   <input class="form-control timepicker" id="finish_time" name="finish_time">
                 </div>
               </div>
@@ -85,7 +85,7 @@
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label class="pr-5">Cross Date</label>
+                  <label class="pr-5">{{ __('breaktime.crossdt') }}</label>
                   <input class="form-control" type="checkbox" id="cross_date" name="cross_date" checked>
                 </div>
               </div>
@@ -99,10 +99,10 @@
       <div class="col-lg-4">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header">
-            <h3 class="card-title">Other</h3>
+            <h3 class="card-title">{{ __('general.other') }}</h3>
             <div class="pull-right card-tools">
               <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Save"><i class="fa fa-save"></i></button>
-              <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Back"><i class="fa fa-reply"></i></a>
+              <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
             </div>
           </div>
           <div class="card-body">
@@ -111,19 +111,19 @@
                 <div class="col-sm-12">
                   <!-- text input -->
                   <div class="form-group">
-                    <label>Notes</label>
-                    <textarea class="form-control" name="notes" placeholder="Notes"></textarea>
+                    <label>{{ __('general.notes') }}</label>
+                    <textarea class="form-control" name="notes" placeholder="{{ __('general.notes') }}"></textarea>
                   </div>
                 </div>
               </div>
               <div class="row">
                 <div class="col-sm-12">
                   <div class="form-group">
-                    <label>Status <b class="text-danger">*</b></label>
-                    <select name="status" id="status" class="form-control select2" data-placeholder="Select Status">
+                    <label>{{ __('general.status') }} <b class="text-danger">*</b></label>
+                    <select name="status" id="status" class="form-control select2" data-placeholder="{{ __('general.chs') }} {{ __('general.status') }}">
                       <option value=""></option>
-                      <option value="1">Aktif</option>
-                      <option value="0">Non Aktif</option>
+                      <option value="1">{{ __('general.actv') }}</option>
+                      <option value="0">{{ __('general.noactv') }}</option>
                     </select>
                   </div>
                 </div>
@@ -135,14 +135,14 @@
       <div class="col-lg-12">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header">
-            <h3 class="card-title">Department</h3>
+            <h3 class="card-title">{{ __('department.dep') }}</h3>
           </div>
           <div class="card-body">
             <table class="table table-striped table-bordered datatable" id="department-table" style="width: 100%">
               <thead>
                 <tr>
                   <th>No</th>
-                  <th>Department Name</th>
+                  <th>{{ __('department.dep') }} {{ __('general.name') }}</th>
                   <th>
                     <div class="customcheckbox">
                       <input type="checkbox" name="checkall" class="checkall" id="checkall">

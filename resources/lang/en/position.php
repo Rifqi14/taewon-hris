@@ -7,5 +7,5 @@ return [
     'detpos'  => 'Position Detail',
     'empdta'  => 'Employee Data',
     'nid'     => 'NID',
-
+    'other'   => 'Other',
 ];

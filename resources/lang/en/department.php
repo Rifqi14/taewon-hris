@@ -4,7 +4,7 @@ return [
 
     'dep'          => 'Department',
     'deplist'      => 'Department List',
-    'showent'      => 'Show Entries',
+    'showent'      => 'Show _MENU_ Entries',
     'parent'       => 'Parent',
     'notes'        => 'Notes',
     'status'       => 'Status',

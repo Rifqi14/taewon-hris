@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Break Time')
+@section('title',__('breaktime.breaktime'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Break Time</li>
+<li class="breadcrumb-item active">{{ __('breaktime.breaktime') }}</li>
 @endpush
 
 @section('content')
@@ -15,11 +15,11 @@
 		<div class="col-lg-12">
 			<div class="card ">
 				<div class="card-header">
-					<h3 class="card-title">Break Time</h3>
+					<h3 class="card-title">{{ __('breaktime.breaktime') }}</h3>
 					<!-- tools box -->
 					<div class="pull-right card-tools">
 						<a href="{{route('breaktime.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white"
-							data-toggle="tooltip" title="Tambah">
+							data-toggle="tooltip" title="{{ __('general.crt') }}">
 							<i class="fa fa-plus"></i>
 						</a>
 						<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
@@ -33,10 +33,10 @@
 						<thead>
 							<tr>
 								<th width="10">#</th>
-								<th width="150">Break Time</th>
-								<th width="100">Start Time</th>
-								<th width="100">Finish Time</th>
-								<th width="10">Action</th>
+								<th width="150">{{ __('breaktime.breaktime') }}</th>
+								<th width="100">{{ __('general.start_time') }}</th>
+								<th width="100">{{ __('general.finish_time') }}</th>
+								<th width="10">{{ __('general.act') }}</th>
 							</tr>
 						</thead>
 					</table>
@@ -61,8 +61,8 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="name">Break Time</label>
-								<input type="text" class="form-control" name="break_time" id="break_time" placeholder="Break Time">
+								<label class="control-label" for="name">{{ __('breaktime.breaktime') }}</label>
+								<input type="text" class="form-control" name="break_time" id="break_time" placeholder="{{ __('breaktime.breaktime') }}">
 							</div>
 						</div>
 					</div>
@@ -92,6 +92,14 @@
 			lengthChange:true,
 			responsive: true,
 			order: [[ 4, "desc" ]],
+			 language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
 			ajax: {
 				url: "{{route('breaktime.read')}}",
 				type: "GET",
@@ -112,8 +120,8 @@
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-					<li><a class="dropdown-item" href="{{url('admin/breaktime')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-					<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+					<li><a class="dropdown-item" href="{{url('admin/breaktime')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
+					<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{ __('general.dlt') }}</a></li>
 					</ul></div>`
 				},targets: [4]
 				}

@@ -14,7 +14,7 @@ return [
     'pob'        => 'Tempat Lahir',
     'gender'     => 'Jenis Kelamin',
     'biomoth'    => 'Nama Ibu Kandung',
-    'phoneno'    => 'No Telepon',
+    'nophone'    => 'No Telepon',
     'address'    => 'Alamat',
     'city'       => 'Kota',
 ];

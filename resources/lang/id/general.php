@@ -3,7 +3,9 @@ return [
     /**Button */
     'crt'         => 'Tambah',
     'edt'         => 'Ubah',
+    'dlt'         => 'Hapus',
     'save'        => 'Simpan',
+    'srch'        => 'Cari',
     'actv'        => 'Aktif',
     'noactv'      => 'Tidak Aktif',
     'prvious'     => 'Kembali',
@@ -12,7 +14,7 @@ return [
     'province'    => 'Provinsi',
     'chsregion'   => 'Pilih Wilayah',
     'act'         => 'Aksi',
-    'yes'         => 'Iya',
+    'yes'         => 'Ya',
     'no'          => 'Tidak',
     'status'      => 'Status',
     'desc'        => 'Deskripsi',
@@ -32,5 +34,15 @@ return [
     'name'        => 'Nama',
     'category'    => 'Kategori',
     'notes'       => 'Catatan',
+    'chs'         => 'Pilih',
+    'from'        => 'Dari',
+    'To'          => 'Ke',
+    'showent'     => 'Tampilkan _MENU_ Baris',
+    'prev'        => 'Sebelumnya',
+    'next'        => 'Berikutnya',
+    'process'     => 'Proses',
+    'other'       => 'Lainya',
+    'start_date'  => 'Tanggal Mulai',
+    'finish_date' => 'Tanggal Selesai'
 
 ];
