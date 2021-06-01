@@ -13,8 +13,7 @@
             <div class="card-header">
                 <h3 class="card-title">{{ __('config.detpos') }}</h3>
                 <div class="pull-right card-tools">
-                    <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
-                            class="fa fa-reply"></i></a>
+                    <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i class="fa fa-reply"></i></a>
                 </div>
             </div>
             <div class="card-body card-profile">

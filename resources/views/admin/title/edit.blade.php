@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title',__('config.pos'))
+@section('title',__('position.pos'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -8,8 +8,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('title.index')}}">{{ __('config.pos') }}</a></li>
-<li class="breadcrumb-item active">{{ __('config.edt') }}</li>
+<li class="breadcrumb-item active"><a href="{{route('title.index')}}">{{ __('position.pos') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.edt') }}</li>
 @endpush
 
 
@@ -19,7 +19,7 @@
   <div class="col-lg-8">
     <div class="card card-{{ config('configs.app_theme')}} card-outline">
       <div class="card-header" style="height: 55px;">
-        <h3 class="card-title">{{ __('config.posdata') }}</h3>
+        <h3 class="card-title">{{ __('position.posdata') }}</h3>
       </div>
       <div class="card-body">
         <form id="form" method="post" action="{{ route('title.update', ['id'=> $title->id] )}}" autocomplete="off">
@@ -28,64 +28,64 @@
           <div class="row">
             <div class="col-sm-6">
               <!-- text input -->
-              <input type="hidden" value="{{$title->id}}" name="id"/>
+              <input type="hidden" value="{{$title->id}}" name="id" />
               <div class="form-group">
-                <label>{{ __('config.code') }} <b class="text-danger">*</b></label>
-                <input type="text" class="form-control" name="code" placeholder="{{ __('config.code') }}" value="{{ $title->code}}">
+                <label>{{ __('general.code') }} <b class="text-danger">*</b></label>
+                <input type="text" class="form-control" name="code" placeholder="{{ __('general.code') }}" value="{{ $title->code}}">
               </div>
             </div>
             <div class="col-sm-6">
               <div class="form-group">
-                <label>{{ __('config.name') }} <b class="text-danger">*</b></label>
-                <input type="text" class="form-control" name="name" placeholder="{{ __('config.name') }}" value="{{ $title->name }}">
+                <label>{{ __('general.name') }} <b class="text-danger">*</b></label>
+                <input type="text" class="form-control" name="name" placeholder="{{ __('general.name') }}" value="{{ $title->name }}">
               </div>
             </div>
           </div>
           <div style="height:165px;"></div>
-        </div>
-      </div>
-      <div class="overlay d-none">
-        <i class="fa fa-2x fa-sync-alt fa-spin"></i>
       </div>
     </div>
-    <div class="col-lg-4">
-      <div class="card card-{{ config('configs.app_theme')}} card-outline">
-        <div class="card-header">
-          <h3 class="card-title">{{ __('config.other') }}</h3>
-          <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
-            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i class="fa fa-reply"></i></a>
+    <div class="overlay d-none">
+      <i class="fa fa-2x fa-sync-alt fa-spin"></i>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card card-{{ config('configs.app_theme')}} card-outline">
+      <div class="card-header">
+        <h3 class="card-title">{{ __('position.other') }}</h3>
+        <div class="pull-right card-tools">
+          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <!-- text input -->
+            <div class="form-group">
+              <label>{{ __('general.notes') }}</label>
+              <textarea style="height: 120px;" class="form-control" name="notes" placeholder="{{ __('general.notes') }}">{{ $title->notes }}</textarea>
+            </div>
           </div>
         </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-sm-12">
-              <!-- text input -->
-              <div class="form-group">
-                <label>{{ __('config.notes') }}</label>
-                <textarea style="height: 120px;" class="form-control" name="notes" placeholder="{{ __('config.notes') }}">{{ $title->notes }}</textarea>
-              </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label>{{ __('general.status') }} <b class="text-danger">*</b></label>
+              <select class="form-control select2" required name="status" id="status">
+                <option value="1" @if($title->status == '1') selected @endif>{{ __('general.actv') }}</option>
+                <option value="0" @if($title->status == '0') selected @endif>{{ __('general.noactv') }}</option>
+              </select>
             </div>
           </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="form-group">
-                <label>{{ __('config.status') }} <b class="text-danger">*</b></label>
-                <select class="form-control select2" required name="status" id="status">
-                  <option value="1" @if($title->status == '1') selected @endif>{{ __('config.actv') }}</option>
-                  <option value="0" @if($title->status == '0') selected @endif>{{ __('config.noactv') }}</option>
-                </select>
-              </div>
-            </div>
-          </div>
+        </div>
         </form>
       </div>
       <div class="overlay d-none">
         <i class="fa fa-2x fa-sync-alt fa-spin"></i>
       </div>
     </div>
-  </form>
-</div>
+    </form>
+  </div>
 </div>
 
 @endsection
