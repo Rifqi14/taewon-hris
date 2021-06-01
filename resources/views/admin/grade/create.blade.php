@@ -1,14 +1,14 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Grade')
+@section('title', __('general.crt') . ' ' . __('grade.grade'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link rel="stylesheet" href="{{asset('adminlte/component/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('grade.index')}}">Grade</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item active"><a href="{{route('grade.index')}}">{{ __('grade.grade') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.crt') }}</li>
 @endpush
 
 
@@ -16,129 +16,122 @@
 <div class="row">
 	<div class="col-lg-8">
 		<div class="row">
-		    <div class="col-lg-12">
-		        <div class="card card-{{ config('configs.app_theme') }} card-outline">
-		            <div class="card-header" style="height:55px;">
-		                <h3 class="card-title">Grade</h3>
-		            </div>
-		            <div class="card-body">
-		                <form id="form" action="{{ route('grade.store')}}" method="post">
-		                    {{ csrf_field() }}
-		                    <div class="row">
-		                        <div class="col-sm-6">
-		                            <!-- text input -->
-		                            <div class="form-group">
-		                                <label>Code</label>
-		                                <input type="text" class="form-control" placeholder="Code" name="code">
-		                            </div>
-		                        </div>
-		                        <div class="col-sm-6">
-		                            <div class="form-group">
-		                                <label>Name</label>
-		                                <input type="text" name="name" class="form-control" placeholder="Name">
-		                            </div>
-		                        </div>
-		                    </div>
-		                    <div class="row">
-		                        <div class="col-sm-6">
-		                            <!-- text input -->
-		                            <div class="form-group">
-		                                <label>Order</label>
-		                                <input type="text" class="form-control" placeholder="Order" name="order" value="1"
-		                                    readonly>
-		                            </div>
-		                        </div>
-		                        <div class="col-sm-6">
-		                            <div class="form-group">
-		                                <label>Minimum Duration (Months)</label>
-		                                <div class="row">
-		                                    <div class="col-sm-4">
-		                                        <select class="form-control" name="min_duration" id="min_duration">
-		                                            <option value="yes">Yes</option>
-		                                            <option value="no">No</option>
-		                                        </select>
-		                                    </div>
-		                                    <div class="col-sm-8">
-		                                        <input type="number" id="month" name="month" placeholder="Month"
-		                                            class="form-control">
-		                                    </div>
-		                                </div>
-		                            </div>
-		                        </div>
-		                    </div>
-		            </div>
-					<div class="overlay d-none">
-						<i class="fa fa-2x fa-sync-alt fa-spin"></i>
-					</div>
-		        </div>
-		    </div>
 			<div class="col-lg-12">
-		        <div class="card">
-		            <div class="card-body">
-		                    <div class="row">
-		                        <div class="col-sm-6">
-		                            <!-- text input -->
-		                            <div class="form-group">
-		                                <label>UMK Base on</label>
-		                                <input type="text" class="form-control" id="bestsallary_id" name="bestsallary_id"
-		                                    data-placeholder="Select Basic UMK Base">
-		                            </div>
-		                        </div>
-		                        <div class="col-sm-6">
-		                            <div class="form-group">
-		                                <label>Basic UMK Value</label>
-		                                <input type="text" name="basic_umk_value" class="form-control"
-		                                    placeholder="Basic UMK Value" readonly="">
-		                            </div>
-		                        </div>
-		                    </div>
-		                    <div class="row">
-		                        <div class="col-sm-6">
-		                            <!-- text input -->
-		                            <div class="form-group">
-		                                <label>Additional Salary Type</label>
-		                                <select class="form-control select2" data-placeholder="Select Additional Type"
-		                                    name="additional_type" id="additional_type">
-		                                    <option value=""></option>
-		                                    <option value="percentage">Percentage</option>
-		                                    <option value="nominal">Nominal</option>
-		                                    <option value="none">None</option>
-		                                </select>
-		                            </div>
-		                        </div>
-		                        <div class="col-sm-6">
-		                            <div class="form-group">
-		                                <label>Additional Salary Value</label>
-		                                <input type="text" id="additional_value" class="form-control"
-		                                    placeholder="Additional Salary Value" name="additional_value" value="0">
-		                            </div>
-		                        </div>
-		                    </div>
-		                    <div class="row">
-		                        <div class="col-sm-12">
-		                            <!-- text input -->
-		                            <div class="form-group">
-		                                <label>Total Basic Salary</label>
-		                                <input type="text" class="form-control" placeholder="Total Basic Salary"
-		                                    name="basic_sallary" readonly="">
-		                            </div>
-		                        </div>
-		                    </div>
-		            </div>
+				<div class="card card-{{ config('configs.app_theme') }} card-outline">
+					<div class="card-header" style="height:55px;">
+						<h3 class="card-title">{{ __('grade.grade') }}</h3>
+					</div>
+					<div class="card-body">
+						<form id="form" action="{{ route('grade.store')}}" method="post">
+							{{ csrf_field() }}
+							<div class="row">
+								<div class="col-sm-6">
+									<!-- text input -->
+									<div class="form-group">
+										<label>{{ __('general.code') }}</label>
+										<input type="text" class="form-control" placeholder="{{ __('general.code') }}" name="code">
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label>{{ __('general.name') }}</label>
+										<input type="text" name="name" class="form-control" placeholder="{{ __('general.name') }}">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-6">
+									<!-- text input -->
+									<div class="form-group">
+										<label>{{ __('grade.order') }}</label>
+										<input type="text" class="form-control" placeholder="{{ __('grade.order') }}" name="order" value="1" readonly>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label>{{ __('grade.mindur') }}</label>
+										<div class="row">
+											<div class="col-sm-4">
+												<select class="form-control" name="min_duration" id="min_duration">
+													<option value="yes">{{ __('general.yes') }}</option>
+													<option value="no">{{ __('general.no') }}</option>
+												</select>
+											</div>
+											<div class="col-sm-8">
+												<input type="number" id="month" name="month" placeholder="{{ __('general.month') }}" class="form-control">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+					</div>
 					<div class="overlay d-none">
 						<i class="fa fa-2x fa-sync-alt fa-spin"></i>
 					</div>
-		        </div>
-		    </div>
+				</div>
+			</div>
+			<div class="col-lg-12">
+				<div class="card">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-sm-6">
+								<!-- text input -->
+								<div class="form-group">
+									<label>{{ __('grade.rgnslr') }}</label>
+									<input type="text" class="form-control" id="bestsallary_id" name="bestsallary_id" data-placeholder="{{ __('general.chs') . ' ' . __('grade.rgnslr') }}">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label>{{ __('grade.slrvalue') }}</label>
+									<input type="text" name="basic_umk_value" class="form-control" placeholder="{{ __('grade.slrvalue') }}" readonly="">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<!-- text input -->
+								<div class="form-group">
+									<label>{{ __('grade.addtype') }}</label>
+									<select class="form-control select2" data-placeholder="{{ __('grade.addtype') }}" name="additional_type" id="additional_type">
+										<option value=""></option>
+										<option value="percentage">Percentage</option>
+										<option value="nominal">Nominal</option>
+										<option value="none">None</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label>{{ __('grade.addvalue') }}</label>
+									<input type="text" id="additional_value" class="form-control" placeholder="{{ __('grade.addvalue') }}" name="additional_value" value="0">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<!-- text input -->
+								<div class="form-group">
+									<label>{{ __('grade.totalslr') }}</label>
+									<input type="text" class="form-control" placeholder="{{ __('grade.totalslr') }}" name="basic_sallary" readonly="">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="overlay d-none">
+						<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="col-lg-4">
 		<div class="card card-{{ config('configs.app_theme') }} card-outline">
 			<div class="card-header">
-				<h3 class="card-title">Other</h3>
+				<h3 class="card-title">{{ __('general.other') }}</h3>
 				<div class="pull-right card-tools">
-					<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i class="fa fa-save"></i></button>
-					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
+					<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
 				</div>
 			</div>
 			<div class="card-body">
@@ -146,31 +139,31 @@
 					<div class="col-sm-12">
 						<!-- text input -->
 						<div class="form-group">
-							<label>Notes</label>
-							<textarea class="form-control" style="height: 100px;" name="notes" placeholder="Notes"></textarea>
+							<label>{{ __('general.notes') }}</label>
+							<textarea class="form-control" style="height: 100px;" name="notes" placeholder="{{ __('general.notes') }}"></textarea>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="form-group">
-							<label>Status</label>
-							<select class="form-control select2" id="status" name="status" data-placeholder="Select Status">
+							<label>{{ __('general.status') }}</label>
+							<select class="form-control select2" id="status" name="status" data-placeholder="{{ __('general.chs') . ' ' . __('general.status') }}">
 								<option value=""></option>
-								<option value="1">Active</option>
-								<option value="0">Not Active</option>
+								<option value="1">{{ __('general.actv') }}</option>
+								<option value="0">{{ __('general.noactv') }}</option>
 							</select>
 						</div>
 					</div>
-				</form>
+					</form>
+				</div>
+				<div style="height: 240px;"></div>
 			</div>
-			<div style="height: 240px;"></div>
-		</div>
-		<div class="overlay d-none">
-			<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+			<div class="overlay d-none">
+				<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+			</div>
 		</div>
 	</div>
-</div>
 </div>
 @endsection
 @push('scripts')
