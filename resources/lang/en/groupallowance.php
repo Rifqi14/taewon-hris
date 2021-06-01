@@ -7,4 +7,5 @@ return[
     'type'     => 'Type',
     'add'      => 'Additional',
     'deduct'   => 'Deduction',
+    'coorslip' => 'Coordinate Slip',
 ];

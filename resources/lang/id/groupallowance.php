@@ -2,10 +2,10 @@
 return[
     /**Group Allowance*/
     'grpalw'      => 'Grup Tunjangan',
-    'grpalwlist'  => 'Grup Tunjangan List',
+    'alwlist'     => 'Daftar Grup Tunjangan',
     'alwgrp'      => 'Nama Grup Tunjangan',
     'type'        => 'Tipe',
     'add'         => 'Penambahan',
-    'deduct'      => 'Pengurangan',,
-    'create'      => 'Membuat Grup Tunjangan'
+    'deduct'      => 'Pengurangan',
+    'coorslip'    => 'Slip Koordinasi',
 ];
