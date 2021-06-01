@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Edit Overtime Scheme')
+@section('title', __('overtimescheme.otschem'))
 @section('stylesheets')
 <link rel="stylesheet" href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}">
 <link rel="stylesheet" href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}">
@@ -38,8 +38,8 @@
 </style>
 @endsection
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{ route('overtimescheme.index') }}">Overtime Scheme</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item"><a href="{{ route('overtimescheme.index') }}">{{ __('overtimescheme.otschem') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.edt') }}</li>
 @endpush
 
 @section('content')
@@ -48,11 +48,11 @@
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <div class="card-header">
-        <h3 class="card-title">Edit Overtime Scheme</h3>
+        <h3 class="card-title">{{ __('general.edt') }} {{ __('overtimescheme.otschem') }}</h3>
         <div class="pull-right card-tools">
-          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i
+          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i
               class="fa fa-save"></i></button>
-          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i
               class="fa fa-reply"></i></a>
         </div>
       </div>
@@ -60,13 +60,13 @@
         {{ csrf_field() }}
         {{ method_field('put') }}
         <div class="form-group row">
-          <label for="scheme_name" class="col-sm-2 col-form-label">Scheme Name <span class="text-red">*</span></label>
+          <label for="scheme_name" class="col-sm-2 col-form-label">{{ __('overtimescheme.schemname') }} <span class="text-red">*</span></label>
           <div class="col-sm-6">
             <input type="text" class="form-control" name="scheme_name" id="scheme_name" value="{{ $overtime->scheme_name }}" required>
           </div>
         </div>
         <div class="form-group row">
-          <label for="category" class="col-sm-2 col-form-label">Category <span class="text-red">*</span></label>
+          <label for="category" class="col-sm-2 col-form-label">{{ __('general.category') }} <span class="text-red">*</span></label>
           <div class="col-sm-6">
             <select name="category" id="category" class="form-control select2" style="width: 100%" aria-hidden="true" required>
               @foreach (config('enums.allowance_category') as $key=>$value)
@@ -76,16 +76,16 @@
           </div>
         </div>
         <div class="form-group row">
-          <label for="working_time" class="col-sm-2 col-form-label">Working Time <span class="text-red">*</span></label>
+          <label for="working_time" class="col-sm-2 col-form-label">{{ __('overtimescheme.worktime') }} <span class="text-red">*</span></label>
           <div class="col-sm-1">
             <input type="number" class="form-control" name="working_time" id="working_time" value="{{ $overtime->working_time }}" required>
           </div>
-          <p for="working_time" class="col-sm-2 col-form-label">Hours</p>
+          <p for="working_time" class="col-sm-2 col-form-label">{{ __('general.hour') }}</p>
         </div>
         <div class="form-group row">
-              <label for="type" class="col-sm-2 col-form-label">Type <b class="text-danger">*</b></label>
+              <label for="type" class="col-sm-2 col-form-label">{{ __('general.type') }} <b class="text-danger">*</b></label>
               <div class="col-sm-6">
-                <select name="type" id="type" class="form-control select2" style="width: 100%" data-placeholder="Select Type" required>
+                <select name="type" id="type" class="form-control select2" style="width: 100%" data-placeholder="{{ __('general.chs') }} {{ __('general.type') }}" required>
                   @foreach (config('enums.penalty_config_type') as $key => $item)
                   <option value="{{ $key }}" @if ($overtime->type == $key) selected @endif>{{ $item }}</option>
                   @endforeach
@@ -108,20 +108,20 @@
       <div class="tab-content" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-rule" role="tabpanel" aria-labelledby="nav-rule-tab">
           <div class="card-header">
-            <h3 class="card-title">Edit Overtime Rules</h3>
+            <h3 class="card-title">{{ __('general.edt') }} {{ __('overtimescheme.otrule') }}</h3>
           </div>
           <div class="card-body">
             <div class="form-group row">
-              <label for="recurrence" class="col-sm-2 col-form-label">Workdays</label>
+              <label for="recurrence" class="col-sm-2 col-form-label">{{ __('overtimescheme.workday') }}</label>
               <div class="col-sm-6">
                 <select name="workday[]" id="workday" class="form-control select2" style="width: 100%" multiple="multiple" required>
-                  <option value="Mon">Monday</option>
-                  <option value="Tue">Tuesday</option>
-                  <option value="Wed">Wednesday</option>
-                  <option value="Thu">Thursday</option>
-                  <option value="Fri">Friday</option>
-                  <option value="Sat">Saturday</option>
-                  <option value="Off">Day Off</option>
+                  <option value="Mon">{{ __('general.mon') }}</option>
+                  <option value="Tue">{{ __('general.tue') }}</option>
+                  <option value="Wed">{{ __('general.wed') }}</option>
+                  <option value="Thu">{{ __('general.thu') }}</option>
+                  <option value="Fri">{{ __('general.fri') }}</option>
+                  <option value="Sat">{{ __('general.sat') }}</option>
+                  <option value="Off">{{ __('general.day_off') }}</option>
                 </select>
               </div>
             </div>
@@ -129,9 +129,9 @@
               <thead>
                 <tr>
                   <th width="10">No</th>
-                  <th width="100">Hour</th>
-                  <th width="200">Amount</th>
-                  <th width="10">Action</th>
+                  <th width="100">{{ __('general.hour') }}</th>
+                  <th width="200">{{ __('overtimescheme.amount') }}</th>
+                  <th width="10">{{ __('general.act') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -140,11 +140,11 @@
                     <tr>
                       <td class="text-center align-middle number">{{ $key + 1 }}</td>
                       <td class="text-center align-middle">
-                        <div class="form-group mb-0"><input type="hidden" name="overtime_rules[{{ $key }}]" /><input type="number" placeholder="Hour"
+                        <div class="form-group mb-0"><input type="hidden" name="overtime_rules[{{ $key }}]" /><input type="number" placeholder="{{ __('general.hour') }}"
                             name="hour[{{ $key }}]" value="{{ $item->hour }}" class="form-control" required /></div>
                       </td>
                       <td class="text-center align-middle">
-                        <div class="form-group mb-0"><input type="number" placeholder="Amount" name="amount[{{ $key }}]" step="0.01" class="form-control" value="{{ $item->amount }}" required /></div>
+                        <div class="form-group mb-0"><input type="number" placeholder="{{ __('overtimescheme.amount') }}" name="amount[{{ $key }}]" step="0.01" class="form-control" value="{{ $item->amount }}" required /></div>
                       </td>
                       <td class="text-center align-middle"><a href="javascript:void(0)"
                           onclick="addList()" class="fa fa-plus fa-lg d-inline"></a> / <a href="javascript:void(0)" class="fa fa-trash fa-lg d-inline remove"></td>
@@ -154,7 +154,7 @@
                 <tr>
                   <td class="text-center align-middle number">1</td>
                   <td class="text-center align-middle">
-                    <div class="form-group mb-0"><input type="hidden" name="overtime_rules[0]" /><input type="number" placeholder="Hour"
+                    <div class="form-group mb-0"><input type="hidden" name="overtime_rules[0]" /><input type="number" placeholder="{{ __('general.hour') }}"
                         name="hour[0]" class="form-control" required /></div>
                   </td>
                   <td class="text-center align-middle">
@@ -170,14 +170,14 @@
         </div>
         <div class="tab-pane fade show" id="nav-department" role="tabpanel" aria-labelledby="nav-department-tab">
           <div class="card-header">
-            <h3 class="card-title">Department</h3>
+            <h3 class="card-title">{{ __('department.dep') }}</h3>
           </div>
           <div class="card-body">
             <table class="table table-striped table-bordered datatable" id="department-table" style="width: 100%">
               <thead>
                 <tr>
                   <th class="text-center align-middle">No</th>
-                  <th width="400">Department Name</th>
+                  <th width="400">{{ __('department.dep') }} {{ __('general.name') }}</th>
                   <th class="text-center align-middle">
                     <div class="customcheckbox" id="customcheckbox_department">
                       <input type="checkbox" name="checkall" onclick="checkAll(this)" class="checkall" id="checkall">
@@ -190,16 +190,16 @@
         </div>
         <div class="tab-pane fade show" id="nav-allowance" role="tabpanel" aria-labelledby="nav-allowance-tab">
               <div class="card-header">
-                <h3 class="card-title">Allowance</h3>
+                <h3 class="card-title">{{ __('allowance.alw') }}</h3>
               </div>
               <div class="card-body">
                 <table class="table table-striped table-bordered datatable" id="allowance-table" style="width: 100%">
                   <thead>
                     <tr>
                       <th width="10">No</th>
-                      <th width="200">Allowance</th>
-                      <th width="200">Category</th>
-                      <th width="200">Group</th>
+                      <th width="200">{{ __('allowance.alw') }}</th>
+                      <th width="200">{{ __('general.category') }}</th>
+                      <th width="200">{{ __('groupallowance.grpalw') }}</th>
                       <th width="10">
                         <div class="customcheckbox" id="customcheckbox_allowance">
                           <input type="checkbox" name="checkallallowance" class="checkall" onclick="checkAllAllowance(this)" id="checkallallowance">
@@ -541,8 +541,8 @@
     var number = $('#workday_table tr').length;
     var html = '<tr>';
         html += '<td class="text-center align-middle number">'+ number +'</td>';
-        html += '<td class="text-center align-middle"><div class="form-group mb-0"><input type="hidden" name="overtime_rules['+length+']"/><input type="number" placeholder="Hour" name="hour['+length+']" class="form-control" required/></div></td>';
-        html += '<td class="text-center align-middle"><div class="form-group mb-0"><input type="number" placeholder="Amount" name="amount['+length+']" class="form-control" step="0.01" required /></div></td>';
+        html += '<td class="text-center align-middle"><div class="form-group mb-0"><input type="hidden" name="overtime_rules['+length+']"/><input type="number" placeholder="{{ __('general.hour') }}" name="hour['+length+']" class="form-control" required/></div></td>';
+        html += '<td class="text-center align-middle"><div class="form-group mb-0"><input type="number" placeholder="{{ __('overtimescheme.amount') }}" name="amount['+length+']" class="form-control" step="0.01" required /></div></td>';
         html += '<td class="text-center align-middle"><a href="javascript:void(0)" class="fa fa-plus fa-lg d-inline" onclick="addList()"></a> / <a href="javascript:void(0)" class="fa fa-trash fa-lg d-inline remove"></a></td>';
         html += '</tr>'
     $('#workday_table').append(html);

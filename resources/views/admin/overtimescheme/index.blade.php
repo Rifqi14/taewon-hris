@@ -1,10 +1,10 @@
 @extends('admin.layouts.app')
-@section('title', 'Overtime Scheme')
+@section('title',__('overtimescheme.otschem'))
 @section('stylesheets')
 <link href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}" rel="stylesheet">
 @endsection
 @push('breadcrump')
-<li class="breadcrumb-item active">Overtime Scheme</li>
+<li class="breadcrumb-item active">{{ __('overtimescheme.otschem') }}</li>
 @endpush
 
 @section('content')
@@ -13,11 +13,11 @@
     <div class="col-lg-12">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Overtime Scheme List</h3>
+          <h3 class="card-title">{{ __('overtimescheme.otschem') }} {{ __('general.list') }}</h3>
           <div class="pull-right card-tools">
             <a href="{{route('overtimescheme.create')}}"
               class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip"
-              title="Add Data">
+              title="{{ __('general.crt') }}">
               <i class="fa fa-plus"></i>
             </a>
             <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
@@ -30,10 +30,10 @@
             <thead>
               <tr>
                 <th width="10">No</th>
-                <th width="100">Scheme Name</th>
-                <th width="100">Category</th>
-                <th width="100">Working Time</th>
-                <th width="10">Action</th>
+                <th width="100">{{ __('overtimescheme.schemname') }}</th>
+                <th width="100">{{ __('general.category') }}</th>
+                <th width="100">{{ __('overtimescheme.worktime') }}</th>
+                <th width="10">{{ __('general.act') }}</th>
               </tr>
             </thead>
           </table>
@@ -55,19 +55,19 @@
           <div class="row">
             <div class="col-md-12">
               <div class="form-group">
-                <label class="control-label" for="name">Scheme Name</label>
-                <input type="text" name="name" class="form-control" placeholder="Scheme Name">
+                <label class="control-label" for="name">{{ __('overtimescheme.schemename') }}</label>
+                <input type="text" name="name" class="form-control" placeholder="{{ __('overtimescheme.schemename') }}">
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group">
-                <label class="control-label" for="working_time">Working Time</label>
-                <input type="number" name="working_time" class="form-control" placeholder="Working Time">
+                <label class="control-label" for="working_time">{{ __('overtimesheme.worktime') }}</label>
+                <input type="number" name="working_time" class="form-control" placeholder="{{ __('overtimesheme.worktime') }}">
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group">
-                <label class="control-label" for="category">Category</label>
+                <label class="control-label" for="category">{{ __('general.category') }}</label>
                 <select name="category" id="category" class="form-control select2" style="width: 100%" aria-hidden="true">
                   <option value="">All</option>
                   @foreach(config('enums.allowance_category') as $key => $value)
@@ -171,6 +171,14 @@
       lengthChange:true,
       responsive: true,
       order: [[ 1, "asc" ]],
+      language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
       ajax: {
           url: "{{route('overtimescheme.read')}}",
           type: "GET",
@@ -196,8 +204,8 @@
                           <i class="fa fa-bars"></i>
                       </button>
                       <ul class="dropdown-menu dropdown-menu-right">
-                          <li><a class="dropdown-item" href="{{url('admin/overtimescheme')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-                          <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+                          <li><a class="dropdown-item" href="{{url('admin/overtimescheme')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
+                          <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{ __('general.dlt') }}</a></li>
                       </ul>
                   </div>`
           },targets: [4]
