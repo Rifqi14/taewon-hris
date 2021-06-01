@@ -59,4 +59,6 @@ return [
     'sun'         => 'Sunday',
     'day_off'     =>  'Day Off',
     'date'        => 'Date',
+    'month'       => 'Month',
+    'year'        => 'Tahun',
 ];

@@ -56,6 +56,7 @@ return [
     'sat'         => 'Sabtu',
     'sun'         => 'Minggu',
     'day_off'     => 'Hari Libur',
-    'date'       => 'Tanggal',
-
+    'date'        => 'Tanggal',
+    'month'       => 'Bulan',
+    'year'        => 'Tahun',
 ];
