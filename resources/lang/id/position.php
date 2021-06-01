@@ -7,4 +7,5 @@ return[
     'detpos'  => 'Detail Jabatan',
     'empdta'  => 'Data Pegawai',
     'nid'     => 'NID',
+    'other'   => 'Lainnya',
 ];
