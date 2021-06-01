@@ -14,7 +14,7 @@ return [
     'province'    => 'Provinsi',
     'chsregion'   => 'Pilih Wilayah',
     'act'         => 'Aksi',
-    'yes'         => 'Iya',
+    'yes'         => 'Ya',
     'no'          => 'Tidak',
     'status'      => 'Status',
     'desc'        => 'Deskripsi',
