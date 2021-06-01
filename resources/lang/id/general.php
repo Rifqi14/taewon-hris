@@ -41,5 +41,8 @@ return [
     'prev'        => 'Sebelumnya',
     'next'        => 'Berikutnya',
     'process'     => 'Proses',
+    'other'       => 'Lainya',
+    'start_date'  => 'Tanggal Mulai',
+    'finish_date' => 'Tanggal Selesai'
 
 ];

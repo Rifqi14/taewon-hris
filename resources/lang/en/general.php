@@ -13,7 +13,7 @@ return [
     'created'     => 'Created',
     'province'    => 'Province',
     'chsregion'   => 'Choose Region',
-    'action'      => 'Action',
+    'act'         => 'Action',
     'yes'         => 'Yes',
     'no'          => 'No',
     'status'      => 'Status',
@@ -43,4 +43,7 @@ return [
     'prev'        => 'Previous',
     'next'        => 'Next',
     'process'     => 'Processing',
+    'other'       => 'Other',
+    'start_date'  => 'Start Date',
+    'finish'      => 'Finish Date',
 ];
