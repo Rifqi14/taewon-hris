@@ -582,12 +582,12 @@ class DeliveryOrderController extends Controller
                 $arrived_time = date('H:i:s', strtotime($sheet->getCellByColumnAndRow(9, $row)->getValue()));
             }
             $department_id = 0;
-            $truck = Truck::whereRaw("upper(name) like '%$truck_name%'")->first();
+            $truck = Truck::whereRaw("upper(name) = '$truck_name'")->first();
             $driver = Employee::whereRaw("upper(nid) = '$nid'")->first();
             if($driver){
                 $department_id = $driver->department_id;
             }
-            $partner = Partner::whereRaw("upper(name) like '%$partner_name%' and department_id = $department_id")->first();
+            $partner = Partner::whereRaw("upper(name) = '$partner_name' and department_id = $department_id")->first();
             // $departure_time = $sheet->getCellByColumnAndRow(5, $row)->getValue();
             // $arrived_time = $sheet->getCellByColumnAndRow(6, $row)->getValue();
             $status = 1;
