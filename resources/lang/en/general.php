@@ -67,6 +67,10 @@ return [
     'print'       => 'Print',
     'imp'         => 'Import',
     'exp'         => 'Export',
+    'download'    => 'Download',
+    'template'    => 'Template',
+    'preview'     => 'Preview',
     'm'           => 'Male',
     'f'           => 'Female',
+    'file'        => 'File',
 ];

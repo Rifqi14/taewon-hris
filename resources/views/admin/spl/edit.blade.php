@@ -1,110 +1,109 @@
 @extends('admin.layouts.app')
 
-@section('title', 'SPL | Surat Pengajuan Lembur')
+@section('title', __('spl.spl'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('spl.index')}}">Surat Pengajuan Lembur</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item active"><a href="{{route('spl.index')}}">{{ __('spl.spl') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.edt') }}</li>
 @endpush
 
 
 @section('content')
 <form id="form" action="{{ route('spl.update',['id'=>$spl->id]) }}" autocomplete="off" method="post">
-<div class="row">
-    {{ csrf_field() }}
-    {{ method_field('put') }}
-	<div class="col-lg-8">
-		<div class="card card-{{ config('configs.app_theme') }} card-outline">
-			<div class="card-header" style="height: 55px;">
-				<h3 class="card-title">Surat Pengajuan Lembur Data</h3>
-			</div>
-			<div class="card-body">
-                <div class="row">
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label>Employee Name <b class="text-danger">*</b></label>
-                            <input type="text" name="employee_name" id="employee_name" class="form-control" placeholder="Employee Name" required>
-                        </div>
-                    </div>
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label>Date <b class="text-danger">*</b></label>
-							<input type="text" name="spl_date" id="spl_date" class="form-control datepicker" placeholder="Date" value=" {{ \Carbon\Carbon::parse($spl->spl_date)->format('d/m/Y')}}" required>
+	<div class="row">
+		{{ csrf_field() }}
+		{{ method_field('put') }}
+		<div class="col-lg-8">
+			<div class="card card-{{ config('configs.app_theme') }} card-outline">
+				<div class="card-header" style="height: 55px;">
+					<h3 class="card-title">{{ __('spl.spl') }} {{ __('general.data') }}</h3>
+				</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label>{{ __('employee.empname') }} <b class="text-danger">*</b></label>
+								<input type="text" name="employee_name" id="employee_name" class="form-control" placeholder="{{ __('employee.empname') }}" required>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label>{{ __('general.date') }} <b class="text-danger">*</b></label>
+								<input type="text" name="spl_date" id="spl_date" class="form-control datepicker" placeholder="{{ __('general.date') }}" value=" {{ \Carbon\Carbon::parse($spl->spl_date)->format('d/m/Y')}}" required>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label>{{ __('spl.startdt') }} <b class="text-danger">*</b></label>
+								<input placeholder="{{ __('spl.startdt') }}" name="start_date" id="start_date" class="form-control" value="{{ date('d/m/Y',strtotime($spl->start_date)) }}" />
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label>{{ __('spl.starttm') }} <b class="text-danger">*</b></label>
+								<input placeholder="{{ __('spl.starttm') }}" name="start_time" id="start_time" class="form-control timepicker" value="{{ date('H:i:s',strtotime($spl->start_time)) }}" />
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label>{{ __('spl.fnshdate') }} <b class="text-danger">*</b></label>
+								<input placeholder="{{ __('spl.fnshdate') }}" name="finish_date" id="finish_date" class="form-control" value="{{ date('d/m/Y',strtotime($spl->finish_date)) }}" />
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label>{{ __('spl.fnshtime') }} <b class="text-danger">*</b></label>
+								<input placeholder="{{ __('spl.fnshtime') }}" name="finish_time" id="finish_time" class="form-control timepicker" value="{{ date('H:i:s',strtotime($spl->finish_time)) }}" />
+							</div>
 						</div>
 					</div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Start Date <b class="text-danger">*</b></label>
-                            <input placeholder="Start Date" name="start_date" id="start_date" class="form-control" value="{{ date('d/m/Y',strtotime($spl->start_date)) }}"/>
-                        </div>
-                    </div>
-					<div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Start Time <b class="text-danger">*</b></label>
-                            <input placeholder="Start Time" name="start_time" id="start_time" class="form-control timepicker" value="{{ date('H:i:s',strtotime($spl->start_time)) }}"/>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Finish Date <b class="text-danger">*</b></label>
-                            <input placeholder="Finish Date" name="finish_date" id="finish_date" class="form-control" value="{{ date('d/m/Y',strtotime($spl->finish_date)) }}"/>
-                        </div>
-                    </div>
-					<div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Finish Time <b class="text-danger">*</b></label>
-                            <input placeholder="Finish Time" name="finish_time" id="finish_time" class="form-control timepicker" value="{{ date('H:i:s',strtotime($spl->finish_time)) }}"/>
-                        </div>
-                    </div>
-                </div>
+				</div>
+				<div class="overlay d-none">
+					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+				</div>
 			</div>
-			<div class="overlay d-none">
-				<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+		</div>
+		<div class="col-lg-4">
+			<div class="card card-{{ config('configs.app_theme') }} card-outline">
+				<div class="card-header">
+					<h3 class="card-title">{{ __('general.other') }}</h3>
+					<div class="pull-right card-tools">
+						<button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+						<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-sm-12">
+							<!-- text input -->
+							<div class="form-group">
+								<label>{{ __('general.notes') }}</label>
+								<textarea style="height: 120px;" class="form-control" name="notes" placeholder="{{ __('general.notes') }}">{{ $spl->notes }}</textarea>
+							</div>
+						</div>
+						<div class="col-sm-12">
+							<!-- text input -->
+							<div class="form-group">
+								<label>{{ __('general.status') }} <b class="text-danger">*</b></label>
+								<select name="status" id="status" class="form-control select2" data-placeholder="{{ __('general.chs') }} {{ __('general.status') }}" required>
+									<option @if($spl->status == 1) selected @endif value="1">{{ __('general.actv') }}</option>
+									<option @if($spl->status == 0) selected @endif value="0">{{ __('general.noactv') }}</option>
+								</select>
+							</div>
+						</div>
+						{{-- <div style="height: 165px;"></div> --}}
+					</div>
+				</div>
+				<div class="overlay d-none">
+					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+				</div>
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-4">
-		<div class="card card-{{ config('configs.app_theme') }} card-outline">
-			<div class="card-header">
-				<h3 class="card-title">Other</h3>
-				<div class="pull-right card-tools">
-					<button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
-					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
-				</div>
-			</div>
-			<div class="card-body">
-				<div class="row">
-					<div class="col-sm-12">
-						<!-- text input -->
-						<div class="form-group">
-							<label>Notes</label>
-							<textarea style="height: 120px;" class="form-control" name="notes" placeholder="Notes">{{ $spl->notes }}</textarea>
-						</div>
-					</div>
-                    <div class="col-sm-12">
-                        <!-- text input -->
-                        <div class="form-group">
-                            <label>Status <b class="text-danger">*</b></label>
-                            <select name="status" id="status" class="form-control select2"
-                                data-placeholder="Select Status" required>
-                                <option @if($spl->status == 1) selected @endif value="1">Active</option>
-								<option @if($spl->status == 0) selected @endif value="0">Non Active</option>
-                            </select>
-                        </div>
-                    </div>
-					{{-- <div style="height: 165px;"></div> --}}
-				</div>
-			</div>
-			<div class="overlay d-none">
-				<i class="fa fa-2x fa-sync-alt fa-spin"></i>
-			</div>
-		</div>
-	</div>
-</div>
 </form>
 @endsection
 @push('scripts')

@@ -64,7 +64,11 @@ return [
     'auto'        => 'Otomatis',
     'print'       => 'Cetak',
     'imp'         => 'Impor',
-    'exp'         => 'Expor',
+    'exp'         => 'Ekspor',
+    'download'    => 'Unduh',
+    'template'    => 'Templat',
+    'preview'     => 'Pratinjau',
     'm'           => 'Laki-Laki',
     'f'           => 'Perempuan',
+    'file'        => 'Berkas',
 ];

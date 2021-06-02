@@ -302,7 +302,7 @@ class DeliveryOrderController extends Controller
         $departure_date = changeDateFormat('Y-m-d', changeSlash($request->departure_date)).' '.$request->departure_time;
         $arrived_date = changeDateFormat('Y-m-d', changeSlash($request->arrived_date)).' '.$request->arrived_time;
         $partner_rit = Partner::find($request->customer);
-        $partner_collection = DeliveryOrder::select("delivery_orders.id")->leftJoin('partners','partners.id','=','delivery_orders.partner_id')->where('driver_id',$request->driver_id)->where('group', $request->kloter)->where('truck_id', $request->truck_id)->orderBy('partners.rit', 'desc')->get();
+        $partner_collection = DeliveryOrder::select("delivery_orders.id")->leftJoin('partners','partners.id','=','delivery_orders.partner_id')->where('driver_id',$request->driver_id)->where('group', $request->kloter)->where('delivery_orders.truck_id', $request->truck_id)->orderBy('partners.rit', 'desc')->get();
         // dd($partner_collection);
         $rule_count = DriverList::where("driver_lists.truck_id", "=", $request->truck_id)->count();
         // dd($rule_count);
@@ -332,7 +332,7 @@ class DeliveryOrderController extends Controller
                 $year =  date('Y', strtotime($departure_date));
             }
             $driverallowancelist = DriverAllowanceList::create([
-                'date'          => $$departure_date,
+                'date'          => $departure_date,
                 'rit'           => 100,
                 'truck_id'         => $request->truck_id,
                 'value'         => $partner_rit->rit,

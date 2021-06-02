@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Attendance Machine')
+@section('title', __('machine.machine'))
 @section('stylesheets')
 <link rel="stylesheet" href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Attendance Machine</li>
+<li class="breadcrumb-item active">{{ __('machine.machine') }}</li>
 @endpush
 
 @section('content')
@@ -14,10 +14,10 @@
   <div class="col-lg-12">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">Attendance Machine List</h3>
+        <h3 class="card-title">{{ __('machine.malist') }}</h3>
         <div class="pull-right card-tools">
-          <a href="{{ route('attendancemachine.create') }}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="Save"><i class="fa fa-plus"></i></a>
-          <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search"><i class="fa fa-search"></i></a>
+          <a href="{{ route('attendancemachine.create') }}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="{{ __('general.save') }}"><i class="fa fa-plus"></i></a>
+          <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="{{ __('general.prvious') }}"><i class="fa fa-search"></i></a>
         </div>
       </div>
       <div class="card-body">
@@ -25,8 +25,8 @@
           <thead>
             <tr>
               <th width="10">#</th>
-              <th width="200">Device Serial Number</th>
-              <th width="200">Point Name</th>
+              <th width="200">{{ __('machine.device') }}</th>
+              <th width="200">{{ __('machine.point') }}</th>
               <th width="10">#</th>
             </tr>
           </thead>
@@ -50,17 +50,17 @@
           <div class="row">
             <div class="col-md-12">
               <div class="form-group">
-                <label for="deviceSN" class="control-label">Device Serial Number</label>
-                <input type="text" name="deviceSN" id="deviceSN" class="form-control" placeholder="Device Serial Number">
+                <label for="deviceSN" class="control-label">{{ __('machine.device') }}</label>
+                <input type="text" name="deviceSN" id="deviceSN" class="form-control" placeholder="{{ __('machine.device') }}">
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group">
-                <label for="pointName" class="control-label">Point Name</label>
-                <select name="pointName" id="pointName" class="form-control select2" aria-placeholder="Point Name">
+                <label for="pointName" class="control-label">{{ __('machine.point') }}</label>
+                <select name="pointName" id="pointName" class="form-control select2" aria-placeholder="{{ __('machine.point') }}">
                   <option value=""></option>
-                  <option value="MASUK">Masuk</option>
-                  <option value="KELUAR">Keluar</option>
+                  <option value="MASUK">{{ __('machine.in') }}</option>
+                  <option value="KELUAR">{{ __('machine.out') }}</option>
                 </select>
               </div>
             </div>
@@ -68,7 +68,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="submit" form="form-search" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i class="fa fa-search"></i></button>
+        <button type="submit" form="form-search" class="btn btn-{{ config('configs.app_theme') }}" title="{{ __('general.srch') }}"><i class="fa fa-search"></i></button>
       </div>
     </div>
   </div>
@@ -91,6 +91,9 @@
       lengthChange:true,
       responsive: true,
       order: [[ 2, "asc" ]],
+      language: {
+        url: language_choosen == 'id' ? urlLocaleId : '',
+      },
       ajax: {
         url: "{{ route('attendancemachine.read') }}",
         type: "GET",

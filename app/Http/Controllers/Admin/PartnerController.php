@@ -24,6 +24,7 @@ class PartnerController extends Controller
         $length = $request->limit;
         $name = strtoupper($request->name);
         $truck_id = $request->truck_id;
+        $department_id = $request->department_id;
 
         //Count Data
         $query = DB::table('partners');
@@ -31,6 +32,9 @@ class PartnerController extends Controller
         $query->whereRaw("upper(name) like '%$name%'");
         if($truck_id){
             $query->where('truck_id',$truck_id);
+        }
+        if($department_id){
+            $query->where('department_id',$department_id);
         }
         $recordsTotal = $query->count();
 
@@ -40,6 +44,9 @@ class PartnerController extends Controller
         $query->whereRaw("upper(name) like '%$name%'");
         if($truck_id){
             $query->where('truck_id',$truck_id);
+        }
+        if($department_id){
+            $query->where('department_id',$department_id);
         }
         $query->offset($start);
         $query->limit($length);
