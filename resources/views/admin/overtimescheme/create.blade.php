@@ -101,8 +101,8 @@
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
 				<div class="nav nav-tabs" id="nav-tab" role="tablist">
 					<a class="nav-item nav-link active" id="nav-rule-tab" data-toggle="tab" href="#nav-rule" role="tab" aria-controls="nav-rule" aria-selected="true">{{ __('overtimescheme.otrule') }}</a>
-					<a class="nav-item nav-link" id="nav-department-tab" data-toggle="tab" href="#nav-department" role="tab" aria-controls="nav-department" aria-selected="false">Department</a>
-          <a class="nav-item nav-link" id="nav-allowance-tab" data-toggle="tab" href="#nav-allowance" role="tab" aria-controls="nav-allowance" aria-selected="false">Allowance</a>
+					<a class="nav-item nav-link" id="nav-department-tab" data-toggle="tab" href="#nav-department" role="tab" aria-controls="nav-department" aria-selected="false">{{ __('department.dep') }}</a>
+          <a class="nav-item nav-link" id="nav-allowance-tab" data-toggle="tab" href="#nav-allowance" role="tab" aria-controls="nav-allowance" aria-selected="false">{{ __('allowance.alw') }}</a>
 				</div>
 				<div class="tab-content" id="nav-tabContent">
 					<div class="tab-pane fade show active" id="nav-rule" role="tabpanel" aria-labelledby="nav-rule-tab">
@@ -159,7 +159,7 @@
 								<thead>
 									<tr>
 										<th class="text-center align-middle">No</th>
-										<th width="400">{{ __('department.dep') }} {{ __('general.name') }}</th>
+										<th width="400">{{ __('department.depname') }}</th>
 										<th class="text-center align-middle">
 											<div class="customcheckbox" id="customcheckbox_department">
 												<input type="checkbox" name="checkall" class="checkall" id="checkall">

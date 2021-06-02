@@ -61,4 +61,8 @@ return [
     'year'        => 'Tahun',
     'fiter'       => 'Pencarian',
     'truck'       => 'Truk',
+    'auto'        => 'Otomatis',
+    'print'       => 'Cetak',
+    'imp'         => 'Impor',
+    'exp'         => 'Expor',
 ];

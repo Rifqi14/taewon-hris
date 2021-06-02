@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Employee')
+@section('title',__('employee.employ'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link rel="stylesheet" href="{{asset('adminlte/component/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}">
@@ -39,7 +39,7 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Employee</li>
+<li class="breadcrumb-item active">{{ __('employee.employ') }}</li>
 @endpush
 
 @section('content')
@@ -48,14 +48,14 @@
 		<div class="col-lg-12">
 			<div class="card card-{{ config('configs.app_theme') }} card-outline">
 				<div class="card-header">
-					<h3 class="card-title">Employee List</h3>
+					<h3 class="card-title">{{ __('employee.emplist') }}</h3>
 					<!-- tools box -->
 					<div class="pull-right card-tools">
 						<!-- <a href="{{route('employees.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip"
 							title="Tambah">
 							<i class="fa fa-file-import"></i>
 						</a> -->
-						<a href="{{route('employees.create')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="Tambah"><i class="fa fa-plus"></i></a>
+						<a href="{{route('employees.create')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="{{ __('general.crt') }}"><i class="fa fa-plus"></i></a>
 
 					<a href="{{route('employees.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="Import" style="cursor: pointer;"><i class="fa fa-file-import"></i></a>
 					<a href="javascript:void(0)" onclick="printmass()" class="btn btn-sm btn-info text-white" title="Print Mass"><i class="fa fa-print"></i></a>
@@ -74,8 +74,8 @@
               <div class="col-md-4">
                 <div class="col-md-12">
                   <div class="form-group">
-					<label class="control-label" for="employee_name">Searching For</label>
-					<input type="text" name="employee_name" id="employee_name" class="form-control filter" placeholder="Searching For">
+					<label class="control-label" for="employee_name">{{ __('employee.search') }}</label>
+					<input type="text" name="employee_name" id="employee_name" class="form-control filter" placeholder="{{ __('employee.search') }}">
 					{{-- <select name="employee_name" id="employee_name" class="form-control select2" style="width: 100%" aria-hidden="true" data-placeholder="Employee Name">
 						<option value=""></option>
 						@foreach ($employees as $employee)
@@ -90,14 +90,14 @@
                 <div class="col-md-12">
                   <div class="form-group">
                     <label class="control-label" for="nid">NIK</label>
-                    <input type="text" class="form-control" placeholder="Searching For" name="nid" id="nid">
+                    <input type="text" class="form-control" placeholder="NIK" name="nid" id="nid">
                   </div>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="col-md-12">
                   <div class="form-group">
-                    <label class="control-label" for="birthday">Birthday</label>
+                    <label class="control-label" for="birthday">{{ __('employee.birthday') }}</label>
                     <div class="form-row">
                       <div class="col-sm-4">
                           <select class="form-control select2" onclick="" placeholder="Month" multiple name="month" id="month">
@@ -144,8 +144,8 @@
               <div class="col-md-4">
                 <div class="col-md-12">
                   <div class="form-group">
-					<label class="control-label" for="department">Department</label>
-					<select name="department" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Department">
+					<label class="control-label" for="department">{{ __('department.dep') }}</label>
+					<select name="department" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{ __('department.dep') }}">
 						@foreach ($departments as $department)
 						<option value="{{ $department->name }}">{{ $department->path }}</option>
 						@endforeach
@@ -156,8 +156,8 @@
               <div class="col-md-4">
                 <div class="col-md-12">
                   <div class="form-group">
-                    <label class="control-label" for="type">Position</label>
-					<select name="position" id="position" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Position">
+                    <label class="control-label" for="type">{{ __('employee.position') }}</label>
+					<select name="position" id="position" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{ __('employee.position') }}">
 						@foreach ($titles as $title)
 						<option value="{{ $title->id }}">{{ $title->name }}</option>
 						@endforeach
@@ -168,8 +168,8 @@
               <div class="col-md-4">
                 <div class="col-md-12">
                   <div class="form-group">
-                    <label class="control-label" for="workgroup">Workgroup Combination</label>
-					<select name="workgroup" id="workgroup" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Workgroup Combination">
+                    <label class="control-label" for="workgroup">{{ __('employee.workcomb') }}</label>
+					<select name="workgroup" id="workgroup" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{ __('employee.workcomb') }}">
 						@foreach ($workgroups as $workgroup)
 						<option value="{{ $workgroup->id }}">{{ $workgroup->name }}</option>
 						@endforeach
@@ -183,8 +183,8 @@
                     <label class="control-label" for="workgroup">Status</label>
 					<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Status">
 						<option value=""></option>
-						<option value="1" selected>Active</option>
-						<option value="0">Non Active</option>
+						<option value="1" selected>{{ __('general.actv') }}</option>
+						<option value="0">{{ __('general.noactv') }}</option>
 					  </select>
                   </div>
                 </div>
@@ -196,16 +196,16 @@
 						<tr>
 							<th width="10">#</th>
 							<th width="100">NIK</th>
-							<th width="250">Employee Name</th>
-							<th width="150">Department</th>
-							<th width="200">Position</th>
-							<th width="250">Workgroup Combination</th>
+							<th width="250">{{ __('employee.empname') }}</th>
+							<th width="150">{{ __('department.dep') }}</th>
+							<th width="200">{{ __('employee.position') }}</th>
+							<th width="250">{{ __('employee.workcomb') }}</th>
 							<th>
 								<div class="customcheckbox">
 									<input type="checkbox" class="checkall">
 								</div>
 							</th>
-							<th width="100">Action</th>
+							<th width="100">{{ __('general.act') }}</th>
 						</tr>
 					</thead>
 				</table>
@@ -222,7 +222,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Filter</h4>
+				<h4 class="modal-title">{{ __('general.filter') }}</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			</div>
 			<div class="modal-body">
@@ -230,14 +230,14 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="name">Employee Nama</label>
-								<input type="text" name="name" class="form-control" placeholder="Nama">
+								<label class="control-label" for="name">{{ __('employee.empname') }}</label>
+								<input type="text" name="name" class="form-control" placeholder="{{ __('employee.empname') }}">
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
 								<label class="control-label" for="name">NIK</label>
-								<input type="text" name="name" class="form-control" placeholder="Nama">
+								<input type="text" name="name" class="form-control" placeholder="NIK">
 							</div>
 						</div>
 						<div class="col-md-12">
@@ -260,7 +260,7 @@
         <div class="modal-content">
             <div class="modal-header no-print">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                <h4 class="modal-title">Print</h4>
+                <h4 class="modal-title">{{ __('general.print') }}</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
