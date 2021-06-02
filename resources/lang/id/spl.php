@@ -10,4 +10,5 @@ return [
     'fnshtime'  => 'Jam Berakhir',
     'duration'  => 'Durasi',
     'notes'     => 'Catatan',
+    'error'     => 'Pesan Error'
 ];

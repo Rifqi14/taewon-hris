@@ -72,4 +72,5 @@ return [
     'preview'     => 'Preview',
     'm'           => 'Male',
     'f'           => 'Female',
+    'file'        => 'File',
 ];

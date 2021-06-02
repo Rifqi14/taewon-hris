@@ -10,4 +10,5 @@ return [
     'fnshtime'  => 'Finish Time',
     'duration'  => 'Duration',
     'notes'     => 'Notes',
+    'error'     => 'Error Message',
 ];
