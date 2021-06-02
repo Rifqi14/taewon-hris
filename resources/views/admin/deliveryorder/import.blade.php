@@ -43,9 +43,10 @@
         <table class="table table-striped table-bordered" style="width:100%" id="table-item">
           <thead>
             <tr>
+              <th width="100">NID</th>
               <th width="100">Driver Name</th>
               <th width="100">Police No</th>
-              <th width="100">Type Truck</th>
+              <th width="100">Truck</th>
               <th width="50">Kloter</th>
               <th width="100">Customer</th>
               <th width="100">Departure Date</th>
@@ -117,11 +118,12 @@
       count=0;
       $.each(items, function() {
           table_item.row.add([
+            this.nid,
             this.driver_name,
             this.police_no,
-            this.type_truck,
+            this.truck_name,
             this.kloter,
-            this.customer,
+            this.partner_name,
             this.departure_date,
             this.departure_time,
             this.arrived_date,
@@ -156,7 +158,7 @@
           order: [[ 0, "asc" ]],
           columnDefs: [
               {
-                  orderable: false,targets:[0,1,2,3,4,5,6,7,8,9,10]
+                  orderable: false,targets:[0,1,2,3,4,5,6,7,8,9,10,11]
               },
               { render: function ( data, type, row ) {
                   if (row[10] == 1) {
@@ -164,9 +166,9 @@
                   } else {
                     return '<span class="badge badge-danger"><i class="fa fa-times"></i></span>';
                   }
-                },targets: [10]
+                },targets: [11]
               },
-              { className: "text-center", targets: [10] },
+              { className: "text-center", targets: [11] },
           ],
       });
 
@@ -253,7 +255,9 @@
               }
               var deliveryorders =[];
               $.each(items, function() {
-                deliveryorders.push(this);
+                if(this.status == 1){
+                  deliveryorders.push(this);
+                }
               });
               $.ajax({
                   url:$('#form').attr('action'),
