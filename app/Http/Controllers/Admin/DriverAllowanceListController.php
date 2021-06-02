@@ -26,7 +26,7 @@ class DriverAllowanceListController extends Controller
         // $query = DeliveryOrder::where('driver_id', $employee_id)->whereMonth('departure_time', $month)->whereYear('departure_time', $year);
         $query = DB::table('driver_allowance_lists');
         $query->select('driver_allowance_lists.*');
-        $query->leftJoin('trucks','trucks.id','=','driver_driver_allowance_lists.truck_id');
+        $query->leftJoin('trucks','trucks.id','=','driver_allowance_lists.truck_id');
         $query->where('driver_allowance_lists.driver_id', $employee_id);
         $query->where('driver_allowance_lists.month', $month);
         $query->where('driver_allowance_lists.year', $year);
@@ -35,7 +35,7 @@ class DriverAllowanceListController extends Controller
         // Select Pagination
         $query = DB::table('driver_allowance_lists');
         $query->select('driver_allowance_lists.*','trucks.name as truck_name');
-        $query->leftJoin('trucks','trucks.id','=','driver_driver_allowance_lists.truck_id');
+        $query->leftJoin('trucks','trucks.id','=','driver_allowance_lists.truck_id');
         $query->where('driver_allowance_lists.driver_id', $employee_id);
         $query->where('driver_allowance_lists.month', $month);
         $query->where('driver_allowance_lists.year', $year);
