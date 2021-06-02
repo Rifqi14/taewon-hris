@@ -64,5 +64,8 @@ return [
     'auto'        => 'Otomatis',
     'print'       => 'Cetak',
     'imp'         => 'Impor',
-    'exp'         => 'Expor',
+    'exp'         => 'Ekspor',
+    'download'    => 'Download',
+    'template'    => 'Templat',
+    'preview'     => 'Pratinjau',
 ];
