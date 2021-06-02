@@ -626,7 +626,7 @@ class AttendanceApprovalController extends Controller
         $query->where('employee_allowances.status', '=', 1);
         $query->where('allowance_categories.type', '=', 'additional');
         $query->where('employee_allowances.type', '!=', 'automatic');
-        $query->where('allowances.reccurances', '=', 'monthly');
+        $query->where('allowances.reccurance', '=', 'monthly');
         $query->groupBy('group_allowances.name', 'employee_allowances.is_penalty', 'allowances.group_allowance_id', 'employee_allowances.type');
         $query->orderByRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) desc");
         $allowances = $query->get();
