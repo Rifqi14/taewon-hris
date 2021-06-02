@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', {{ __('leaveapproval.editleav') }})
+@section('title', __('leaveapproval.editleav'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
