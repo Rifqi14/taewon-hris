@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Attendance Cut Off')
+@section('title',__('cutoff.cutoff'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Attendance Cut Off</li>
+<li class="breadcrumb-item active">{{ __('cutoff.cutoff') }}</li>
 @endpush
 
 @section('content')
@@ -15,14 +15,14 @@
 		<div class="col-lg-12">
 			<div class="card ">
 				<div class="card-header">
-					<h3 class="card-title">Attendance Cut Off</h3>
+					<h3 class="card-title">{{ __('cutoff.cutoff') }}</h3>
 					<!-- tools box -->
 					<div class="pull-right card-tools">
 						<a href="{{route('attendancecutoff.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white"
-							data-toggle="tooltip" title="Tambah">
+							data-toggle="tooltip" title="{{ __('general.crt') }}">
 							<i class="fa fa-plus"></i>
 						</a>
-						<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
+						<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="{{ __('general.filter') }}">
 							<i class="fa fa-search"></i>
 						</a>
 					</div>
@@ -33,12 +33,12 @@
 						<thead>
 							<tr>
 								<th width="10">#</th>
-								<th width="150">Name</th>
-								<th width="100">Opstion</th>
-								<th width="100">Duration</th>
-                                <th width="100">Hour</th>
+								<th width="150">{{ __('general.name') }}</th>
+								<th width="100">{{ __('cutoff.option') }}</th>
+								<th width="100">{{ __('cutoff.duration') }}</th>
+                                <th width="100">{{ __('general.hour') }}</th>
 								<th width="50">Status</th>
-								<th width="10">Action</th>
+								<th width="10">{{ __('general.act') }}</th>
 							</tr>
 						</thead>
 					</table>
@@ -55,7 +55,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Filter</h4>
+				<h4 class="modal-title">{{ __('general.filter') }}</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			</div>
 			<div class="modal-body">
@@ -63,8 +63,8 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="name">Name</label>
-								<input type="text" class="form-control" name="name" id="name" placeholder="Name">
+								<label class="control-label" for="name">{{ __('general.name') }}</label>
+								<input type="text" class="form-control" name="name" id="name" placeholder="{{ __('general.name') }}">
 							</div>
 						</div>
 					</div>
@@ -94,6 +94,14 @@
 			lengthChange:true,
 			responsive: true,
 			order: [[ 6, "desc" ]],
+			language: {
+				lengthMenu: `{{ __('general.showent') }}`,
+				processing: `{{ __('general.process') }}`,
+				paginate: {
+					previous: `{{ __('general.prev') }}`,
+					next: `{{ __('general.next') }}`,
+				}
+			},
 			ajax: {
 				url: "{{route('attendancecutoff.read')}}",
 				type: "GET",
@@ -117,9 +125,9 @@
 				{
 					render: function (data, type, row) {
 						if (row.status == 1) {
-							return `<span class="badge badge-success">Active</span>`
+							return `<span class="badge badge-success">{{ __('general.actv') }}</span>`
 						} else {
-							return `<span class="badge badge-warning">Non Active</span>`
+							return `<span class="badge badge-warning">{{ __('general.noactv') }}</span>`
 						}
 					},
 					targets: [5]
@@ -130,8 +138,8 @@
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-					<li><a class="dropdown-item" href="{{url('admin/attendancecutoff')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-					<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+					<li><a class="dropdown-item" href="{{url('admin/attendancecutoff')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
+					<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{ __('general.dlt') }}</a></li>
 					</ul></div>`
 				},targets: [6]
 				}

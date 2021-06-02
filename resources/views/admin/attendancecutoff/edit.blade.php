@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Attendance Cut Off ')
+@section('title',__('cutoff.cutoff'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
@@ -39,8 +39,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('breaktime.index')}}">Attendance Cut Off</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item"><a href="{{route('breaktime.index')}}">{{ __('cutoff.cutoff') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.edt') }}</li>
 @endpush
 
 @section('content')
@@ -50,7 +50,7 @@
       <div class="col-lg-8">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header" style="height: 57px;">
-            <h3 class="card-title">Attendance Cut Off</h3>
+            <h3 class="card-title">{{ __('general.edt') }} {{ __('cutoff.cutoff') }}</h3>
           </div>
           <div class="card-body">
             @method('put')
@@ -58,14 +58,14 @@
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Name <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" name="name" id="name" value="{{$attendancecutoff->name}}" placeholder="Name">
+                  <label>{{ __('general.name') }} <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" name="name" id="name" value="{{$attendancecutoff->name}}" placeholder="{{ __('general.name') }}">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Option <b class="text-danger">*</b></label>
-                  <select name="option" id="option" class="form-control select2" data-placeholder="Select Option">
+                  <label>{{ __('cutoff.option') }} <b class="text-danger">*</b></label>
+                  <select name="option" id="option" class="form-control select2" data-placeholder="{{ __('general.chs') }} {{ __('cutoff.option') }}">
                       <option value=""></option>
                       <option value="Flexible" @if ($attendancecutoff->option == 'Flexible') selected @endif>Flexible</option>
                       <option value="Static" @if ($attendancecutoff->option == 'Static') selected @endif>Static</option>
@@ -76,13 +76,13 @@
             <div class="row">
               <div class="col-sm-6" id="duration-section">
                 <div class="form-group">
-                  <label>Duration(Hour)<b class="text-danger">*</b></label>
+                  <label>{{ __('cutoff.duration') }}({{ __('general.hour') }})<b class="text-danger">*</b></label>
                   <input type="number" class="form-control" value="{{$attendancecutoff->duration}}" id="duration" name="duration">
                 </div>
               </div>
               <div class="col-sm-6" id="hour-section">
                 <div class="form-group">
-                  <label>Hour<b class="text-danger">*</b></label>
+                  <label>{{ __('general.hour') }}<b class="text-danger">*</b></label>
                   <input class="form-control timepicker" id="hour" name="hour" value="{{$attendancecutoff->hour}}">
                 </div>
               </div>
@@ -96,10 +96,10 @@
       <div class="col-lg-4">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header">
-            <h3 class="card-title">Other</h3>
+            <h3 class="card-title">{{ __('general.other') }}</h3>
             <div class="pull-right card-tools">
-              <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Save"><i class="fa fa-save"></i></button>
-              <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Back"><i class="fa fa-reply"></i></a>
+              <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+              <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
             </div>
           </div>
           <div class="card-body">
@@ -108,8 +108,8 @@
                 <div class="col-sm-12">
                   <!-- text input -->
                   <div class="form-group">
-                    <label>Notes</label>
-                    <textarea class="form-control" name="description" placeholder="Notes" value="{{$attendancecutoff->description}}">{{$attendancecutoff->description}}</textarea>
+                    <label>{{ __('general.notes') }}</label>
+                    <textarea class="form-control" name="description" placeholder="{{ __('general.notes') }}" value="{{$attendancecutoff->description}}">{{$attendancecutoff->description}}</textarea>
                   </div>
                 </div>
               </div>
@@ -117,10 +117,10 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label>Status <b class="text-danger">*</b></label>
-                    <select name="status" id="status" class="form-control select2" data-placeholder="Select Status">
+                    <select name="status" id="status" class="form-control select2" data-placeholder="{{ __('general.chs') }} Status">
                       <option value=""></option>
-                      <option @if ($attendancecutoff->status == 1) selected @endif value="1">Aktif</option>
-                      <option @if ($attendancecutoff->status == 0) selected @endif value="0">Non Aktif</option>
+                      <option @if ($attendancecutoff->status == 1) selected @endif value="1">{{ __('general.actv') }}</option>
+                      <option @if ($attendancecutoff->status == 0) selected @endif value="0">{{ __('general.noactv') }}</option>
                     </select>
                   </div>
                 </div>
@@ -132,14 +132,14 @@
       <div class="col-lg-12">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header">
-            <h3 class="card-title">Department</h3>
+            <h3 class="card-title">{{ __('department.dep') }}</h3>
           </div>
           <div class="card-body">
             <table class="table table-striped table-bordered datatable" id="department-table" style="width: 100%">
               <thead>
                 <tr>
                   <th>No</th>
-                  <th>Department Name</th>
+                  <th>{{ __('department.dep') }} {{ __('general.name') }}</th>
                   <th>
                     <div class="customcheckbox">
                       <input type="checkbox" name="checkall" class="checkall" id="checkall" onclick="checkAll(this)">
@@ -292,6 +292,14 @@
         lengtChange: true,
         responsive: true,
         order: [[1, "asc"]],
+        language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
         lengthMenu: [ 100, 250, 500, 1000 ],
         ajax: {
             url: "{{ route('attendancecutoffdepartment.read') }}",
