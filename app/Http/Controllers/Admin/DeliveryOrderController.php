@@ -289,8 +289,6 @@ class DeliveryOrderController extends Controller
      */
     public function store(Request $request)
     {
-        echo "asd";
-        return;
         $id = $this->getLatestId();
         DB::beginTransaction();
         $deliveryorder = DeliveryOrder::create([
@@ -306,6 +304,14 @@ class DeliveryOrderController extends Controller
             'arrived_time'  => $request->arrived_time,
             'group'         => $request->kloter
         ]);
+
+        $employee = Employee::where('id',$request->driver_id)->first();
+        $user_id = Auth::user()->id;
+        // Departure Date
+        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Delivery Order","Add","Departure Date",$request->departure_date.' '.$request->departure_time);
+        // Arrived Date
+        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Delivery Order","Add","Arrived Date",$request->arrived_date.' '.$request->arrived_time);
+
         $departure_date = changeDateFormat('Y-m-d', changeSlash($request->departure_date)).' '.$request->departure_time;
         $arrived_date = changeDateFormat('Y-m-d', changeSlash($request->arrived_date)).' '.$request->arrived_time;
         $partner_rit = Partner::find($request->customer);

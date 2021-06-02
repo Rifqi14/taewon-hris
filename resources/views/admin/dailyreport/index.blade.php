@@ -213,6 +213,7 @@
           <form id="form-scheme" action="{{ route('attendanceapproval.quickupdate') }}" class="form-horizontal no-gutters" method="post" autocomplete="off">
             {{ csrf_field() }}
             <input type="hidden" name="scheme_id" id="scheme_id">
+            <input type="hidden" name="type_action" value="approved">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
@@ -240,6 +241,7 @@
           <form id="form-shift" action="{{ route('attendanceapproval.quickupdate') }}" class="form-horizontal no-gutters" method="post" autocomplete="off">
             {{ csrf_field() }}
             <input type="hidden" name="attendance_id" id="attendance_id">
+            <input type="hidden" name="type_action" value="approved">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
@@ -267,6 +269,7 @@
           <form id="form-in" action="{{ route('attendanceapproval.quickupdate') }}" class="form-horizontal no-gutters" method="post" autocomplete="off">
             {{ csrf_field() }}
             <input type="hidden" name="first_in_id" id="first_in_id">
+            <input type="hidden" name="type_action" value="approved">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
@@ -294,6 +297,7 @@
           <form id="form-out" action="{{ route('attendanceapproval.quickupdate') }}" class="form-horizontal no-gutters" method="post" autocomplete="off">
             {{ csrf_field() }}
             <input type="hidden" name="first_out_id" id="first_out_id">
+            <input type="hidden" name="type_action" value="approved">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
@@ -321,6 +325,7 @@
           <form id="form-worktime" action="{{ route('attendanceapproval.quickupdate') }}" class="form-horizontal no-gutters" method="post" autocomplete="off">
             {{ csrf_field() }}
             <input type="hidden" name="workingtime_id" id="workingtime_id">
+            <input type="hidden" name="type_action" value="approved">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
