@@ -213,7 +213,7 @@
                     <th class="th-slip p-0 text-content">{{$coordinate52 ? $coordinate52->leave_name : 'Kosong'}}</th>
                     <th class="th-slip p-0 text-content">{{$coordinate53 ? $coordinate53->leave_name : 'Kosong'}}</th>
                     <th class="th-slip p-0 text-content">{{$coordinate54 ? $coordinate54->name : 'Kosong'}}</th>
-                    <th class="th-slip p-0 text-content">{{$coordinate55 ? $coordinate56->name : 'Kosong'}}</th>
+                    <th class="th-slip p-0 text-content">{{$coordinate55 ? $coordinate55->name : 'Kosong'}}</th>
                     <th class="th-slip p-0 text-content">Pinjaman ACC</th>
                     <th class="th-slip p-0 text-content">Jumlah</th>
                 </tr>
