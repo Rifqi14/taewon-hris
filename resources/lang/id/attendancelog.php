@@ -11,9 +11,10 @@ return [
     'employid' => 'ID Pegawai',
     'firstnm'  => 'Nama Depan',
     'lastnm'   => 'Nama Belakang',
-    'device'   => 'First Name',
+    'device'   => 'Nama Mesin',
     'attentp'  => 'Tipe Kehadiran',
     'choose'   => 'Pilih Dokumen',
     'browse'   => 'Telusuri',
-
+    'period'   => 'Periode',
+    'time'     => 'Waktu',
 ];

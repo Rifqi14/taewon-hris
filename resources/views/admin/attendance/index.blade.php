@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Attendance Log')
+@section('title', __('attendancelog.atlist'))
 @section('stylesheets')
 <link href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
@@ -19,7 +19,7 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Attendance Log</li>
+<li class="breadcrumb-item active">{{ __('attendancelog.atlist') }}</li>
 @endpush
 
 @section('content')
@@ -29,12 +29,12 @@
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         {{-- Title, Button Approve & Search --}}
         <div class="card-header">
-          <h3 class="card-title">List Attendance</h3>
+          <h3 class="card-title">{{ __('attendancelog.atlist') }}</h3>
           <div class="pull-right card-tools">
-            <a href="{{route('attendance.syncpage')}}" class="btn btn-warning text-white btn-sm" data-toggle="tooltip" title="Synchronize">
+            <a href="{{route('attendance.syncpage')}}" class="btn btn-warning text-white btn-sm" data-toggle="tooltip" title="{{ __('attendancelog.sync') }}">
               <i class="fa fa-sync-alt"></i>
             </a>
-            <a href="{{route('attendance.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="Import">
+            <a href="{{route('attendance.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="{{ __('general.imp') }}">
               <i class="fa fa-file-import"></i>
             </a>
           </div>
@@ -48,20 +48,20 @@
             </div>
             <div class="employee-container"></div>
             <div class="form-group col-md-4">
-              <label for="employee_id">Employee Name</label>
-              <input type="text" class="form-control" id="employee_id" placeholder="Employee Name" name="employee_id">
+              <label for="employee_id">{{ __('employee.empname') }}</label>
+              <input type="text" class="form-control" id="employee_id" placeholder="{{ __('employee.empname') }}" name="employee_id">
               <div id="employee-container"></div>
             </div>
             <div class="form-group col-md-4">
-              <label for="working_group">Working Group Type</label>
-              <select name="working_group" id="working_group" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Select Working Group">
+              <label for="working_group">{{ __('attendancelog.worktype') }}</label>
+              <select name="working_group" id="working_group" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{ __('general.chs') }} {{ __('attendancelog.worktype') }}">
                 <option value="Shift">Shift</option>
                 <option value="Non-Shift">Non Shift</option>
               </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="status">Status</label>
-              <select name="status" id="status" class="form-control select2" multiple style="width: 100%" aria-hidden="true" data-placeholder="Select Status">
+              <label for="status">{{ __('general.status') }}</label>
+              <select name="status" id="status" class="form-control select2" multiple style="width: 100%" aria-hidden="true" data-placeholder="{{ __('general.chs') }} {{ __('general.status') }}">
                 <option value=""></option>
                 <option value="1">Scan In</option>
                 <option value="0">Scan Out</option>
@@ -69,12 +69,12 @@
             </div>
             <div class="form-row col-md-4">
               <div class="form-group col-md-6">
-                <label for="from">From</label>
-                <input type="text" class="form-control datepicker" id="from" placeholder="From" name="from">
+                <label for="from">{{ __('general.from') }}</label>
+                <input type="text" class="form-control datepicker" id="from" placeholder="{{ __('general.from') }}" name="from">
               </div>
               <div class="form-group col-md-6">
-                <label for="to">To</label>
-                <input type="text" class="form-control datepicker" id="to" placeholder="To" name="to">
+                <label for="to">{{ __('general.To') }}</label>
+                <input type="text" class="form-control datepicker" id="to" placeholder="{{ __('general.To') }}" name="to">
               </div>
             </div>
           </div>
@@ -82,12 +82,12 @@
             <thead>
               <tr>
                 <th width="5">No</th>
-                <th width="5">Date Time</th>
-                <th width="150">Employee Name</th>
-                <th width="5">Machine ID</th>
-                <th width="80">Working Group Type</th>
-                <th width="10">Working Time</th>
-                <th width="2">Status</th>
+                <th width="5">{{ __('attendancelog.datetime') }}</th>
+                <th width="150">{{ __('employee.empname') }}</th>
+                <th width="5">{{ __('attendancelog.device') }}</th>
+                <th width="80">{{ __('attendancelog.worktype') }}</th>
+                <th width="10">{{ __('attendancelog.worktime') }}</th>
+                <th width="2">{{ __('general.status') }}</th>
                 <th width="100">Batch Upload</th>
               </tr>
             </thead>
@@ -141,6 +141,9 @@
       responsive: true,
       order: [[ 1, "asc" ]],
       lengthMenu: [ 100, 250, 500, 1000, 2000 ],
+      language: {
+        url: language_choosen == 'id' ? urlLocaleId : '',
+      },
       ajax: {
         url: "{{route('attendance.read')}}",
         type: "GET",
