@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Import Attendance')
+@section('title', __('attendancelog.import'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -12,23 +12,22 @@
 </style>
 @endsection
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('attendanceapproval.index')}}">Attendance Log</a></li>
-<li class="breadcrumb-item active">Import Attendance</li>
+<li class="breadcrumb-item"><a href="{{route('attendanceapproval.index')}}">{{ __('attendancelog.attenlog') }}</a></li>
+<li class="breadcrumb-item active">{{ __('attendancelog.import') }}</li>
 @endpush
 @section('content')
 <div class="row">
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline" id="attendance-preview">
       <div class="card-header">
-        <h3 class="card-title">Import Preview</h3>
+        <h3 class="card-title">{{ __('attendancelog.preview') }}</h3>
         <!-- tools card -->
         <div class="pull-right card-tools">
-          <a onclick="addImport()" class="btn btn-{{ config('configs.app_theme') }} text-white btn-sm"
-            data-toggle="tooltip" title="Import data">
+          <a onclick="addImport()" class="btn btn-{{ config('configs.app_theme') }} text-white btn-sm" data-toggle="tooltip" title="{{ __('general.chs') }} {{ __('general.file') }}">
             <i class="fa fa-file-import"></i>
           </a>
-          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i class="fa fa-save"></i></button>
-          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
+          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
         </div>
         <!-- /. tools -->
       </div>
@@ -38,7 +37,7 @@
         <div class="pull-right offset-8">
           <div class="row">
             <div class="col-2 col-form-label">
-              <label>Period</label>
+              <label>{{ __('attendancelog.period') }}</label>
             </div>
             <div class="col-5">
               <select class="form-control select2" name="month" id="month">
@@ -59,7 +58,7 @@
             <div class="col-5">
               <select name="year" class="form-control select2" id="year">
                 @for ($i = date('Y'); $i >= 1990; $i--)
-                  <option value="{{ $i }}">{{ $i }}</option>
+                <option value="{{ $i }}">{{ $i }}</option>
                 @endfor
               </select>
             </div>
@@ -68,13 +67,13 @@
         <table class="table table-striped table-bordered" style="width:100%" id="table-item">
           <thead>
             <tr>
-              <th width="100">Employee ID</th>
-              <th width="100">First Name</th>
-              <th width="100">Last Name</th>
+              <th width="100">{{ __('attendancelog.employid') }}</th>
+              <th width="100">{{ __('attendancelog.firstnm') }}</th>
+              <th width="100">{{ __('attendancelog.lastnm') }}</th>
               <th width="50">Area</th>
-              <th width="100">Device Name</th>
-              <th width="100">Attendance Type</th>
-              <th width="100">Date</th>
+              <th width="100">{{ __('attendancelog.device') }}</th>
+              <th width="100">{{ __('attendancelog.attentp') }}</th>
+              <th width="100">{{ __('general.date') }}</th>
               <th width="50">Status</th>
             </tr>
           </thead>
@@ -91,7 +90,7 @@
     <div class="overlay-wrapper">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Choose File</h4>
+          <h4 class="modal-title">{{ __('general.chs') }} {{ __('general.file') }}</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -110,8 +109,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button form="form-import" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Import"><i
-              class="fa fa-file-import"></i></button>
+          <button form="form-import" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="{{ __('general.imp') }}"><i class="fa fa-file-import"></i></button>
         </div>
       </div>
       <div class="overlay d-none">
@@ -195,6 +193,9 @@
           autoWidth:false,
           paging:true,
           order: [[ 0, "asc" ]],
+          language: {
+            url: language_choosen == 'id' ? urlLocaleId : '',
+          },
           columnDefs: [
               {
                   orderable: false,targets:[3]
