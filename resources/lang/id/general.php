@@ -65,4 +65,6 @@ return [
     'print'       => 'Cetak',
     'imp'         => 'Impor',
     'exp'         => 'Expor',
+    'm'           => 'Laki-Laki',
+    'f'           => 'Perempuan',
 ];

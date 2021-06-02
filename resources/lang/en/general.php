@@ -67,4 +67,6 @@ return [
     'print'       => 'Print',
     'imp'         => 'Import',
     'exp'         => 'Export',
+    'm'           => 'Male',
+    'f'           => 'Female',
 ];
