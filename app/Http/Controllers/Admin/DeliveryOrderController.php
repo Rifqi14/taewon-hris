@@ -105,12 +105,14 @@ class DeliveryOrderController extends Controller
             'driver.department_id',
             'driver.workgroup_id',
             'departments.name as department_name',
-            'work_groups.name as workgroup_name'
+            'work_groups.name as workgroup_name',
+            'trucks.name as truck_name'
         );
         $query->leftJoin('employees as driver', 'driver.id', '=', 'delivery_orders.driver_id');
         $query->leftJoin('departments', 'departments.id', '=', 'driver.department_id');
         $query->leftJoin('work_groups', 'work_groups.id', '=', 'driver.workgroup_id');
         $query->leftJoin('partners', 'partners.id', '=', 'delivery_orders.partner_id');
+        $query->leftJoin('trucks', 'trucks.id', '=', 'delivery_orders.truck_id');
         if ($driver_id != "") {
             $query->whereRaw("upper(driver.name) like '%$driver_id%'");
         }
@@ -154,12 +156,14 @@ class DeliveryOrderController extends Controller
             'driver.department_id',
             'driver.workgroup_id',
             'departments.name as department_name',
-            'work_groups.name as workgroup_name'
+            'work_groups.name as workgroup_name',
+            'trucks.name as truck_name'
         );
         $query->leftJoin('employees as driver', 'driver.id', '=', 'delivery_orders.driver_id');
         $query->leftJoin('departments', 'departments.id', '=', 'driver.department_id');
         $query->leftJoin('work_groups', 'work_groups.id', '=', 'driver.workgroup_id');
         $query->leftJoin('partners', 'partners.id', '=', 'delivery_orders.partner_id');
+        $query->leftJoin('trucks', 'trucks.id', '=', 'delivery_orders.truck_id');
         if ($driver_id != "") {
             $query->whereRaw("upper(driver.name) like '%$driver_id%'");
         }
