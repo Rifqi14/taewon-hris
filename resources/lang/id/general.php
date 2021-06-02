@@ -68,4 +68,7 @@ return [
     'download'    => 'Download',
     'template'    => 'Templat',
     'preview'     => 'Pratinjau',
+    'exp'         => 'Expor',
+    'm'           => 'Laki-Laki',
+    'f'           => 'Perempuan',
 ];

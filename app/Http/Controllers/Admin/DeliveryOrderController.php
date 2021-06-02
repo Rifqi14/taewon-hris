@@ -299,8 +299,10 @@ class DeliveryOrderController extends Controller
             'arrived_time'  => $request->arrived_time,
             'group'         => $request->kloter
         ]);
+        $departure_date = changeDateFormat('Y-m-d', changeSlash($request->departure_date)).' '.$request->departure_time;
+        $arrived_date = changeDateFormat('Y-m-d', changeSlash($request->arrived_date)).' '.$request->arrived_time;
         $partner_rit = Partner::find($request->customer);
-        $partner_collection = DeliveryOrder::select("delivery_orders.id")->leftJoin('partners','partners.id','=','delivery_orders.partner_id')->where('driver_id',$request->driver_id)->where('group', $request->kloter)->where('type_truck', $request->type_truck)->orderBy('partners.rit', 'desc')->get();
+        $partner_collection = DeliveryOrder::select("delivery_orders.id")->leftJoin('partners','partners.id','=','delivery_orders.partner_id')->where('driver_id',$request->driver_id)->where('group', $request->kloter)->where('truck_id', $request->truck_id)->orderBy('partners.rit', 'desc')->get();
         // dd($partner_collection);
         $rule_count = DriverList::where("driver_lists.truck_id", "=", $request->truck_id)->count();
         // dd($rule_count);
@@ -320,17 +322,17 @@ class DeliveryOrderController extends Controller
 
             $readConfigs = Config::where('option', 'cut_off')->first();
             $cut_off = $readConfigs->value;
-            if (date('d', strtotime(dbDate($request->departure_time))) > $cut_off) {
-                $month = date('m', strtotime(dbDate($request->departure_time)));
-                $year = date('Y', strtotime(dbDate($request->departure_time)));
+            if (date('d', strtotime($departure_date)) > $cut_off) {
+                $month = date('m', strtotime($departure_date));
+                $year = date('Y', strtotime($departure_date));
                 $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
                 $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
             } else {
-                $month =  date('m', strtotime(dbDate($request->departure_time)));
-                $year =  date('Y', strtotime(dbDate($request->departure_time)));
+                $month =  date('m', strtotime($departure_date));
+                $year =  date('Y', strtotime($departure_date));
             }
             $driverallowancelist = DriverAllowanceList::create([
-                'date'          => dbDate($request->departure_time),
+                'date'          => $$departure_date,
                 'rit'           => 100,
                 'truck_id'         => $request->truck_id,
                 'value'         => $partner_rit->rit,

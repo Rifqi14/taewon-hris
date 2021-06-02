@@ -70,4 +70,6 @@ return [
     'download'    => 'Download',
     'template'    => 'Template',
     'preview'     => 'Preview',
+    'm'           => 'Male',
+    'f'           => 'Female',
 ];
