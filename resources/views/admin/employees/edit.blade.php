@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit Employee')
+@section('title',__('employee.employ'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -21,8 +21,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('employees.index')}}">Employee</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item active"><a href="{{route('employees.index')}}">{{ __('employee.employ') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.edt') }}</li>
 @endpush
 
 
@@ -32,15 +32,15 @@
 		<div class="card card-{{config('configs.app_theme')}} card-outline">
 			<div class="card-header p-0 border-bottom-0">
 				<ul class="nav nav-tabs" id="tab-employee">
-					<li class="nav-item"><a class="nav-link active" href="#personal" data-toggle="tab">Personal Data</a></li>
-					<li class="nav-item"><a class="nav-link" href="#contract" data-toggle="tab">Contract</a></li>
-					<li class="nav-item"><a class="nav-link" href="#career" data-toggle="tab">Career and Job Experience</a></li>
-					<li class="nav-item"><a class="nav-link" href="#education" data-toggle="tab">Education and Training</a></li>
-					<li class="nav-item"><a class="nav-link" href="#insurance" data-toggle="tab">Insurance</a></li>
-					<li class="nav-item"><a class="nav-link" href="#document" data-toggle="tab">Document</a></li>
-					<li class="nav-item"><a class="nav-link" href="#salary" data-toggle="tab">Salary</a></li>
-					<li class="nav-item"><a class="nav-link" href="#leave" data-toggle="tab">Leave</a></li>
-					<li class="nav-item"><a class="nav-link" href="#attendance" data-toggle="tab">Attendance</a></li>
+					<li class="nav-item"><a class="nav-link active" href="#personal" data-toggle="tab">{{ __('employee.person_data') }}</a></li>
+					<li class="nav-item"><a class="nav-link" href="#contract" data-toggle="tab">{{ __('employee.contract') }}</a></li>
+					<li class="nav-item"><a class="nav-link" href="#career" data-toggle="tab">{{ __('employee.career_je') }}</a></li>
+					<li class="nav-item"><a class="nav-link" href="#education" data-toggle="tab">{{ __('employee.education') }}</a></li>
+					<li class="nav-item"><a class="nav-link" href="#insurance" data-toggle="tab">{{ __('employee.insurance') }}</a></li>
+					<li class="nav-item"><a class="nav-link" href="#document" data-toggle="tab">{{ __('employee.document') }}</a></li>
+					<li class="nav-item"><a class="nav-link" href="#salary" data-toggle="tab">{{ __('employee.salary') }}</a></li>
+					<li class="nav-item"><a class="nav-link" href="#leave" data-toggle="tab">{{ __('employee.leave') }}</a></li>
+					<li class="nav-item"><a class="nav-link" href="#attendance" data-toggle="tab">{{ __('employee.attend') }}</a></li>
 				</ul>
 			</div>
 			<div class="tab-content">
@@ -50,9 +50,9 @@
 						{{ csrf_field() }}
 						@method('PUT')
 						<div class="card-header">
-							<h3 class="card-title">Employee Data</h3>
+							<h3 class="card-title">{{ __('employee.empdata') }}</h3>
 							<div class="pull-right card-tools">
-								<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i class="fa fa-save"></i></button>
+								<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
 								<a href="#" onClick="backurl()" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
 							</div>
 						</div>
@@ -64,8 +64,8 @@
 											<div class="row">
 												<div class="col-sm-6">
 													<div class="form-group">
-														<label>Name <b class="text-danger">*</b></label>
-														<input type="text" class="form-control" placeholder="Name" name="name" value="{{ $employee->name}}" required>
+														<label>{{ __('general.name') }} <b class="text-danger">*</b></label>
+														<input type="text" class="form-control" placeholder="{{ __('general.name') }}" name="name" value="{{ $employee->name}}" required>
 													</div>
 												</div>
 												<div class="col-sm-6">
@@ -79,15 +79,15 @@
 											<div class="row">
 												<div class="col-sm-6">
 													<div class="form-group">
-														<label>Department <b class="text-danger">*</b></label>
-														<input type="text" class="form-control" name="department_id" id="department_id" data-placeholder="Select Department" required required>
+														<label>{{ __('department.dep') }} <b class="text-danger">*</b></label>
+														<input type="text" class="form-control" name="department_id" id="department_id" data-placeholder="Select {{ __('department.dep') }}" required required>
 													</div>
 												</div>
 												<div class="col-sm-6">
 													<!-- text input -->
 													<div class="form-group">
-														<label>Position <b class="text-danger">*</b></label>
-														<input type="text" class="form-control" name="title_id" id="title_id" data-placeholder="Select Position" required>
+														<label>{{ __('position.pos') }} <b class="text-danger">*</b></label>
+														<input type="text" class="form-control" name="title_id" id="title_id" data-placeholder="Select {{ __('position.pos') }}" required>
 													</div>
 												</div>
 											</div>
@@ -95,14 +95,14 @@
 												<div class="col-sm-6">
 													<!-- text input -->
 													<div class="form-group">
-														<label>Work Group Combination <b class="text-danger">*</b></label>
-														<input type="text" class="form-control" name="workgroup_id" id="workgroup_id" data-placeholder="Select Workgroup" required>
+														<label>{{ __('employee.workcomb') }} <b class="text-danger">*</b></label>
+														<input type="text" class="form-control" name="workgroup_id" id="workgroup_id" data-placeholder="Select {{ __('employee.workcomb') }}" required>
 													</div>
 												</div>
 												<div class="col-sm-6">
 													<div class="form-group">
-														<label>Grade <b class="text-danger">*</b></label>
-														<input type="text" class="form-control" name="grade_id" id="grade_id" data-placeholder="Select Grade" required>
+														<label>{{ __('employee.grade') }} <b class="text-danger">*</b></label>
+														<input type="text" class="form-control" name="grade_id" id="grade_id" data-placeholder="Select {{ __('employee.grade') }}" required>
 													</div>
 												</div>
 											</div>
@@ -112,7 +112,7 @@
 												<div class="col-sm-12">
 													<!-- text input -->
 													<div class="form-group">
-														<label for="app_logo" class="col-sm-5 control-label">Image</label>
+														<label for="app_logo" class="col-sm-5 control-label">{{ __('employee.img') }}</label>
 														<div class="col-sm-12" style="border:1px solid #bdc3c7; border-radius:5px; height:203px; padding-top:10px;">
 															<input type="file" class="form-control" name="photo" id="picture" accept="image/*" value="{{ $employee->photo }}" />
 														</div>
@@ -126,7 +126,7 @@
 							<div class="row">
 								<div class="col-8">
 									<div class="card-header">
-										<h3 class="card-title">Personal Data</h3>
+										<h3 class="card-title">{{ __('employee.person_data') }}</h3>
 									</div>
 									<div class="card-body">
 										<div class="row">
@@ -147,20 +147,20 @@
 											<div class="col-sm-6">
 												<!-- text input -->
 												<div class="form-group">
-													<label>Place Of Birth <b class="text-danger">*</b></label>
-													<input type="text" class="form-control" name="place_of_birth" id="place_of_birth" data-placeholder="Select Place Of Birth" required>
+													<label>{{ __('employee.pob') }} <b class="text-danger">*</b></label>
+													<input type="text" class="form-control" name="place_of_birth" id="place_of_birth" data-placeholder="Select {{ __('employee.pob') }}" required>
 												</div>
 											</div>
 											<div class="col-sm-6">
 												<div class="form-group">
-													<label>Birthday <b class="text-danger">*</b></label>
+													<label>{{ __('employee.birthday') }} <b class="text-danger">*</b></label>
 													<div class="input-group">
 														<div class="input-group-prepend">
 															<span class="input-group-text">
 																<i class="far fa-calendar-alt"></i>
 															</span>
 														</div>
-														<input type="text" required name="birth_date" class="form-control datepicker" id="birth_date" placeholder="Birthday" value="{{ date('d/m/Y',strtotime($employee->birth_date)) }}">
+														<input type="text" required name="birth_date" class="form-control datepicker" id="birth_date" placeholder="{{ __('employee.birthday') }}" value="{{ date('d/m/Y',strtotime($employee->birth_date)) }}">
 													</div>
 												</div>
 											</div>
@@ -168,18 +168,18 @@
 										<div class="row">
 											<div class="col-sm-6">
 												<div class="form-group">
-													<label>Gender <b class="text-danger">*</b></label>
-													<select name="gender" id="gender" class="form-control select2" data-placeholder="Select Gender">
-														<option value="male" @if($employee->gender == 'male') selected @endif>Male</option>
-														<option value="female" @if($employee->gender == 'female') selected @endif>Female</option>
+													<label>{{ __('employee.gender') }} <b class="text-danger">*</b></label>
+													<select name="gender" id="gender" class="form-control select2" data-placeholder="Select {{ __('employee.gender') }}">
+														<option value="male" @if($employee->gender == 'male') selected @endif>{{ __('general.m') }}</option>
+														<option value="female" @if($employee->gender == 'female') selected @endif>{{ __('general.f') }}</option>
 													</select>
 												</div>
 											</div>
 											<div class="col-sm-6">
 												<!-- text input -->
 												<div class="form-group">
-													<label> Biological Mother's Name <b class="text-danger">*</b></label>
-													<input type="text" class="form-control" placeholder=" Biological Mother's Name" name="mother_name" value="{{ $employee->mother_name }}">
+													<label> {{ __('employee.biomoth') }} <b class="text-danger">*</b></label>
+													<input type="text" class="form-control" placeholder=" {{ __('employee.biomoth') }}" name="mother_name" value="{{ $employee->mother_name }}">
 												</div>
 											</div>
 										</div>
@@ -187,8 +187,8 @@
 											<div class="col-sm-6">
 												<!-- text input -->
 												<div class="form-group">
-													<label>BPJS Tenaga Kerja</label>
-													<input type="text" class="form-control" placeholder="BPJS Tenaga Kerja" name="bpjs_tenaga_kerja" value="{{ $employee->bpjs_tenaga_kerja }}">
+													<label>{{ __('employee.bpjs') }}</label>
+													<input type="text" class="form-control" placeholder="{{ __('employee.bpjs') }}" name="bpjs_tenaga_kerja" value="{{ $employee->bpjs_tenaga_kerja }}">
 												</div>
 											</div>
 											<div class="col-sm-6">
@@ -209,8 +209,8 @@
 											<div class="col-sm-6">
 												<!-- text input -->
 												<div class="form-group">
-													<label>Phone No <b class="text-danger">*</b></label>
-													<input type="number" required class="form-control" placeholder="Phone No" name="phone" value="{{ $employee->phone }}">
+													<label>{{ __('employee.nophone') }} <b class="text-danger">*</b></label>
+													<input type="number" required class="form-control" placeholder="{{ __('employee.nophone') }}" name="phone" value="{{ $employee->phone }}">
 												</div>
 											</div>
 											<div class="col-sm-6">
@@ -231,23 +231,23 @@
 											<div class="col-sm-12">
 												<!-- text input -->
 												<div class="form-group">
-													<label>Address <b class="text-danger">*</b></label>
-													<input type="text" required class="form-control" placeholder="Address" name="address" value="{{ $employee->address }}">
+													<label>{{ __('employee.address') }} <b class="text-danger">*</b></label>
+													<input type="text" required class="form-control" placeholder="{{ __('employee.address') }}" name="address" value="{{ $employee->address }}">
 												</div>
 											</div>
 										</div>
 										<div class="row">
 											<div class="col-sm-6">
 												<div class="form-group">
-													<label>Province <b class="text-danger">*</b></label>
-													<input type="text" required class="form-control" name="province_id" id="province_id" data-placeholder="Pilih Province" required>
+													<label>{{ __('general.province') }} <b class="text-danger">*</b></label>
+													<input type="text" required class="form-control" name="province_id" id="province_id" data-placeholder="Pilih {{ __('general.province') }}" required>
 												</div>
 											</div>
 											<div class="col-sm-6">
 												<!-- text input -->
 												<div class="form-group">
-													<label>City <b class="text-danger">*</b></label>
-													<input type="text" required class="form-control" name="region_id" id="region_id" data-placeholder="Select Region" required>
+													<label>{{ __('employee.city') }} <b class="text-danger">*</b></label>
+													<input type="text" required class="form-control" name="region_id" id="region_id" data-placeholder="Select {{ __('employee.city') }}" required>
 												</div>
 											</div>
 										</div>
@@ -255,21 +255,21 @@
 											<div class="col-sm-6">
 												<!-- text input -->
 												<div class="form-group">
-													<label>Account Nos</label>
+													<label>{{ __('employee.acc_no') }}</label>
 													<div class="row">
 														<div class="col-sm-4">
 															<input type="text" class="form-control" name="account_bank" placeholder="Bank" value="{{ $employee->account_bank }}">
 														</div>
 														<div class="col-sm-8">
-															<input type="number" class="form-control" name="account_no" placeholder="Account No" value="{{ $employee->account_no }}">
+															<input type="number" class="form-control" name="account_no" placeholder="{{ __('employee.acc_no') }}" value="{{ $employee->account_no }}">
 														</div>
 													</div>
 												</div>
 											</div>
 											<div class="col-sm-6">
 												<div class="form-group">
-													<label>Account Names</label>
-													<input type="text" class="form-control" placeholder="Account Name" name="account_name" value="{{ $employee->account_name }}">
+													<label>{{ __('employee.acc_name') }}</label>
+													<input type="text" class="form-control" placeholder="{{ __('employee.acc_name') }}" name="account_name" value="{{ $employee->account_name }}">
 												</div>
 											</div>
 										</div>
@@ -277,14 +277,14 @@
 											<div class="col-sm-6">
 												<!-- text input -->
 												<div class="form-group">
-													<label>Emergency Contact No <b class="text-danger">*</b></label>
-													<input type="number" required class="form-control" placeholder="Emergency Contact No" name="emergency_contact_no" value="{{ $employee->emergency_contact_no }}">
+													<label>{{ __('employee.emr_no') }} <b class="text-danger">*</b></label>
+													<input type="number" required class="form-control" placeholder="{{ __('employee.emr_no') }}" name="emergency_contact_no" value="{{ $employee->emergency_contact_no }}">
 												</div>
 											</div>
 											<div class="col-sm-6">
 												<div class="form-group">
-													<label>Emergency Contact Name <b class="text-danger">*</b></label>
-													<input type="text" required class="form-control" placeholder="Emergency Contact Name" name="emergency_contact_name" value="{{ $employee->emergency_contact_name }}">
+													<label>{{ __('employee.emr_name') }} <b class="text-danger">*</b></label>
+													<input type="text" required class="form-control" placeholder="{{ __('employee.emr_name') }}" name="emergency_contact_name" value="{{ $employee->emergency_contact_name }}">
 												</div>
 											</div>
 										</div>
@@ -292,8 +292,8 @@
 											<div class="col-sm-6">
 												<!-- text input -->
 												<div class="form-group">
-													<label>Working Time Type <b class="text-danger">*</b></label>
-													<select name="working_time_type" id="working_time_type" class="form-control select2" readonly data-placeholder="Select Working Time">
+													<label>{{ __('employee.worktype') }} <b class="text-danger">*</b></label>
+													<select name="working_time_type" id="working_time_type" class="form-control select2" readonly data-placeholder="Select {{ __('employee.worktype') }}">
 														@foreach(config('enums.workingtime_type') as $key => $value)
 														<option @if ($employee->working_time_type == $key) selected @endif
 															value="{{ $key }}">{{ $value }}</option>
@@ -303,8 +303,8 @@
 											</div>
 											<div class="col-sm-6">
 												<div class="form-group">
-													<label>Working Time</label>
-													<input type="text" class="form-control" name="working_time" id="working_time" data-placeholder="Pilih Working Time">
+													<label>{{ __('employee.workingtime') }}</label>
+													<input type="text" class="form-control" name="working_time" id="working_time" data-placeholder="Pilih {{ __('employee.workingtime') }}">
 												</div>
 											</div>
 										</div>
@@ -312,14 +312,14 @@
 											<div class="col-sm-6">
 												<!-- text input -->
 												<div class="form-group">
-													<label>Calendar <b class="text-danger">*</b></label>
-													<input class="form-control" type="text" name="calendar_id" id="calendar_id" required data-placeholder="Select Calendar">
+													<label>{{ __('calendar.calendar') }} <b class="text-danger">*</b></label>
+													<input class="form-control" type="text" name="calendar_id" id="calendar_id" required data-placeholder="Select {{ __('calendar.calendar') }}">
 												</div>
 											</div>
 											<div class="col-sm-6">
 												<div class="form-group">
-													<label>Tax Calculation Method <b class="text-danger">*</b></label>
-													<select name="tax_calculation" id="calculation" class="form-control select2" data-placeholder="Select Calculation">
+													<label>{{ __('employee.tax_cal') }} <b class="text-danger">*</b></label>
+													<select name="tax_calculation" id="calculation" class="form-control select2" data-placeholder="Select {{ __('employee.tax_cal') }}">
 														@foreach(config('enums.calculation') as $key => $value)
 														<option @if ($employee->tax_calculation == $key) selected @endif
 															value="{{ $key }}">{{ $value }}</option>
@@ -332,7 +332,7 @@
 								</div>
 								<div class="col-4">
 									<div class="card-header">
-										<h3 class="card-title">Other</h3>
+										<h3 class="card-title">{{ __('general.other') }}</h3>
 									</div>
 									<div class="card-body">
 										<div class="row">
@@ -341,23 +341,23 @@
 												<div class="form-group">
 													<label>Status <b class="text-danger">*</b></label>
 													<select name="status" id="status" class="form-control select2" data-placeholder="Select Status">
-														<option @if($employee->status == 1) selected @endif value="1">Active</option>
-														<option @if($employee->status == 0) selected @endif value="0">Non Active</option>
+														<option @if($employee->status == 1) selected @endif value="1">{{ __('general.actv') }}</option>
+														<option @if($employee->status == 0) selected @endif value="0">{{ __('general.noactv') }}</option>
 													</select>
 												</div>
 											</div>
 											<div class="col-sm-12">
 												<div class="form-group">
-													<label>Notes</label>
-													<textarea type="text" class="form-control" name="notes" placeholder="Notes">{{ $employee->notes }}</textarea>
+													<label>{{ __('general.notes') }}</label>
+													<textarea type="text" class="form-control" name="notes" placeholder="{{ __('general.notes') }}">{{ $employee->notes }}</textarea>
 												</div>
 											</div>
 											<div class="col-sm-12">
 												<div class="form-group">
-													<label>Join The Union Labor <b class="text-danger">*</b></label>
-													<select id="join" class="form-control select2" name="join" data-placeholder="Select Join Teh Union Labor">
+													<label>{{ __('employee.join_labor') }} <b class="text-danger">*</b></label>
+													<select id="join" class="form-control select2" name="join" data-placeholder="Select {{ __('employee.join_labor') }}">
 														<option @if($employee->join == "yes") selected @endif
-															value="yes">Yes</option>
+															value="yes">{{ __('general.yes') }}</option>
 														<option @if($employee->join == "no") selected @endif value="no">No
 														</option>
 													</select>
@@ -365,28 +365,28 @@
 											</div>
 											<div class="col-sm-12">
 												<div class="form-group">
-													<label>Outsourcing</label>
-													<input type="text" class="form-control" name="outsourcing_id" id="outsourcing_id" placeholder="Outsourcing" readonly>
+													<label>{{ __('employee.outsrc') }}</label>
+													<input type="text" class="form-control" name="outsourcing_id" id="outsourcing_id" placeholder="{{ __('employee.outsrc') }}" readonly>
 												</div>
 											</div>
 											<div class="col-sm-12">
 												<div class="form-group">
-													<label>Overtime <b class="text-danger">*</b></label>
-													<select id="join" class="form-control select2" name="overtime" data-placeholder="Overtime">
+													<label>{{ __('employee.ot') }} <b class="text-danger">*</b></label>
+													<select id="join" class="form-control select2" name="overtime" data-placeholder="{{ __('employee.ot') }}">
 														<option @if($employee->overtime == "yes") selected @endif
-															value="yes">Yes</option>
+															value="yes">{{ __('general.yes') }}</option>
 														<option @if($employee->overtime == "no") selected @endif
-															value="no">No</option>
+															value="no">{{ __('general.no') }}</option>
 													</select>
 												</div>
 											</div>
 											<div class="col-sm-12">
 												<div class="form-group">
-													<label>Timeout <b class="text-danger">*</b></label>
-													<select id="timeout" class="form-control select2" name="timeout" data-placeholder="Timeout">
+													<label>{{ __('general.to') }} <b class="text-danger">*</b></label>
+													<select id="timeout" class="form-control select2" name="timeout" data-placeholder="{{ __('general.to') }}">
 														<option value=""></option>
-														<option @if($employee->timeout == "yes") selected @endif value="yes">Yes</option>
-														<option @if($employee->timeout == "no") selected @endif value="no">No</option>
+														<option @if($employee->timeout == "yes") selected @endif value="yes">{{ __('general.yes') }}</option>
+														<option @if($employee->timeout == "no") selected @endif value="no">{{ __('general.no') }}</option>
 													</select>
 												</div>
 											</div>
@@ -396,34 +396,34 @@
 													<select id="spl" class="form-control select2" name="spl"
 														data-placeholder="Select SPL" required>
 														<option value=""></option>
-														<option @if($employee->spl == "yes") selected @endif value="yes">Yes</option>
-														<option @if($employee->spl == "no") selected @endif value="no">No</option>
+														<option @if($employee->spl == "yes") selected @endif value="yes">{{ __('general.yes') }}</option>
+														<option @if($employee->spl == "no") selected @endif value="no">{{ __('general.no') }}</option>
 													</select>
 												</div>
 											</div>
 											<div class="col-sm-12">
 												<div class="form-group">
-													<label>Join Date <b class="text-danger">*</b></label>
+													<label>{{ __('general.jd') }} <b class="text-danger">*</b></label>
 													<div class="input-group">
 														<div class="input-group-prepend">
 															<span class="input-group-text">
 																<i class="far fa-calendar-alt"></i>
 															</span>
 														</div>
-														<input type="text" name="join_date" class="form-control datepicker" id="join_date" placeholder="Join Date" value="{{ date('d/m/Y',strtotime($employee->join_date)) }}">
+														<input type="text" name="join_date" class="form-control datepicker" id="join_date" placeholder="{{ __('general.jd') }}" value="{{ date('d/m/Y',strtotime($employee->join_date)) }}">
 													</div>
 												</div>
 											</div>
 											<div class="col-sm-12">
 												<div class="form-group">
-													<label>Resign Date</label>
+													<label>{{ __('general.rd') }}</label>
 													<div class="input-group">
 														<div class="input-group-prepend">
 															<span class="input-group-text">
 																<i class="far fa-calendar-alt"></i>
 															</span>
 														</div>
-														<input type="text" name="resign_date" class="form-control datepicker" id="resign_date" placeholder="Resign Date" value="{{ $employee->resign_date?date('d/m/Y',strtotime($employee->resign_date)):'' }}">
+														<input type="text" name="resign_date" class="form-control datepicker" id="resign_date" placeholder="{{ __('general.rd') }}" value="{{ $employee->resign_date?date('d/m/Y',strtotime($employee->resign_date)):'' }}">
 													</div>
 												</div>
 											</div>
@@ -441,7 +441,7 @@
 				{{-- Tab Contarct Information --}}
 				<div class="tab-pane" id="contract">
 					<div class="card-header">
-						<h3 class="card-title">Contract Information</h3>
+						<h3 class="card-title">{{ __('employee.contract') }}</h3>
 						<div class="pull-right card-tools">
 							<a href="#" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white add_contract" data-toggle="tooltip" title="Tambah">
 								<i class="fa fa-plus"></i>
@@ -453,12 +453,12 @@
 							<thead>
 								<tr>
 									<th style="text-align:center" width="10">No</th>
-									<th width="100">Contract</th>
-									<th width="100">Period</th>
-									<th width="200">Description</th>
+									<th width="100">{{ __('employee.contract') }}</th>
+									<th width="100">{{ __('employee.period') }}</th>
+									<th width="200">{{ __('general.desc') }}</th>
 									<th width="50">File</th>
 									<th width="50">Status</th>
-									<th width="50" style="text-align:center">Action</th>
+									<th width="50" style="text-align:center">{{ __('general.act') }}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -470,7 +470,7 @@
 				{{-- Tab Carrer --}}
 				<div class="tab-pane" id="career">
 					<div class="card-header">
-						<h3 class="card-title">Career Information</h3>
+						<h3 class="card-title">{{ __('employee.career') }}</h3>
 						<div class="pull-right card-tools">
 							<a href="#" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white add_career" data-toggle="tooltip" title="Tambah">
 								<i class="fa fa-plus"></i>
@@ -482,12 +482,12 @@
 							<thead>
 								<tr>
 									<th style="text-align:center" width="10">No</th>
-									<th width="150">Position</th>
-									<th width="50">Grade</th>
-									<th width="150">Department</th>
-									<th width="150">Period</th>
-									<th width="150">Reference</th>
-									<th width="100">Action</th>
+									<th width="150">{{ __('position.pos') }}</th>
+									<th width="50">{{ __('employee.grade') }}</th>
+									<th width="150">{{ __('department.dep') }}</th>
+									<th width="150">{{ __('employee.period') }}</th>
+									<th width="150">{{ __('employee.ref') }}</th>
+									<th width="100">{{ __('general.act') }}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -495,7 +495,7 @@
 						</table>
 					</div>
 					<div class="card-header">
-						<h3 class="card-title">Job Experience</h3>
+						<h3 class="card-title">{{ __('employee.je') }}</h3>
 						<div class="pull-right card-tools">
 							<a href="#" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white add_experience" data-toggle="tooltip" title="Tambah">
 								<i class="fa fa-plus"></i>
@@ -507,11 +507,11 @@
 							<thead>
 								<tr>
 									<th style="text-align:center" width="10">No</th>
-									<th width="150">Last Position</th>
-									<th width="150">Company</th>
-									<th width="150">Period</th>
-									<th width="150">Duration</th>
-									<th width="100">Action</th>
+									<th width="150">{{ __('employee.last_pos') }}</th>
+									<th width="150">{{ __('employee.company') }}</th>
+									<th width="150">{{ __('employee.period') }}</th>
+									<th width="150">{{ __('employee.duration') }}</th>
+									<th width="100">{{ __('general.act') }}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -523,7 +523,7 @@
 				{{-- Tab Education --}}
 				<div class="tab-pane" id="education">
 					<div class="card-header">
-						<h3 class="card-title">Education Information</h3>
+						<h3 class="card-title">{{ __('employee.edu') }}</h3>
 						<div class="pull-right card-tools">
 							<a href="#" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white add_education" data-toggle="tooltip" title="Tambah">
 								<i class="fa fa-plus"></i>
@@ -535,10 +535,10 @@
 							<thead>
 								<tr>
 									<th style="text-align:center" width="10">No</th>
-									<th width="200">Institution</th>
-									<th width="100">Stage</th>
-									<th width="100">Period</th>
-									<th width="100">Action</th>
+									<th width="200">{{ __('employee.institution') }}</th>
+									<th width="100">{{ __('employee.stage') }}</th>
+									<th width="100">{{ __('employee.period') }}</th>
+									<th width="100">{{ __('general.act') }}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -547,7 +547,7 @@
 					</div>
 
 					<div class="card-header">
-						<h3 class="card-title">Training and Certification</h3>
+						<h3 class="card-title">{{ __('employee.training') }}</h3>
 						<div class="pull-right card-tools">
 							<a href="#" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white add_training" data-toggle="tooltip" title="Tambah">
 								<i class="fa fa-plus"></i>
@@ -559,11 +559,11 @@
 							<thead>
 								<tr>
 									<th style="text-align:center" width="10">No</th>
-									<th width="150">Doc Number</th>
-									<th width="150">Issued By</th>
-									<th width="200">Date </th>
-									<th width="250">Description</th>
-									<th width="100">Action</th>
+									<th width="150">{{ __('employee.doc_no') }}</th>
+									<th width="150">{{ __('employee.issuedby') }}</th>
+									<th width="200">{{ __('general.date') }} </th>
+									<th width="250">{{ __('general.desc') }}</th>
+									<th width="100">{{ __('general.act') }}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -575,7 +575,7 @@
 				{{-- Tab Insurance --}}
 				<div class="tab-pane" id="insurance">
 					<div class="card-header">
-						<h3 class="card-title">Covered by BPJS</h3>
+						<h3 class="card-title">{{ __('employee.co_bpjs') }}</h3>
 						<div class="pull-right card-tools">
 							<a href="#" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white add_bpjs" data-toggle="tooltip" title="Tambah">
 								<i class="fa fa-plus"></i>
@@ -587,11 +587,11 @@
 							<thead>
 								<tr>
 									<th style="text-align:center" width="10">No</th>
-									<th width="200">Name</th>
+									<th width="200">{{ __('general.name') }}</th>
 									<th width="150">NIK</th>
-									<th width="100">Relation</th>
-									<th width="150">Address</th>
-									<th width="100">Action</th>
+									<th width="100">{{ __('employee.relation') }}</th>
+									<th width="150">{{ __('employee.address') }}</th>
+									<th width="100">{{ __('general.act') }}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -600,7 +600,7 @@
 					</div>
 					<hr>
 					<div class="card-header">
-						<h3 class="card-title">Additional Member</h3>
+						<h3 class="card-title">{{ __('employee.add_member') }}</h3>
 						<div class="pull-right card-tools">
 							<a href="#" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white add_member" data-toggle="tooltip" title="Tambah">
 								<i class="fa fa-plus"></i>
@@ -612,11 +612,11 @@
 							<thead>
 								<tr>
 									<th style="text-align:center" width="10">No</th>
-									<th width="200">Name</th>
+									<th width="200">{{ __('general.name') }}</th>
 									<th width="150">NIK</th>
-									<th width="100">Relation</th>
-									<th width="150">Address</th>
-									<th width="100">Action</th>
+									<th width="100">{{ __('employee.relation') }}</th>
+									<th width="150">{{ __('employee.address') }}</th>
+									<th width="100">{{ __('general.act') }}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -628,7 +628,7 @@
 				{{-- Tab Document --}}
 				<div class="tab-pane" id="document">
 					<div class="card-header">
-						<h3 class="card-title">Daftar Document</h3>
+						<h3 class="card-title">{{ __('employee.document') }}</h3>
 						<div class="pull-right card-tools">
 							<a href="#" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white add_document" data-toggle="tooltip" title="Tambah">
 								<i class="fa fa-plus"></i>
@@ -640,9 +640,9 @@
 							<thead>
 								<tr>
 									<th style="text-align:center" width="10">#</th>
-									<th width="100">Kategori</th>
-									<th width="200">Nama Dokumen</th>
-									<th width="200">Deskripsi</th>
+									<th width="100">{{ __('general.category') }}</th>
+									<th width="200">{{ __('employee.docname') }}</th>
+									<th width="200">{{ __('general.desc') }}</th>
 									<th width="100">File</th>
 									<th width="10">#</th>
 								</tr>
@@ -657,13 +657,13 @@
 						<div class="row">
 							<div class="col-3 col-sm-2">
 								<div class="nav flex-column nav-tabs h-100" id="vert-tabs-tab" role="tablist" aria-orientation="vertical">
-									<a class="nav-link active" id="vert-tabs-home-tab" data-toggle="pill" href="#vert-tabs-home" role="tab" aria-controls="vert-tabs-home" aria-selected="true">Basic Salary</a>
-									<a class="nav-link" id="vert-tabs-gross-tab" data-toggle="pill" href="#vert-tabs-gross" role="tab" aria-controls="vert-tabs-gross" aria-selected="true">Gross Salary</a>
-									<a class="nav-link" id="vert-tabs-profile-tab" data-toggle="pill" href="#vert-tabs-profile" role="tab" aria-controls="vert-tabs-profile" aria-selected="false">Allowance</a>
+									<a class="nav-link active" id="vert-tabs-home-tab" data-toggle="pill" href="#vert-tabs-home" role="tab" aria-controls="vert-tabs-home" aria-selected="true">{{ __('employee.bscslr') }}</a>
+									<a class="nav-link" id="vert-tabs-gross-tab" data-toggle="pill" href="#vert-tabs-gross" role="tab" aria-controls="vert-tabs-gross" aria-selected="true">{{ __('employee.grosslr') }}</a>
+									<a class="nav-link" id="vert-tabs-profile-tab" data-toggle="pill" href="#vert-tabs-profile" role="tab" aria-controls="vert-tabs-profile" aria-selected="false">{{ __('allowance.alw') }}</a>
 									@if ($employee->department->driver == 'yes')
-									<a class="nav-link" id="driver-allowance-tab" data-toggle="pill" href="#tabs-driver-allowance" role="tab" aria-controls="vert-tabs-messages" aria-selected="false">Driver Allowance</a>
+									<a class="nav-link" id="driver-allowance-tab" data-toggle="pill" href="#tabs-driver-allowance" role="tab" aria-controls="vert-tabs-messages" aria-selected="false">{{ __('employee.driveralw') }}</a>
 									@endif
-									<a class="nav-link" id="vert-tabs-messages-tab" data-toggle="pill" href="#vert-tabs-messages" role="tab" aria-controls="vert-tabs-messages" aria-selected="false">Over Time</a>
+									<a class="nav-link" id="vert-tabs-messages-tab" data-toggle="pill" href="#vert-tabs-messages" role="tab" aria-controls="vert-tabs-messages" aria-selected="false">{{ __('employee.ot') }}</a>
 									@if ($employee->workgroup->penalty == 'Basic')
 									<a class="nav-link" id="vert-tabs-messages-tab" data-toggle="pill" href="#vert-tabs-penalti" role="tab" aria-controls="vert-tabs-messages" aria-selected="false">Potongan Absen</a>
 									@endif
@@ -673,7 +673,7 @@
 								<div class="tab-content" id="vert-tabs-tabContent">
 									<div class="tab-pane text-left fade show active" id="vert-tabs-home" role="tabpanel" aria-labelledby="vert-tabs-home-tab">
 										<div class="card-header">
-											<p class="card-title" style="padding-left:-25px;">Salary List</p>
+											<p class="card-title" style="padding-left:-25px;">{{ __('employee.salary') }}</p>
 											<div class="pull-right card-tools">
 												<a href="#" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white add_salary" data-toggle="tooltip" title="Tambah"><i class="fa fa-plus"></i></a>
 											</div>
@@ -682,21 +682,21 @@
 											<thead>
 												<tr>
 													<th style="text-align:center" width="10">#</th>
-													<th width="200">Amount</th>
-													<th width="150">Description</th>
-													<th width="150">Update By</th>
-													<th width="150">Update Time</th>
+													<th width="200">{{ __('employee.amount') }}</th>
+													<th width="150">{{ __('general.desc') }}</th>
+													<th width="150">{{ __('employee.updateby') }}</th>
+													<th width="150">{{ __('employee.updatetime') }}</th>
 												</tr>
 											</thead>
 										</table>
 									</div>
 									<div class="tab-pane fade" id="vert-tabs-gross" role="tabpanel" aria-labelledby="vert-tabs-gross-tab">
 										<div class="card-header">
-											<p class="card-title">Gross Salary</p>
+											<p class="card-title">{{ __('employee.grosslr') }}</p>
 										</div>
 										<div class="card-body">
 											<div class="form-group row">
-												<label for="period" class="col-sm-2 col-md-1 form-label">Period</label>
+												<label for="period" class="col-sm-2 col-md-1 form-label">{{ __('employee.period') }}</label>
 												<div class="col-sm-5 col-md-2">
 													<select class="form-control select2" name="month-gross" id="month-gross">
 														<option value="01" @if (date('m', time())=="01" ) selected @endif>January</option>
@@ -728,7 +728,7 @@
 													<thead>
 														<tr>
 														<th width="10">No</th>
-														<th width="600">Description</th>
+														<th width="600">{{ __('general.desc') }}</th>
 														<th width="200">Total</th>
 														</tr>
 													</thead>
@@ -743,7 +743,7 @@
 									</div>
 									<div class="tab-pane fade" id="vert-tabs-profile" role="tabpanel" aria-labelledby="vert-tabs-profile-tab">
 										<div class="card-header">
-											<p class="card-title" style="padding-left:-25px;">Allowance List</p>
+											<p class="card-title" style="padding-left:-25px;">{{ __('allowance.alw') }}</p>
 											<div class="pull-right card-tools">
 												<a href="#" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white add_allowance_data" data-toggle="tooltip" title="Tambah"><i class="fa fa-plus"></i></a>
 												<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search"><i class="fa fa-search"></i></a>
@@ -751,7 +751,7 @@
 										</div>
 										<div class="card-body">
 											<div class="form-group row">
-												<label for="inputEmail3" class="col-sm-1 col-form-label">Period</label>
+												<label for="inputEmail3" class="col-sm-1 col-form-label">{{ __('employee.period') }}</label>
 												<div class="row col-sm-11">
 													<input type="hidden" name="employee_id" value="{{ $employee->id }}">
 													<div class="col-sm-4">
@@ -828,17 +828,17 @@
 												<thead>
 													<tr>
 														<th style="text-align:center" width="10">#</th>
-														<th width="150">Period</th>
-														<th width="200">Allowance</th>
-														<th width="200">Category</th>
-														<th width="200">Recurrence</th>
-														<th width="150">Factor</th>
-														<th width="150">Value</th>
+														<th width="150">{{ __('employee.period') }}</th>
+														<th width="200">{{ __('allowance.alw') }}</th>
+														<th width="200">{{ __('general.category') }}</th>
+														<th width="200">{{ __('allowance.recur') }}</th>
+														<th width="150">{{ __('employee.factor') }}</th>
+														<th width="150">{{ __('general.value') }}</th>
 														<th width="150">Status</th>
 														@if ($employee->workgroup->penalty == 'Gross')
-														<th width="150">Penalty</th>
+														<th width="150">{{ __('employee.pnlty') }}</th>
 														@endif
-														<th width="100">Action</th>
+														<th width="100">{{ __('general.act') }}</th>
 													</tr>
 												</thead>
 											</table>
@@ -846,11 +846,11 @@
 									</div>
 									<div class="tab-pane fade" id="tabs-driver-allowance" role="tabpanel" aria-labelledby="driver-allowance-tab">
 										<div class="card-header">
-											<p class="card-title">Driver Allowance</p>
+											<p class="card-title">{{ __('employee.driveralw') }}</p>
 										</div>
 										<div class="card-body">
 											<div class="form-group row">
-												<label for="period" class="col-sm-2 col-md-1 form-label">Period</label>
+												<label for="period" class="col-sm-2 col-md-1 form-label">{{ __('employee.period') }}</label>
 												<div class="col-sm-5 col-md-2">
 													<select class="form-control select2" name="month-driver" id="month-driver">
 														<option value="01" @if (date('m', time())=="01" ) selected @endif>January</option>
@@ -882,9 +882,9 @@
 												<thead>
 													<tr>
 														<th width="5" class="text-right">#</th>
-														<th width="10">Date</th>
+														<th width="10">{{ __('general.date') }}</th>
 														<th width="10">Kloter</th>
-														<th width="10">Value</th>
+														<th width="10">{{ __('general.value') }}</th>
 														<th width="10">RIT</th>
 														<th width="10">Total</th>
 														{{-- <th width="10">Action</th> --}}
@@ -903,11 +903,11 @@
 									</div>
 									<div class="tab-pane fade" id="vert-tabs-messages" role="tabpanel" aria-labelledby="vert-tabs-messages-tab">
 										<div class="card-header">
-											<p class="card-title" style="padding-left:-25px;">Over Time</p>
+											<p class="card-title" style="padding-left:-25px;">{{ __('employee.ot') }}</p>
 										</div>
 										<div class="card-body">
 											<div class="form-group row">
-												<label class="col-sm-1 form-label" for="period">Period</label>
+												<label class="col-sm-1 form-label" for="period">{{ __('employee.period') }}</label>
 												<div class="col-sm-6 row">
 													<input type="hidden" name="employee_id_overtime" value="{{ $employee->id }}">
 													<div class="col-sm-5">
@@ -947,13 +947,13 @@
 											<thead>
 												<tr>
 													<th style="text-align:center" width="10">#</th>
-													<th width="200">Day</th>
+													<th width="200">{{ __('general.day') }}</th>
 													<th width="150">Rule</th>
-													<th width="150">Hour</th>
-													<th width="150">Amount</th>
-													<th width="150">Basic Salary / Day</th>
+													<th width="150">{{ __('general.hour') }}</th>
+													<th width="150">{{ __('employee.amount') }}</th>
+													<th width="150">{{ __('employee.bscslr') }} / {{ __('general.day') }}</th>
 													<th width="150">Total</th>
-													<th width="150">Action</th>
+													<th width="150">{{ __('general.act') }}</th>
 												</tr>
 											</thead>
 											<tfoot>
@@ -968,11 +968,11 @@
 									</div>
 									<div class="tab-pane fade" id="vert-tabs-penalti" role="tabpanel" aria-labelledby="vert-tabs-messages-tab">
 										<div class="card-header">
-											<p class="card-title" style="padding-left:-25px;">Penalty</p>
+											<p class="card-title" style="padding-left:-25px;">{{ __('employee.pnlty') }}</p>
 										</div>
 										<div class="card-body">
 											<div class="form-group row">
-												<label class="col-sm-1 form-label" for="period">Period</label>
+												<label class="col-sm-1 form-label" for="period">{{ __('employee.period') }}</label>
 												<div class="col-sm-6 row">
 													{{-- <input type="text" name="employee_id_penalty" value="{{ $employee->id }}"> --}}
 													<div class="col-sm-5">
@@ -1012,11 +1012,11 @@
 											<thead>
 												<tr>
 													<th style="text-align:center" width="10">#</th>
-													<th width="200">Date</th>
-													<th width="150">Leave Type</th>
-													<th width="150">Basic Salary</th>
-													<th width="150">Basic Salary/Days</th>
-													<th width="150">Action</th>
+													<th width="200">{{ __('general.date') }}</th>
+													<th width="150">{{ __('employee.leavetp') }}</th>
+													<th width="150">{{ __('employee.bscslr') }}</th>
+													<th width="150">{{ __('employee.bscslr') }}/{{ __('general.day') }}</th>
+													<th width="150">{{ __('general.act') }}</th>
 												</tr>
 											</thead>
 											<tfoot>
@@ -1039,11 +1039,11 @@
 				{{-- Tab Leave --}}
 				<div class="tab-pane" id="leave">
 					<div class="card-header">
-						<h3 class="card-title">Leave Report</h3>
+						<h3 class="card-title">{{ __('leavereport.leaverpt') }}</h3>
 					</div>
 					<div class="card-body">
 						<div class="form-group row">
-							<label class="control-label col-md-1" for="year_leave">Year</label>
+							<label class="control-label col-md-1" for="year_leave">{{ __('general.year') }}</label>
 							<select name="year_leave" class="form-control col-md-2 select2" id="year_leave" multiple>
 								@php
 								$thn_skr = date('Y');
@@ -1058,12 +1058,12 @@
 							<thead>
 								<tr>
 									<th style="text-align:center" width="10">No</th>
-									<th width="150">Leave Name</th>
-									<th width="150">Balance</th>
-									<th width="100">Used Balance</th>
-									<th width="150">Remaining Balance</th>
-									<th width="150">Over Balance</th>
-									<th width="150">Period Balance</th>
+									<th width="150">{{ __('leavesetting.leavename') }}</th>
+									<th width="150">{{ __('leavesetting.balance') }}</th>
+									<th width="100">{{ __('employee.used_blc') }}</th>
+									<th width="150">{{ __('employee.remain_blc') }}</th>
+									<th width="150">{{ __('employee.ovr_blc') }}</th>
+									<th width="150">{{ __('employee.prd_blc') }}</th>
 									<th width="150">#</th>
 								</tr>
 							</thead>
@@ -1075,11 +1075,11 @@
 				<div class="tab-pane" id="attendance">
 					<form id="form_approval" action="{{ route('attendanceapproval.approve') }}" class="form-horizontal" method="post" autocomplete="off">
 						<div class="card-header">
-							<h3 class="card-title">Attendance</h3>
+							<h3 class="card-title">{{ __('employee.attend') }}</h3>
 						</div>
 						<div class="card-body">
 							<div class="form-row col-md-3">
-								<label class="control-label pull-right col-md-2" for="period">Period</label>
+								<label class="control-label pull-right col-md-2" for="period">{{ __('employee.period') }}</label>
 								<div class="col-sm-6">
 									<select class="form-control select2" name="month_attendance" id="month_attendance">
 										<option value="01" @if (date('m', time())=="01" ) selected @endif>January</option>
@@ -1113,13 +1113,13 @@
 								<thead>
 									<tr>
 										<th width="10">No</th>
-										<th width="50">Date</th>
-										<th width="50">Department<br>Position</th>
-										<th width="50">Workgroup</th>
-										<th width="50">Working Shift</th>
-										<th width="10">Check In</th>
-										<th width="10">Check Out</th>
-										<th width="10">Summary</th>
+										<th width="50">{{ __('general.date') }}</th>
+										<th width="50">{{ __('department.dep') }}<br>{{ __('position.pos') }}</th>
+										<th width="50">{{ __('workgroup.workgrp') }}</th>
+										<th width="50">{{ __('employee.workshift') }}</th>
+										<th width="10">{{ __('employee.check_in') }}</th>
+										<th width="10">{{ __('employee.check_out') }}</th>
+										<th width="10">{{ __('employee.summary') }}</th>
 										<th width="50">Status</th>
 									</tr>
 								</thead>
@@ -1141,7 +1141,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Edit Overtime</h4>
+				<h4 class="modal-title">{{ __('general.edt') }} {{ __('employee.ot') }}</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
@@ -1152,15 +1152,15 @@
 						<input type="hidden" name="employee_id">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label for="amount" class="control-label">Hour <b class="text-danger">*</b></label>
-								<input type="text" class="form-control" id="hour" name="hour" placeholder="Hour" required>
+								<label for="amount" class="control-label">{{ __('employee.hour') }} <b class="text-danger">*</b></label>
+								<input type="text" class="form-control" id="hour" name="hour" placeholder="{{ __('employee.hour') }}" required>
 							</div>
 						</div>
 					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button form="form_overtime" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+				<button form="form_overtime" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
 			</div>
 			<div class="overlay d-none">
 				<i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -1175,7 +1175,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Add Salary</h4>
+				<h4 class="modal-title">{{ __('general.add') }} Salary</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
@@ -1187,25 +1187,25 @@
 						<input type="hidden" name="employee_id">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label for="amount" class="control-label">Amount <b class="text-danger">*</b></label>
-								<input type="text" class="form-control" id="amount" name="amount" placeholder="Amount" required>
+								<label for="amount" class="control-label">{{ __('employee.amount') }} <b class="text-danger">*</b></label>
+								<input type="text" class="form-control" id="amount" name="amount" placeholder="{{ __('employee.amount') }}" required>
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<label for="description" class="control-label">Description</label>
-								<input type="text" class="form-control" id="description" name="description" placeholder="Description">
+								<label for="description" class="control-label">{{ __('general.desc') }}</label>
+								<input type="text" class="form-control" id="description" name="description" placeholder="{{ __('general.desc') }}">
 							</div>
 						</div>
 						<div class="form-group col-md-12">
-							<label for="user_id" class="control-label">Update By <b class="text-danger">*</b></label>
-							<input type="text" class="form-control" id="user_id" name="user_id" readonly placeholder="Update By" required>
+							<label for="user_id" class="control-label">{{ __('employee.updateby') }} <b class="text-danger">*</b></label>
+							<input type="text" class="form-control" id="user_id" name="user_id" readonly placeholder="{{ __('employee.updateby') }}" required>
 						</div>
 					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button form="form_salary" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+				<button form="form_salary" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
 			</div>
 			<div class="overlay d-none">
 				<i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -1219,7 +1219,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Add Allowance</h4>
+				<h4 class="modal-title">{{ __('general.add') }} {{ __('allowance.alw') }}</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
@@ -1230,8 +1230,8 @@
 						<input type="hidden" name="employee_id">
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="type" class="control-label">Type</label>
-								<select class="form-control select2" data-placeholder="Type" name="type" id="type">
+								<label for="type" class="control-label">{{ __('general.type') }}</label>
+								<select class="form-control select2" data-placeholder="{{ __('general.type') }}" name="type" id="type">
 									<option value=""></option>
 									<option value="percentage">Percentage</option>
 									<option value="nominal">Nominal</option>
@@ -1241,22 +1241,22 @@
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="value" class="control-label">Value</label>
-								<input type="text" class="form-control" id="value" name="value" placeholder="Value" required>
+								<label for="value" class="control-label">{{ __('general.value') }}</label>
+								<input type="text" class="form-control" id="value" name="value" placeholder="{{ __('general.value') }}" required>
 								<input type="hidden" class="form-control" id="get_allowance_id" name="get_allowance_id">
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<label for="factor" class="control-label">Factor</label>
-								<input type="text" class="form-control" id="factor" name="factor" placeholder="Factor">
+								<label for="factor" class="control-label">{{ __('employee.factor') }}</label>
+								<input type="text" class="form-control" id="factor" name="factor" placeholder="{{ __('employee.factor') }}">
 							</div>
 						</div>
 					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button form="form_allowance" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+				<button form="form_allowance" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
 			</div>
 		</div>
 		<div class="overlay d-none">
@@ -1270,7 +1270,7 @@
 	<div class="modal-dialog" style="width:75%;">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">View Allowance</h4>
+				<h4 class="modal-title">View {{ __('allowance.alw') }}</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
@@ -1282,8 +1282,8 @@
 							<thead>
 								<tr>
 									<th style="text-align:center" width="10">#</th>
-									<th width="100">Tanggal</th>
-									<th width="250">Kategori</th>
+									<th width="100">{{ __('general.date') }}</th>
+									<th width="250">{{ __('general.category') }}</th>
 									<th width="100">Nilai</th>
 								</tr>
 							</thead>
@@ -1303,7 +1303,7 @@
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="view-driver-allowance-title">View Driver Allowance</h5>
+				<h5 class="modal-title" id="view-driver-allowance-title">View {{ __('employee.driveralw') }}</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -1313,10 +1313,10 @@
 					<thead>
 						<tr>
 							<th width="5" class="text-right">#</th>
-							<th width="10">Departure Time</th>
-							<th width="10">Arrived Time</th>
-							<th width="10">Police No</th>
-							<th width="10">Customer</th>
+							<th width="10">{{ __('employee.dep_time') }}</th>
+							<th width="10">{{ __('employee.arr_time') }}</th>
+							<th width="10">{{ __('employee.pol_no') }}</th>
+							<th width="10">{{ __('customer.cust') }}</th>
 						</tr>
 					</thead>
 				</table>
@@ -1345,8 +1345,8 @@
 					<thead>
 						<tr>
 							<th width="5" class="text-right">No</th>
-							<th width="50">Date</th>
-							<th width="50">Type</th>
+							<th width="50">{{ __('general.date') }}</th>
+							<th width="50">{{ __('general.type') }}</th>
 							<th width="50">Status</th>
 						</tr>
 					</thead>
@@ -1364,7 +1364,7 @@
 	<div class="modal-dialog modal-sm">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="edit-leave-balance-title">Edit Balance Leave</h5>
+				<h5 class="modal-title" id="edit-leave-balance-title">{{ __('general.edt') }} Balance Leave</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -1377,8 +1377,8 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="balance">Balance</label>
-								<input type="number" class="form-control" name="leave_balance" id="leave_balance" placeholder="Balance" value="">
+								<label class="control-label" for="balance">{{ __('leavesetting.balance') }}</label>
+								<input type="number" class="form-control" name="leave_balance" id="leave_balance" placeholder="{{ __('leavesetting.balance') }}" value="">
 							</div>
 						</div>
 					</div>
@@ -1397,7 +1397,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Add Allowance</h4>
+				<h4 class="modal-title">{{ __('general.add') }} {{ __('allowance.alw') }}</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -1408,8 +1408,8 @@
 						<input type="hidden" name="employee_id">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label for="allowance" class="control-label">Allowance</label>
-								<input type="text" class="form-control" id="allowance_id" name="allowance_id" placeholder="Allowance" required>
+								<label for="allowance" class="control-label">{{ __('allowance.alw') }}</label>
+								<input type="text" class="form-control" id="allowance_id" name="allowance_id" placeholder="{{ __('allowance.alw') }}" required>
 							</div>
 							<div class="form-group">
 								<input type="hidden" class="form-control" name="month">
@@ -1422,7 +1422,7 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button form="form_allowance_data" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+				<button form="form_allowance_data" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
 			</div>
 		</div>
 		<div class="overlay d-none">
@@ -1437,7 +1437,7 @@
 		<div class="modal-content">
 			<div class="overlay-wrapper">
 				<div class="modal-header">
-					<h4 class="modal-title">Add Tarining</h4>
+					<h4 class="modal-title">{{ __('general.add') }} {{ __('employee.train') }}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -1446,33 +1446,33 @@
 					<form id="form_training" class="form-horizontal" method="post" autocomplete="off">
 						<input type="hidden" name="employee_id">
 						<div class="form-group col-sm-12">
-							<label for="code" class="control-label">No.Document<b class="text-danger">*</b></label>
-							<input type="text" class="form-control" id="code" name="code" placeholder="No.Document" required>
+							<label for="code" class="control-label">No.{{ __('employee.document') }}<b class="text-danger">*</b></label>
+							<input type="text" class="form-control" id="code" name="code" placeholder="No.{{ __('employee.document') }}" required>
 						</div>
 						<div class="form-group col-sm-12">
-							<label for="issued" class="control-label">Issued By<b class="text-danger">*</b></label>
-							<input type="text" class="form-control" id="issued" name="issued" placeholder="Issued By" required>
+							<label for="issued" class="control-label">{{ __('employee.issuedby') }}<b class="text-danger">*</b></label>
+							<input type="text" class="form-control" id="issued" name="issued" placeholder="{{ __('employee.issuedby') }}" required>
 						</div>
 						<div class="d-flex">
 							<div class="form-group col-sm-6">
-								<label for="start_date" class="control-label">Start Date<b class="text-danger">*</b></label>
-								<input type="text" class="form-control start_date" id="start_date" name="start_date" placeholder="Start Date" required>
+								<label for="start_date" class="control-label">{{ __('general.start_date') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control start_date" id="start_date" name="start_date" placeholder="{{ __('general.start_date') }}" required>
 							</div>
 							<div class="form-group col-sm-6">
-								<label for="date" class="control-label">End Date<b class="text-danger">*</b></label>
-								<input type="text" class="form-control end_date" id="end_date" name="end_date" placeholder="End Date" required>
+								<label for="date" class="control-label">{{ __('general.finish_date') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control end_date" id="end_date" name="end_date" placeholder="{{ __('general.finish_date') }}" required>
 							</div>
 						</div>
 						<div class="form-group col-sm-12">
-							<label for="description" class="control-label">Description</label>
-							<textarea name="description" id="description" class="form-control" placeholder="Description"></textarea>
+							<label for="description" class="control-label">{{ __('general.desc') }}</label>
+							<textarea name="description" id="description" class="form-control" placeholder="{{ __('general.desc') }}"></textarea>
 						</div>
 						{{ csrf_field() }}
 						<input type="hidden" name="_method" />
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button form="form_training" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+					<button form="form_training" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
 				</div>
 				<div class="overlay d-none">
 					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -1488,7 +1488,7 @@
 		<div class="modal-content">
 			<div class="overlay-wrapper">
 				<div class="modal-header">
-					<h4 class="modal-title">Add Document</h4>
+					<h4 class="modal-title">{{ __('general.add') }} {{ __('employee.document') }}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -1498,8 +1498,8 @@
 						<div class="d-flex">
 							<input type="hidden" name="employee_id">
 							<div class="form-group col-sm-6">
-								<label for="category" class="control-label">Category <b class="text-danger">*</b></label>
-								<select id="category" name="category" class="form-control select2" data-placeholder="Choose Category" required>
+								<label for="category" class="control-label">{{ __('general.category') }} <b class="text-danger">*</b></label>
+								<select id="category" name="category" class="form-control select2" data-placeholder="Choose {{ __('general.category') }}" required>
 									<option value=""></option>
 									@foreach(config('enums.document_category') as $key => $document_category)
 									<option value="{{$key}}">{{$document_category}}</option>
@@ -1507,7 +1507,7 @@
 								</select>
 							</div>
 							<div class="form-group col-sm-6">
-								<label for="name" class="control-label">Name<b class="text-danger">*</b></label>
+								<label for="name" class="control-label">{{ __('general.name') }}<b class="text-danger">*</b></label>
 								<input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
 							</div>
 						</div>
@@ -1518,15 +1518,15 @@
 							<a id="document-preview" onclick="showDocument(this)" href="#" data-url="" class="mt-2"></a>
 						</div>
 						<div class="form-group col-sm-12">
-							<label for="description" class="control-label">Description</label>
-							<textarea name="description" id="description" class="form-control" placeholder="Description"></textarea>
+							<label for="description" class="control-label">{{ __('general.desc') }}</label>
+							<textarea name="description" id="description" class="form-control" placeholder="{{ __('general.desc') }}"></textarea>
 						</div>
 						{{ csrf_field() }}
 						<input type="hidden" name="_method" />
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button form="form_document" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+					<button form="form_document" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
 				</div>
 				<div class="overlay d-none">
 					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -1549,7 +1549,7 @@
 		<div class="modal-content">
 			<div class="overlay-wrapper">
 				<div class="modal-header">
-					<h4 class="modal-title">Add Career</h4>
+					<h4 class="modal-title">{{ __('general.add') }} {{ __('employee.career') }}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -1559,32 +1559,32 @@
 						<input type="hidden" name="employee_id">
 						<div class="d-flex">
 							<div class="form-group col-sm-6">
-								<label for="position" class="control-label">Position<b class="text-danger">*</b></label>
-								<input type="text" class="form-control" id="position" name="position" placeholder="Position" required>
+								<label for="position" class="control-label">{{ __('position.pos') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control" id="position" name="position" placeholder="{{ __('position.pos') }}" required>
 							</div>
 							<div class="form-group col-sm-6">
-								<label for="grade" class="control-label">Grade<b class="text-danger">*</b></label>
-								<input type="text" class="form-control" id="grade" name="grade" placeholder="Grade" value="1" required>
-							</div>
-						</div>
-						<div class="d-flex">
-							<div class="form-group col-sm-6">
-								<label for="department" class="control-label">Department<b class="text-danger">*</b></label>
-								<input type="text" class="form-control" id="department" name="department" placeholder="Department" required>
-							</div>
-							<div class="form-group col-sm-6">
-								<label for="reference" class="control-label">Reference<b class="text-danger">*</b></label>
-								<input type="text" class="form-control" id="reference" name="reference" placeholder="Reference" required>
+								<label for="grade" class="control-label">{{ __('employee.grade') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control" id="grade" name="grade" placeholder="{{ __('employee.grade') }}" value="1" required>
 							</div>
 						</div>
 						<div class="d-flex">
 							<div class="form-group col-sm-6">
-								<label for="start_date" class="control-label">Start Date<b class="text-danger">*</b></label>
-								<input type="text" class="form-control start_date" id="start_date" name="start_date" placeholder="Start Date" required>
+								<label for="department" class="control-label">{{ __('department.dep') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control" id="department" name="department" placeholder="{{ __('department.dep') }}" required>
 							</div>
 							<div class="form-group col-sm-6">
-								<label for="date" class="control-label">End Date<b class="text-danger">*</b></label>
-								<input type="text" class="form-control end_date" id="end_date" name="end_date" placeholder="End Date" required>
+								<label for="reference" class="control-label">{{ __('employee.ref') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control" id="reference" name="reference" placeholder="{{ __('employee.ref') }}" required>
+							</div>
+						</div>
+						<div class="d-flex">
+							<div class="form-group col-sm-6">
+								<label for="start_date" class="control-label">{{ __('general.start_date') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control start_date" id="start_date" name="start_date" placeholder="{{ __('general.start_date') }}" required>
+							</div>
+							<div class="form-group col-sm-6">
+								<label for="date" class="control-label">{{ __('general.finish_date') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control end_date" id="end_date" name="end_date" placeholder="{{ __('general.finish_date') }}" required>
 							</div>
 						</div>
 						{{ csrf_field() }}
@@ -1592,7 +1592,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button form="form_career" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+					<button form="form_career" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
 				</div>
 				<div class="overlay d-none">
 					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -1607,7 +1607,7 @@
 		<div class="modal-content">
 			<div class="overlay-wrapper">
 				<div class="modal-header">
-					<h4 class="modal-title">Add Experience</h4>
+					<h4 class="modal-title">{{ __('general.add') }} {{ __('employee.exper') }}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -1617,27 +1617,27 @@
 						<input type="hidden" name="employee_id">
 						<div class="d-flex">
 							<div class="form-group col-sm-6">
-								<label for="last_position" class="control-label">Last Position<b class="text-danger">*</b></label>
-								<input type="text" class="form-control" id="last_position" name="last_position" placeholder="Last Position" required>
+								<label for="last_position" class="control-label">{{ __('employee.last_pos') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control" id="last_position" name="last_position" placeholder="{{ __('employee.last_pos') }}" required>
 							</div>
 							<div class="form-group col-sm-6">
-								<label for="company" class="control-label">Company<b class="text-danger">*</b></label>
-								<input type="text" class="form-control" id="company" name="company" placeholder="Company" required>
+								<label for="company" class="control-label">{{ __('employee.company') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control" id="company" name="company" placeholder="{{ __('employee.company') }}" required>
 							</div>
 						</div>
 						<div class="d-flex">
 							<div class="form-group col-sm-6">
-								<label for="start_date" class="control-label">Start Date<b class="text-danger">*</b></label>
-								<input type="text" class="form-control start_date" id="start_date" name="start_date" placeholder="Start Date" required>
+								<label for="start_date" class="control-label">{{ __('general.start_date') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control start_date" id="start_date" name="start_date" placeholder="{{ __('general.start_date') }}" required>
 							</div>
 							<div class="form-group col-sm-6">
-								<label for="date" class="control-label">End Date<b class="text-danger">*</b></label>
-								<input type="text" class="form-control end_date" id="end_date" name="end_date" placeholder="End Date" required>
+								<label for="date" class="control-label">{{ __('general.finish_date') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control end_date" id="end_date" name="end_date" placeholder="{{ __('general.finish_date') }}" required>
 							</div>
 						</div>
 						<div class="form-group col-sm-12">
-							<label for="duration" class="control-label">Duration<b class="text-danger">*</b></label>
-							<input type="text" class="form-control" id="duration" name="duration" placeholder="Duration" required>
+							<label for="duration" class="control-label">{{ __('employee.duration') }}<b class="text-danger">*</b></label>
+							<input type="text" class="form-control" id="duration" name="duration" placeholder="{{ __('employee.duration') }}" required>
 						</div>
 
 						{{ csrf_field() }}
@@ -1645,7 +1645,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button form="form_experience" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+					<button form="form_experience" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
 				</div>
 				<div class="overlay d-none">
 					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -1660,7 +1660,7 @@
 		<div class="modal-content">
 			<div class="overlay-wrapper">
 				<div class="modal-header">
-					<h4 class="modal-title">Add Education</h4>
+					<h4 class="modal-title">{{ __('general.add') }} {{ __('employee.edu') }}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -1669,17 +1669,17 @@
 					<form id="form_education" class="form-horizontal" method="post" autocomplete="off">
 						<input type="hidden" name="employee_id">
 						<div class="form-group col-sm-12">
-							<label for="institution" class="control-label">Institution<b class="text-danger">*</b></label>
-							<input type="text" class="form-control" id="institution" name="institution" placeholder="Institution" required>
+							<label for="institution" class="control-label">{{ __('employee.institution') }}<b class="text-danger">*</b></label>
+							<input type="text" class="form-control" id="institution" name="institution" placeholder="{{ __('employee.institution') }}" required>
 						</div>
 						<div class="d-flex">
 							<div class="form-group col-sm-6">
-								<label for="stage" class="control-label">Stage<b class="text-danger">*</b></label>
-								<input type="text" class="form-control stage" id="stage" name="stage" placeholder="Stage" required>
+								<label for="stage" class="control-label">{{ __('employee.stage') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control stage" id="stage" name="stage" placeholder="{{ __('employee.stage') }}" required>
 							</div>
 							<div class="form-group col-sm-6">
-								<label for="period" class="control-label">Period<b class="text-danger">*</b></label>
-								<input type="text" class="form-control period" id="period" name="period" placeholder="Period" required>
+								<label for="period" class="control-label">{{ __('employee.period') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control period" id="period" name="period" placeholder="{{ __('employee.period') }}" required>
 							</div>
 						</div>
 						{{ csrf_field() }}
@@ -1687,7 +1687,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button form="form_education" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+					<button form="form_education" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
 				</div>
 				<div class="overlay d-none">
 					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -1702,7 +1702,7 @@
 		<div class="modal-content">
 			<div class="overlay-wrapper">
 				<div class="modal-header">
-					<h4 class="modal-title">Add Contract</h4>
+					<h4 class="modal-title">{{ __('general.add') }} {{ __('employee.contract') }}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -1711,22 +1711,22 @@
 					<form id="form_contract" class="form-horizontal" method="post" autocomplete="off">
 						<input type="hidden" name="employee_id">
 						<div class="form-group col-sm-12">
-							<label for="code" class="control-label">No.Document<b class="text-danger">*</b></label>
-							<input type="text" class="form-control" id="code" name="code" placeholder="No.Document">
+							<label for="code" class="control-label">No.{{ __('employee.document') }}<b class="text-danger">*</b></label>
+							<input type="text" class="form-control" id="code" name="code" placeholder="No.{{ __('employee.document') }}">
 						</div>
 						<div class="d-flex">
 							<div class="form-group col-sm-6">
-								<label for="start_date" class="control-label">Start Date<b class="text-danger">*</b></label>
-								<input type="text" class="form-control start_date" id="start_date" name="start_date" placeholder="Start Date">
+								<label for="start_date" class="control-label">{{ __('general.start_date') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control start_date" id="start_date" name="start_date" placeholder="{{ __('general.start_date') }}">
 							</div>
 							<div class="form-group col-sm-6">
-								<label for="date" class="control-label">End Date<b class="text-danger">*</b></label>
-								<input type="text" class="form-control end_date" id="end_date" name="end_date" placeholder="End Date">
+								<label for="date" class="control-label">{{ __('general.finish_date') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control end_date" id="end_date" name="end_date" placeholder="{{ __('general.finish_date') }}">
 							</div>
 						</div>
 						<div class="form-group col-sm-12">
-							<label for="description" class="control-label">Description</label>
-							<textarea name="description" id="description" class="form-control" placeholder="Description"></textarea>
+							<label for="description" class="control-label">{{ __('general.desc') }}</label>
+							<textarea name="description" id="description" class="form-control" placeholder="{{ __('general.desc') }}"></textarea>
 						</div>
 						<div class="form-group col-sm-12">
 							<label for="file" class="control-label">File</label>
@@ -1747,7 +1747,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button form="form_contract" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+					<button form="form_contract" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
 				</div>
 				<div class="overlay d-none">
 					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -1770,7 +1770,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Change Working Shift</h4>
+				<h4 class="modal-title">Change {{ __('employee.workshift') }}</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			</div>
 			<div class="modal-body">
@@ -1780,8 +1780,8 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="working_shift">Working Shift</label>
-								<input type="text" class="form-control" name="working_shift" id="working_shift" placeholder="Working Shift">
+								<label class="control-label" for="working_shift">{{ __('employee.workshift') }}</label>
+								<input type="text" class="form-control" name="working_shift" id="working_shift" placeholder="{{ __('employee.workshift') }}">
 							</div>
 						</div>
 					</div>
@@ -1798,7 +1798,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Change First In</h4>
+				<h4 class="modal-title">Change {{ __('employee.first_in') }}</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			</div>
 			<div class="modal-body">
@@ -1808,8 +1808,8 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="first_in">First In</label>
-								<input type="text" class="form-control timepicker" name="first_in" id="first_in" placeholder="First In">
+								<label class="control-label" for="first_in">{{ __('employee.first_in') }}</label>
+								<input type="text" class="form-control timepicker" name="first_in" id="first_in" placeholder="{{ __('employee.first_in') }}">
 							</div>
 						</div>
 					</div>
@@ -1826,7 +1826,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Change Last Out</h4>
+				<h4 class="modal-title">Change {{ __('employee.last_out') }}</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			</div>
 			<div class="modal-body">
@@ -1836,8 +1836,8 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="last_out">Last Out</label>
-								<input type="text" class="form-control timepicker" name="last_out" id="last_out" placeholder="Last Out">
+								<label class="control-label" for="last_out">{{ __('employee.last_out') }}</label>
+								<input type="text" class="form-control timepicker" name="last_out" id="last_out" placeholder="{{ __('employee.last_out') }}">
 							</div>
 						</div>
 					</div>
@@ -1854,7 +1854,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Adjust Working Time & Over Time</h4>
+				<h4 class="modal-title">Adjust {{ __('employee.workingtime') }} & {{ __('employee.ot') }}</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			</div>
 			<div class="modal-body">
@@ -1864,14 +1864,14 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="working_time">Working Time</label>
-								<input type="number" class="form-control" name="working_time" id="working_time" placeholder="Working Time" value="0">
+								<label class="control-label" for="working_time">{{ __('employee.workingtime') }}</label>
+								<input type="number" class="form-control" name="working_time" id="working_time" placeholder="{{ __('employee.workingtime') }}" value="0">
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="over_time">Over Time</label>
-								<input type="number" class="form-control" name="over_time" id="over_time" placeholder="Over Time" value="0">
+								<label class="control-label" for="over_time">{{ __('employee.ot') }}</label>
+								<input type="number" class="form-control" name="over_time" id="over_time" placeholder="{{ __('employee.ot') }}" value="0">
 							</div>
 						</div>
 					</div>
@@ -1891,7 +1891,7 @@
 		<div class="modal-content">
 			<div class="overlay-wrapper">
 				<div class="modal-header">
-					<h4 class="modal-title">Add BPJS</h4>
+					<h4 class="modal-title">{{ __('general.add') }} BPJS</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -1900,7 +1900,7 @@
 					<form id="form_bpjs" class="form-horizontal" method="post" autocomplete="off">
 						<input type="hidden" name="employee_id">
 						<div class="form-group col-sm-12">
-							<label for="name" class="control-label">Name<b class="text-danger">*</b></label>
+							<label for="name" class="control-label">{{ __('general.name') }}<b class="text-danger">*</b></label>
 							<input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
 						</div>
 						<div class="d-flex">
@@ -1909,13 +1909,13 @@
 								<input type="text" class="form-control nik" id="nik" name="nik" placeholder="NIK" required>
 							</div>
 							<div class="form-group col-sm-6">
-								<label for="date" class="control-label">Relation<b class="text-danger">*</b></label>
-								<input type="text" class="form-control" id="relation" name="relation" placeholder="Relation" required>
+								<label for="date" class="control-label">{{ __('employee.relation') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control" id="relation" name="relation" placeholder="{{ __('employee.relation') }}" required>
 							</div>
 						</div>
 						<div class="form-group col-sm-12">
-							<label for="address" class="control-label">Address</label>
-							<textarea name="address" id="address" class="form-control" placeholder="Address"></textarea>
+							<label for="address" class="control-label">{{ __('employee.address') }}</label>
+							<textarea name="address" id="address" class="form-control" placeholder="{{ __('employee.address') }}"></textarea>
 						</div>
 
 						{{ csrf_field() }}
@@ -1923,7 +1923,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button form="form_bpjs" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+					<button form="form_bpjs" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
 				</div>
 				<div class="overlay d-none">
 					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -1938,7 +1938,7 @@
 		<div class="modal-content">
 			<div class="overlay-wrapper">
 				<div class="modal-header">
-					<h4 class="modal-title">Add Member</h4>
+					<h4 class="modal-title">{{ __('employee.add_member') }}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -1947,8 +1947,8 @@
 					<form id="form_member" class="form-horizontal" method="post" autocomplete="off">
 						<input type="hidden" name="employee_id">
 						<div class="form-group col-sm-12">
-							<label for="name" class="control-label">Name<b class="text-danger">*</b></label>
-							<input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
+							<label for="name" class="control-label">{{ __('general.name') }}<b class="text-danger">*</b></label>
+							<input type="text" class="form-control" id="name" name="name" placeholder="{{ __('general.name') }}" required>
 						</div>
 						<div class="d-flex">
 							<div class="form-group col-sm-6">
@@ -1956,13 +1956,13 @@
 								<input type="text" class="form-control nik" id="nik" name="nik" placeholder="NIK" required>
 							</div>
 							<div class="form-group col-sm-6">
-								<label for="date" class="control-label">Relation<b class="text-danger">*</b></label>
-								<input type="text" class="form-control" id="relation" name="relation" placeholder="Relation" required>
+								<label for="date" class="control-label">{{ __('employee.relation') }}<b class="text-danger">*</b></label>
+								<input type="text" class="form-control" id="relation" name="relation" placeholder="{{ __('employee.relation') }}" required>
 							</div>
 						</div>
 						<div class="form-group col-sm-12">
-							<label for="address" class="control-label">Address</label>
-							<textarea name="address" id="address" class="form-control" placeholder="Address"></textarea>
+							<label for="address" class="control-label">{{ __('employee.address') }}</label>
+							<textarea name="address" id="address" class="form-control" placeholder="{{ __('employee.address') }}"></textarea>
 						</div>
 
 						{{ csrf_field() }}
@@ -1970,7 +1970,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button form="form_member" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+					<button form="form_member" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
 				</div>
 				<div class="overlay d-none">
 					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -2744,7 +2744,7 @@ $(document).ready(function(){
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
 		var currentTab = $(e.target).text();
 		switch (currentTab)   {
-			case 'Personal Data' :
+			case '{{ __('employee.person_data') }}' :
 				$('#data-personal').css("width", '100%')
 				$($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
 				break ;
@@ -2752,7 +2752,7 @@ $(document).ready(function(){
 			$('#table-pic').css("width", '100%')
 				$($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
 				break ;
-			case 'Salary' :
+			case '{{ __('employee.leave') }}' :
 			$('#table-salary').css("width", '100%')
 				$($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
 				break ;
@@ -3500,10 +3500,10 @@ $(document).ready(function(){
 			{
 				render: function (data, type, row) {
 					if (row.status == 'Active') {
-						return `<span class="badge badge-success">Active</span>`
+						return `<span class="badge badge-success">{{ __('general.actv') }}</span>`
 					} else if(row.status == 'Non Active') 
 					{
-						return `<span class="badge badge-warning">Non Active</span>`
+						return `<span class="badge badge-warning">{{ __('general.noactv') }}</span>`
 					}else{
 						return `<span class="badge badge-danger">Expired</span>`
 					}
@@ -3516,7 +3516,7 @@ $(document).ready(function(){
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a class="dropdown-item editcontract" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> Edit</a></li>
+						<li><a class="dropdown-item editcontract" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
 						<li><a class="dropdown-item deletecontract" href="#" data-id="${row.id}"><i class="fa fa-trash mr-2"></i> Delete</a></li>
 					</ul>
 					</div>`
@@ -3757,7 +3757,7 @@ $(document).ready(function(){
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a class="dropdown-item editcareer" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> Edit</a></li>
+						<li><a class="dropdown-item editcareer" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
 						<li><a class="dropdown-item deletecareer" href="#" data-id="${row.id}"><i class="fa fa-trash mr-2"></i> Delete</a></li>
 					</ul>
 					</div>`
@@ -3986,7 +3986,7 @@ $(document).ready(function(){
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a class="dropdown-item editexperience" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> Edit</a></li>
+						<li><a class="dropdown-item editexperience" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
 						<li><a class="dropdown-item deleteexperience" href="#" data-id="${row.id}"><i class="fa fa-trash mr-2"></i> Delete</a></li>
 					</ul>
 					</div>`
@@ -4210,7 +4210,7 @@ $(document).ready(function(){
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a class="dropdown-item editeducation" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> Edit</a></li>
+						<li><a class="dropdown-item editeducation" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
 						<li><a class="dropdown-item deleteeducation" href="#" data-id="${row.id}"><i class="fa fa-trash mr-2"></i> Delete</a></li>
 					</ul>
 					</div>`
@@ -4250,7 +4250,7 @@ $(document).ready(function(){
 		}).done(function(response){
 			$('#box-menu .overlay').addClass('d-none');
 			if(response.status){
-				$('#add_education .modal-title').html('Edit Education');
+				$('#add_education .modal-title').html('{{ __('general.edt') }} Education');
 				$('#add_education').modal('show');
 				$('#form_education')[0].reset();
 				$('#form_education .invalid-feedback').each(function () { $(this).remove(); });
@@ -4432,7 +4432,7 @@ $(document).ready(function(){
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a class="dropdown-item edittraining" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> Edit</a></li>
+						<li><a class="dropdown-item edittraining" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
 						<li><a class="dropdown-item deletetraining" href="#" data-id="${row.id}"><i class="fa fa-trash mr-2"></i> Delete</a></li>
 					</ul>
 					</div>`
@@ -4475,7 +4475,7 @@ $(document).ready(function(){
 		}).done(function(response){
 			$('#box-menu .overlay').addClass('d-none');
 			if(response.status){
-				$('#add_training .modal-title').html('Edit Training');
+				$('#add_training .modal-title').html('{{ __('general.edt') }} Training');
 				$('#add_training').modal('show');
 				$('#form_training')[0].reset();
 				$('#form_training .invalid-feedback').each(function () { $(this).remove(); });
@@ -4656,7 +4656,7 @@ $(document).ready(function(){
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a class="dropdown-item editbpjs" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> Edit</a></li>
+						<li><a class="dropdown-item editbpjs" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
 						<li><a class="dropdown-item deletebpjs" href="#" data-id="${row.id}"><i class="fa fa-trash mr-2"></i> Delete</a></li>
 					</ul>
 					</div>`
@@ -4698,7 +4698,7 @@ $(document).ready(function(){
 		}).done(function(response){
 			$('#box-menu .overlay').addClass('d-none');
 			if(response.status){
-				$('#add_bpjs .modal-title').html('Edit BPJS');
+				$('#add_bpjs .modal-title').html('{{ __('general.edt') }} BPJS');
 				$('#add_bpjs').modal('show');
 				$('#form_bpjs')[0].reset();
 				$('#form_bpjs .invalid-feedback').each(function () { $(this).remove(); });
@@ -4879,7 +4879,7 @@ $(document).ready(function(){
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a class="dropdown-item editmember" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> Edit</a></li>
+						<li><a class="dropdown-item editmember" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
 						<li><a class="dropdown-item deletemember" href="#" data-id="${row.id}"><i class="fa fa-trash mr-2"></i> Delete</a></li>
 					</ul>
 					</div>`
@@ -4921,7 +4921,7 @@ $(document).ready(function(){
 		}).done(function(response){
 			$('#box-menu .overlay').addClass('d-none');
 			if(response.status){
-				$('#add_member .modal-title').html('Edit Member');
+				$('#add_member .modal-title').html('{{ __('general.edt') }} Member');
 				$('#add_member').modal('show');
 				$('#form_member')[0].reset();
 				$('#form_member .invalid-feedback').each(function () { $(this).remove(); });
@@ -5108,7 +5108,7 @@ $(document).ready(function(){
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a class="dropdown-item editdocument" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> Edit</a></li>
+						<li><a class="dropdown-item editdocument" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
 						<li><a class="dropdown-item deletedocument" href="#" data-id="${row.id}"><i class="fa fa-trash mr-2"></i> Delete</a></li>
 					</ul>
 					</div>`
@@ -5151,7 +5151,7 @@ $(document).ready(function(){
 		}).done(function(response){
 			$('#box-menu .overlay').addClass('d-none');
 			if(response.status){
-				$('#add_document .modal-title').html('Edit Document');
+				$('#add_document .modal-title').html('{{ __('general.edt') }} Document');
 				$('#add_document').modal('show');
 				$('#form_document')[0].reset();
 				$('#form_document .invalid-feedback').each(function () { $(this).remove(); });
@@ -5310,7 +5310,7 @@ $(document).ready(function(){
 		}).done(function(response){
 			$('#box-menu .overlay').addClass('d-none');
 			if(response.status){
-				$('#add_salary .modal-title').html('Edit Salary');
+				$('#add_salary .modal-title').html('{{ __('general.edt') }} Salary');
 				$('#add_salary').modal('show');
 				$('#form_salary')[0].reset();
 				$('#form_salary .invalid-feedback').each(function () { $(this).remove(); });
@@ -5758,7 +5758,7 @@ $(document).ready(function(){
 				<i class="fa fa-bars"></i>
 				</button>
 				<ul class="dropdown-menu dropdown-menu-right">
-				<li><a class="dropdown-item editallowance" href="#" data-id="${row.id}"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
+				<li><a class="dropdown-item editallowance" href="#" data-id="${row.id}"><i class="fas fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
 				<li><a class="dropdown-item viewallowance" href="#" data-id="${row.id}" data-allowance="${row.allowance_id}"><i class="fas fa-info mr-3"></i> Detail</a></li>
 				</ul></div>`
 				},
@@ -5835,7 +5835,7 @@ $(document).ready(function(){
 		}).done(function(response){
 			$('#box-menu .overlay').addClass('d-none');
 			if(response.status){
-				$('#add_allowance .modal-title').html('Edit Allowance');
+				$('#add_allowance .modal-title').html('{{ __('general.edt') }} Allowance');
 				$('#add_allowance').modal('show');
 				$('#form_allowance')[0].reset();
 				$('#form_allowance .invalid-feedback').each(function () { $(this).remove(); });
@@ -6148,7 +6148,7 @@ $(document).ready(function(){
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a class="dropdown-item editovertime" href="#" data-id="${row.id}"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
+						<li><a class="dropdown-item editovertime" href="#" data-id="${row.id}"><i class="fas fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
 					</ul>
 					</div>`
 			},targets: [7]
@@ -6194,7 +6194,7 @@ $(document).ready(function(){
 		}).done(function(response){
 			$('#box-menu .overlay').addClass('d-none');
 			// if(response.status){
-				$('#editovertime .modal-title').html('Edit Overtime');
+				$('#editovertime .modal-title').html('{{ __('general.edt') }} Overtime');
 				$('#editovertime').modal('show');
 				$('#form_overtime')[0].reset();
 				$('#form_overtime .invalid-feedback').each(function () { $(this).remove(); });
