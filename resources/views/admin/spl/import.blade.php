@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Import SPL | Surat Pengajuan Lembur')
+@section('title', __('general.imp') . ' ' . __('spl.spl'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -12,28 +12,25 @@
 </style>
 @endsection
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('spl.index')}}">SPL</a></li>
-<li class="breadcrumb-item active">Import SPL (Surat Pengajuan Lembur)</li>
+<li class="breadcrumb-item"><a href="{{route('spl.index')}}">{{ __('spl.spl') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.imp') }}</li>
 @endpush
 @section('content')
 <div class="row">
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline" id="attendance-preview">
       <div class="card-header">
-        <h3 class="card-title">Import Preview</h3>
+        <h3 class="card-title">{{ __('general.preview') }}</h3>
         <!-- tools card -->
         <div class="pull-right card-tools">
-          <a href="{{ asset('import/Spl.xlsx') }}" class="btn btn-{{ config('configs.app_theme') }} text-white btn-sm" data-toggle="tooltip" title="Download Template">
+          <a href="{{ asset('import/Spl.xlsx') }}" class="btn btn-{{ config('configs.app_theme') }} text-white btn-sm" data-toggle="tooltip" title="{{ __('general.download') }} {{ __('general.template') }}">
             <i class="fa fa-download"></i>
           </a>
-          <a onclick="addImport()" class="btn btn-{{ config('configs.app_theme') }} text-white btn-sm"
-            data-toggle="tooltip" title="Import data">
+          <a onclick="addImport()" class="btn btn-{{ config('configs.app_theme') }} text-white btn-sm" data-toggle="tooltip" title="{{ __('general.imp') }} {{ __('general.data') }}">
             <i class="fa fa-file-import"></i>
           </a>
-          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i
-              class="fa fa-save"></i></button>
-          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
-              class="fa fa-reply"></i></a>
+          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
         </div>
         <!-- /. tools -->
       </div>
@@ -43,15 +40,15 @@
         <table class="table table-striped table-bordered" style="width:100%" id="table-item">
           <thead>
             <tr>
-                <th width="100">Date</th>
-                <th width="100">Employee Name</th>
-                <th width="100">NIK Taewon</th>
-                <th width="50">Start Date</th>
-                <th width="50">Start Time</th>
-                <th width="100">Finish Date</th>
-                <th width="100">Finish Time</th>
-                <th width="50">Error Message</th>
-                <th width="50">#</th>
+              <th width="100">{{ __('general.date') }}</th>
+              <th width="100">{{ __('employee.empname') }}</th>
+              <th width="100">NIK Taewon</th>
+              <th width="50">{{ __('general.start_date') }}</th>
+              <th width="50">{{ __('general.start_time') }}</th>
+              <th width="100">{{ __('general.finish_date') }}</th>
+              <th width="100">{{ __('general.finish_time') }}</th>
+              <th width="50">{{ __('spl.error') }}</th>
+              <th width="50">#</th>
             </tr>
           </thead>
         </table>
@@ -67,7 +64,7 @@
     <div class="overlay-wrapper">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Choose File</h4>
+          <h4 class="modal-title">{{ __('general.chs') }} {{ __('general.file') }}</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -86,8 +83,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button form="form-import" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Import"><i
-              class="fa fa-file-import"></i></button>
+          <button form="form-import" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="{{ __('general.imp') }}"><i class="fa fa-file-import"></i></button>
         </div>
       </div>
       <div class="overlay d-none">
@@ -150,6 +146,9 @@
           autoWidth:false,
           paging:false,
           order: [[ 0, "asc" ]],
+          language: {
+            url: language_choosen == 'id' ? urlLocaleId : '',
+          },
           columnDefs: [
               {
                   orderable: false,targets:[0,1,2,3,4,5,6,7]

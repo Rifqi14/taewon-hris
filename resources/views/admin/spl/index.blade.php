@@ -1,24 +1,25 @@
 @extends('admin.layouts.app')
 
-@section('title', 'SPL | Surat Pengajuan Lembur')
+@section('title', __('spl.spl'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/jquery-ui/jquery-ui.min.css')}}" rel="stylesheet">
 <style>
-	.ui-state-active{
-        background: #28a745 !important;
-        border-color: #28a745 !important;
-    }
-    .ui-menu {
-        overflow: auto;
-        height:200px;
-    }
+	.ui-state-active {
+		background: #28a745 !important;
+		border-color: #28a745 !important;
+	}
+
+	.ui-menu {
+		overflow: auto;
+		height: 200px;
+	}
 </style>
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">SPL (Surat Pengajuan Lembur)</li>
+<li class="breadcrumb-item active">{{ __('spl.spl') }}</li>
 @endpush
 
 @section('content')
@@ -27,15 +28,13 @@
 		<div class="col-lg-12">
 			<div class="card ">
 				<div class="card-header">
-					<h3 class="card-title">SPL (Surat Pengajuan Lembur)</h3>
+					<h3 class="card-title">{{ __('spl.spl') }}</h3>
 					<!-- tools box -->
 					<div class="pull-right card-tools">
-                        <a href="{{route('spl.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" 
-                            data-toggle="tooltip" title="Import" style="cursor: pointer;">
-                            <i class="fa fa-file-import"></i>
-                        </a>
-						<a href="{{route('spl.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white"
-							data-toggle="tooltip" title="Tambah">
+						<a href="{{route('spl.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="{{ __('general.imp') }}" style="cursor: pointer;">
+							<i class="fa fa-file-import"></i>
+						</a>
+						<a href="{{route('spl.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="{{ __('general.crt') }}">
 							<i class="fa fa-plus"></i>
 						</a>
 					</div>
@@ -45,69 +44,69 @@
 					<div class="row">
 						<div class="col-md-4">
 							<div class="form-group">
-								<label class="control-label" for="employee_id">Employee Name</label>
-								<input type="text" name="employee_id" id="employee_id" class="form-control filter" placeholder="Employee Name">
+								<label class="control-label" for="employee_id">{{ __('employee.empname') }}</label>
+								<input type="text" name="employee_id" id="employee_id" class="form-control filter" placeholder="{{ __('employee.empname') }}">
 								{{-- <select name="driver_id" id="driver_id" class="form-control select2 filter" style="width: 100%" aria-hidden="true"  data-placeholder="Driver Name">
 									<option value=""></option>
 									@foreach ($employees as $employee)
 									<option value="{{ $employee->id }}">{{ $employee->name }}</option>
-									@endforeach
+								@endforeach
 								</select> --}}
 							</div>
 							<div id="employee-container"></div>
 						</div>
 						<div class="col-md-4">
-						  <div class="form-group">
-							<label class="control-label" for="nik">NIK</label>
-							<input type="text" name="nik" id="nik" class="form-control filter" placeholder="NIK" multiple>
-						  </div>
+							<div class="form-group">
+								<label class="control-label" for="nik">NIK</label>
+								<input type="text" name="nik" id="nik" class="form-control filter" placeholder="NIK" multiple>
+							</div>
 						</div>
 						<div class="form-row col-md-4">
-						  <div class="col-md-6">
-							<div class="form-group">
-							  <label class="control-label" for="start_date">Start Date</label>
-							  <div class="controls">
-								<div class="input-group">
-								  <div class="input-group-prepend">
-									<span class="input-group-text">
-									  <i class="far fa-calendar-alt"></i>
-									</span>
-								  </div>
-								  <input type="text" name="start_date" id="start_date" class="form-control filter" placeholder="Start Date">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="control-label" for="start_date">{{ __('general.start_date') }}</label>
+									<div class="controls">
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<span class="input-group-text">
+													<i class="far fa-calendar-alt"></i>
+												</span>
+											</div>
+											<input type="text" name="start_date" id="start_date" class="form-control filter" placeholder="{{ __('general.start_date') }}">
+										</div>
+									</div>
 								</div>
-							  </div>
 							</div>
-						  </div>
-						  <div class="col-md-6">
-						  <div class="form-group">
-							<label class="control-label" for="finish_date">Finish Date</label>
-							<div class="controls">
-							  <div class="input-group">
-								<div class="input-group-prepend">
-								  <span class="input-group-text">
-									<i class="far fa-calendar-alt"></i>
-								  </span>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="control-label" for="finish_date">{{ __('general.finish_date') }}</label>
+									<div class="controls">
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<span class="input-group-text">
+													<i class="far fa-calendar-alt"></i>
+												</span>
+											</div>
+											<input type="text" name="finish_date" id="finish_date" class="form-control datepicker filter" placeholder="{{ __('general.finish_date') }}">
+										</div>
+									</div>
 								</div>
-								<input type="text" name="finish_date" id="finish_date" class="form-control datepicker filter" placeholder="Finish Date">
-							  </div>
 							</div>
-						  </div>
 						</div>
-						</div>
-					  </div>
+					</div>
 					<table class="table table-striped table-bordered datatable" style="width:100%">
 						<thead>
 							<tr>
 								<th width="10">#</th>
 								<th width="100">NIK</th>
-								<th width="100">Employee Name</th>
-								<th width="100">Start Date</th>
-								<th width="100">Start Time</th>
-								<th width="100">Finish Date</th>
-								<th width="100">Finish Time</th>
-								<th width="10">Duration</th>
-								<th width="100">Status</th>
-								<th width="10">Action</th>
+								<th width="100">{{ __('employee.empname') }}</th>
+								<th width="100">{{ __('general.start_date') }}</th>
+								<th width="100">{{ __('general.start_time') }}</th>
+								<th width="100">{{ __('general.finish_date') }}</th>
+								<th width="100">{{ __('general.finish_time') }}</th>
+								<th width="10">{{ __('spl.duration') }}</th>
+								<th width="100">{{ __('general.status') }}</th>
+								<th width="10">{{ __('general.act') }}</th>
 							</tr>
 						</thead>
 					</table>
@@ -167,6 +166,9 @@
 			lengthChange:true,
 			responsive: true,
 			order: [[ 1, "asc" ]],
+			language: {
+				url: language_choosen == 'id' ? urlLocaleId : '',
+			},
 			ajax: {
 				url: "{{route('spl.read')}}",
 				type: "GET",
@@ -185,9 +187,9 @@
 				{ className: "text-center", targets: [3,4,5,6,7,8,9] },
                 { render: function(data, type, row) {
                     if (data == 1) {
-                        return '<span class="badge badge-success">Active</span>';
+                        return `<span class="badge badge-success">{{ __('general.actv') }}</span>`;
                     } else {
-                        return '<span class="badge badge-danger">Non Active</span>';
+                        return `<span class="badge badge-danger">{{ __('general.noactv') }}</span>`;
                     }
                 }, targets:[8]},
 				{ render: function ( data, type, row ) {
@@ -196,8 +198,8 @@
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-					<li><a class="dropdown-item" href="{{url('admin/spl')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-					<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+					<li><a class="dropdown-item" href="{{url('admin/spl')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
+					<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{ __('general.dlt') }}</a></li>
 					</ul></div>`
 				},targets: [9]
 				}
