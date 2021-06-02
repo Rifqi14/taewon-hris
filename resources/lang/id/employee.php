@@ -2,6 +2,7 @@
 return [
     /**Employee */
     'employ'     => 'Pegawai',
+    'empname'    => 'Nama Pegawai',
     'emplist'    => 'Daftar Pegawai',
     'search'     => 'Pencarian',
     'birthday'   => 'Hari Lahir',

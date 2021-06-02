@@ -142,7 +142,7 @@
               <thead>
                 <tr>
                   <th>No</th>
-                  <th>{{ __('department.dep') }} {{ __('general.name') }}</th>
+                  <th>{{ __('department.depname') }}</th>
                   <th>
                     <div class="customcheckbox">
                       <input type="checkbox" name="checkall" class="checkall" id="checkall">
