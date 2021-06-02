@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', __('config.workgrp'))
+@section('title', __('workgroup.workgrp'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('workgroupmaster.index')}}">{{ __('config.workgrp') }}</a></li>
-<li class="breadcrumb-item active">{{ __('config.edt') }}</li>
+<li class="breadcrumb-item active"><a href="{{route('workgroupmaster.index')}}">{{ __('workgroup.workgrp') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.edt') }}</li>
 @endpush
 
 @section('content')
@@ -15,33 +15,28 @@
 	<div class="col-lg-12">
 		<div class="card card-{{ config('configs.app_theme') }} card-outline h-100">
 			<div class="card-header">
-				<h3 class="card-title">{{ __('config.edt') }} {{ __('config.workgrp') }}</h3>
+				<h3 class="card-title">{{ __('general.edt') }} {{ __('workgroup.workgrp') }}</h3>
 				<div class="pull-right card-tools">
-					<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('config.save') }}"><i
-							class="fa fa-save"></i></button>
-					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
-							class="fa fa-reply"></i></a>
+					<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
 				</div>
 			</div>
 			<div class="card-body">
-				<form id="form" action="{{ route('workgroupmaster.update',['id'=>$workgroupmaster->id]) }}"
-					class="form-horizontal" method="post" autocomplete="off">
+				<form id="form" action="{{ route('workgroupmaster.update',['id'=>$workgroupmaster->id]) }}" class="form-horizontal" method="post" autocomplete="off">
 					{{ csrf_field() }}
 					<input type="hidden" name="_method" value="put">
 					<div class="row">
 						<div class="col-sm-6">
 							<!-- text input -->
 							<div class="form-group">
-								<label>{{ __('config.workcode') }}</label>
-								<input type="text" class="form-control" name="code" id="code" placeholder="{{ __('config.workcode') }}"
-									value="{{ $workgroupmaster->code }}" required>
+								<label>{{ __('workgroup.workcode') }}</label>
+								<input type="text" class="form-control" name="code" id="code" placeholder="{{ __('workgroup.workcode') }}" value="{{ $workgroupmaster->code }}" required>
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label>{{ __('config.workname') }}</label>
-								<input type="text" class="form-control" name="name" id="name" placeholder="{{ __('config.workname') }}"
-									value="{{ $workgroupmaster->name }}" required>
+								<label>{{ __('workgroup.workname') }}</label>
+								<input type="text" class="form-control" name="name" id="name" placeholder="{{ __('workgroup.workname') }}" value="{{ $workgroupmaster->name }}" required>
 							</div>
 						</div>
 					</div>
