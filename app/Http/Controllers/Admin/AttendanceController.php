@@ -327,7 +327,8 @@ class AttendanceController extends Controller
             $point_name      = $sheet->getCellByColumnAndRow(7, $row)->getValue();
             $attendance_date = $sheet->getCellByColumnAndRow(8, $row)->getValue();
             $date_source     = $sheet->getCellByColumnAndRow(9, $row)->getValue();
-            if ($personel_id) {
+            $attendancemachine = AttendanceMachine::where('device_sn',$serial_number)->first();
+            if ($personel_id && $attendancemachine) {
                 $employee = Employee::whereRaw("upper(nid) = '$personel_id'")->get()->first();
                 $data[] = array(
                     'index' => $no,
@@ -339,7 +340,7 @@ class AttendanceController extends Controller
                     'attendance_area' => $attendance_area,
                     'serial_number'   => $serial_number,
                     'device_name'     => $device_name,
-                    'point_name'      => $point_name,
+                    'point_name'      => $attendancemachine->point_name,
                     'attendance_date' => $attendance_date,
                     'date_source'     => $date_source
                 );
