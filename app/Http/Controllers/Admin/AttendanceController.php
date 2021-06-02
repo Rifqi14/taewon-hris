@@ -1339,7 +1339,6 @@ class AttendanceController extends Controller
                                         $adjustment->code_case  = "A08/BW$getbreakworkingtime/BO$getbreakovertime";
                                         $adjustment->breaktime = $break_time;
                                     }
-                                    $adjustment->attendance_out = null;
                                 }
                                 
                             }else{
@@ -1427,7 +1426,6 @@ class AttendanceController extends Controller
                                         $adjustment->code_case  = "A16/BW$getbreakworkingtime/BO$getbreakovertime";
                                         $adjustment->breaktime = $break_time;
                                     }
-                                    $adjustment->attendance_out = null;
                                 } 
                             }
                         } else {
@@ -1483,8 +1481,8 @@ class AttendanceController extends Controller
                                     $time_out = Carbon::parse($adjustment->attendance_in)->addHours($getworkingtime->min_workhour)->toDateTimeString();
                                     $attendance_hour = array('attendance_in' => $adjustment->attendance_in, 'attendance_out' => $time_out);
                                     $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $getworkingtime);
-                                    $adjustment->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
-                                    $total_jam = Carbon::parse($adjustment->attendance_out)->diffInHours($adjustment->attendance_in);
+                                    $attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
+                                    $total_jam = Carbon::parse($attendance_out)->diffInHours($adjustment->attendance_in);
                                     $break_time = $getbreakworkingtime + $getbreakovertime;
                                     $wt_attendance = $total_jam - $break_time;
 
@@ -1874,9 +1872,9 @@ class AttendanceController extends Controller
                                 $time_out = Carbon::parse($attendance->attendance_in)->addHours($workingtimeDetail->min_workhour)->toDateTimeString();
                                 $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $time_out);
                                 $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtimeDetail);
-                                $attendance->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
+                                $attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
 
-                                $total_jam = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
+                                $total_jam = Carbon::parse($attendance_out)->diffInHours($attendance->attendance_in);
                                 $break_time = $getbreakworkingtime + $getbreakovertime;
                                 $wt_attendance = $total_jam - $break_time;
                                 if ($employee->overtime == 'yes') {
@@ -1959,9 +1957,9 @@ class AttendanceController extends Controller
                                 $time_out = Carbon::parse($attendance->attendance_in)->addHours($workingtimeDetail->min_workhour)->toDateTimeString();
                                 $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $time_out);
                                 $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtimeDetail);
-                                $attendance->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
+                                $attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
 
-                                $total_jam = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
+                                $total_jam = Carbon::parse($attendance_out)->diffInHours($attendance->attendance_in);
                                 $break_time = $getbreakworkingtime + $getbreakovertime;
                                 $wt_attendance = $total_jam - $break_time;
 
@@ -2048,8 +2046,8 @@ class AttendanceController extends Controller
                                 $time_out = Carbon::parse($attendance->attendance_in)->addHours($workingtimeDetail->min_workhour)->toDateTimeString();
                                 $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $time_out);
                                 $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtimeDetail);
-                                $attendance->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
-                                $total_jam = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
+                                $attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
+                                $total_jam = Carbon::parse($attendance_out)->diffInHours($attendance->attendance_in);
                                 $break_time = $getbreakworkingtime + $getbreakovertime;
                                 $wt_attendance = $total_jam - $break_time;
 
@@ -2134,9 +2132,9 @@ class AttendanceController extends Controller
                                 $time_out = Carbon::parse($attendance->attendance_in)->addHours($workingtimeDetail->min_workhour)->toDateTimeString();
                                 $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $time_out);
                                 $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtimeDetail);
-                                $attendance->attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
+                                $attendance_out = Carbon::parse($time_out)->addHours($getbreakworkingtime)->toDateTimeString();
 
-                                $total_jam = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
+                                $total_jam = Carbon::parse($attendance_out)->diffInHours($attendance->attendance_in);
 
                                 $break_time = $getbreakworkingtime + $getbreakovertime;
                                 $wt_attendance = $total_jam - $break_time;
