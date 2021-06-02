@@ -224,6 +224,7 @@
             option.push({
               id:item.id,
               text: item.name,
+              department_id:item.department_id
             });
           });
           return {
@@ -243,7 +244,8 @@
             name:term,
             page:page,
             limit:30,
-            truck_id:$('#truck_id').val()
+            truck_id:$('#truck_id').val(),
+            department_id:$('#driver_id').select2('data').department_id
           };
         },
         results: function (data,page) {
