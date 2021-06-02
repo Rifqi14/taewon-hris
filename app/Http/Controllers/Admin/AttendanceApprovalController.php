@@ -601,7 +601,12 @@ class AttendanceApprovalController extends Controller
         $query->leftJoin('overtime_schemes', 'overtime_schemes.id', '=', 'overtime_scheme_lists.overtime_scheme_id');
         $query->leftJoin('overtime_allowances', 'overtime_allowances.overtime_scheme_id', '=', 'overtime_schemes.id');
         $query->where('overtime_scheme_lists.overtime_scheme_id', $overtime_scheme_id);
-        $query->where('overtime_allowances.allowance_id', $allowance_id);
+        if(count($allowance_id) > 0){
+            $query->whereIn('overtime_allowances.allowance_id', $allowance_id);
+        }
+        else{
+            $query->whereIn('overtime_allowances.allowance_id', [-1]);
+        }
         $query->groupBy('overtime_scheme_lists.hour', 'overtime_scheme_lists.amount');
         $scheme_lists = $query->get();
 
@@ -707,8 +712,12 @@ class AttendanceApprovalController extends Controller
                         }
                         $overtime = Overtime::where('date', $approve->attendance_date)->where('employee_id', $approve->employee_id);
                         $overtime->delete();
-                        $employee_allowance = EmployeeAllowance::where('employee_id', $approve->employee_id)->get();
-                        $rules = $this->overtimeSchemeList($approve->overtime_scheme_id, $employee_allowance->allowance_id);
+                        $employee_allowance = EmployeeAllowance::where('employee_id', $approve->employee_id)->where('status',1)->where('year',$year)->where('month',$month)->get();
+                        $allowance_id = [];
+                        foreach($employee_allowance as $allowance){
+                            array_push($allowance_id,$allowance->allowance_id);
+                        }
+                        $rules = $this->overtimeSchemeList($approve->overtime_scheme_id, $allowance_id);
                         // $rules = OvertimeSchemeList::select('hour', 'amount')->where('overtime_scheme_id', '=', $approve->overtime_scheme_id)->groupBy('hour','amount')->get();
                         // $schema_department = OvertimeschemeDepartment::where('overtime_scheme_id', '=', $approve->overtime_scheme_id)->first();
                         // dd($rules);
