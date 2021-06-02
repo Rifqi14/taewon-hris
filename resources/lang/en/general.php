@@ -65,4 +65,6 @@ return [
     'truck'       => 'Truck',
     'auto'        => 'Automatic',
     'print'       => 'Print',
+    'imp'         => 'Import',
+    'exp'         => 'Export',
 ];
