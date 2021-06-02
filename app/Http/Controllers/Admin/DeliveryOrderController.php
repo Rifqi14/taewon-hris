@@ -105,12 +105,14 @@ class DeliveryOrderController extends Controller
             'driver.department_id',
             'driver.workgroup_id',
             'departments.name as department_name',
-            'work_groups.name as workgroup_name'
+            'work_groups.name as workgroup_name',
+            'trucks.name as truck_name'
         );
         $query->leftJoin('employees as driver', 'driver.id', '=', 'delivery_orders.driver_id');
         $query->leftJoin('departments', 'departments.id', '=', 'driver.department_id');
         $query->leftJoin('work_groups', 'work_groups.id', '=', 'driver.workgroup_id');
         $query->leftJoin('partners', 'partners.id', '=', 'delivery_orders.partner_id');
+        $query->leftJoin('trucks', 'trucks.id', '=', 'delivery_orders.truck_id');
         if ($driver_id != "") {
             $query->whereRaw("upper(driver.name) like '%$driver_id%'");
         }
@@ -154,12 +156,14 @@ class DeliveryOrderController extends Controller
             'driver.department_id',
             'driver.workgroup_id',
             'departments.name as department_name',
-            'work_groups.name as workgroup_name'
+            'work_groups.name as workgroup_name',
+            'trucks.name as truck_name'
         );
         $query->leftJoin('employees as driver', 'driver.id', '=', 'delivery_orders.driver_id');
         $query->leftJoin('departments', 'departments.id', '=', 'driver.department_id');
         $query->leftJoin('work_groups', 'work_groups.id', '=', 'driver.workgroup_id');
         $query->leftJoin('partners', 'partners.id', '=', 'delivery_orders.partner_id');
+        $query->leftJoin('trucks', 'trucks.id', '=', 'delivery_orders.truck_id');
         if ($driver_id != "") {
             $query->whereRaw("upper(driver.name) like '%$driver_id%'");
         }
@@ -351,7 +355,7 @@ class DeliveryOrderController extends Controller
                 ], 400);
             }
 
-            $checkupdates = Driverallowancelist::where('driver_id', $request->driver_id)->where('date', dbDate($request->departure_time))->where('group', $request->kloter)->orderBy('value', 'desc')->get();
+            $checkupdates = Driverallowancelist::where('driver_id', $request->driver_id)->where('date', $departure_date)->where('group', $request->kloter)->orderBy('value', 'desc')->get();
             foreach($checkupdates as $key => $checkupdate){
                 $rit = $key+1;
                 $driverlist = DriverList::where('truck_id', $request->truck_id)->where('rit', $rit)->first();
@@ -551,38 +555,44 @@ class DeliveryOrderController extends Controller
         $sheet = $objPHPExcel->getActiveSheet(0);
         $highestRow = $sheet->getHighestRow();
         for ($row = 2; $row <= $highestRow; $row++) {
-            $driver_name    = strtoupper($sheet->getCellByColumnAndRow(0, $row)->getValue());
-            $police_no      = $sheet->getCellByColumnAndRow(1, $row)->getValue();
-            $type_truck     = strtolower($sheet->getCellByColumnAndRow(2, $row)->getValue());
-            $kloter         = $sheet->getCellByColumnAndRow(3, $row)->getValue();
-            $customer       = strtoupper($sheet->getCellByColumnAndRow(4, $row)->getValue());
-            if (is_numeric($sheet->getCellByColumnAndRow(5, $row)->getValue())){
-                $departure_date = date('Y-m-d', \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(5, $row)->getValue()));
-            }else{
-                $departure_date = date('Y-m-d', strtotime($sheet->getCellByColumnAndRow(5, $row)->getValue()));
-            }
+            $nid    = strtoupper($sheet->getCellByColumnAndRow(0, $row)->getValue());
+            $driver_name    = strtoupper($sheet->getCellByColumnAndRow(1, $row)->getValue());
+            $police_no      = $sheet->getCellByColumnAndRow(2, $row)->getValue();
+            $truck_name     = strtoupper($sheet->getCellByColumnAndRow(3, $row)->getValue());
+            $kloter         = $sheet->getCellByColumnAndRow(4, $row)->getValue();
+            $partner_name       = strtoupper($sheet->getCellByColumnAndRow(5, $row)->getValue());
             if (is_numeric($sheet->getCellByColumnAndRow(6, $row)->getValue())){
-                $departure_time = date('H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(6, $row)->getValue())));
+                $departure_date = date('Y-m-d', \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(6, $row)->getValue()));
             }else{
-                $departure_time = date('H:i:s', strtotime($sheet->getCellByColumnAndRow(6, $row)->getValue()));
+                $departure_date = date('Y-m-d', strtotime($sheet->getCellByColumnAndRow(6, $row)->getValue()));
             }
             if (is_numeric($sheet->getCellByColumnAndRow(7, $row)->getValue())){
-                $arrived_date = date('Y-m-d', \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(7, $row)->getValue()));
+                $departure_time = date('H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(7, $row)->getValue())));
             }else{
-                $arrived_date = date('Y-m-d', strtotime($sheet->getCellByColumnAndRow(7, $row)->getValue()));
+                $departure_time = date('H:i:s', strtotime($sheet->getCellByColumnAndRow(7, $row)->getValue()));
             }
             if (is_numeric($sheet->getCellByColumnAndRow(8, $row)->getValue())){
-                $arrived_time = date('H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(8, $row)->getValue())));
+                $arrived_date = date('Y-m-d', \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(8, $row)->getValue()));
             }else{
-                $arrived_time = date('H:i:s', strtotime($sheet->getCellByColumnAndRow(8, $row)->getValue()));
+                $arrived_date = date('Y-m-d', strtotime($sheet->getCellByColumnAndRow(8, $row)->getValue()));
             }
-            $partner = Partner::whereRaw("upper(name) like '%$customer%'")->first();
-            $driver = Employee::whereRaw("upper(name) like '%$driver_name%'")->get()->first();
+            if (is_numeric($sheet->getCellByColumnAndRow(9, $row)->getValue())){
+                $arrived_time = date('H:i:s', strtotime("-7 hours", \PHPExcel_Shared_Date::ExcelToPHP($sheet->getCellByColumnAndRow(9, $row)->getValue())));
+            }else{
+                $arrived_time = date('H:i:s', strtotime($sheet->getCellByColumnAndRow(9, $row)->getValue()));
+            }
+            $department_id = 0;
+            $truck = Truck::whereRaw("upper(name) = '$truck_name'")->first();
+            $driver = Employee::whereRaw("upper(nid) = '$nid'")->first();
+            if($driver){
+                $department_id = $driver->department_id;
+            }
+            $partner = Partner::whereRaw("upper(name) = '$partner_name' and department_id = $department_id")->first();
             // $departure_time = $sheet->getCellByColumnAndRow(5, $row)->getValue();
             // $arrived_time = $sheet->getCellByColumnAndRow(6, $row)->getValue();
             $status = 1;
             $error_message = '';
-            if (!$driver || !$police_no || !$type_truck || !$kloter || !$partner || !$departure_time) {
+            if (!$driver || !$police_no || !$truck || !$kloter || !$partner || !$departure_time) {
                 $status = 0;
                 if (!$driver) {
                     $error_message .= 'Driver Name Not Found</br>';
@@ -590,7 +600,7 @@ class DeliveryOrderController extends Controller
                 if (!$police_no) {
                     $error_message .= 'Police No Not Found</br>';
                 }
-                if (!$type_truck) {
+                if (!$truck) {
                     $error_message .= 'Type Truck Not Found</br>';
                 }
                 if (!$kloter) {
@@ -606,13 +616,15 @@ class DeliveryOrderController extends Controller
             if ($driver_name) {
                 $data[] = array(
                     'index' => $no,
+                    'nid' => $nid,
                     'driver_id' => $driver ? $driver->id : null,
                     'driver_name' => $driver_name,
                     'police_no' => $police_no,
-                    'type_truck' => $type_truck,
+                    'truck_name' => $truck_name,
+                    'truck_id' => $truck ? $truck->id : null,
                     'kloter' => $kloter,
-                    'customer' => $customer,
-                    'customer_id' => $partner ? $partner->id : null,
+                    'partner_name' => $partner_name,
+                    'partner_id' => $partner ? $partner->id : null,
                     'departure_date' => $departure_date,
                     'departure_time' => $departure_time,
                     'arrived_date' => $arrived_date,
@@ -649,7 +661,7 @@ class DeliveryOrderController extends Controller
             // }
             // if (!$check) {
 
-                if (!$deliveryorder->customer_id || !$deliveryorder->driver_id || !$deliveryorder->type_truck || !$deliveryorder->police_no || !$deliveryorder->kloter) {
+                if (!$deliveryorder->partner_id || !$deliveryorder->driver_id || !$deliveryorder->truck_id || !$deliveryorder->police_no || !$deliveryorder->kloter) {
                     DB::rollback();
                     return response()->json([
                         'status' => false,
@@ -660,31 +672,31 @@ class DeliveryOrderController extends Controller
                 $doimport = DeliveryOrder::create([
                     'driver_id' => $deliveryorder->driver_id,
                     'police_no' => $deliveryorder->police_no,
-                    'type_truck' => $deliveryorder->type_truck,
+                    'truck_id' => $deliveryorder->truck_id,
                     'group' => $deliveryorder->kloter,
-                    'partner_id' => $deliveryorder->customer_id,
+                    'partner_id' => $deliveryorder->partner_id,
                     'departure_date' => $deliveryorder->departure_date, 
                     'departure_time' => $deliveryorder->departure_time, 
                     'arrived_date' => $deliveryorder->arrived_date, 
                     'arrived_time' => $deliveryorder->arrived_time 
                 ]);
             if ($doimport) {
-                $partner_rit = Partner::find($deliveryorder->customer_id);
+                $partner_rit = Partner::find($deliveryorder->partner_id);
                 $readConfigs = Config::where('option', 'cut_off')->first();
                 $cut_off = $readConfigs->value;
-                if (date('d', strtotime(dbDate($deliveryorder->departure_time))) > $cut_off) {
-                    $month = date('m', strtotime(dbDate($deliveryorder->departure_time)));
-                    $year = date('Y', strtotime(dbDate($deliveryorder->departure_time)));
+                if (date('d', strtotime($deliveryorder->departure_date.' '.$deliveryorder->departure_time)) > $cut_off) {
+                    $month = date('m', strtotime($deliveryorder->departure_date.' '.$deliveryorder->departure_time));
+                    $year = date('Y', strtotime($deliveryorder->departure_date.' '.$deliveryorder->departure_time));
                     $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
                     $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
                 } else {
-                    $month =  date('m', strtotime(dbDate($deliveryorder->departure_time)));
-                    $year =  date('Y', strtotime(dbDate($deliveryorder->departure_time)));
+                    $month =  date('m', strtotime($deliveryorder->departure_date.' '.$deliveryorder->departure_time));
+                    $year =  date('Y', strtotime($deliveryorder->departure_date.' '.$deliveryorder->departure_time));
                 }
                 $driverallowancelist = DriverAllowanceList::create([
-                    'date'          => dbDate($deliveryorder->departure_time),
+                    'date'          => $deliveryorder->departure_date,
                     'rit'           => 100,
-                    'truck'         => $deliveryorder->type_truck,
+                    'truck_id'      => $deliveryorder->truck_id,
                     'value'         => $partner_rit->rit,
                     'driver_id'     => $deliveryorder->driver_id,
                     'group'         => $deliveryorder->kloter,
@@ -700,12 +712,12 @@ class DeliveryOrderController extends Controller
                     ], 400);
                 }
 
-                $checkupdates = Driverallowancelist::where('driver_id', $deliveryorder->driver_id)->where('date', dbDate($deliveryorder->departure_time))->where('group', $deliveryorder->kloter)->orderBy('value', 'desc')->get();
+                $checkupdates = Driverallowancelist::where('driver_id', $deliveryorder->driver_id)->where('date',$deliveryorder->departure_date)->where('group', $deliveryorder->kloter)->orderBy('value', 'desc')->get();
                 foreach ($checkupdates as $key => $checkupdate) {
                     $rit = $key + 1;
-                    $driverlist = DriverList::where('type', $deliveryorder->type_truck)->where('rit', $rit)->first();
+                    $driverlist = DriverList::where('truck_id', $deliveryorder->truck_id)->where('rit', $rit)->first();
                     if (!$driverlist) {
-                        $driverlist = DriverList::where('type', $deliveryorder->type_truck)->orderBy('rit', 'desc')->first();
+                        $driverlist = DriverList::where('truck_id', $deliveryorder->truck_id)->orderBy('rit', 'desc')->first();
                     }
 
                     $checkupdate->rit = $driverlist->value;
