@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 use PHPExcel_Style_Alignment;
 use PHPExcel_Style_Border;
 use PHPExcel_Style_Fill;
@@ -1500,9 +1501,15 @@ class AttendanceApprovalController extends Controller
     {
         if (isset($request->working_shift)) {
             // dd($request->working_shift);
+            // Log History Shift
+            $getworkingtimes = Workingtime::where('id',$request->working_shift)->first();
+            $user_id = Auth::user()->id;
+            
             $attendance = Attendance::find($request->attendance_id);
             $attendance->workingtime_id = $request->working_shift;
             $attendance->save();
+            $employee = Employee::where('id',$attendance->employee_id)->first();
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Attendance Approval","Edit",date("Y-m-d")." Shift",$getworkingtimes->description);
             if (!$attendance) {
                 return response()->json([
                     'status'     => false,
@@ -1518,6 +1525,10 @@ class AttendanceApprovalController extends Controller
         } elseif ($request->first_in) {
             $attendance = Attendance::find($request->first_in_id);
             if ($attendance->workingtime_id) {
+
+                $employee = Employee::where('id',$attendance->employee_id)->first();
+                $user_id = Auth::user()->id;
+                setrecordloghistory($user_id,$employee->id,$employee->department_id,"Attendance Approval","Edit",date("Y-m-d")." Check in",$request->first_in);
                 $worktime = WorkingtimeDetail::where('workingtime_id', '=', $attendance->workingtime_id)->where('day', '=', $attendance->day)->first();
                 $new_time = changeDateFormat('Y-m-d', $attendance->attendance_in) . ' ' . $request->first_in;
                 $attendance->attendance_in = changeDateFormat('Y-m-d H:i:s', $request->first_in);
@@ -1588,6 +1599,10 @@ class AttendanceApprovalController extends Controller
         } elseif ($request->last_out) {
             $attendance = Attendance::find($request->first_out_id);
             if ($attendance->workingtime_id) {
+                $employee = Employee::where('id',$attendance->employee_id)->first();
+                $user_id = Auth::user()->id;
+                setrecordloghistory($user_id,$employee->id,$employee->department_id,"Attendance Approval","Edit",date("Y-m-d")." Check Out",$request->last_out);
+                $worktime = WorkingtimeDetail::where('workingtime_id', '=', $attendance->workingtime_id)->where('day', '=', $attendance->day)->first();
                 $worktime = WorkingtimeDetail::where('workingtime_id', '=', $attendance->workingtime_id)->where('day', '=', $attendance->day)->first();
                 $attendance->attendance_out = changeDateFormat('Y-m-d H:i:s', $request->last_out);
                 $breaktimes = $this->get_breaktime($attendance->employee->workgroup_id);
@@ -1659,6 +1674,13 @@ class AttendanceApprovalController extends Controller
             $attendance->adj_working_time = $request->working_time;
             $attendance->adj_over_time = $request->over_time;
             $attendance->save();
+
+            $employee = Employee::where('id',$attendance->employee_id)->first();
+            $user_id = Auth::user()->id;
+            // Log History WO
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Attendance Approval","Edit",date("Y-m-d")." WT",$request->working_time);
+            // Log History OT
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Attendance Approval","Edit",date("Y-m-d")." OT",$request->over_time);
             if (!$attendance) {
                 return response()->json([
                     'status'     => false,
@@ -1679,6 +1701,9 @@ class AttendanceApprovalController extends Controller
             $employee_allowance = EmployeeAllowance::where('employee_id', $attendance->employee_id)->get();
             $rules = $this->overtimeSchemeList($request->scheme, $employee_allowance->allowance_id);
             // $rules = OvertimeSchemeList::select('hour', 'amount')->where('overtime_scheme_id', '=', $request->scheme)->groupBy('hour','amount')->orderBy('hour','asc')->get();
+            // Log History scheme
+            $user_id = Auth::user()->id;
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Attendance Approval","Edit",date("Y-m-d")." Scheme",$overtime_scheme->scheme_name);
             if($employee->overtime == 'yes'){
                 $attendance->overtime_scheme_id = $request->scheme;
                 if($request->scheme == 3){
