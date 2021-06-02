@@ -15,5 +15,6 @@ return[
     'attentp'  => 'Attendance Type',
     'choose'   => 'Choose File',
     'browse'   => 'Browse',
-    
+    'period'   => 'Period',
+    'time'     => 'Time'
 ];
