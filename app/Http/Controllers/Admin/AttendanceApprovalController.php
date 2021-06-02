@@ -1704,11 +1704,26 @@ class AttendanceApprovalController extends Controller
                 }
             }
         } elseif ($request->scheme) {
+            $readConfigs = Config::where('option', 'cut_off')->first();
+            $cut_off = $readConfigs->value;
+            if (date('d', strtotime($attendance->attendance_date)) > $cut_off) {
+                $month = date('m', strtotime($attendance->attendance_date));
+                $year = date('Y', strtotime($attendance->attendance_date));
+                $month = date('m', mktime(0, 0, 0, $month + 1, 1, $year));
+                $year = date('Y', mktime(0, 0, 0, $month + 1, 1, $year));
+            } else {
+                $month =  date('m', strtotime($attendance->attendance_date));
+                $year =  date('Y', strtotime($attendance->attendance_date));
+            }
             $attendance = Attendance::find($request->scheme_id);
             $employee = Employee::find($attendance->employee_id);
             $overtime_scheme = OvertimeScheme::find($request->scheme);
-            $employee_allowance = EmployeeAllowance::where('employee_id', $attendance->employee_id)->get();
-            $rules = $this->overtimeSchemeList($request->scheme, $employee_allowance->allowance_id);
+            $employee_allowance = EmployeeAllowance::where('employee_id', $attendance->employee_id)->where('status',1)->where('year',$year)->where('month',$month)->get();
+            $allowance_id = [];
+            foreach($employee_allowance as $allowance){
+                array_push($allowance_id,$allowance->allowance_id);
+            }
+            $rules = $this->overtimeSchemeList($request->scheme, $allowance_id);
             // $rules = OvertimeSchemeList::select('hour', 'amount')->where('overtime_scheme_id', '=', $request->scheme)->groupBy('hour','amount')->orderBy('hour','asc')->get();
             // Log History scheme
             $user_id = Auth::user()->id;
