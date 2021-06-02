@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title',__('config.workcomb'))
+@section('title',__('workgroupcombination.workcomb'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('workgroup.index')}}">{{ __('config.workcomb') }}</a></li>
-<li class="breadcrumb-item active">{{ __('config.edt') }}</li>
+<li class="breadcrumb-item active"><a href="{{route('workgroup.index')}}">{{ __('workgroupcombination.workcomb') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.edt') }}</li>
 @endpush
 
 
@@ -16,27 +16,25 @@
 	<div class="col-lg-8 pb-3">
 		<div class="card card-{{ config('configs.app_theme') }} card-outline h-100">
 			<div class="card-header">
-				<h3 class="card-title" style="padding-bottom: 12px">{{ __('config.workcomb') }}</h3>
+				<h3 class="card-title" style="padding-bottom: 12px">{{ __('workgroupcombination.workcomb') }}</h3>
 			</div>
 			<div class="card-body">
-				<form id="form" action="{{ route('workgroup.update', ['id'=>$workgroup->id]) }}" class="form-horizontal"
-					method="post" autocomplete="off">
+				<form id="form" action="{{ route('workgroup.update', ['id'=>$workgroup->id]) }}" class="form-horizontal" method="post" autocomplete="off">
 					{{ csrf_field() }}
 					{{ method_field('put') }}
 					<div class="row">
 						<div class="col-sm-6">
 							<!-- text input -->
 							<div class="form-group">
-								<label>{{ __('config.workgrp') }}</label>
-								<input type="text" class="form-control" name="workgroup_id" id="workgroup_id" placeholder="{{ __('config.workgrp') }}">
+								<label>{{ __('workgroup.workgrp') }}</label>
+								<input type="text" class="form-control" name="workgroup_id" id="workgroup_id" placeholder="{{ __('workgroup.workgrp') }}">
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<!-- text input -->
 							<div class="form-group">
-								<label>{{ __('config.combcode') }}</label>
-								<input type="text" class="form-control" name="code" id="code" placeholder="{{ __('config.combcode') }}"
-									value="{{ $workgroup->code }}">
+								<label>{{ __('workgroupcombination.combcode') }}</label>
+								<input type="text" class="form-control" name="code" id="code" placeholder="{{ __('workgroupcombination.combcode') }}" value="{{ $workgroup->code }}">
 							</div>
 						</div>
 						{{-- <div class="col-sm-6">
@@ -46,83 +44,80 @@
 								<select name="penalty" id="penalty" class="form-control select2" style="width: 100%" aria-hidden="true">
 									@foreach (config('enums.penalty_type') as $key => $value)
 									<option value="{{ $key }}" @if ($workgroup->penalty == $key) selected @endif>{{ $value }}</option>
-									@endforeach
-								</select>
-							</div>
-						</div> --}}
+						@endforeach
+						</select>
 					</div>
-					<div class="row">
-						
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label>{{ __('config.combname') }}</label>
-								<input type="text" class="form-control" name="name" id="name" placeholder="{{ __('config.combname') }}" value="{{ $workgroup->name }}">
-							</div>
-						</div>
-					</div>
-			</div>
-			<div class="overlay d-none">
-				<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+			</div> --}}
+		</div>
+		<div class="row">
+
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label>{{ __('workgroupcombination.combname') }}</label>
+					<input type="text" class="form-control" name="name" id="name" placeholder="{{ __('workgroupcombination.combname') }}" value="{{ $workgroup->name }}">
+				</div>
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-4 pb-3">
-		<div class="card card-{{ config('configs.app_theme') }} card-outline h-100">
-			<div class="card-header">
-				<h3 class="card-title">{{ __('config.other') }}</h3>
-				<div class="pull-right card-tools">
-					<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('config.save') }}"><i
-							class="fa fa-save"></i></button>
-					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
-							class="fa fa-reply"></i></a>
-				</div>
-			</div>
-			<div class="card-body">
-				<div class="row">
-					<div class="col-sm-12">
-						<!-- text input -->
-						<div class="form-group">
-							<label>{{ __('config.desc') }}</label>
-							<textarea class="form-control" id="description" name="description"
-								placeholder="{{ __('config.desc') }}">{{ $workgroup->description }}</textarea>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-						<div class="form-group">
-							<label>{{ __('config.status') }}</label>
-							<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true">
-								<option @if($workgroup->status == 1) selected @endif value="1">{{ __('config.actv') }}</option>
-								<option @if($workgroup->status == 0) selected @endif value="0">{{ __('config.noactv') }}</option>
-							</select>
-						</div>
-					</div>
-				</div>
-				</form>
-			</div>
-			<div class="overlay d-none">
-				<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+	<div class="overlay d-none">
+		<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+	</div>
+</div>
+</div>
+<div class="col-lg-4 pb-3">
+	<div class="card card-{{ config('configs.app_theme') }} card-outline h-100">
+		<div class="card-header">
+			<h3 class="card-title">{{ __('general.other') }}</h3>
+			<div class="pull-right card-tools">
+				<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+				<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
 			</div>
 		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-sm-12">
+					<!-- text input -->
+					<div class="form-group">
+						<label>{{ __('general.desc') }}</label>
+						<textarea class="form-control" id="description" name="description" placeholder="{{ __('general.desc') }}">{{ $workgroup->description }}</textarea>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label>{{ __('general.status') }}</label>
+						<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true">
+							<option @if($workgroup->status == 1) selected @endif value="1">{{ __('general.actv') }}</option>
+							<option @if($workgroup->status == 0) selected @endif value="0">{{ __('general.noactv') }}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			</form>
+		</div>
+		<div class="overlay d-none">
+			<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+		</div>
 	</div>
+</div>
 </div>
 <div class="row">
 	<div class="col-lg-12">
 		<div class="card card-{{ config('configs.app_theme') }} card-outline h-100" id="workgroup_allowance">
 			<div class="card-header">
-				<h3 class="card-title">{{ __('config.alw') }}</h3>
+				<h3 class="card-title">{{ __('allowance.alw') }}</h3>
 			</div>
 			<div class="card-body">
 				<table class="table table-striped table-bordered datatable" style="width:100%" id="table-allowances">
 					<thead>
 						<tr>
 							<th width="10">No</th>
-							<th width="200">{{ __('config.alw') }}</th>
-							<th width="500">{{ __('config.category') }}</th>
-							<th width="150">{{ __('config.value') }}</th>
-							<th width="50">{{ __('config.default') }}</th>
-							<th width="100">{{ __('config.action') }}</th>
+							<th width="200">{{ __('allowance.alw') }}</th>
+							<th width="500">{{ __('allowance.category') }}</th>
+							<th width="150">{{ __('workgroupcombination.value') }}</th>
+							<th width="50">{{ __('workgroupcombination.default') }}</th>
+							<th width="100">{{ __('general.act') }}</th>
 						</tr>
 					</thead>
 				</table>
@@ -135,8 +130,7 @@
 </div>
 
 {{-- Modal Allowance --}}
-<div class="modal fade" id="add_allowance" tabindex="-1" role="dialog" aria-hidden="true" role="dialog"
-	aria-hidden="true">
+<div class="modal fade" id="add_allowance" tabindex="-1" role="dialog" aria-hidden="true" role="dialog" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="overlay-wrapper">
@@ -152,18 +146,18 @@
 							<input type="hidden" name="allowance_id">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="type" class="control-label">{{ __('config.type') }}</label>
-									<select class="form-control" data-placeholder="{{ __('config.type') }}" name="type" id="type">
-										<option value="percentage">{{ __('config.percent') }}</option>
-										<option value="nominal">{{ __('config.nominal') }}</option>
-										<option value="automatic">{{ __('config.automatic') }}</option>
+									<label for="type" class="control-label">{{ __('general.type') }}</label>
+									<select class="form-control" data-placeholder="{{ __('general.type') }}" name="type" id="type">
+										<option value="percentage">{{ __('general.percent') }}</option>
+										<option value="nominal">{{ __('general.nom') }}</option>
+										<option value="automatic">{{ __('general.auto') }}</option>
 									</select>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="value" class="control-label">{{ __('config.value') }}</label>
-									<input type="text" class="form-control" id="value" name="value" placeholder="{{ __('config.value') }}" required>
+									<label for="value" class="control-label">{{ __('workgroupcombination.value') }}</label>
+									<input type="text" class="form-control" id="value" name="value" placeholder="{{ __('workgroupcombination.value') }}" required>
 								</div>
 							</div>
 							{{ csrf_field() }}
@@ -172,8 +166,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button form="form_allowance" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}} text-white"
-						title="Simpan"><i class="fa fa-save"></i></button>
+					<button form="form_allowance" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
 				</div>
 				<div class="overlay d-none">
 					<i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -305,6 +298,9 @@
 				responsive: true,
 				paginate:false,
 				order: [[ 5, "asc" ]],
+				language: {
+					url: language_choosen == 'id' ? urlLocaleId : ''
+				},
 				ajax: {
 						url: "{{route('workgroupallowance.read')}}",
 						type: "GET",
@@ -342,7 +338,7 @@
 						<i class="fa fa-bars"></i>
 						</button>
 						<ul class="dropdown-menu dropdown-menu-right">
-						<li><a class="dropdown-item editallowance" href="#" data-id="${row.id}"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
+						<li><a class="dropdown-item editallowance" href="#" data-id="${row.id}"><i class="fas fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
 						</ul></div>`
 						},
 					targets: [5] }
@@ -369,7 +365,7 @@
 				}).done(function(response){
 					$('#box-menu .overlay').addClass('d-none');
 					if(response.status){
-						$('#add_allowance .modal-title').html('Ubah Allowance');
+						$('#add_allowance .modal-title').html(`{{ __('general.edt') }} {{ __('allowance.alw') }}`);
 						$('#add_allowance').modal('show');
 						$('#form_allowance')[0].reset();
 						$('#form_allowance .invalid-feedback').each(function () { $(this).remove(); });

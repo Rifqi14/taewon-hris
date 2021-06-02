@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', __('config.workcomb'))
+@section('title', __('workgroupcombination.workcomb'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('workgroup.index')}}">{{ __('config.workcomb') }}</a></li>
-<li class="breadcrumb-item active">{{ __('config.crt') }}</li>
+<li class="breadcrumb-item active"><a href="{{route('workgroup.index')}}">{{ __('workgroupcombination.workcomb') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.crt') }}</li>
 @endpush
 
 
@@ -16,25 +16,24 @@
 	<div class="col-lg-8 pb-3">
 		<div class="card card-{{ config('configs.app_theme') }} card-outline h-100">
 			<div class="card-header">
-				<h3 class="card-title" style="padding-bottom: 12px">{{ __('config.workcombdata') }}</h3>
+				<h3 class="card-title" style="padding-bottom: 12px">{{ __('workgroupcombination.workcombdata') }}</h3>
 			</div>
 			<div class="card-body">
-				<form id="form" action="{{ route('workgroup.store') }}" class="form-horizontal" method="post"
-					autocomplete="off">
+				<form id="form" action="{{ route('workgroup.store') }}" class="form-horizontal" method="post" autocomplete="off">
 					{{ csrf_field() }}
 					<div class="row">
 						<div class="col-sm-6">
 							<!-- text input -->
 							<div class="form-group">
-								<label>{{ __('config.workgrp') }}</label>
-								<input type="text" class="form-control" name="workgroup_id" id="workgroup_id" placeholder="{{ __('config.workgrp') }}">
+								<label>{{ __('workgroup.workgrp') }}</label>
+								<input type="text" class="form-control" name="workgroup_id" id="workgroup_id" placeholder="{{ __('general.chs') }} {{ __('workgroup.workgrp') }}">
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<!-- text input -->
 							<div class="form-group">
-								<label>{{ __('config.combcode') }}</label>
-								<input type="text" class="form-control" name="code" id="code" placeholder="{{ __('config.combcode') }}">
+								<label>{{ __('workgroupcombination.combcode') }}</label>
+								<input type="text" class="form-control" name="code" id="code" placeholder="{{ __('workgroupcombination.combcode') }}">
 							</div>
 						</div>
 						{{-- <div class="col-sm-6">
@@ -44,64 +43,62 @@
 								<select name="penalty" id="penalty" class="form-control select2" style="width: 100%" aria-hidden="true">
 									@foreach (config('enums.penalty_type') as $key => $value)
 									<option value="{{ $key }}">{{ $value }}</option>
-									@endforeach
-								</select>
-							</div>
-						</div> --}}
+						@endforeach
+						</select>
 					</div>
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label>{{ __('config.combname') }}</label>
-								<input type="text" class="form-control" name="name" id="name" placeholder="{{ __('config.combname') }}">
-							</div>
-						</div>
-					</div>
-			</div>
-			<div class="overlay d-none">
-				<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+			</div> --}}
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label>{{ __('workgroupcombination.combname') }}</label>
+					<input type="text" class="form-control" name="name" id="name" placeholder="{{ __('workgroupcombination.combname') }}">
+				</div>
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-4 pb-3">
-		<div class="card card-{{ config('configs.app_theme') }} card-outline h-100">
-			<div class="card-header">
-				<h3 class="card-title">{{ __('config.other') }}</h3>
-				<div class="pull-right card-tools">
-					<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('config.save') }}"><i
-							class="fa fa-save"></i></button>
-					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
-							class="fa fa-reply"></i></a>
-				</div>
-			</div>
-			<div class="card-body">
-				<div class="row">
-					<div class="col-sm-12">
-						<!-- text input -->
-						<div class="form-group">
-							<label>{{ __('config.desc') }}</label>
-							<textarea class="form-control" id="description" name="description" placeholder="{{ __('config.desc') }}"></textarea>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-						<div class="form-group">
-							<label>{{ __('config.status') }}</label>
-							<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true">
-								<option value="1">{{ __('config.actv') }}</option>
-								<option value="0">{{ __('config.noactv') }}</option>
-							</select>
-						</div>
-					</div>
-				</div>
-				</form>
-			</div>
-			<div class="overlay d-none">
-				<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+	<div class="overlay d-none">
+		<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+	</div>
+</div>
+</div>
+<div class="col-lg-4 pb-3">
+	<div class="card card-{{ config('configs.app_theme') }} card-outline h-100">
+		<div class="card-header">
+			<h3 class="card-title">{{ __('general.other') }}</h3>
+			<div class="pull-right card-tools">
+				<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+				<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
 			</div>
 		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-sm-12">
+					<!-- text input -->
+					<div class="form-group">
+						<label>{{ __('general.desc') }}</label>
+						<textarea class="form-control" id="description" name="description" placeholder="{{ __('general.desc') }}"></textarea>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label>{{ __('general.status') }}</label>
+						<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true">
+							<option value="1">{{ __('general.actv') }}</option>
+							<option value="0">{{ __('general.noactv') }}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			</form>
+		</div>
+		<div class="overlay d-none">
+			<i class="fa fa-2x fa-sync-alt fa-spin"></i>
+		</div>
 	</div>
+</div>
 </div>
 @endsection
 @push('scripts')

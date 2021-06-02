@@ -19,8 +19,7 @@
     <link rel="stylesheet" href="{{asset('adminlte/css/style.min.css')}}">
     @yield('stylesheets')
     <!-- Google Font -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 
 <body class="sidebar-mini accent-{{config('configs.app_theme')}} text-sm layout-fixed">
@@ -36,14 +35,13 @@
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.logout') }}"
-                onclick="event.preventDefault();
+                    <a class="nav-link" href="{{ route('admin.logout') }}" onclick="event.preventDefault();
                               document.getElementById('logout-form').submit();">
-                    Logout
-                </a>
-                <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
+                        Logout
+                    </a>
+                    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
                 </li>
             </ul>
 
@@ -64,79 +62,77 @@
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     {{-- <div class="image">
                         <img src="{{asset('adminlte/images/user2-160x160.jpg')}}" class="img-circle elevation-2"
-                            alt="{{ Auth::guard('admin')->user()->name }}">
-                    </div> --}}
-                    <div class="info">
-                        <a href="{{route('user.info')}}" class="d-block">{{ Auth::guard('admin')->user()->name }}</a>
-                    </div>
+                    alt="{{ Auth::guard('admin')->user()->name }}">
+                </div> --}}
+                <div class="info">
+                    <a href="{{route('user.info')}}" class="d-block">{{ Auth::guard('admin')->user()->name }}</a>
                 </div>
+            </div>
 
-                <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                        data-accordion="false">
-                        {!!buildMenuAdmin($menuaccess,0,@$menu_active)!!}
-                    </ul>
-                </nav>
-                <!-- /.sidebar-menu -->
+            <!-- Sidebar Menu -->
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    {!!buildMenuAdmin($menuaccess,0,@$menu_active)!!}
+                </ul>
+            </nav>
+            <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+    </aside>
+    <!-- Main content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0 text-dark"> @yield('title')</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{route('admin.home')}}">Home</a></li>
+                            @stack('breadcrump')
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+        <section class="content">
+            <div class="container-fluid">
+                @yield('content')
             </div>
-            <!-- /.sidebar -->
-        </aside>
-        <!-- Main content -->
-        <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-            <div class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1 class="m-0 text-dark"> @yield('title')</h1>
-                        </div><!-- /.col -->
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="{{route('admin.home')}}">Home</a></li>
-                                @stack('breadcrump')
-                            </ol>
-                        </div><!-- /.col -->
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
-            </div>
-            <!-- /.content-header -->
-            <section class="content">
-                <div class="container-fluid">
-                    @yield('content')
-                </div>
-            </section>
-            <div class="modal fade" id="select-role" class="modal hide fade in" data-keyboard="false" data-backdrop="static">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Pilih Unit</h4>
-                        </div>
-                        <div class="modal-body">
-                            <ul class="list-group">
+        </section>
+        <div class="modal fade" id="select-role" class="modal hide fade in" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Pilih Unit</h4>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="list-group">
                             @foreach(Auth::guard('admin')->user()->sites()->get() as $site)
-                                <li class="list-group-item ">
-                                    <a href="{{url('admin/site/set/'.$site->id)}}" class="font-bold"><strong>{{$site->name}}</strong></a>
-                                </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        <div class="modal-footer">
-                            <a href="{{ route('admin.logout') }}"
-                            onclick="event.preventDefault();
-                                          document.getElementById('logout-form').submit();" class="btn btn-{{config('configs.app_theme')}} text-white" ><i class="fas fa-power-off"></i></a>
-                        </div>
+                            <li class="list-group-item ">
+                                <a href="{{url('admin/site/set/'.$site->id)}}" class="font-bold"><strong>{{$site->name}}</strong></a>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="{{ route('admin.logout') }}" onclick="event.preventDefault();
+                                          document.getElementById('logout-form').submit();" class="btn btn-{{config('configs.app_theme')}} text-white"><i class="fas fa-power-off"></i></a>
                     </div>
                 </div>
             </div>
         </div>
-        <footer class="main-footer">
-            <strong>Copyright &copy; {{config('configs.app_copyright')}}.</strong>
-            All rights reserved.
-            <div class="float-right d-none d-sm-inline-block">
-                <b>Version</b> 0.0.1
-            </div>
-        </footer>
+    </div>
+    <footer class="main-footer">
+        <strong>Copyright &copy; {{config('configs.app_copyright')}}.</strong>
+        All rights reserved.
+        <div class="float-right d-none d-sm-inline-block">
+            <b>Version</b> 0.0.1
+        </div>
+    </footer>
     </div>
     <script src="{{asset('adminlte/component/jquery/jquery.min.js')}}"></script>
     <script src="{{asset('adminlte/component/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
@@ -185,6 +181,10 @@
 
     </script>
     <script src="{{asset('adminlte/js/adminlte.min.js')}}"></script>
+    <script>
+        var urlLocaleId = `{{asset('adminlte/component/dataTables/js/Indonesian.json')}}`;
+        var language_choosen = `{{ config('configs.language') }}`;
+    </script>
     @stack('scripts')
 </body>
 
