@@ -59,4 +59,6 @@ return [
     'date'        => 'Tanggal',
     'month'       => 'Bulan',
     'year'        => 'Tahun',
+    'fiter'       => 'Pencarian',
+    'truck'       => 'Truk',
 ];

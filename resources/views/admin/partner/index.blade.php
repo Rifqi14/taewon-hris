@@ -1,21 +1,21 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Customer')
+@section('title',__('customer.cust'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 @push('breadcrump')
-    <li class="breadcrumb-item active">Customer</li>
+    <li class="breadcrumb-item active">{{ __('customer.cust') }}</li>
 @endpush
 @section('content')
 <div class="row">
     <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Data Customer</h3>
+          <h3 class="card-title">{{ __('customer.custdata') }}</h3>
           <!-- tools card -->
           <div class="pull-right card-tools">
-            <a href="{{route('partner.create')}}" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="Tambah">
+            <a href="{{route('partner.create')}}" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="{{ __('general.crt') }}">
               <i class="fa fa-plus"></i>
             </a>
             <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
@@ -29,7 +29,7 @@
                 <thead>
                     <tr>
                         <th width="10">#</th>
-                        <th width="100">Nama</th>
+                        <th width="100">{{ __('general.name') }}</th>
                         <th width="100">Email</th>
                         <th width="100">RIT</th>
                         <th width="50">Status</th>
@@ -48,7 +48,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Pencarian</h4>
+                <h4 class="modal-title">{{ __('general.filter') }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>   
@@ -58,8 +58,8 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label class="control-label" for="name">Nama</label>
-                                <input type="text" name="name" class="form-control" placeholder="Nama">
+                                <label class="control-label" for="name">{{ __('general.name') }}</label>
+                                <input type="text" name="name" class="form-control" placeholder="{{ __('general.name') }}">
                             </div>			
                         </div>
                     </div>   
@@ -90,6 +90,14 @@ $(function(){
         lengthChange:true,
         responsive: true,
         order: [[ 4, "asc" ]],
+        language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
         ajax: {
             url: "{{route('partner.read')}}",
             type: "GET",
@@ -112,9 +120,9 @@ $(function(){
             },targets: [2]},
             { render: function(data, type, row) {
                 if (data == 1) {
-                    return '<span class="badge badge-success">Active</span>';
+                    return '<span class="badge badge-success">{{ __('general.actv') }}</span>';
                 } else {
-                    return '<span class="badge badge-danger">Non Active</span>';
+                    return '<span class="badge badge-danger">{{ __('general.noactv') }}</span>';
                 }
             }, targets:[4]},
             { render: function ( data, type, row ) {
@@ -123,8 +131,8 @@ $(function(){
                         <i class="fa fa-bars"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" href="{{url('admin/partner')}}/${row.id}/edit"><i class="fa fa-edit"></i> Edit</a></li>
-                        <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fa fa-trash"></i> Delete</a></li>
+                        <li><a class="dropdown-item" href="{{url('admin/partner')}}/${row.id}/edit"><i class="fa fa-edit"></i> {{ __('general.edt') }}</a></li>
+                        <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fa fa-trash"></i> {{ __('general.dlt') }}</a></li>
                     </ul></div>`
             },targets: [5]
             }

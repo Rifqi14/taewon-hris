@@ -61,4 +61,6 @@ return [
     'date'        => 'Date',
     'month'       => 'Month',
     'year'        => 'Tahun',
+    'fiter'       => 'Fiter',
+    'truck'       => 'Truck',
 ];
