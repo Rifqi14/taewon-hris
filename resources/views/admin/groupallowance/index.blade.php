@@ -116,9 +116,9 @@
             { className: "text-center", targets: [3,4] },
                 { render: function(data, type, row) {
                     if (data == 1) {
-                        return '<span class="badge badge-success">Active</span>';
+                        return `<span class="badge badge-success">{{ __('general.actv') }}</span>`;
                     } else {
-                        return '<span class="badge badge-danger">Non Active</span>';
+                        return `<span class="badge badge-danger">{{ __('general.noactv') }}</span>`;
                     }
                 }, targets:[3]},
             { render: function ( data, type, row ) {
