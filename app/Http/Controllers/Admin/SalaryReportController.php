@@ -2532,7 +2532,7 @@ class SalaryReportController extends Controller
     $coordinate36 = LeaveSetting::where('coordinate', 'like', '%3.6%')->first();
     $coordinate51 = LeaveSetting::where('coordinate', 'like', '%5.1%')->first();
     $coordinate52 = LeaveSetting::where('coordinate', 'like', '%5.2%')->first();
-    $coordinate53 = LeaveSetting::where('coordinate', 'like', '%.53%')->first();
+    $coordinate53 = LeaveSetting::where('coordinate', 'like', '%5.3%')->first();
     
     $overtimes = [];
     $coordinate12values = [];
