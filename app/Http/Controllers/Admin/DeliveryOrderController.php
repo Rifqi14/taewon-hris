@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class DeliveryOrderController extends Controller
@@ -288,6 +289,8 @@ class DeliveryOrderController extends Controller
      */
     public function store(Request $request)
     {
+        echo "asd";
+        return;
         $id = $this->getLatestId();
         DB::beginTransaction();
         $deliveryorder = DeliveryOrder::create([
