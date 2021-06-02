@@ -1,16 +1,16 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Adjustment Mass')
+@section('title', __('adjustmentmass.adjmass'))
 @section('stylesheets')
 <link href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 @endsection
-@if (!strpos(url()->previous(), 'attendanceapproval'))  
+@if (!strpos(url()->previous(), 'attendanceapproval'))
 {{ Session::forget('name') }}
 {{ Session::forget('date') }}
 @endif
 @push('breadcrump')
-<li class="breadcrumb-item active">Adjustment Mass</li>
+<li class="breadcrumb-item active">{{ __('adjustmentmass.adjmass') }}</li>
 @endpush
 
 @section('content')
@@ -18,23 +18,22 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
-        <form id="form" action="{{ route('attendanceapproval.approve') }}" class="form-horizontal" method="post"
-          autocomplete="off">
+        <form id="form" action="{{ route('attendanceapproval.approve') }}" class="form-horizontal" method="post" autocomplete="off">
           {{ csrf_field() }}
           {{-- Title, Button Approve & Search --}}
           <div class="card-header">
-            <h3 class="card-title">Adjustment Mass</h3>
+            <h3 class="card-title">{{ __('adjustmentmass.adjmass') }}</h3>
             <div class="pull-right card-tools">
               <a href="#" onclick="updatemass()" class="btn btn-{{ config('configs.app_theme') }} btn-sm"><i class="fas fa-pencil-alt"></i></a>
             </div>
           </div>
           {{-- .Title, Button Approve & Search --}}
           <div class="card-body">
-            
+
             <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label" for="name">Employee Name</label>
+                  <label class="control-label" for="name">{{ __('employee.empname') }}</label>
                   <select name="name" id="name" class="form-control select2" style="width: 100%" aria-hidden="true">
                     <option value="">All</option>
                     @foreach ($employees as $employee)
@@ -51,17 +50,17 @@
               </div>
               <div class="form-row col-md-4">
                 <div class="form-group col-md-6">
-                  <label for="from">From</label>
-                  <input type="text" class="form-control datepicker" id="from" placeholder="From" name="from">
+                  <label for="from">{{ __('general.from') }}</label>
+                  <input type="text" class="form-control datepicker" id="from" placeholder="{{ __('general.from') }}" name="from">
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="to">To</label>
-                  <input type="text" class="form-control datepicker" id="to" placeholder="To" name="to">
+                  <label for="to">{{ __('general.To') }}</label>
+                  <input type="text" class="form-control datepicker" id="to" placeholder="{{ __('general.To') }}" name="to">
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label" for="department">Department</label>
+                  <label class="control-label" for="department">{{ __('department.dep') }}</label>
                   <select name="department" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
                     @foreach ($departments as $department)
                     <option value="{{ $department->name }}">{{ $department->path }}</option>
@@ -71,7 +70,7 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label" for="workgroup">Workgroup Combination</label>
+                  <label class="control-label" for="workgroup">{{ __('workgroupcombination.workcomb') }}</label>
                   <select name="workgroup" id="workgroup" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
                     @foreach ($workgroups as $workgroup)
                     <option value="{{ $workgroup->id }}">{{ $workgroup->name }}</option>
@@ -81,8 +80,8 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label" for="overtime">Overtime</label>
-                  <input type="text" name="overtime" id="overtime" class="form-control" placeholder="Overtime">
+                  <label class="control-label" for="overtime">{{ __('attendanceapproval.overtime') }}</label>
+                  <input type="text" name="overtime" id="overtime" class="form-control" placeholder="{{ __('attendanceapproval.overtime') }}">
                 </div>
               </div>
               <div class="col-md-4">
@@ -112,7 +111,7 @@
                   <label class="control-label" for="status">Status</label>
                   <select name="status" id="status" class="form-control select2" style="width: 100%" data-placeholder="Select Status" aria-hidden="true">
                     {{-- <option value=""></option> --}}
-                    <option value="1" selected >Already Approval</option>
+                    <option value="1" selected>Already Approval</option>
                     <option value="0">Waiting Approval</option>
                   </select>
                 </div>
@@ -122,9 +121,9 @@
               <thead>
                 <tr>
                   <th width="10">No</th>
-                  <th width="50">Date</th>
-                  <th width="100">Working Shift</th>
-                  <th width="100">Employee</th>
+                  <th width="50">{{ __('general.date') }}</th>
+                  <th width="100">{{ __('attendanceapproval.workshif') }}</th>
+                  <th width="100">{{ __('employee.employ') }}</th>
                   <th width="50">First In</th>
                   <th width="50">Last Out</th>
                   <th width="10">Summary</th>
@@ -141,12 +140,11 @@
       </div>
     </div>
   </div>
-  <div class="modal fade" id="update-mass" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog"
-    aria-hidden="true" data-backdrop="static">
+  <div class="modal fade" id="update-mass" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Adjust Working Time & Over Time</h4>
+          <h4 class="modal-title">{{ __('adjustmentmass.adjwtot') }}</h4>
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         </div>
         <div class="modal-body">
@@ -156,22 +154,22 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
-                  <label class="control-label" for="working_time">Working Time</label>
-                  <input type="number" class="form-control" name="working_time" id="working_time" placeholder="Working Time">
+                  <label class="control-label" for="working_time">{{ __('attendanceapproved.worktime') }}</label>
+                  <input type="number" class="form-control" name="working_time" id="working_time" placeholder="{{ __('attendanceapproved.worktime') }}">
                 </div>
               </div>
               <div class="col-md-12">
                 <div class="form-group">
-                  <label class="control-label" for="over_time">Over Time</label>
-                  <input type="number" class="form-control" name="over_time" id="over_time" placeholder="Over Time">
+                  <label class="control-label" for="over_time">{{ __('attendanceapproval.overtime') }}</label>
+                  <input type="number" class="form-control" name="over_time" id="over_time" placeholder="{{ __('attendanceapproval.overtime') }}">
                 </div>
               </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" onclick="submitUpdatemass()" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i class="fa fa-save"></i></button>
-        </div>        
+          <button type="button" onclick="submitUpdatemass()" class="btn btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+        </div>
       </div>
     </div>
   </div>
@@ -390,6 +388,9 @@
     lengthChange:false,
     responsive: true,
     paginate:false,
+    language: {
+      url: language_choosen == 'id' ? urlLocaleId : ''
+    },
     deferLoading: 0,
       order: [[ 1, "asc" ]],
       ajax: {

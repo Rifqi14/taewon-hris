@@ -17,10 +17,8 @@
       <div class="card-header">
         <h3 class="card-title">Edit Adjustment Mass</h3>
         <div class="pull-right card-tools">
-          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i
-              class="fa fa-save"></i></button>
-          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
-              class="fa fa-reply"></i></a>
+          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i class="fa fa-save"></i></button>
+          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
         </div>
       </div>
       <div class="card-body">
@@ -28,40 +26,40 @@
           {{ csrf_field() }}
           @method('put')
           <div class="row">
-              <div class="col-lg-12">
-                  <div class="row">
-                  <div class="col-lg-6">
-                      <div class="form-group row">
-                          <label class="col-sm-4 col-form-label" for="employee_name">Employee</label>
-                          <input type="text" class="form-control col-sm-8" name="employee_id" id="employee_id" data-placeholder="Employee">
-                      </div>
-                      <div class="form-group row">
-                          <label class="col-sm-4 col-form-label">Adjustment Working Time</label>
-                          <input type="text" class="form-control col-sm-8" placeholder="0" name="adjustment_workingtime" id="adjustment_workingtime" value="{{ $adjustmentmass->adjustment_workingtime }}">
-                      </div>
+            <div class="col-lg-12">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="employee_name">Employee</label>
+                    <input type="text" class="form-control col-sm-8" name="employee_id" id="employee_id" data-placeholder="Employee">
                   </div>
-                  <div class="col-lg-6">
-                      <div class="form-group row">
-                          <label class="col-sm-4 col-form-label" style="margin-right: -7px;">Date</label>
-                          <div class="col-sm-8 controls">
-                              <div class="input-group">
-                              <div class="input-group-prepend">
-                                  <span class="input-group-text">
-                                  <i class="far fa-calendar-alt"></i>
-                                  </span>
-                              </div>
-                              <input type="text" name="date" class="form-control datepicker" placeholder="Date" required value="{{ date('d/m/Y', strtotime($adjustmentmass->date)) }}"/>
-                              </div>
-                          </div>
-                      </div>
-                      <div class="form-group row">
-                          <label class="col-sm-4 col-form-label">Adjustment Overtime</label>
-                          <input type="text" class="form-control col-sm-8" placeholder="0" name="adjustment_overtime" id="adjustment_overtime" value="{{ $adjustmentmass->adjustment_overtime }}">
-                      </div>
+                  <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Adjustment Working Time</label>
+                    <input type="text" class="form-control col-sm-8" placeholder="0" name="adjustment_workingtime" id="adjustment_workingtime" value="{{ $adjustmentmass->adjustment_workingtime }}">
                   </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" style="margin-right: -7px;">Date</label>
+                    <div class="col-sm-8 controls">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="far fa-calendar-alt"></i>
+                          </span>
+                        </div>
+                        <input type="text" name="date" class="form-control datepicker" placeholder="Date" required value="{{ date('d/m/Y', strtotime($adjustmentmass->date)) }}" />
+                      </div>
+                    </div>
                   </div>
+                  <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Adjustment Overtime</label>
+                    <input type="text" class="form-control col-sm-8" placeholder="0" name="adjustment_overtime" id="adjustment_overtime" value="{{ $adjustmentmass->adjustment_overtime }}">
+                  </div>
+                </div>
               </div>
-              <div style="height: 23px;"></div>
+            </div>
+            <div style="height: 23px;"></div>
           </div>
         </form>
       </div>
@@ -73,12 +71,12 @@
 </div>
 @endsection
 
-  @push('scripts')
-  <script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
-  <script src="{{asset('adminlte/component/daterangepicker/moment.min.js')}}"></script>
-  <script src="{{asset('adminlte/component/daterangepicker/daterangepicker.js')}}"></script>
-  <script>
-    $(document).ready(function(){
+@push('scripts')
+<script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
+<script src="{{asset('adminlte/component/daterangepicker/moment.min.js')}}"></script>
+<script src="{{asset('adminlte/component/daterangepicker/daterangepicker.js')}}"></script>
+<script>
+  $(document).ready(function(){
           $("#status").select2();
           $('.timepicker').daterangepicker({
             singleDatePicker: true,
@@ -216,5 +214,5 @@
             }
           });
         });
-  </script>
-  @endpush
+</script>
+@endpush
