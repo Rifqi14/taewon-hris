@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', __('config.grpalw'))
+@section('title', __('groupallowance.grpalw'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -8,8 +8,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('groupallowance.index')}}">{{ __('config.grpalw') }}</a></li>
-<li class="breadcrumb-item active">{{ __('config.crt') }}</li>
+<li class="breadcrumb-item"><a href="{{route('groupallowance.index')}}">{{ __('groupallowance.grpalw') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.crt') }}</li>
 @endpush
 
 
@@ -18,7 +18,7 @@
 	<div class="col-lg-8 py-2">
 		<div class="card h-100 card-{{ config('configs.app_theme') }} card-outline">
 			<div class="card-header">
-				<h3 class="card-title">{{ __('config.grpalwlist') }}</h3>
+				<h3 class="card-title">{{ __('general.crt') . ' ' . __('groupallowance.grpalw') }}</h3>
 			</div>
 			<div class="card-body">
 				<form id="form" action="{{ route('groupallowance.store') }}" class="form-horizontal" method="post" autocomplete="off">
@@ -28,33 +28,33 @@
 							<div class="col-sm-6">
 								<!-- text input -->
 								<div class="form-group">
-									<label>{{ __('config.code') }}</label>
-									<input type="text" class="form-control" placeholder="{{ __('config.code') }}" id="code" name="code">
+									<label>{{ __('general.code') }}</label>
+									<input type="text" class="form-control" placeholder="{{ __('general.code') }}" id="code" name="code">
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<label>{{ __('config.alwgrp') }}</label>
-									<input type="text" class="form-control" placeholder="{{ __('config.alwgrp') }}" id="group_allowance" name="group_allowance">
+									<label>{{ __('groupallowance.alwgrp') }}</label>
+									<input type="text" class="form-control" placeholder="{{ __('groupallowance.alwgrp') }}" id="group_allowance" name="group_allowance">
 								</div>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<label>{{ __('config.type') }}</label>
+									<label>{{ __('groupallowance.type') }}</label>
 									<select name="type" id="type" class="form-control select2" style="width: 100%" aria-hidden="true">
-										<option value="ADDITIONAL">{{ __('config.add') }}</option>
-										<option value="DEDUCTION">{{ __('config.deduct') }}</option>
+										<option value="ADDITIONAL">{{ __('groupallowance.add') }}</option>
+										<option value="DEDUCTION">{{ __('groupallowance.deduct') }}</option>
 									</select>
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<label>{{ __('config.status') }}</label>
+									<label>{{ __('general.status') }}</label>
 									<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true">
-										<option value="1">{{ __('config.actv') }}</option>
-										<option value="0">{{ __('config.noactv') }}</option>
+										<option value="1">{{ __('general.actv') }}</option>
+										<option value="0">{{ __('general.noactv') }}</option>
 									</select>
 								</div>
 							</div>
@@ -69,10 +69,10 @@
 	<div class="col-lg-4 py-2">
 		<div class="card h-100 card-{{ config('configs.app_theme') }} card-outline">
 			<div class="card-header">
-				<h3 class="card-title">{{ __('config.other') }}</h3>
+				<h3 class="card-title">{{ __('general.other') }}</h3>
 				<div class="pull-right card-tools">
-					<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('config.save') }}"><i class="fa fa-save"></i></button>
-					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i class="fa fa-reply"></i></a>
+					<button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
 				</div>
 			</div>
 			<div class="card-body">
@@ -80,29 +80,29 @@
 					<div class="col-sm-12">
 						<!-- text input -->
 						<div class="form-group">
-							<label>{{ __('config.notes') }}</label>
-							<textarea class="form-control" id="notes" name="notes" placeholder="{{ __('config.note') }}" rows="5"></textarea>
+							<label>{{ __('general.notes') }}</label>
+							<textarea class="form-control" id="notes" name="notes" placeholder="{{ __('general.note') }}" rows="5"></textarea>
 						</div>
 					</div>
 				</div>
 				<div class="row">
-						<div class="col-sm-12">
-							<div class="form-group">
-								<label>Coordinate Slip</label>
-								<select name="coordinate" id="coordinate" class="form-control select2" Placeholder="Coordinate" style="width: 100%" aria-hidden="true">
-									<option value=""></option>
-									<option value="1.2">1.2</option>
-									<option value="1.3">1.3</option>
-									<option value="1.4">1.4</option>
-									<option value="4.3">4.3</option>
-									<option value="4.4">4.4</option>
-									<option value="4.5">4.5</option>
-									<option value="5.4">5.4</option>
-									<option value="5.5">5.5</option>
-								</select>
-							</div>
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label>{{ __('groupallowance.coorslip') }}</label>
+							<select name="coordinate" id="coordinate" class="form-control select2" Placeholder="{{ __('general.chs') . ' ' . __('groupallowance.coorslip') }}" style="width: 100%" aria-hidden="true">
+								<option value=""></option>
+								<option value="1.2">1.2</option>
+								<option value="1.3">1.3</option>
+								<option value="1.4">1.4</option>
+								<option value="4.3">4.3</option>
+								<option value="4.4">4.4</option>
+								<option value="4.5">4.5</option>
+								<option value="5.4">5.4</option>
+								<option value="5.5">5.5</option>
+							</select>
 						</div>
 					</div>
+				</div>
 				</form>
 			</div>
 			<div class="overlay d-none">
