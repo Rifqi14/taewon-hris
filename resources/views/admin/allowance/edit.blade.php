@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', {{ __('config.alw') }})
+@section('title', __('general.edt') . ' ' . __('allowance.alw'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -40,125 +40,119 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('allowance.index')}}">{{ __('config.alw') }}</a></li>
-<li class="breadcrumb-item active">{{ __('config.edt') }}</li>
+<li class="breadcrumb-item active"><a href="{{route('allowance.index')}}">{{ __('allowance.alw') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.edt') }}</li>
 @endpush
 
 @section('content')
-<form id="form" action="{{ route('allowance.update',['id'=>$allowance->id]) }}" class="form-horizontal"
-          method="post" autocomplete="off">
-          {{ csrf_field() }}
-          <input type="hidden" name="_method" value="put">
+<form id="form" action="{{ route('allowance.update',['id'=>$allowance->id]) }}" class="form-horizontal" method="post" autocomplete="off">
+  {{ csrf_field() }}
+  <input type="hidden" name="_method" value="put">
   <div class="row">
     <div class="col-lg-8">
       <div class="card card-{{ config('configs.app_theme')}} card-outline">
         <div class="card-header">
-          <h3 class="card-title">{{ __('config.alwlist') }}</h3>
+          <h3 class="card-title">{{ __('allowance.alwlist') }}</h3>
         </div>
         <div class="card-body">
-          
-            <div class="box-body">
-              <div class="row">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>{{ __('config.alwname') }}</label>
-                    <input type="text" class="form-control" placeholder="{{ __('config.alwname') }}" id="allowance" name="allowance"
-                      value="{{ $allowance->allowance }}">
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>{{ __('config.category') }}</label>
-                    <select name="category" id="category" class="form-control select2" style="width: 100%"
-                      aria-hidden="true">
-                      @foreach (config('enums.allowance_category') as $key=>$value)
-                      <option @if ($allowance->category == $key) selected @endif value="{{ $key }}">{{ $value }}</option>
-                      @endforeach
-                    </select>
-                  </div>
+
+          <div class="box-body">
+            <div class="row">
+              <div class="col-sm-6">
+                <!-- text input -->
+                <div class="form-group">
+                  <label>{{ __('allowance.alwname') }}</label>
+                  <input type="text" class="form-control" placeholder="{{ __('allowance.alwname') }}" id="allowance" name="allowance" value="{{ $allowance->allowance }}">
                 </div>
               </div>
-              <div class="row account-section">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>{{ __('config.acocunt') }}</label>
-                    <input type="text" class="form-control" placeholder="{{ __('config.account') }}" id="account" name="account"
-                      value="{{ $allowance->acc_name }}">
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>{{ __('config.recur') }}</label>
-                    <select name="recurrence" id="recurrence" class="form-control select2" style="width: 100%"
-                      aria-hidden="true">
-                      <option @if ($allowance->reccurance == 'hourly') selected @endif value="hourly">{{ __('config.hourly') }}</option>
-                      <option @if ($allowance->reccurance == 'daily') selected @endif value="daily">{{ __('config.alwname') }}</option>
-                      <option @if ($allowance->reccurance == 'monthly') selected @endif value="monthly">{{ __('config.monthly') }}</option>
-                      <option @if ($allowance->reccurance == 'yearly') selected @endif value="yearly">{{ __('config.yearly') }}</option>
-											<option @if ($allowance->reccurance == 'breaktime') selected @endif value="breaktime">{{ __('config.breaktm') }}</option>
-                    </select>
-                  </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>{{ __('allowance.category') }}</label>
+                  <select name="category" id="category" class="form-control select2" style="width: 100%" aria-hidden="true">
+                    @foreach (config('enums.allowance_category') as $key=>$value)
+                    <option @if ($allowance->category == $key) selected @endif value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                  </select>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-sm-6">
-                  <!-- text input -->
-                  <div class="form-group">
-                    <label>{{ __('config.grpalw') }}</label>
-                    <input type="text" class="form-control" placeholder="Select {{ __('config.grpalw') }}" id="groupallowance" name="groupallowance"
-                      value="">
-                  </div>
-                </div>
-                <div class="col-sm-3">
-									<div class="form-group">
-										<label>Prorate</label>
-										<select name="prorate" id="prorate" class="form-control select2" style="width: 100%" aria-hidden="true">
-											<option value="Yes" @if ($allowance->prorate == 'Yes') selected @endif>{{ __('config.yes') }}</option>
-											<option value="No"  @if ($allowance->prorate == 'No') selected @endif>{{ __('config.no') }}</option>
-										</select>
-									</div>
-								</div>
-								<div class="col-sm-3">
-									<div class="form-group">
-										<label>THR</label>
-										<select name="thr" id="thr" class="form-control select2" style="width: 100%" aria-hidden="true">
-											<option value="Yes" @if ($allowance->thr == 'Yes') selected @endif>{{ __('config.yes') }}</option>
-											<option value="No" @if ($allowance->thr == 'No') selected @endif>{{ __('config.no') }}</option>
-										</select>
-									</div>
-								</div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 formula-bpjs-section d-none">
-                    <div class="form-group">
-                      <label for="formula-bpjs" class="control-label">Formula BPJS <b class="text-danger">*</b></label>
-                      <select name="formula_bpjs" id="formula_bpjs" class="form-control select2" data-placeholder="Formula BPJS" required>
-                      @foreach (config('enums.penalty_config_type') as $key => $item)
-                      <option  @if ($allowance->formula_bpjs == $key) selected @endif value="{{ $key }}">{{ $item }}</option>
-                      @endforeach
-                      </select>
-                    </div>
-                </div>
-                <div class="col-sm-6 working-time-section d-none">
-                  <div class="form-group">
-                    <label>Working Time</label>
-                    <input type="text" class="form-control" placeholder="Working Time" id="working_time" name="working_time" value="{{ $allowance->workingtime_id }}">
-                  </div>
-                </div>
-                <div class="row days-devisor-section d-none">
-                  <div class="col-sm-6">
-                    <!-- text input -->
-                    <div class="form-group">
-                      <label>Days Devisor</label>
-                      <input type="text" class="form-control" id="days_devisor" name="days_devisor" placeholder="Days Devisor" value="{{ $allowance->days_devisor }}">
-                    </div>
-                  </div>
-                </div>
-             </div>
-              
             </div>
+            <div class="row account-section">
+              <div class="col-sm-6">
+                <!-- text input -->
+                <div class="form-group">
+                  <label>{{ __('allowance.account') }}</label>
+                  <input type="text" class="form-control" placeholder="{{ __('allowance.account') }}" id="account" name="account" value="{{ $allowance->acc_name }}">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>{{ __('allowance.recur') }}</label>
+                  <select name="recurrence" id="recurrence" class="form-control select2" style="width: 100%" aria-hidden="true">
+                    <option @if ($allowance->reccurance == 'hourly') selected @endif value="hourly">{{ __('allowance.hourly') }}</option>
+                    <option @if ($allowance->reccurance == 'daily') selected @endif value="daily">{{ __('allowance.alwname') }}</option>
+                    <option @if ($allowance->reccurance == 'monthly') selected @endif value="monthly">{{ __('allowance.monthly') }}</option>
+                    <option @if ($allowance->reccurance == 'yearly') selected @endif value="yearly">{{ __('allowance.yearly') }}</option>
+                    <option @if ($allowance->reccurance == 'breaktime') selected @endif value="breaktime">{{ __('allowance.breaktm') }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <!-- text input -->
+                <div class="form-group">
+                  <label>{{ __('groupallowance.grpalw') }}</label>
+                  <input type="text" class="form-control" placeholder="Select {{ __('groupallowance.grpalw') }}" id="groupallowance" name="groupallowance" value="">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label>Prorate</label>
+                  <select name="prorate" id="prorate" class="form-control select2" style="width: 100%" aria-hidden="true">
+                    <option value="Yes" @if ($allowance->prorate == 'Yes') selected @endif>{{ __('general.yes') }}</option>
+                    <option value="No" @if ($allowance->prorate == 'No') selected @endif>{{ __('general.no') }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label>THR</label>
+                  <select name="thr" id="thr" class="form-control select2" style="width: 100%" aria-hidden="true">
+                    <option value="Yes" @if ($allowance->thr == 'Yes') selected @endif>{{ __('general.yes') }}</option>
+                    <option value="No" @if ($allowance->thr == 'No') selected @endif>{{ __('general.no') }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 formula-bpjs-section d-none">
+                <div class="form-group">
+                  <label for="formula-bpjs" class="control-label">Formula BPJS <b class="text-danger">*</b></label>
+                  <select name="formula_bpjs" id="formula_bpjs" class="form-control select2" data-placeholder="Formula BPJS" required>
+                    @foreach (config('enums.penalty_config_type') as $key => $item)
+                    <option @if ($allowance->formula_bpjs == $key) selected @endif value="{{ $key }}">{{ $item }}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-6 working-time-section d-none">
+                <div class="form-group">
+                  <label>Working Time</label>
+                  <input type="text" class="form-control" placeholder="Working Time" id="working_time" name="working_time" value="{{ $allowance->workingtime_id }}">
+                </div>
+              </div>
+              <div class="row days-devisor-section d-none">
+                <div class="col-sm-6">
+                  <!-- text input -->
+                  <div class="form-group">
+                    <label>Days Devisor</label>
+                    <input type="text" class="form-control" id="days_devisor" name="days_devisor" placeholder="Days Devisor" value="{{ $allowance->days_devisor }}">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -168,12 +162,10 @@
     <div class="col-lg-4">
       <div class="card card-{{ config('configs.app_theme')}} card-outline">
         <div class="card-header">
-          <h3 class="card-title">{{ __('config.othe') }}</h3>
+          <h3 class="card-title">{{ __('general.other') }}</h3>
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('config.save') }}"><i
-                class="fa fa-save"></i></button>
-            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
-                class="fa fa-reply"></i></a>
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
           </div>
         </div>
         <div class="card-body">
@@ -181,25 +173,24 @@
             <div class="col-sm-12">
               <!-- text input -->
               <div class="form-group">
-                <label>{{ __('config.notes') }}</label>
-                <textarea class="form-control" id="notes" name="notes"
-                  placeholder="{{ __('config.notes') }}"> {{ $allowance->notes }}</textarea>
+                <label>{{ __('general.notes') }}</label>
+                <textarea class="form-control" id="notes" name="notes" placeholder="{{ __('general.notes') }}"> {{ $allowance->notes }}</textarea>
               </div>
             </div>
           </div>
-         
+
           <div class="row">
             <div class="col-sm-12">
               <div class="form-group">
-                <label>{{ __('config.status') }}</label>
+                <label>{{ __('general.status') }}</label>
                 <select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true">
-                  <option @if($allowance->status == 1) selected @endif value="1">{{ __('config.actv') }}</option>
-                  <option @if($allowance->status == 0) selected @endif value="0">{{ __('config.noactv') }}</option>
+                  <option @if($allowance->status == 1) selected @endif value="1">{{ __('general.actv') }}</option>
+                  <option @if($allowance->status == 0) selected @endif value="0">{{ __('general.noactv') }}</option>
                 </select>
               </div>
             </div>
           </div>
-          
+
         </div>
         <div class="overlay d-none">
           <i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -207,39 +198,38 @@
       </div>
     </div>
     <div class="col-lg-12 allowance-section d-none">
-        <div class="card card-{{ config('configs.app_theme') }} card-outline">
-          <div class="card-header">
-          <h3 class="card-titl">{{ __('config.alw') }}</h3>
-          </div>
-          <div class="card-body">
+      <div class="card card-{{ config('configs.app_theme') }} card-outline">
+        <div class="card-header">
+          <h3 class="card-titl">{{ __('allowance.alw') }}</h3>
+        </div>
+        <div class="card-body">
           <table class="table table-striped table-bordered datatable" id="allowance-table" style="width: 100%">
             <thead>
-            <tr>
-              <th width="10">No</th>
-              <th width="200">{{ __('config.alw') }}</th>
-              <th width="200">{{ __('config.category') }}</th>
-              <th width="200">{{ __('config.grpalw') }}</th>
-              <th width="10">
-              <div class="customcheckbox">
-                <input type="checkbox" name="checkall" class="checkall" id="checkall" onclick="checkAll(this)">
-              </div>
-              </th>
-            </tr>
+              <tr>
+                <th width="10">No</th>
+                <th width="200">{{ __('allowance.alw') }}</th>
+                <th width="200">{{ __('allowance.category') }}</th>
+                <th width="200">{{ __('groupallowance.grpalw') }}</th>
+                <th width="10">
+                  <div class="customcheckbox">
+                    <input type="checkbox" name="checkall" class="checkall" id="checkall" onclick="checkAll(this)">
+                  </div>
+                </th>
+              </tr>
             </thead>
           </table>
-          </div>
         </div>
       </div>
+    </div>
   </div>
 </form>
 <div class="row basic-salary-section-rules" style="display:none;">
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme')}} card-outline">
       <div class="card-header">
-        <h3 class="card-title">{{ __('config.rule') }}</h3>
+        <h3 class="card-title">{{ __('allowance.rule') }}</h3>
         <div class="pull-right card-tools">
-          <a href="#" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white add_rules" data-toggle="tooltip"
-            title="Tambah">
+          <a href="#" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white add_rules" data-toggle="tooltip" title="Tambah">
             <i class="fa fa-plus"></i>
           </a>
         </div>
@@ -278,15 +268,13 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="absent" class="control-label">Quantity Absent</label>
-                  <input type="text" class="form-control" id="qty_absent" name="qty_absent" placeholder="Absent"
-                    required>
+                  <input type="text" class="form-control" id="qty_absent" name="qty_absent" placeholder="Absent" required>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="qty_allowance" class="control-label">Quantity Allowance</label>
-                  <input type="text" class="form-control" id="qty_allowance" name="qty_allowance"
-                    placeholder="Allowance" required>
+                  <input type="text" class="form-control" id="qty_allowance" name="qty_allowance" placeholder="Allowance" required>
                 </div>
               </div>
               {{ csrf_field() }}
@@ -295,8 +283,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button form="form_rules" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}} text-white"
-            title="Simpan"><i class="fa fa-save"></i></button>
+          <button form="form_rules" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-2x fa-sync-alt fa-spin"></i>

@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title',__('config.alw'))
+@section('title',__('allowance.alw'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">{{ __('config.alw') }}</li>
+<li class="breadcrumb-item active">{{ __('allowance.alw') }}</li>
 @endpush
 
 @section('content')
@@ -15,14 +15,13 @@
 		<div class="col-lg-12">
 			<div class="card card-{{ config('configs.app_theme')}} card-outline">
 				<div class="card-header">
-					<h3 class="card-title">{{ __('config.alwlist') }}</h3>
+					<h3 class="card-title">{{ __('allowance.alwlist') }}</h3>
 					<!-- tools box -->
 					<div class="pull-right card-tools">
-						<a href="{{route('allowance.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white"
-							data-toggle="tooltip" title="{{ __('config.create') }}">
+						<a href="{{route('allowance.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="{{ __('general.crt') }}">
 							<i class="fa fa-plus"></i>
 						</a>
-						<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
+						<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="{{ __('general.srch') }}">
 							<i class="fa fa-search"></i>
 						</a>
 					</div>
@@ -33,10 +32,10 @@
 						<thead>
 							<tr>
 								<th width="10">No</th>
-								<th width="200">{{ __('config.alw') }}</th>
-								<th width="300">{{ __('config.category') }}</th>
-								<th width="100">{{ __('config.status') }}</th>
-								<th width="10">{{ __('config.act') }}</th>
+								<th width="200">{{ __('allowance.alw') }}</th>
+								<th width="300">{{ __('allowance.category') }}</th>
+								<th width="100">{{ __('general.status') }}</th>
+								<th width="10">{{ __('general.act') }}</th>
 							</tr>
 						</thead>
 					</table>
@@ -49,12 +48,11 @@
 	</div>
 </div>
 </div>
-<div class="modal fade" id="add-filter" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog"
-	aria-hidden="true" data-backdrop="static">
+<div class="modal fade" id="add-filter" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Filter</h4>
+				<h4 class="modal-title">{{ __('general.srch') }}</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			</div>
 			<div class="modal-body">
@@ -62,22 +60,21 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="allowance">{{ __('config.alw') }}</label>
-								<input type="text" name="allowance" class="form-control" placeholder="{{ __('config.alw') }}">
+								<label class="control-label" for="allowance">{{ __('allowance.alw') }}</label>
+								<input type="text" name="allowance" class="form-control" placeholder="{{ __('allowance.alw') }}">
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="category">{{ __('config.category') }}</label>
-								<input type="text" name="category" class="form-control" placeholder="{{ __('config.category') }}">
+								<label class="control-label" for="category">{{ __('allowance.category') }}</label>
+								<input type="text" name="category" class="form-control" placeholder="{{ __('allowance.category') }}">
 							</div>
 						</div>
 					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button form="form-search" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i
-						class="fa fa-search"></i></button>
+				<button form="form-search" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="{{ __('general.srch') }}"><i class="fa fa-search"></i></button>
 			</div>
 		</div>
 	</div>
@@ -101,6 +98,14 @@
         lengthChange:true,
         responsive: true,
         order: [[ 4, "asc" ]],
+				language: {
+					lengthMenu: `{{ __('general.showent') }}`,
+					processing: `{{ __('general.process') }}`,
+					paginate: {
+						previous: `{{ __('general.prev') }}`,
+						next: `{{ __('general.next') }}`,
+					},
+				},
         ajax: {
             url: "{{route('allowance.read')}}",
             type: "GET",
@@ -126,9 +131,9 @@
             }, targets:[1]},
 			{ render: function(data, type, row) {
 				if (data == 1) {
-					return '<span class="badge badge-success">Active</span>';
+						return `<span class="badge badge-success">{{ __('general.actv') }}</span>`;
 				} else {
-					return '<span class="badge badge-danger">Non Active</span>';
+						return `<span class="badge badge-danger">{{ __('general.noactv') }}</span>`;
 				}
 			}, targets:[3]},
             { render: function ( data, type, row ) {
@@ -137,8 +142,8 @@
 									<i class="fa fa-bars"></i>
 							</button>
 							<ul class="dropdown-menu dropdown-menu-right">
-									<li><a class="dropdown-item" href="{{url('admin/allowance')}}/${row.id}/edit"><i class="fa fa-edit"></i> Edit</a></li>
-									<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fa fa-trash"></i> Delete</a></li>
+									<li><a class="dropdown-item" href="{{url('admin/allowance')}}/${row.id}/edit"><i class="fa fa-edit"></i> {{ __('general.edt') }}</a></li>
+									<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fa fa-trash"></i> {{ __('general.dlt') }}</a></li>
 							</ul>
 						</div>`
             },targets: [4]
