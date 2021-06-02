@@ -224,7 +224,7 @@
                     <td class="p-0 text-right text-content" >{{number_format($coordinate53values[$salary->id], 0, '.', ',')}}</td>
                     <td class="p-0 text-right text-content" >{{number_format($coordinate54values[$salary->id], 0, '.', ',')}}</td>
                     <td class="p-0 text-right text-content" >{{number_format($coordinate55values[$salary->id], 0, '.', ',')}}</td>
-                    <td class="p-0 text-right text-content" >1</td>
+                    <td class="p-0 text-right text-content" >0</td>
                     <td class="p-0 text-right text-content" >{{number_format($jumlah_potongan, 0, '.', ',')}}</td>
                 </tr>
                 <tr>

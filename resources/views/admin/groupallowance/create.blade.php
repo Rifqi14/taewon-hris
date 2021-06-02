@@ -97,6 +97,7 @@
 								<option value="4.3">4.3</option>
 								<option value="4.4">4.4</option>
 								<option value="4.5">4.5</option>
+								<option value="4.6">4.6</option>
 								<option value="5.4">5.4</option>
 								<option value="5.5">5.5</option>
 							</select>
