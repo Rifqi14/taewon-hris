@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Penalty Config')
+@section('title',__('penaltyconfig.pnltycon'))
 @section('stylesheets')
 <link rel="stylesheet" href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Penalty COnfig</li>
+<li class="breadcrumb-item active">{{ __('penaltyconfig.pnltycon') }}</li>
 @endpush
 
 @section('content')
@@ -14,10 +14,10 @@
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <div class="card-header">
-        <h3 class="card-title">Penalty Config</h3>
+        <h3 class="card-title">{{ __('penaltyconfig.pnltycon') }}</h3>
         <div class="pull-right card-tools">
-          <a href="{{ route('penaltyconfig.create') }}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="Add New Config"><i class="fa fa-plus"></i></a>
-          <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Filter"><i class="fa fa-search"></i></a>
+          <a href="{{ route('penaltyconfig.create') }}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="{{ __('general.crt') }}"><i class="fa fa-plus"></i></a>
+          <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="{{ __('general.filter') }}"><i class="fa fa-search"></i></a>
         </div>
       </div>
       <div class="card-body">
@@ -25,9 +25,9 @@
           <thead>
             <tr>
               <th width="5">#</th>
-              <th width="200">Workgroup</th>
-              <th width="200">Leave Type</th>
-              <th width="50">Type</th>
+              <th width="200">{{ __('workgroup.workgrp') }}</th>
+              <th width="200">{{ __('penaltyconfig.leavetp') }}</th>
+              <th width="50">{{ __('general.type') }}</th>
               <th width="10">Status</th>
               <th width="10">#</th>
             </tr>
@@ -44,7 +44,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Filter</h4>
+        <h4 class="modal-title">{{ __('general.filter') }}</h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
       </div>
       <div class="modal-body">
@@ -52,20 +52,20 @@
           <div class="row">
             <div class="col-md-12">
               <div class="form-group">
-                <label for="workgroupID" class="control-label">Workgroup</label>
-                <input type="text" name="workgroupID" id="workgroupID" class="form-control" placeholder="Workgroup">
+                <label for="workgroupID" class="control-label">{{ __('workgroup.workgrp') }}</label>
+                <input type="text" name="workgroupID" id="workgroupID" class="form-control" placeholder="{{ __('workgroup.workgrp') }}">
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group">
-                <label for="leaveSettingID" class="control-label">Leave Type</label>
-                <input type="text" name="leaveSettingID" id="leaveSettingID" class="form-control" placeholder="Leave Type">
+                <label for="leaveSettingID" class="control-label">{{ __('penaltyconfig.leavetp') }}</label>
+                <input type="text" name="leaveSettingID" id="leaveSettingID" class="form-control" placeholder="{{ __('penaltyconfig.leavetp') }}">
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group">
-                <label for="type" class="control-label">Type</label>
-                <select name="type" id="type" class="form-control select2" placeholder="Type">
+                <label for="type" class="control-label">{{ __('general.type') }}</label>
+                <select name="type" id="type" class="form-control select2" placeholder="{{ __('general.type') }}">
                   <option value=""></option>
                   @foreach (config('enums.penalty_config_type') as $key => $item)
                   <option value="{{ $key }}">{{ $item }}</option>
@@ -146,6 +146,14 @@
       lengthChange: true,
       responsive: true,
       order: [[ 1, "asc"]],
+      language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
       ajax: {
         url: "{{ route('penaltyconfig.read') }}",
         type: "GET",
@@ -166,7 +174,7 @@
           return row.workgroup ? row.workgroup.name : '-';
         }, targets: [1] },
         { render: function ( data, type, row ) {
-          return row.status === 'ACTIVE' ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Non-Active</span>'
+          return row.status === 'ACTIVE' ? '<span class="badge badge-success">{{ __('general.actv') }}</span>' : '<span class="badge badge-danger">{{ __('general.noactv') }}</span>'
         }, targets: [4] },
         { render: function ( data, type, row ) {
           return `<div class="dropdown">
@@ -174,8 +182,8 @@
                       <i class="fa fa-bars"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                      <li><a class="dropdown-item" href="{{url('admin/penaltyconfig')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-                      <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+                      <li><a class="dropdown-item" href="{{url('admin/penaltyconfig')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
+                      <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{ __('general.dlt') }}</a></li>
                     </ul>
                   </div>`
         }, targets: [5] }

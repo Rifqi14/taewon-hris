@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Create Penalty Config')
+@section('title',__('penaltyconfig.pnltycon'))
 @section('stylesheets')
 <link rel="stylesheet" href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}">
 <style type="text/css">
@@ -38,8 +38,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{ route('penaltyconfig.index') }}">Penalty Config</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item"><a href="{{ route('penaltyconfig.index') }}">{{ __('penaltyconfig.pnltycon') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.crt') }}</li>
 @endpush
 
 @section('content')
@@ -49,27 +49,27 @@
     <div class="col-lg-8">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title" style="padding-bottom: .8rem">Penalty Config Data</h3>
+          <h3 class="card-title" style="padding-bottom: .8rem">{{ __('general.crt') }} {{ __('penaltyconfig.pnltycon') }}</h3>
         </div>
         <div class="card-body">
           @csrf
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
-                <label for="workgroupID" class="control-label">Workgroup <b class="text-danger">*</b></label>
-                <input type="text" name="workgroupID" id="workgroupID" class="form-control" data-placeholder="Select Workgroup" required>
+                <label for="workgroupID" class="control-label">{{ __('workgroup.workgrp') }} <b class="text-danger">*</b></label>
+                <input type="text" name="workgroupID" id="workgroupID" class="form-control" data-placeholder="{{ __('general.chs') }} {{ __('workgroup.workgrp') }}" required>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label for="leaveSettingID" class="control-label">Leave Type <b class="text-danger">*</b></label>
-                <input type="text" name="leaveSettingID" id="leaveSettingID" class="form-control" data-placeholder="Select Leave Type" required>
+                <label for="leaveSettingID" class="control-label">{{ __('penaltyconfig.leavetp') }} <b class="text-danger">*</b></label>
+                <input type="text" name="leaveSettingID" id="leaveSettingID" class="form-control" data-placeholder="{{ __('general.chs') }} {{ __('penaltyconfig.leavetp') }}" required>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label for="type" class="control-label">Penalty Type <b class="text-danger">*</b></label>
-                <select name="type" id="type" class="form-control select2" data-placeholder="Select Type" required>
+                <label for="type" class="control-label">{{ __('penaltyconfig.pnlty') }} {{ __('general.type') }} <b class="text-danger">*</b></label>
+                <select name="type" id="type" class="form-control select2" data-placeholder="{{ __('general.chs') }} {{ __('general.type') }}" required>
                   @foreach (config('enums.penalty_config_type') as $key => $item)
                   <option value="{{ $key }}">{{ $item }}</option>
                   @endforeach
@@ -83,26 +83,26 @@
     <div class="col-lg-4">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Other</h3>
+          <h3 class="card-title">{{ __('general.other') }}</h3>
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="Save"><i class="fa fa-save"></i></button>
-            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Back"><i class="fa fa-reply"></i></a>
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
           </div>
         </div>
         <div class="card-body">
           <div class="row">
             <div class="col-sm-12">
               <div class="form-group">
-                <label for="notes" class="control-label">Notes</label>
-                <textarea name="notes" id="notes" style="height: 120px" class="form-control" placeholder="Notes"></textarea>
+                <label for="notes" class="control-label">{{ __('general.notes') }}</label>
+                <textarea name="notes" id="notes" style="height: 120px" class="form-control" placeholder="{{ __('general.notes') }}"></textarea>
               </div>
             </div>
             <div class="col-sm-12">
               <div class="form-group">
                 <label for="status" class="control-label">Status</label>
                 <select name="status" id="status" class="form-control select2" data-placeholder="Select Status" required>
-                  <option value="ACTIVE">Active</option>
-                  <option value="NON-ACTIVE">Non Active</option>
+                  <option value="ACTIVE">{{ __('general.actv') }}</option>
+                  <option value="NON-ACTIVE">{{ __('general.noactv') }}</option>
                 </select>
               </div>
             </div>
@@ -113,16 +113,16 @@
     <div class="col-lg-12 allowance-section d-none">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-titl">Allowance</h3>
+          <h3 class="card-titl">{{ __('allowance.alw') }}</h3>
         </div>
         <div class="card-body">
           <table class="table table-striped table-bordered datatable" id="allowance-table" style="width: 100%">
             <thead>
               <tr>
                 <th width="10">No</th>
-                <th width="200">Allowance</th>
-                <th width="200">Category</th>
-                <th width="200">Group</th>
+                <th width="200">{{ __('allowance.alw') }}</th>
+                <th width="200">{{ __('general.category') }}</th>
+                <th width="200">{{ __('groupallowance.grpalw') }}</th>
                 <th width="10">
                   <div class="customcheckbox">
                     <input type="checkbox" name="checkall" class="checkall" id="checkall">
