@@ -1,5 +1,6 @@
 <?php
 return[
+    'leaveapp' => 'Leave Aplication',
     'leavetp'  => 'Leave Type',
     'addleave' => 'Add Leave Aplication',
     'adddate'  => 'Add Date',

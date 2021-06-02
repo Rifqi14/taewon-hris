@@ -1,6 +1,7 @@
 <?php
 return [
-    'leavetp'  => 'Pengajuan Cuti',
+    'leaveapp' => 'Pengajuan Cuti',
+    'leavetp'  => 'Jenis Cuti',
     'addleave' => 'Tambah Pengajuan Cuti',
     'adddate'  => 'Tambah Tanggal',
     'fulltime' => 'Sehari penuh',
