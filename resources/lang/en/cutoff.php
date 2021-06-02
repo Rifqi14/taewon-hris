@@ -4,4 +4,5 @@ return[
     'cutoff'  => 'Attendance Cut Off',
     'option'  => 'Option',
     'duration' => 'Duration',
+    
 ];
