@@ -1,54 +1,54 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Attendance Machine Edit')
+@section('title', __('general.edt') . ' ' . __('machine.machine'))
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{ route('attendancemachine.index') }}">Attendance Machine</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item"><a href="{{ route('attendancemachine.index') }}">{{ __('machine.machine') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.edt') }}</li>
 @endpush
 
 @section('content')
 <div class="row">
-  <div class="col-lg-12">
-    <div class="card card-{{ config('configs.app_theme') }} card-outline">
-      <div class="card-header">
-        <h3 class="card-title">Attendance Machine Data</h3>
-        <div class="pull-right card-tools">
-          <button type="submit" form="form" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="Save"><i class="fa fa-save"></i></button>
-          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Back"><i class="fa fa-reply"></i></a>
-        </div>
-      </div>
-      <div class="card-body">
-        <form action="{{ route('attendancemachine.update', ['id'=>$attendanceMachine->id]) }}" method="post" autocomplete="off" id="form">
-          @csrf
-          @method('PUT')
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="form-group">
-                <label for="deviceSN" class="control-label">Device Serial Number <b class="text-danger">*</b></label>
-                <input type="text" name="deviceSN" id="deviceSN" class="form-control" placeholder="Device Serial Number" value="{{ $attendanceMachine->device_sn }}" required>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="form-group">
-                <label for="pointName" class="control-label">Point Name <b class="text-danger">*</b></label>
-                <select name="pointName" id="pointName" class="form-control select2" aria-placeholder="Point Name" required>
-                  <option value="MASUK" @if ($attendanceMachine->point_name == 'MASUK') selected @endif>Masuk</option>
-                  <option value="KELUAR" @if ($attendanceMachine->point_name == 'KELUAR') selected @endif>Keluar</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+	<div class="col-lg-12">
+		<div class="card card-{{ config('configs.app_theme') }} card-outline">
+			<div class="card-header">
+				<h3 class="card-title">{{ __('machine.machine') }} {{ __('general.data') }}</h3>
+				<div class="pull-right card-tools">
+					<button type="submit" form="form" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+					<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
+				</div>
+			</div>
+			<div class="card-body">
+				<form action="{{ route('attendancemachine.update', ['id'=>$attendanceMachine->id]) }}" method="post" autocomplete="off" id="form">
+					@csrf
+					@method('PUT')
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="deviceSN" class="control-label">{{ __('machine.device') }} <b class="text-danger">*</b></label>
+								<input type="text" name="deviceSN" id="deviceSN" class="form-control" placeholder="{{ __('machine.device') }}" value="{{ $attendanceMachine->device_sn }}" required>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="pointName" class="control-label">{{ __('machine.point') }} <b class="text-danger">*</b></label>
+								<select name="pointName" id="pointName" class="form-control select2" aria-placeholder="{{ __('machine.point') }}" required>
+									<option value="MASUK" @if ($attendanceMachine->point_name == 'MASUK') selected @endif>Masuk</option>
+									<option value="KELUAR" @if ($attendanceMachine->point_name == 'KELUAR') selected @endif>Keluar</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 @endsection
 @push('scripts')
 <script src="{{ asset('adminlte/component/validate/jquery.validate.min.js') }}"></script>
 <script>
-  $(function(){
+	$(function(){
     $('.select2').select2();
     $("#form").validate({
       errorElement: 'div',
