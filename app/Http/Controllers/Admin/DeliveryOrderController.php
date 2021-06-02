@@ -332,7 +332,7 @@ class DeliveryOrderController extends Controller
                 $year =  date('Y', strtotime($departure_date));
             }
             $driverallowancelist = DriverAllowanceList::create([
-                'date'          => $$departure_date,
+                'date'          => $departure_date,
                 'rit'           => 100,
                 'truck_id'         => $request->truck_id,
                 'value'         => $partner_rit->rit,
