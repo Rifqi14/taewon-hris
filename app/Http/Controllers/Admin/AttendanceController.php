@@ -1339,6 +1339,7 @@ class AttendanceController extends Controller
                                         $adjustment->code_case  = "A08/BW$getbreakworkingtime/BO$getbreakovertime";
                                         $adjustment->breaktime = $break_time;
                                     }
+                                    $adjustment->attendance_out = null;
                                 }
                                 
                             }else{
@@ -1426,6 +1427,7 @@ class AttendanceController extends Controller
                                         $adjustment->code_case  = "A16/BW$getbreakworkingtime/BO$getbreakovertime";
                                         $adjustment->breaktime = $break_time;
                                     }
+                                    $adjustment->attendance_out = null;
                                 } 
                             }
                         } else {
