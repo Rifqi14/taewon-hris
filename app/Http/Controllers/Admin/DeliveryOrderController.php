@@ -596,7 +596,7 @@ class DeliveryOrderController extends Controller
                 if (!$police_no) {
                     $error_message .= 'Police No Not Found</br>';
                 }
-                if (!$type_truck) {
+                if (!$truck) {
                     $error_message .= 'Type Truck Not Found</br>';
                 }
                 if (!$kloter) {
