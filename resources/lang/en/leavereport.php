@@ -2,7 +2,7 @@
 return[
     'leaverpt' => 'Leave Report',
     'listleav' => 'Leave List',
-    'detaillv' => 'Detail Leave Aplication',
+    'detaillv' => 'Detail Leave Report',
     'fulltime' => 'Full Time',
     'rangedt'  => 'Range Date',
     'rangetm'  => 'Range Time',
