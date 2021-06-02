@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title',__('config.calendar'))
+@section('title',__('calendar.calendar'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -9,8 +9,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('calendar.index')}}">{{ __('config.calendar') }}</a></li>
-<li class="breadcrumb-item active">{{ __('config.crt') }}</li>
+<li class="breadcrumb-item active"><a href="{{route('calendar.index')}}">{{ __('calendar.calendar') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.crt') }}</li>
 @endpush
 
 @section('content')
@@ -18,34 +18,29 @@
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <div class="card-header">
-        <h3 class="card-title">{{ __('config.crt') }} {{ __('config.calendar') }}</h3>
+        <h3 class="card-title">{{ __('general.crt') }} {{ __('calendar.calendar') }}</h3>
         <div class="pull-right card-tools">
-          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('config.save') }}"><i
-              class="fa fa-save"></i></button>
-          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i
-              class="fa fa-reply"></i></a>
+          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
         </div>
       </div>
       <div class="card-body">
         <form id="form" action="{{ route('calendar.store') }}" class="form-horizontal" method="post" autocomplete="off">
           {{ csrf_field() }}
           <div class="form-group row">
-            <label class="col-md-2 col-xs-12 control-label" for="code">{{ __('config.calcode') }}<span
-                class="text-red">*</span></label>
+            <label class="col-md-2 col-xs-12 control-label" for="code">{{ __('calendar.calcode') }}<span class="text-red">*</span></label>
             <div class="col-sm-6 controls">
-              <input type="text" class="form-control" id="code" name="code" placeholder="{{ __('config.calcode') }}" required>
+              <input type="text" class="form-control" id="code" name="code" placeholder="{{ __('calendar.calcode') }}" required>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-2 col-xs-12 control-label" for="calendar_name">{{ __('config.calname') }} <span
-                class="text-red">*</span></label>
+            <label class="col-md-2 col-xs-12 control-label" for="calendar_name">{{ __('calendar.calname') }} <span class="text-red">*</span></label>
             <div class="col-sm-6 controls">
-              <input type="text" class="form-control" id="calendar_name" name="calendar_name"
-                placeholder="{{ __('config.calname') }}" required>
+              <input type="text" class="form-control" id="calendar_name" name="calendar_name" placeholder="{{ __('calendar.calname') }}" required>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-2 col-xs-12 control-label" for="label_color">{{ __('config.labelclr') }}</label>
+            <label class="col-sm-2 col-xs-12 control-label" for="label_color">{{ __('calendar.labelclr') }}</label>
             <div class="col-sm-6 controls">
               <div class="input-group my-colorpicker2">
                 <input type="text" class="form-control" value="#000" name="label_color" id="label_color">
@@ -58,14 +53,13 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-2 col-xs-12 control-label" for="calendar_desc">{{ __('config.desc') }}</label>
+            <label class="col-md-2 col-xs-12 control-label" for="calendar_desc">{{ __('calendar.desc') }}</label>
             <div class="col-sm-6 controls">
-              <textarea class="form-control" id="calendar_desc" name="calendar_desc"
-                placeholder="{{ __('config.desc') }}"></textarea>
+              <textarea class="form-control" id="calendar_desc" name="calendar_desc" placeholder="{{ __('calendar.desc') }}"></textarea>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-2 col-xs-12 control-label" for="is_default">Active</label>
+            <label class="col-md-2 col-xs-12 control-label" for="is_default">{{ __('general.actv') }}</label>
             <div class="col-sm-6 controls">
               <input type="checkbox" class="custom-control-input i-checks" name="is_default" id="is_default">
             </div>

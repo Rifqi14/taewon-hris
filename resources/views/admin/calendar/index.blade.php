@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', __('config.calendar'))
+@section('title', __('calendar.calendar'))
 
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">{{ __('config.calendar') }}</li>
+<li class="breadcrumb-item active">{{ __('calendar.calendar') }}</li>
 @endpush
 
 @section('content')
@@ -16,12 +16,10 @@
 		<div class="col-lg-12">
 			<div class="card card-{{ config('configs.app_theme') }} card-outline">
 				<div class="card-header">
-					<h3 class="card-title">{{ __('config.calendar') }}</h3>
+					<h3 class="card-title">{{ __('calendar.calendar') }}</h3>
 					<div class="pull-right card-tools">
-						<a href="{{ route('calendar.create') }}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white"
-							data-toggle="tooltip" title="{{ __('config.crt') }}"><i class="fa fa-plus"></i></a>
-						<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search"><i
-								class="fa fa-search"></i></a>
+						<a href="{{ route('calendar.create') }}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="{{ __('general.crt') }}"><i class="fa fa-plus"></i></a>
+						<a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="{{ __('general.srch') }}"><i class="fa fa-search"></i></a>
 					</div>
 				</div>
 				<div class="card-body">
@@ -30,9 +28,9 @@
 							<tr>
 								<th width="10">#</th>
 								{{-- <th width="40">Code</th> --}}
-								<th width="150">{{ __('config.calname') }}</th>
-								<th width="250">{{ __('config.desc') }}</th>
-								<th width="5">Active</th>
+								<th width="150">{{ __('calendar.calname') }}</th>
+								<th width="250">{{ __('calendar.desc') }}</th>
+								<th width="5">{{ __('general.status') }}</th>
 								<th width="5">#</th>
 							</tr>
 						</thead>
@@ -44,12 +42,11 @@
 			</div>
 		</div>
 	</div>
-	<div class="modal fade" id="add-filter" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog"
-		aria-hidden="true" data-backdrop="static">
+	<div class="modal fade" id="add-filter" tabindex="-1" role="dialog" aria-hidden="true" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title">Filter</h4>
+					<h4 class="modal-title">{{ __('general.srch') }}</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 				</div>
 				<div class="modal-body">
@@ -63,22 +60,21 @@
 							</div> --}}
 							<div class="col-md-12">
 								<div class="form-group">
-									<label class="control-label" for="name">{{ __('config.calname') }}</label>
-									<input type="text" name="name" class="form-control" placeholder="{{ __('config.calname') }}">
+									<label class="control-label" for="name">{{ __('calendar.calname') }}</label>
+									<input type="text" name="name" class="form-control" placeholder="{{ __('calendar.calname') }}">
 								</div>
 							</div>
 							<div class="col-md-12">
 								<div class="form-group">
-									<label class="control-label" for="name">{{ __('config.desc') }}</label>
-									<input type="text" name="description" class="form-control" placeholder="{{ __('config.desc') }}">
+									<label class="control-label" for="name">{{ __('calendar.desc') }}</label>
+									<input type="text" name="description" class="form-control" placeholder="{{ __('calendar.desc') }}">
 								</div>
 							</div>
 						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button form="form-search" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i
-							class="fa fa-search"></i></button>
+					<button form="form-search" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i class="fa fa-search"></i></button>
 				</div>
 			</div>
 		</div>
@@ -103,6 +99,14 @@ $(function () {
     lengthChange:true,
     responsive:true,
     order: [[ 4, "asc" ]],
+		language: {
+			lengthMenu: `{{ __('general.showent') }}`,
+			processing: `{{ __('general.process') }}`,
+			paginate: {
+				previous: `{{ __('general.prev') }}`,
+				next: `{{ __('general.next') }}`,
+			},
+		},
 		ajax: {
 			url: "{{route('calendar.read')}}",
 			type: "GET",
@@ -120,11 +124,11 @@ $(function () {
 			{ className: "text-right", targets: [0] },
 			{ className: "text-center", targets: [3, 4] },
 			{ render: function(data, type, row) {
-							if (data == 1) {
-								return '<i class="fa fa-check text-green"></i>';
-							} else {
-								return '<i class="fa fa-times text-red"></i>';
-							}
+								if (data == 1) {
+										return `<span class="badge badge-success">{{ __('general.actv') }}</span>`;
+								} else {
+										return `<span class="badge badge-danger">{{ __('general.noactv') }}</span>`;
+								}
 						}, targets:[3]},
 			{ render: function ( data, type, row ) {
 				return `<div class="dropdown">
@@ -132,8 +136,8 @@ $(function () {
 										<i class="fa fa-bars"></i>
 									</button>
 									<ul class="dropdown-menu dropdown-menu-right">
-										<li><a class="dropdown-item" href="{{url('admin/calendar')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-										<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+										<li><a class="dropdown-item" href="{{url('admin/calendar')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
+										<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{ __('general.dlt') }}</a></li>
 									</ul>
 								</div>`
 				},targets: [4]

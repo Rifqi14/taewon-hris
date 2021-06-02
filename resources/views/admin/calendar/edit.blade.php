@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title',__('config.calendar'))
+@section('title',__('calendar.calendar'))
 
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
@@ -28,8 +28,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('calendar.index')}}">{{ __('config.calendar') }}</a></li>
-<li class="breadcrumb-item active">{{ __('config.edt') }}</li>
+<li class="breadcrumb-item active"><a href="{{route('calendar.index')}}">{{ __('calendar.calendar') }}</a></li>
+<li class="breadcrumb-item active">{{ __('calendar.edt') }}</li>
 @endpush
 
 @section('content')
@@ -38,10 +38,10 @@
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <div class="card-header">
-        <h3 class="card-title">{{ __('config.crt') }} {{ __('config.calendar') }}</h3>
+        <h3 class="card-title">{{ __('general.edt') }} {{ __('calendar.calendar') }}</h3>
         <div class="pull-right card-tools">
-          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('config.save') }}"><i class="fa fa-save"></i></button>
-          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('config.prvious') }}"><i class="fa fa-reply"></i></a>
+          <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('calendar.save') }}"><i class="fa fa-save"></i></button>
+          <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('calendar.prvious') }}"><i class="fa fa-reply"></i></a>
         </div>
       </div>
       <div class="card-body">
@@ -49,19 +49,19 @@
           {{ csrf_field() }}
           {{ method_field('put') }}
           <div class="form-group row">
-            <label class="col-md-2 col-xs-12 control-label" for="code">{{ __('config.calcode') }} <span class="text-red">*</span></label>
+            <label class="col-md-2 col-xs-12 control-label" for="code">{{ __('calendar.calcode') }} <span class="text-red">*</span></label>
             <div class="col-sm-6 controls">
-              <input type="text" class="form-control" id="code" name="code" placeholder="{{ __('config.calcode') }}" value="{{ $calendar->code }}" required>
+              <input type="text" class="form-control" id="code" name="code" placeholder="{{ __('calendar.calcode') }}" value="{{ $calendar->code }}" required>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-2 col-xs-12 control-label" for="calendar_name">{{ __('config.calname') }} <span class="text-red">*</span></label>
+            <label class="col-md-2 col-xs-12 control-label" for="calendar_name">{{ __('calendar.calname') }} <span class="text-red">*</span></label>
             <div class="col-sm-6 controls">
-              <input type="text" class="form-control" id="calendar_name" name="calendar_name" placeholder="{{ __('config.calname') }}" value="{{ $calendar->name }}" required>
+              <input type="text" class="form-control" id="calendar_name" name="calendar_name" placeholder="{{ __('calendar.calname') }}" value="{{ $calendar->name }}" required>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-2 col-xs-12 col-form-label" for="label_color">{{ __('config.labelclr') }}</label>
+            <label class="col-sm-2 col-xs-12 col-form-label" for="label_color">{{ __('calendar.labelclr') }}</label>
             <div class="col-sm-6">
               <div class="input-group my-colorpicker2">
                 <input type="text" class="form-control" value="{{ $calendar->label_color }}" name="label_color" id="label_color">
@@ -74,13 +74,13 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-2 col-xs-12 control-label" for="calendar_desc">{{ __('config.desc') }}</label>
+            <label class="col-md-2 col-xs-12 control-label" for="calendar_desc">{{ __('calendar.desc') }}</label>
             <div class="col-sm-6 controls">
-              <textarea class="form-control" id="calendar_desc" name="calendar_desc" placeholder="{{ __('config.desc') }}">{{ $calendar->description }}</textarea>
+              <textarea class="form-control" id="calendar_desc" name="calendar_desc" placeholder="{{ __('calendar.desc') }}">{{ $calendar->description }}</textarea>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-2 col-xs-12 control-label" for="is_default">Active</label>
+            <label class="col-md-2 col-xs-12 control-label" for="is_default">{{ __('general.actv') }}</label>
             <div class="col-sm-6 controls">
               <input type="checkbox" class="custom-control-input i-checks" name="is_default" @if ($calendar->is_default)
               checked @endif id="is_default">
@@ -101,18 +101,18 @@
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <ul class="nav nav-tabs">
-        <li class="nav-item"><a href="#exception" class="nav-link active" data-toggle="tab">{{ __('config.listex') }}</a></li>
-        <li class="nav-item"><a href="#calendar" class="nav-link" data-toggle="tab">{{ __('config.calendar') }}</a></li>
+        <li class="nav-item"><a href="#exception" class="nav-link active" data-toggle="tab">{{ __('calendar.listex') }}</a></li>
+        <li class="nav-item"><a href="#calendar" class="nav-link" data-toggle="tab">{{ __('calendar.calendar') }}</a></li>
       </ul>
       <div class="tab-content">
         <div class="tab-pane active" id="exception">
           <div class="card-header">
             <div class="pull-right card-tools">
-              <a href="#" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white add_exception" data-toggle="tooltip" title="{{ __('config.crt') }}">
+              <a href="#" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white add_exception" data-toggle="tooltip" title="{{ __('calendar.crt') }}">
                 <i class="fa fa-plus"></i>
               </a>
             </div>
-            <h3 class="card-title">{{ __('config.listex') }}</h3>
+            <h3 class="card-title">{{ __('calendar.listex') }}</h3>
           </div>
           <div class="card-body">
             {{-- DataTable List Exception --}}
@@ -120,8 +120,8 @@
               <thead>
                 <tr>
                   <th width="5">#</th>
-                  <th width="50">{{ __('config.date') }}</th>
-                  <th width="200">{{ __('config.desc') }}</th>
+                  <th width="50">{{ __('general.date') }}</th>
+                  <th width="200">{{ __('calendar.desc') }}</th>
                   <th width="5">#</th>
                 </tr>
               </thead>
@@ -131,7 +131,7 @@
         </div>
         <div class="tab-pane" id="calendar">
           <div class="card-header">
-            <h3 class="card-title">{{ __('config.calendar') }}</h3>
+            <h3 class="card-title">{{ __('calendar.calendar') }}</h3>
           </div>
           <div class="card-body">
             <div id="calendar_exception"></div>
@@ -155,7 +155,7 @@
       <div class="overlay-wrapper">
         {{-- Header & Tool --}}
         <div class="modal-header">
-          <h4 class="modal-title">Add Exception</h4>
+          <h4 class="modal-title">{{ __('general.add') }} {{ __('calendar.listex') }}</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -167,14 +167,14 @@
             <input type="hidden" name="calendar_id">
             {{-- Description --}}
             <div class="form-group row">
-              <label for="description" class="col-sm-3 col-form-label">{{ __('config.desc') }}</label>
+              <label for="description" class="col-sm-3 col-form-label">{{ __('calendar.desc') }}</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" id="description" name="description" placeholder="{{ __('config.desc') }}" required>
+                <input type="text" class="form-control" id="description" name="description" placeholder="{{ __('calendar.desc') }}" required>
               </div>
             </div>
             {{-- .Description --}}
             <div class="form-group row">
-              <label class="col-sm-3 col-form-label" for="label_exception">{{ __('config.labelclr') }}</label>
+              <label class="col-sm-3 col-form-label" for="label_exception">{{ __('calendar.labelclr') }}</label>
               <div class="col-sm-9">
                 <div class="input-group my-colorpicker2">
                   <input type="text" class="form-control" value="#000" name="label_exception" id="label_exception">
@@ -187,7 +187,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-sm-3 col-form-label" for="text_color">{{ __('config.textclr') }}</label>
+              <label class="col-sm-3 col-form-label" for="text_color">{{ __('calendar.textclr') }}</label>
               <div class="col-sm-9">
                 <div class="input-group my-colorpicker2">
                   <input type="text" class="form-control" value="#fff" name="text_color" id="text_color">
@@ -204,7 +204,7 @@
             <div class="form-check">
               <input class="form-check-input" type="radio" name="reccurence_day" id="reccurence_day" value="reccurence_day" onclick="reccurence_pattern()">
               <label class="form-check-label" for="reccurence_day">
-                <b>{{ __('config.recday') }}</b>
+                <b>{{ __('calendar.recday') }}</b>
               </label>
             </div>
             {{-- .Reccurence Radio --}}
@@ -214,25 +214,25 @@
                 <div class="form-check">
                   <input class="form-check-input check-day" type="checkbox" value="monday" id="monday" name="day[]">
                   <label class="form-check-label" for="day">
-                    <b>{{ __('config.mon') }}</b>
+                    <b>{{ __('general.mon') }}</b>
                   </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input check-day" type="checkbox" value="tuesday" id="tuesday" name="day[]">
                   <label class="form-check-label" for="day">
-                    <b>{{ __('config.tue') }}</b>
+                    <b>{{ __('general.tue') }}</b>
                   </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input check-day" type="checkbox" value="wednesday" id="wednesday" name="day[]">
                   <label class="form-check-label" for="day">
-                    <b>{{ __('config.wed') }}</b>
+                    <b>{{ __('general.wed') }}</b>
                   </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input check-day" type="checkbox" value="thursday" id="thursday" name="day[]">
                   <label class="form-check-label" for="day">
-                    <b>{{ __('config.thu') }}</b>
+                    <b>{{ __('general.thu') }}</b>
                   </label>
                 </div>
               </div>
@@ -240,31 +240,31 @@
                 <div class="form-check">
                   <input class="form-check-input check-day" type="checkbox" value="friday" id="friday" name="day[]">
                   <label class="form-check-label" for="day">
-                    <b>{{ __('config.fri') }}</b>
+                    <b>{{ __('general.fri') }}</b>
                   </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input check-day" type="checkbox" value="saturday" id="saturday" name="day[]">
                   <label class="form-check-label" for="day">
-                    <b>{{ __('config.sat') }}</b>
+                    <b>{{ __('general.sat') }}</b>
                   </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input check-day" type="checkbox" value="sunday" id="sunday" name="day[]">
                   <label class="form-check-label" for="day">
-                    <b>{{ __('config.sun') }}</b>
+                    <b>{{ __('general.sun') }}</b>
                   </label>
                 </div>
               </div>
             </div>
             {{-- .Day Checkbox --}}
             <div class="form-group mb-0">
-              <label class="control-label" for="recurrence_range">{{ __('config.rangerec') }}</label>
+              <label class="control-label" for="recurrence_range">{{ __('calendar.rangerec') }}</label>
             </div>
             {{-- Start and Finish Date Reccurence --}}
             <div class="form-group row">
               <div class="col-sm-5 mr-5">
-                <label class="control-label" for="start_range">{{ __('config.start_date') }}</label>
+                <label class="control-label" for="start_range">{{ __('calendar.start_date') }}</label>
                 <div class="controls col-xs-10">
                   <div class="input-group">
                     <div class="input-group-prepend">
@@ -272,12 +272,12 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
                     </div>
-                    <input type="text" name="start_range" id="start_range" class="form-control datepicker" placeholder="{{ __('config.start_date') }}">
+                    <input type="text" name="start_range" id="start_range" class="form-control datepicker" placeholder="{{ __('calendar.start_date') }}">
                   </div>
                 </div>
               </div>
               <div class="col-sm-5">
-                <label class="control-label" for="finish_range">{{ __('config.finish_date') }}</label>
+                <label class="control-label" for="finish_range">{{ __('calendar.finish_date') }}</label>
                 <div class="controls col-xs-10">
                   <div class="input-group">
                     <div class="input-group-prepend">
@@ -285,7 +285,7 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
                     </div>
-                    <input type="text" name="finish_range" id="finish_range" class="form-control datepicker" placeholder="{{ __('config.finish_date') }}">
+                    <input type="text" name="finish_range" id="finish_range" class="form-control datepicker" placeholder="{{ __('calendar.finish_date') }}">
                   </div>
                 </div>
               </div>
@@ -296,13 +296,13 @@
             <div class="form-check">
               <input class="form-check-input" type="radio" name="reccurence_day" id="specific_day" value="specific_day" onclick="reccurence_pattern()">
               <label class="form-check-label" for="reccurence_day">
-                <b>{{ __('config.specday') }}</b>
+                <b>{{ __('calendar.specday') }}</b>
               </label>
             </div>
             {{-- .Specific Day Radio --}}
             {{-- Specific Date --}}
             <div class="form-group row py-3">
-              <label class="col-md-2 control-label" for="specific_date">{{ __('config.date') }}</label>
+              <label class="col-md-2 control-label" for="specific_date">{{ __('general.date') }}</label>
               <div class="col-sm-5 controls">
                 <div class="input-group">
                   <div class="input-group-prepend">
@@ -310,18 +310,18 @@
                       <i class="far fa-calendar-alt"></i>
                     </span>
                   </div>
-                  <input type="text" name="specific_date" class="form-control datepicker" id="specific_date" placeholder="{{ __('config.date') }}">
+                  <input type="text" name="specific_date" class="form-control datepicker" id="specific_date" placeholder="{{ __('calendar.date') }}">
                 </div>
               </div>
             </div>
             {{-- .Specific Date --}}
             {{-- Start and Finish Date Specific Day --}}
             <div class="form-group mb-0">
-              <label class="control-label" for="recurrence_range">{{ __('config.rangerec') }}</label>
+              <label class="control-label" for="recurrence_range">{{ __('calendar.rangerec') }}</label>
             </div>
             <div class="form-group row">
               <div class="col-sm-5 mr-5">
-                <label class="control-label" for="start_range">{{ __('config.start_date') }}</label>
+                <label class="control-label" for="start_range">{{ __('calendar.start_date') }}</label>
                 <div class="controls col-xs-10">
                   <div class="input-group">
                     <div class="input-group-prepend">
@@ -329,12 +329,12 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
                     </div>
-                    <input type="text" name="start_specific" id="start_specific" class="form-control datepicker" placeholder="{{ __('config.start_date') }}">
+                    <input type="text" name="start_specific" id="start_specific" class="form-control datepicker" placeholder="{{ __('calendar.start_date') }}">
                   </div>
                 </div>
               </div>
               <div class="col-sm-5">
-                <label class="control-label" for="finish_range">{{ __('config.finish_date') }}</label>
+                <label class="control-label" for="finish_range">{{ __('calendar.finish_date') }}</label>
                 <div class="controls col-xs-10">
                   <div class="input-group">
                     <div class="input-group-prepend">
@@ -342,7 +342,7 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
                     </div>
-                    <input type="text" name="finish_specific" id="finish_specific" class="form-control datepicker" placeholder="{{ __('config.finish_date') }}">
+                    <input type="text" name="finish_specific" id="finish_specific" class="form-control datepicker" placeholder="{{ __('calendar.finish_date') }}">
                   </div>
                 </div>
               </div>
@@ -354,7 +354,7 @@
           {{-- End of Form Add Exception --}}
         </div>
         <div class="modal-footer">
-          <button form="form_exception" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+          <button form="form_exception" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -369,7 +369,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{{ __('config.edt') }} {{ __('config.exc') }}</h5>
+        <h5 class="modal-title">{{ __('general.edt') }} {{ __('calendar.listex') }}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -380,7 +380,7 @@
           <input type="hidden" name="_method" />
           <div class="row">
             <div class="form-group row col-12">
-              <label class="col-sm-3 control-label" for="exception_date">{{ __('config.date') }}</label>
+              <label class="col-sm-3 control-label" for="exception_date">{{ __('general.date') }}</label>
               <div class="col-sm-5 controls">
                 <div class="input-group">
                   <div class="input-group-prepend">
@@ -388,21 +388,21 @@
                       <i class="far fa-calendar-alt"></i>
                     </span>
                   </div>
-                  <input type="text" name="exception_date" id="exception_date" class="form-control datepicker2" placeholder="{{ __('config.date') }}" required />
+                  <input type="text" name="exception_date" id="exception_date" class="form-control datepicker2" placeholder="{{ __('general.date') }}" required />
                 </div>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="form-group row col-12">
-              <label class="col-sm-3 control-label" for="exception_desc">{{ __('config.desc') }}</label>
+              <label class="col-sm-3 control-label" for="exception_desc">{{ __('calendar.desc') }}</label>
               <div class="col-sm-9 controls">
-                <input type="text" class="form-control" name="exception_desc" id="exception_desc" placeholder="{{ __('config.desc') }}" required>
+                <input type="text" class="form-control" name="exception_desc" id="exception_desc" placeholder="{{ __('calendar.desc') }}" required>
               </div>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="exception_label">{{ __('config.labelclr') }}</label>
+            <label class="col-sm-3 col-form-label" for="exception_label">{{ __('calendar.labelclr') }}</label>
             <div class="col-sm-9">
               <div class="input-group my-colorpicker2">
                 <input type="text" class="form-control" name="exception_label" id="exception_label">
@@ -415,7 +415,7 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="exception_text">{{ __('config.textclr') }}</label>
+            <label class="col-sm-3 col-form-label" for="exception_text">{{ __('calendar.textclr') }}</label>
             <div class="col-sm-9">
               <div class="input-group my-colorpicker2">
                 <input type="text" class="form-control" name="exception_text" id="exception_text">
@@ -432,7 +432,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button form="form-edit" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="Simpan"><i class="fa fa-save"></i></button>
+        <button form="form-edit" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
       </div>
     </div>
   </div>
@@ -443,7 +443,7 @@
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add Calendar</h5>
+        <h5 class="modal-title">{{ __('general.add') }} {{ __('calendar.calendar') }}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -452,7 +452,7 @@
         <form id="form-calendar" class="form-horizontal" method="post" autocomplete="off">
           {{ csrf_field() }}
           <div class="form-group row">
-            <label class="col-sm-3 control-label" for="calendar_date">{{ __('config.date') }}</label>
+            <label class="col-sm-3 control-label" for="calendar_date">{{ __('general.date') }}</label>
             <div class="col-sm-5 controls">
               <div class="input-group">
                 <div class="input-group-prepend">
@@ -460,18 +460,18 @@
                     <i class="far fa-calendar-alt"></i>
                   </span>
                 </div>
-                <input type="text" name="calendar_date" id="calendar_date" class="form-control" placeholder="{{ __('config.date') }}" readonly required />
+                <input type="text" name="calendar_date" id="calendar_date" class="form-control" placeholder="{{ __('general.date') }}" readonly required />
               </div>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-3 control-label" for="calendar_desc_add">{{ __('config.desc') }}</label>
+            <label class="col-sm-3 control-label" for="calendar_desc_add">{{ __('calendar.desc') }}</label>
             <div class="col-sm-9 controls">
-              <input type="text" class="form-control" name="calendar_desc_add" id="calendar_desc_add" placeholder="{{ __('config.desc') }}" required>
+              <input type="text" class="form-control" name="calendar_desc_add" id="calendar_desc_add" placeholder="{{ __('calendar.desc') }}" required>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="calendar_label">{{ __('config.labelclr') }}</label>
+            <label class="col-sm-3 col-form-label" for="calendar_label">{{ __('calendar.labelclr') }}</label>
             <div class="col-sm-9">
               <div class="input-group my-colorpicker2">
                 <input type="text" class="form-control" name="calendar_label" id="calendar_label">
@@ -484,7 +484,7 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="calendar_text">{{ __('config.textclr') }}</label>
+            <label class="col-sm-3 col-form-label" for="calendar_text">{{ __('calendar.textclr') }}</label>
             <div class="col-sm-9">
               <div class="input-group my-colorpicker2">
                 <input type="text" class="form-control" name="calendar_text" id="calendar_text">
@@ -497,7 +497,7 @@
             </div>
           </div>
           <div class="form-group row">
-            <label for="is_switch_day" class="col-sm-3 col-form-label">Is {{ __('config.swday') }}</label>
+            <label for="is_switch_day" class="col-sm-3 col-form-label">{{ __('calendar.swcday') }}</label>
             <div class="col-sm-9" style="padding-top: 6.5px">
               <input type="checkbox" class="custom-control-input i-checks" name="is_switch_day" id="is_switch_day">
             </div>
@@ -509,11 +509,11 @@
                 <thead>
                   <tr>
                     <th width="10" class="text-center align-middle">Shift</th>
-                    <th width="25" class="text-center align-middle">{{ __('config.startime') }}</th>
-                    <th width="25" class="text-center align-middle">{{ __('config.fintime') }}</th>
-                    <th width="25" class="text-center align-middle">{{ __('config.mintime') }}</th>
-                    <th width="25" class="text-center align-middle">{{ __('config.maxtime') }}</th>
-                    <th width="25" class="text-center align-middle">{{ __('config.maxtime') }}</th>
+                    <th width="25" class="text-center align-middle">{{ __('shift.startime') }}</th>
+                    <th width="25" class="text-center align-middle">{{ __('shift.fintime') }}</th>
+                    <th width="25" class="text-center align-middle">{{ __('shift.mintime') }}</th>
+                    <th width="25" class="text-center align-middle">{{ __('shift.maxtime') }}</th>
+                    <th width="25" class="text-center align-middle">{{ __('shift.minwork') }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -524,19 +524,19 @@
                       <input type="hidden" class="form-control" name="workingtime_id[]" value="{{ $item->id }}" />
                     </td>
                     <td class="text-center align-middle">
-                      <div class="form-group mb-0"><input placeholder="Start Time" name="start[]" class="form-control timepicker" /></div>
+                      <div class="form-group mb-0"><input placeholder="{{ __('shift.startime') }}" name="start[]" class="form-control timepicker" /></div>
                     </td>
                     <td class="text-center align-middle">
-                      <div class="form-group mb-0"><input placeholder="Finish Time" name="finish[]" class="form-control timepicker" /></div>
+                      <div class="form-group mb-0"><input placeholder="{{ __('shift.fintime') }}" name="finish[]" class="form-control timepicker" /></div>
                     </td>
                     <td class="text-center align-middle">
-                      <div class="form-group mb-0"><input placeholder="Minimum time In" name="min_in[]" class="form-control timepicker" /></div>
+                      <div class="form-group mb-0"><input placeholder="{{ __('shift.mintime') }}" name="min_in[]" class="form-control timepicker" /></div>
                     </td>
                     <td class="text-center align-middle">
-                      <div class="form-group mb-0"><input placeholder="Maximum time Out" name="max_out[]" class="form-control timepicker" /></div>
+                      <div class="form-group mb-0"><input placeholder="{{ __('shift.maxtime') }}" name="max_out[]" class="form-control timepicker" /></div>
                     </td>
                     <td class="text-center align-middle">
-                      <div class="form-group mb-0"><input type="number" placeholder="Minimum Workingtime" name="min_wt[]" class="form-control" /></div>
+                      <div class="form-group mb-0"><input type="number" placeholder="{{ __('shift.minwork') }}" name="min_wt[]" class="form-control" /></div>
                     </td>
                   </tr>
                   @endforeach
@@ -548,7 +548,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button form="form-calendar" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="Add"><i class="fa fa-save"></i></button>
+        <button form="form-calendar" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }} text-white" title="{{ __('general.add') }}"><i class="fa fa-save"></i></button>
       </div>
     </div>
   </div>
@@ -562,6 +562,7 @@
 <script src="{{asset('adminlte/component/daterangepicker/daterangepicker.js')}}"></script>
 <script src="{{asset('adminlte/component/dataTables/js/datatables.min.js')}}"></script>
 <script src="{{asset('adminlte/component/fullcalendar/lib/main.min.js')}}"></script>
+<script src="{{asset('adminlte/component/fullcalendar/lib/locales/id.js')}}"></script>
 <script src="{{asset('adminlte/component/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js')}}"></script>
 <script type="text/javascript">
   function reccurence_pattern() {
@@ -693,14 +694,17 @@
       }
     });
     calendar.render();
+    @if (config('configs.language') == 'id')
+      calendar.setOption('locale', 'id');
+    @endif
     $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
       var currentTab = $(e.target).text();
       switch (currentTab) {
-        case 'List Exception':
+        case `{{ __('calendar.listex') }}`:
           $('#table-exception').css("width", "100%")
           $($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
           break;
-        case 'Calendar':
+        case `{{ __('calendar.calendar') }}`:
         calendar.refetchEvents();
         calendar.render();
           break;
@@ -928,6 +932,14 @@
         lengthChange:true,
         responsive: true,
         order: [[ 1, "asc" ]],
+        language: {
+          lengthMenu: `{{ __('general.showent') }}`,
+          processing: `{{ __('general.process') }}`,
+          paginate: {
+            previous: `{{ __('general.prev') }}`,
+            next: `{{ __('general.next') }}`,
+          },
+        },
         ajax: {
             url: "{{route('calendarexception.read')}}",
             type: "GET",
@@ -949,8 +961,8 @@
                     <i class="fa fa-bars"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item editexception" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> Edit</a></li>
-                        <li><a class="dropdown-item deleteexception" href="#" data-id="${row.id}"><i class="fa fa-trash mr-2"></i> Delete</a></li>
+                        <li><a class="dropdown-item editexception" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> {{ __('general.edt') }}</a></li>
+                        <li><a class="dropdown-item deleteexception" href="#" data-id="${row.id}"><i class="fa fa-trash mr-2"></i> {{ __('general.dlt') }}</a></li>
                     </ul>
                     </div>`
             },targets: [3]
@@ -970,7 +982,7 @@
       $('#form_exception input[name=_method]').attr('value', 'POST');
       $('#form_exception input[name=calendar_id]').attr('value', {{ $calendar->id }});
       $('#form_exception input[name=description]').attr('value', '');
-      $('#add_exception .modal-title').html('Add Exception');
+      $('#add_exception .modal-title').html(`{{ __('general.add') }} {{ __('calendar.listex') }}`);
       $('#add_exception').modal('show');
       $('#form_exception').find('.datepicker').daterangepicker({
         startDate: moment(),
@@ -1136,7 +1148,7 @@
         $('#box-menu .overlay').addClass('d-none');
         if(response.status){
           var date = changeDateFormat(response.data.date_exception);
-          $('#edit-exception .modal-title').html('Edit Exception');
+          $('#edit-exception .modal-title').html(`{{ __('general.edt') }} {{ __('calendar.listex') }}`);
           $('#edit-exception').modal('show');
           $('#form-edit')[0].reset();
           $('#form-edit .invalid-feedback').each(function () { $(this).remove(); });
