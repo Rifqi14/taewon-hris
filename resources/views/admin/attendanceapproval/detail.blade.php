@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Attendance')
+@section('title', __('attendanceapproval.atapprov'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -9,8 +9,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('attendanceapproval.index')}}">Attendance Approval</a></li>
-<li class="breadcrumb-item active">Details</li>
+<li class="breadcrumb-item active"><a href="{{route('attendanceapproval.index')}}">{{ __('attendanceapproval.atapprov') }}</a></li>
+<li class="breadcrumb-item active">Detail</li>
 @endpush
 
 @section('content')
@@ -24,14 +24,14 @@
         <div class="col-lg-12">
           <div class="card card-{{ config('configs.app_theme') }} card-outline">
             <div class="card-header">
-              <h3 class="card-title">Employee Data</h3>
+              <h3 class="card-title">{{ __('employee.empname') }} Data</h3>
             </div>
             <div class="card-body">
               <div class="row">
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Employee Name</label>
-                    <input type="text" class="form-control" placeholder="Name" id="name" name="name" readonly value="{{ $attendances->name }}">
+                    <label>{{ __('employee.empname') }}</label>
+                    <input type="text" class="form-control" placeholder="{{ __('employee.empname') }}" id="name" name="name" readonly value="{{ $attendances->name }}">
                   </div>
                 </div>
                 <div class="col-sm-6">
@@ -44,28 +44,28 @@
               <div class="row">
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Position</label>
-                    <input type="text" class="form-control" placeholder="Position" id="position" name="position" readonly value="{{ $attendances->position }}">
+                    <label>{{ __('position.pos') }}</label>
+                    <input type="text" class="form-control" placeholder="{{ __('position.pos') }}" id="position" name="position" readonly value="{{ $attendances->position }}">
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Date</label>
-                    <input type="text" class="form-control" placeholder="Date" id="date" name="date" readonly value="{{ changeDateFormat('d-m-Y', $attendances->attendance_date) }}">
+                    <label>{{ __('general.date') }}</label>
+                    <input type="text" class="form-control" placeholder="{{ __('general.date') }}" id="date" name="date" readonly value="{{ changeDateFormat('d-m-Y', $attendances->attendance_date) }}">
                   </div>
                 </div>
               </div>
               <div class="row">
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Working Shift Type</label>
-                    <input type="text" class="form-control" placeholder="Wokring Group Type" id="working_type" name="working_type" readonly value="{{ $attendances->working_group }}">
+                    <label>{{ __('attendancelog.worktype') }}</label>
+                    <input type="text" class="form-control" placeholder="{{ __('attendancelog.worktype') }}" id="working_type" name="working_type" readonly value="{{ $attendances->working_group }}">
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Working Shift</label>
-                    <input type="text" class="form-control" placeholder="Working Time" id="working_time" name="working_time" value="{{ $attendances->description }}">
+                    <label>{{ __('attendancelog.worktime') }}</label>
+                    <input type="text" class="form-control" placeholder="{{ __('attendancelog.worktime') }}" id="working_time" name="working_time" value="{{ $attendances->description }}">
                   </div>
                 </div>
               </div>
@@ -75,7 +75,7 @@
         <div class="col-lg-12">
           <div class="card card-{{ config('configs.app_theme') }} card-outline">
             <div class="card-header">
-              <h3 class="card-title">Attendance History</h3>
+              <h3 class="card-title">{{ __('attendanceapproval.history') }}</h3>
               <div class="pull-right card-tools">
                 <a href="#" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white add_history">
                   <i class="fa fa-plus"></i>
@@ -87,10 +87,10 @@
                 <thead>
                   <tr>
                     <th width="10">No</th>
-                    <th width="100">Time</th>
-                    <th width="100">Type</th>
-                    <th width="100">Machine ID</th>
-                    <th width="5">Action</th>
+                    <th width="100">{{ __('attendancelog.time') }}</th>
+                    <th width="100">{{ __('general.type') }}</th>
+                    <th width="100">{{ __('machine.machine') }}</th>
+                    <th width="5">{{ __('general.act') }}</th>
                   </tr>
                 </thead>
               </table>
@@ -106,10 +106,10 @@
       <div class="col-lg-12">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header">
-            <h3 class="card-title">Other</h3>
+            <h3 class="card-title">{{ __('general.other') }}</h3>
             <div class="pull-right card-tools">
-              <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}} text-white" title="Add"><i class="fa fa-save"></i></button>
-              <a href="#" onClick="backurl()" class="btn btn-sm btn-default" title="Back"><i class="fa fa-reply"></i></a>
+              <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}} text-white" title="{{ __('general.add') }}"><i class="fa fa-save"></i></button>
+              <a href="#" onClick="backurl()" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
             </div>
           </div>
           <div class="card-body">
@@ -130,36 +130,36 @@
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Working Time</label>
-                  <input type="text" class="form-control" placeholder="Working Time" id="work_time" name="work_time" readonly value="{{ $attendances->adj_working_time }}">
+                  <label>{{ __('attendanceapproved.worktime') }}</label>
+                  <input type="text" class="form-control" placeholder="{{ __('attendanceapproved.worktime') }}" id="work_time" name="work_time" readonly value="{{ $attendances->adj_working_time }}">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Adj Working Time</label>
-                  <input type="text" class="form-control" placeholder="Adj Working Time" id="adj_working_time" name="adj_working_time" required value="{{ $attendances->adj_working_time }}">
+                  <label>{{ __('attendanceapproval.adjwt') }}</label>
+                  <input type="text" class="form-control" placeholder="{{ __('attendanceapproval.adjwt') }}" id="adj_working_time" name="adj_working_time" required value="{{ $attendances->adj_working_time }}">
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Over Time</label>
-                  <input type="text" class="form-control" placeholder="Over Time" id="over_time" name="over_time" readonly value="{{ $attendances->adj_over_time }}">
+                  <label>{{ __('attendanceapproval.overtime') }}</label>
+                  <input type="text" class="form-control" placeholder="{{ __('attendanceapproval.overtime') }}" id="over_time" name="over_time" readonly value="{{ $attendances->adj_over_time }}">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Adj Over Time</label>
-                  <input type="text" class="form-control" placeholder="Adj Over Time" id="adj_over_time" name="adj_over_time" required value="{{ $attendances->adj_over_time }}">
+                  <label>{{ __('attendanceapproval.adjot') }}</label>
+                  <input type="text" class="form-control" placeholder="{{ __('attendanceapproval.adjot') }}" id="adj_over_time" name="adj_over_time" required value="{{ $attendances->adj_over_time }}">
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <label>Notes</label>
-                  <textarea class="form-control" id="note" name="note" placeholder="Notes">{{ $attendances->note }}</textarea>
+                  <label>{{ __('general.notes') }}</label>
+                  <textarea class="form-control" id="note" name="note" placeholder="{{ __('general.notes') }}">{{ $attendances->note }}</textarea>
                   <input type="hidden" class="form-control" id="code_case" name="code_case" value="{{ $attendances->code_case }}">
                 </div>
               </div>
@@ -175,7 +175,7 @@
     <div class="modal-content">
       <div class="overlay-wrapper">
         <div class="modal-header">
-          <h4 class="modal-title">Add</h4>
+          <h4 class="modal-title">{{ __('general.add') }}</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -192,19 +192,19 @@
               </div>
               <div class="col-md-12" style="visibility: hidden; position: absolute;">
                 <div class="form-group">
-                  <label for="attendance_id" class="control-label">Employee ID</label>
-                  <input type="text" class="form-control" id="employee_id" name="employee_id" placeholder="Employee ID" value="{{ $attendances->employee_id }}" readonly>
+                  <label for="attendance_id" class="control-label">{{ __('attendancelog.employid') }}</label>
+                  <input type="text" class="form-control" id="employee_id" name="employee_id" placeholder="{{ __('attendancelog.employid') }}" value="{{ $attendances->employee_id }}" readonly>
                 </div>
               </div>
               <div class="col-md-12">
                 <div class="form-group">
-                  <label for="time" class="control-label">Time</label>
-                  <input type="text" class="form-control datepicker" name="time" id="time" placeholder="Time" required>
+                  <label for="time" class="control-label">{{ __('attendancelog.time') }}</label>
+                  <input type="text" class="form-control datepicker" name="time" id="time" placeholder="{{ __('attendancelog.time') }}" required>
                 </div>
               </div>
               <div class="col-md-12">
                 <div class="form-group">
-                  <label for="qty_allowance" class="control-label">Type</label>
+                  <label for="qty_allowance" class="control-label">{{ __('general.type') }}</label>
                   <select name="type" id="type" class="form-control select2" style="width: 100%" aria-hidden="true">
                     <option value="1">Scan In</option>
                     <option value="0">Scan Out</option>
@@ -213,14 +213,14 @@
               </div>
               <div class="col-md-12">
                 <div class="form-group">
-                  <label for="qty_allowance" class="control-label">Machine</label>
-                  <input type="text" class="form-control" id="machine" name="machine" placeholder="Machine">
+                  <label for="qty_allowance" class="control-label">{{ __('machine.machine') }}</label>
+                  <input type="text" class="form-control" id="machine" name="machine" placeholder="{{ __('machine.machine') }}">
                 </div>
               </div>
             </div>
           </div>
           <div class="modal-footer">
-            <button form="form_history" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}} text-white" title="Add"><i class="fa fa-save"></i></button>
+            <button form="form_history" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}} text-white" title="{{ __('general.add') }}"><i class="fa fa-save"></i></button>
             <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </form>
@@ -469,7 +469,7 @@
       $("input.check-day").attr("disabled", true);
       $('#form_history').attr('action',"{{ route('attendanceapproval.store') }}");
       $('#form_history input[name=_method]').attr('value', 'POST');
-      $('#add_history .modal-title').html('Add History');
+      $('#add_history .modal-title').html(`{{ __('general.add') }}`);
       $('#add_history').modal('show');
       $('#form_history').find('.datepicker').daterangepicker({
         startDate: moment('{!! $attendances->attendance_date !!}'),

@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Attendance Approval')
+@section('title', __('attendanceapproval.atapprov'))
 @section('stylesheets')
 <link href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
@@ -46,7 +46,7 @@
 {{ Session::forget('date') }}
 @endif
 @push('breadcrump')
-<li class="breadcrumb-item active">Attendance Approval</li>
+<li class="breadcrumb-item active">{{ __('attendanceapproval.atapprov') }}</li>
 @endpush
 
 @section('content')
@@ -58,7 +58,7 @@
           {{ csrf_field() }}
           {{-- Title, Button Approve & Search --}}
           <div class="card-header">
-            <h3 class="card-title">Attendance Approval</h3>
+            <h3 class="card-title">{{ __('attendanceapproval.atapprov') }}</h3>
             <div class="pull-right card-tools">
               <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme')}}"><i class="fa fa-check"></i></button>
               <a href="#" onclick="deletemass()" class="btn btn-{{ config('configs.app_theme') }} btn-sm"><i class="fa fa-trash"></i></a>
@@ -70,8 +70,8 @@
             <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label" for="name">Employee Name</label>
-                  <input type="text" class="form-control" id="employee_id" placeholder="Employee Name" name="employee_id">
+                  <label class="control-label" for="name">{{ __('employee.empname') }}</label>
+                  <input type="text" class="form-control" id="employee_id" placeholder="{{ __('employee.empname') }}" name="employee_id">
                   <div id="employee-container"></div>
                   {{-- <select name="name" id="name" class="form-control select2" style="width: 100%" aria-hidden="true" data-placeholder="Employee Name">
                     <option value=""></option>
@@ -89,18 +89,18 @@
               </div>
               <div class="form-row col-md-4">
                 <div class="form-group col-md-6">
-                  <label for="from">From</label>
-                  <input type="text" class="form-control datepicker" id="from" placeholder="From" name="from">
+                  <label for="from">{{ __('general.from') }}</label>
+                  <input type="text" class="form-control datepicker" id="from" placeholder="{{ __('general.from') }}" name="from">
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="to">To</label>
-                  <input type="text" class="form-control datepicker" id="to" placeholder="To" name="to">
+                  <label for="to">{{ __('general.To') }}</label>
+                  <input type="text" class="form-control datepicker" id="to" placeholder="{{ __('general.To') }}" name="to">
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label" for="department">Department</label>
-                  <select name="department" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Select Department">
+                  <label class="control-label" for="department">{{ __('department.dep') }}</label>
+                  <select name="department" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{ __('general.chs') }} {{ __('department.dep') }}">
                     @foreach ($departments as $department)
                     <option value="{{ $department->name }}">{{ $department->path }}</option>
                     @endforeach
@@ -109,8 +109,8 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label" for="workgroup">Workgroup Combination</label>
-                  <select name="workgroup" id="workgroup" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Select Workgroup Combination">
+                  <label class="control-label" for="workgroup">{{ __('workgroupcombination.workcomb') }}</label>
+                  <select name="workgroup" id="workgroup" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{ __('general.chs') }} {{ __('workgroupcombination.workcomb') }}">
                     @foreach ($workgroups as $workgroup)
                     <option value="{{ $workgroup->id }}">{{ $workgroup->name }}</option>
                     @endforeach
@@ -119,14 +119,14 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label" for="overtime">Overtime</label>
-                  <input type="text" class="form-control" id="overtime" placeholder="Overtime" name="overtime">
+                  <label class="control-label" for="overtime">{{ __('attendanceapproval.overtime') }}</label>
+                  <input type="text" class="form-control" id="overtime" placeholder="{{ __('attendanceapproval.overtime') }}" name="overtime">
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label" for="shift_workingtime">Shift</label>
-                  <select name="shift_workingtime" id="shift_workingtime" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Select Shift">
+                  <select name="shift_workingtime" id="shift_workingtime" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{ __('general.chs') }} Shift">
                     @foreach ($workingtimes as $workingtime)
                     <option value="{{ $workingtime->id }}">{{ $workingtime->description }}</option>
                     @endforeach
@@ -150,19 +150,19 @@
               <thead>
                 <tr>
                   <th width="10">No</th>
-                  <th width="50">Date</th>
-                  <th width="50">Scheme</th>
-                  <th width="50">Department<br>Position</th>
-                  <th width="50">Workgroup</th>
-                  <th width="100">Employee</th>
-                  <th width="50">Working Shift</th>
+                  <th width="50">{{ __('general.date') }}</th>
+                  <th width="50">{{ __('attendanceapproval.scheme') }}</th>
+                  <th width="50">{{ __('department.dep') }}<br>{{ __('position.pos') }}</th>
+                  <th width="50">{{ __('workgroup.workgrp') }}</th>
+                  <th width="100">{{ __('employee.employ') }}</th>
+                  <th width="50">{{ __('attendanceapproval.workshif') }}</th>
                   <th width="10">Check In</th>
                   <th width="10">Check Out</th>
                   <th width="10">Summary</th>
                   <th width="50">Status</th>
                   <th width="10" class="text-center"><input type="checkbox" name="check_all" id="check_all">
                   </th>
-                  <th width="10">Action</th>
+                  <th width="10">{{ __('general.act') }}</th>
                 </tr>
               </thead>
             </table>
@@ -178,7 +178,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Change Overtime Scheme</h4>
+          <h4 class="modal-title">{{ __('general.edt') }} {{ __('overtimescheme.otschem') }}</h4>
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         </div>
         <div class="modal-body">
@@ -188,8 +188,8 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
-                  <label class="control-label" for="scheme">Overtime Scheme</label>
-                  <input type="text" class="form-control" name="scheme" id="scheme" placeholder="Overtime Scheme">
+                  <label class="control-label" for="scheme">{{ __('overtimescheme.otschem') }}</label>
+                  <input type="text" class="form-control" name="scheme" id="scheme" placeholder="{{ __('overtimescheme.otschem') }}">
                 </div>
               </div>
             </div>
@@ -205,7 +205,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Change Working Shift</h4>
+          <h4 class="modal-title">{{ __('general.edt') }} {{ __('attendanceapproval.workshif') }}</h4>
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         </div>
         <div class="modal-body">
@@ -215,15 +215,15 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
-                  <label class="control-label" for="working_shift">Working Shift</label>
-                  <input type="text" class="form-control" name="working_shift" id="working_shift" placeholder="Working Shift">
+                  <label class="control-label" for="working_shift">{{ __('attendanceapproval.workshif') }}</label>
+                  <input type="text" class="form-control" name="working_shift" id="working_shift" placeholder="{{ __('attendanceapproval.workshif') }}">
                 </div>
               </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button form="form-shift" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i class="fa fa-save"></i></button>
+          <button form="form-shift" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
         </div>
       </div>
     </div>
@@ -286,7 +286,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Adjust Working Time & Over Time</h4>
+          <h4 class="modal-title">{{ __('general.edt') }} {{ __('attendanceapproved.worktime') }} & {{ __('attendanceapproval.overtime') }}</h4>
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         </div>
         <div class="modal-body">
@@ -296,21 +296,21 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
-                  <label class="control-label" for="working_time">Working Time</label>
-                  <input type="number" class="form-control" name="working_time" id="working_time" placeholder="Working Time" value="0">
+                  <label class="control-label" for="working_time">{{ __('attendanceapproved.worktime') }}</label>
+                  <input type="number" class="form-control" name="working_time" id="working_time" placeholder="{{ __('attendanceapproved.worktime') }}" value="0">
                 </div>
               </div>
               <div class="col-md-12">
                 <div class="form-group">
-                  <label class="control-label" for="over_time">Over Time</label>
-                  <input type="number" class="form-control" name="over_time" id="over_time" placeholder="Over Time" value="0">
+                  <label class="control-label" for="over_time">{{ __('attendanceapproval.overtime') }}</label>
+                  <input type="number" class="form-control" name="over_time" id="over_time" placeholder="{{ __('attendanceapproval.overtime') }}" value="0">
                 </div>
               </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button form="form-worktime" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i class="fa fa-save"></i></button>
+          <button form="form-worktime" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
         </div>
       </div>
     </div>
@@ -517,6 +517,9 @@
       lengthChange:true,
       responsive: true,
       order: [[ 1, "asc" ]],
+      language: {
+        url: language_choosen == 'id' ? urlLocaleId : '',
+      },
       lengthMenu: [ 100, 250, 500, 1000, 2000 ],
       ajax: {
           url: "{{route('attendanceapproval.read')}}",
