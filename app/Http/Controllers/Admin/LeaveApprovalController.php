@@ -283,7 +283,7 @@ class LeaveApprovalController extends Controller
                             }
                             $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $employee->id)
                             ->where('month', $month)->where('year', $year)->whereIn('allowance_id', $allowance_id)->first();
-                            dd($employeeAllowance);
+                            dd($allowance_id);
                             $deletePenalty = AlphaPenalty::where('employee_id', $leave->employee_id)->where('date', $log->date)->first();
                             if ($deletePenalty) {
                                 $deletePenalty->delete();
