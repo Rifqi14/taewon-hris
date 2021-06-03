@@ -1027,7 +1027,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-            if ($employee->department->driver == 'yes' !== false && $driverallowance > 0) {
+            if ($employee->department->driver == 'yes' && $driverallowance > 0) {
               $spsi = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
@@ -1428,7 +1428,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-            if ($employee->department->driver == 'yes' !== false && $driverallowance > 0) {
+            if ($employee->department->driver == 'yes' && $driverallowance > 0) {
               $spsi = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
@@ -1829,7 +1829,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-            if ($employee->department->driver == 'yes' !== false && $driverallowance > 0) {
+            if ($employee->department->driver == 'yes' && $driverallowance > 0) {
               $spsi = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
@@ -2284,7 +2284,7 @@ class SalaryReportController extends Controller
               ]);
 
             }
-            if ($employee->department->driver == 'yes' !== false && $driverallowance > 0) {
+            if ($employee->department->driver == 'yes' && $driverallowance > 0) {
               $spsi = SalaryReportDetail::create([
                 'salary_report_id'  => $id,
                 'employee_id'       => $view_employee,
