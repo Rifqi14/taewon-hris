@@ -1134,7 +1134,13 @@ class AttendanceController extends Controller
                                 $update->workingtime_id = null;
                                 $update->overtime_scheme_id = null;
                                 $update->save();
-
+                                $outs = AttendanceLog::whereBetween('attendance_date', [$date_start, $date_out])->where('employee_id', '=', $update->employee_id)->where('type', '=', 0)->get();
+                                if ($outs->count() > 0) {
+                                    foreach ($outs as $key => $value) {
+                                        $value->attendance_id = $in_between->attendance_id;
+                                        $value->save();
+                                    }
+                                } 
                                 $update = Attendance::find($in_between->attendance_id);
                             }
                         } 
