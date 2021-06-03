@@ -86,4 +86,5 @@ return [
     'oct'         => 'Oktober',
     'nov'         => 'November',
     'dec'         => 'Desember',
+    'period'      => 'Period',
 ];
