@@ -503,7 +503,7 @@ class EmployeesController extends Controller
             $string = '';
             $uniqdepartments = [];
             foreach($departments as $department){
-                if(in_array($department,$uniqdepartments)){
+                if(!in_array($department,$uniqdepartments)){
                     $uniqdepartments[] = $department;
                 }
             }
