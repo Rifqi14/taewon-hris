@@ -340,6 +340,8 @@ if (!function_exists('getBreaktimeWorkingtime')) {
 if (!function_exists('calculateOvertime')) {
   function calculateOvertime($attendance)
   {
+    $overtime = Overtime::where('date', $attendance->attendance_date)->where('employee_id', $attendance->employee_id);
+    $overtime->delete();
     if ($attendance && $attendance->adj_over_time > 0) {
       $readConfigs = Config::where('option', 'cut_off')->first();
       $cut_off = $readConfigs->value;
@@ -352,8 +354,6 @@ if (!function_exists('calculateOvertime')) {
         $month =  date('m', strtotime($attendance->attendance_date));
         $year =  date('Y', strtotime($attendance->attendance_date));
       }
-      $overtime = Overtime::where('date', $attendance->attendance_date)->where('employee_id', $attendance->employee_id);
-      $overtime->delete();
       $rules = OvertimeSchemeList::select('hour', 'amount')->where('overtime_scheme_id', '=', $attendance->overtime_scheme_id)->groupBy('hour','amount')->get();
        if ($rules) {
         $i = 0;
