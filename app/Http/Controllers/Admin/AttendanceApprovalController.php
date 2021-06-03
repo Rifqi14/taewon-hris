@@ -1713,6 +1713,8 @@ class AttendanceApprovalController extends Controller
             }
             $employee = Employee::find($attendance->employee_id);
             $overtime_scheme = OvertimeScheme::find($request->scheme);
+            $overtime = Overtime::where('date', $attendance->attendance_date)->where('employee_id', $attendance->employee_id);
+                        $overtime->delete();
             $rules = OvertimeSchemeList::select('hour', 'amount')->where('overtime_scheme_id', '=', $request->scheme)->groupBy('hour','amount')->get();
             // $rules = OvertimeSchemeList::select('hour', 'amount')->where('overtime_scheme_id', '=', $request->scheme)->groupBy('hour','amount')->orderBy('hour','asc')->get();
             // Log History scheme
