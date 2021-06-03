@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Salary Report')
+@section('title',__('salaryreport.reportsl'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -9,8 +9,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('salaryreport.index')}}">Salary Report</a></li>
-<li class="breadcrumb-item active">Detail Report</li>
+<li class="breadcrumb-item active"><a href="{{route('salaryreport.index')}}">{{__('salaryreport.reportsl')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.dtl')}}</li>
 @endpush
 
 
@@ -21,7 +21,7 @@
       <div class="col-lg-8">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header">
-            <h3 class="card-title">Employee Data</h3>
+            <h3 class="card-title">{{__('employee.empdata')}}</h3>
           </div>
           <div class="card-body">
             <div class="row">
@@ -29,42 +29,42 @@
               <input type="hidden" name="employee_id" value="{{ $salary_detail->employee_id }}">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Employee Name</label>
-                  <input type="text" class="form-control" placeholder="Employee Name" value="{{ $salary_detail->employee->name }}" readonly>
+                  <label>{{__('employee.empname')}}</label>
+                  <input type="text" class="form-control" placeholder="{{__('employee.empname')}}" value="{{ $salary_detail->employee->name }}" readonly>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>NIK Bosung</label>
-                  <input type="text" class="form-control" placeholder="NIK Bosung" value="{{ @$salary_detail->employee->nid }}" readonly>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <label>Position</label>
-                  <input type="text" class="form-control" data-placeholder="Position" value="{{ @$employee->title->name }}" readonly>
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <label>Department</label>
-                  <input type="text" class="form-control" data-placeholder="Department" value="{{ @$employee->department->name }}" readonly>
+                  <label>NIK Taewon</label>
+                  <input type="text" class="form-control" placeholder="NIK Taewon" value="{{ @$salary_detail->employee->nid }}" readonly>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Workgroup Combination</label>
-                  <input type="text" class="form-control" data-placeholder="Workgroup Combination" value="{{ @$employee->workgroup->name }}" readonly>
+                  <label>{{__('employee.position')}}</label>
+                  <input type="text" class="form-control" data-placeholder="{{__('employee.position')}}" value="{{ @$employee->title->name }}" readonly>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Salary Type</label>
-                  <input type="text" class="form-control" data-placeholder="Salary Type" value="{{ @$salary_detail->salary_type }}" readonly>
+                  <label>{{__('department.dep')}}</label>
+                  <input type="text" class="form-control" data-placeholder="{{__('department.dep')}}" value="{{ @$employee->department->name }}" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>{{__('employee.workcomb')}}</label>
+                  <input type="text" class="form-control" data-placeholder="{{__('employee.workcomb')}}" value="{{ @$employee->workgroup->name }}" readonly>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>{{__('salaryreport.sltype')}}</label>
+                  <input type="text" class="form-control" data-placeholder="{{__('employee.sltype')}}" value="{{ @$salary_detail->salary_type }}" readonly>
                 </div>
               </div>
             </div>
@@ -77,23 +77,23 @@
       <div class="col-lg-4">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header">
-            <h3 class="card-title">Other</h3>
+            <h3 class="card-title">{{__('general.other')}}</h3>
           </div>
           <div class="card-body">
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <label>Period</label>
-                  <input type="text" class="form-control" data-placeholder="Period" value="{{ changeDateFormat('F - Y', $salary_detail->period) }}" readonly>
+                  <label>{{__('general.period')}}</label>
+                  <input type="text" class="form-control" data-placeholder="{{__('general.period')}}" value="{{ changeDateFormat('F - Y', $salary_detail->period) }}" readonly>
                 </div>
               </div>
               <div class="col-sm-12">
                 <div class="form-group">
                   <label>Status</label>
                   <input type="text" name="status" data-status="{{ $salary_detail->status }}" class="form-control" data-placeholder="Status" @if ($salary_detail->status < 0) value="Draft" @elseif ($salary_detail->status == 0)
-                    value="Waiting Approval"
+                    value="{{__('general.wait_approve')}}"
                     @else
-                    value="Approved"
+                    value="{{__('general.approved')}}"
                     @endif readonly>
                 </div>
               </div>
@@ -110,7 +110,7 @@
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <div class="card-header">
-        <h3 class="card-title">Gross Salary</h3>
+        <h3 class="card-title">{{__('salaryreport.gross')}}</h3>
         @if ($salary_detail->status != 1)
         <div class="pull-right card-tools">
           <a class="btn btn-{{ config('configs.app_theme') }} add_gross"><i class="fa fa-plus"></i></a>
@@ -122,7 +122,7 @@
           <thead>
             <tr>
               <th width="10">No</th>
-              <th width="600">Description</th>
+              <th width="600">{{__('general.desc')}}</th>
               <th width="200">Total</th>
             </tr>
           </thead>
@@ -142,7 +142,7 @@
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <div class="card-header">
-        <h3 class="card-title">Deduction</h3>
+        <h3 class="card-title">{{__('salaryreport.deduct')}}</h3>
         @if ($salary_detail->status != 1)
         <div class="pull-right card-tools">
           <a class="btn btn-{{ config('configs.app_theme') }} add_deduction"><i class="fa fa-plus"></i></a>
@@ -154,17 +154,17 @@
           <thead>
             <tr>
               <th width="10">No</th>
-              <th width="600">Description</th>
+              <th width="600">{{__('general.desc')}}</th>
               <th width="200">Total</th>
             </tr>
           </thead>
           <tfoot>
             <tr>
-              <th colspan="2" class="text-right"><b>Total Potongan</b></th>
+              <th colspan="2" class="text-right"><b>{{__('salaryreport.deduct')}}</b></th>
               <th id="deduction" data-deduction=""></th>
             </tr>
             <tr class="text-right">
-              <th colspan="2"><b>Net Salary</b></th>
+              <th colspan="2"><b>{{__('salaryreport.net')}}</b></th>
               <th id="net" data-net=""></th>
             </tr>
           </tfoot>
@@ -188,7 +188,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Add Deduction</h4>
+        <h4 class="modal-title">{{__('general.add')}} {{__('salaryreport.deduct')}}</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -202,8 +202,8 @@
             <input type="hidden" name="add_status">
             <div class="col-md-12">
               <div class="form-group">
-                <label for="description" class="control-label">Description</label>
-                <input type="text" class="form-control" id="description" name="description" placeholder="Description" required>
+                <label for="description" class="control-label">{{__('general.desc')}}</label>
+                <input type="text" class="form-control" id="description" name="description" placeholder="{{__('general.desc')}}" required>
               </div>
               <div class="form-group">
                 <label for="total" class="control-label">Total</label>

@@ -6,4 +6,6 @@ return[
     'print'    => 'Print',
     'gross'    => 'Gross Salary',
     'net'      => 'Net Salary',
+    'desc'     => 'Description',
+    'deduct'   => 'Deduction',
 ];

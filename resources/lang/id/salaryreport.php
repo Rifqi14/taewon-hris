@@ -7,5 +7,6 @@ return [
     'gross'    => 'Gaji Kotor',
     'net'      => 'Gaji Bersih',
     'desc'     => 'Deskripsi',
-    'deduct'   => 'Pengurang',
+    'deduct'   => 'Pengurangan',
+
 ];

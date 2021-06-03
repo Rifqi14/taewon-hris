@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Overtime Report')
+@section('title',__('overtimereport.otreport'))
 @section('stylesheets')
 <link rel="stylesheet" href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
@@ -19,7 +19,7 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Overtime Report</li>
+<li class="breadcrumb-item active">{{__('overtimereport.otreport')}}</li>
 @endpush
 
 @section('content')
@@ -28,10 +28,10 @@
 		<div class="col-lg-12">
 			<div class="card card-{{ config('configs.app_theme') }} card-outline">
 				<div class="card-header">
-					<h3 class="card-title">Overtime Report</h3>
+					<h3 class="card-title">{{__('overtimereport.otreport')}}</h3>
 					<div class="pull-right card-tools">
-						<a href="#" onclick="export1()" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="Export Overtime Report"><i class="fa fa-download"></i> Overtime Report</a>
-						<a href="#" onclick="export2()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="Export Overtime Report+Nominal"><i class="fa fa-download"></i> Overtime Report + Nominal</a>
+						<a href="#" onclick="export1()" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="{{__('general.exp')}} {{__('overtimereport.otreport')}}"><i class="fa fa-download"></i> {{__('overtimereport.otreport')}}</a>
+						<a href="#" onclick="export2()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="{{__('general.exp')}} {{__('overtimereport.otreport')}}+{{__('general.nom')}}"><i class="fa fa-download"></i> {{__('overtimereport.otreport')}} + {{__('general.nom')}}</a>
 					</div>
 				</div>
 				<div class="card-body">
@@ -40,8 +40,8 @@
 						<div class="row">
 							<div class="col-md-4">
 								<div class="form-group">
-									<label for="employee_id" class="control-label">Employee Name</label>
-									<input type="text" name="employee_name" id="employee_name" class="form-control filter" placeholder="Employee Name">
+									<label for="employee_id" class="control-label">{{__('employee.empname')}}</label>
+									<input type="text" name="employee_name" id="employee_name" class="form-control filter" placeholder="{{__('employee.empname')}}">
 								</div>
 								<div id="employee-container"></div>
 							</div>
@@ -51,37 +51,54 @@
 							</div>
 							<div class="col-md-4">
 								<div class="form-group">
-									<label for="workgroup_id" class="control-label">Workgroup Combination</label>
-									<input type="text" name="workgroup_id" id="workgroup_id" class="form-control filter" placeholder="Workgroup Combination">
+									<label for="workgroup_id" class="control-label">{{__('employee.workcomb')}}</label>
+									<input type="text" name="workgroup_id" id="workgroup_id" class="form-control filter" placeholder="{{__('employee.workcomb')}}">
 								</div>
 							</div>
 							<div class="col-md-4">
 								<div class="form-group">
-									<label for="department_id" class="control-label">Department</label>
-									<input type="text" name="department_id" id="department_id" class="form-control filter" placeholder="Department">
+									<label for="department_id" class="control-label">{{__('department.dep')}}</label>
+									<input type="text" name="department_id" id="department_id" class="form-control filter" placeholder="{{__('department.dep')}}">
 								</div>
 							</div>
 							<div class="col-md-4">
 								<div class="form-group">
-									<label for="position_id" class="control-label">Position</label>
-									<input type="text" name="position_id" id="position_id" class="form-control filter" placeholder="Position">
+									<label for="position_id" class="control-label">{{__('employee.position')}}</label>
+									<input type="text" name="position_id" id="position_id" class="form-control filter" placeholder="{{__('employee.position')}}">
 								</div>
 							</div>
 							<div class="col-md-2">
-								<label for="month" class="control-label">Bulan</label>
-								<select class="form-control select2 filter" id="month" name="month" placeholder="Bulan">
-									<option value=""></option>
-									@php
-									$months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-									@endphp
-									@foreach ($months as $key => $month)
-									<option value="{{ ++$key }}" @if ($key==date('m')) selected @endif>{{ $month }}</option>
-									@endforeach
+								<label for="month" class="control-label">{{__('general.month')}}</label>
+								<select class="form-control select2 filter" id="month" name="month" placeholder="{{__('general.month')}}">
+									<option value="01" @if (date('m', time())=="01" ) selected @endif>
+										{{__('general.jan')}}</option>
+									<option value="02" @if (date('m', time())=="02" ) selected @endif>
+										{{__('general.feb')}}</option>
+									<option value="03" @if (date('m', time())=="03" ) selected @endif>
+										{{__('general.march')}}</option>
+									<option value="04" @if (date('m', time())=="04" ) selected @endif>
+										{{__('general.apr')}}</option>
+									<option value="05" @if (date('m', time())=="05" ) selected @endif>
+										{{__('general.may')}}</option>
+									<option value="06" @if (date('m', time())=="06" ) selected @endif>
+										{{__('general.jun')}}</option>
+									<option value="07" @if (date('m', time())=="07" ) selected @endif>
+										{{__('general.jul')}}</option>
+									<option value="08" @if (date('m', time())=="08" ) selected @endif>
+										{{__('general.aug')}}</option>
+									<option value="09" @if (date('m', time())=="09" ) selected @endif>
+										{{__('general.sep')}}</option>
+									<option value="10" @if (date('m', time())=="10" ) selected @endif>
+										{{__('general.oct')}}</option>
+									<option value="11" @if (date('m', time())=="11" ) selected @endif>
+										{{__('general.nov')}}</option>
+									<option value="12" @if (date('m', time())=="12" ) selected @endif>
+										{{__('general.dec')}}</option>
 								</select>
 							</div>
 							<div class="col-md-2">
-								<label for="year" class="control-label">Tahun</label>
-								<select class="form-control select2 filter" id="year" name="year" placeholder="Tahun">
+								<label for="year" class="control-label">{{__('general.year')}}</label>
+								<select class="form-control select2 filter" id="year" name="year" placeholder="{{__('general.year')}}">
 									<option value=""></option>
 									@php
 									$thn_skr = date('Y');
@@ -98,13 +115,13 @@
 						<thead>
 							<tr>
 								<th width="10">#</th>
-								<th width="200">Employee Name</th>
-								<th width="100">Workgroup</th>
-								<th width="100">Department</th>
-								<th width="100">Position</th>
-								<th width="50">Date</th>
-								<th width="50">Hour</th>
-								<th width="100">Amount</th>
+								<th width="200">{{__('employee.empname')}}</th>
+								<th width="100">{{__('workgroup.workgrp')}}</th>
+								<th width="100">{{__('department.dep')}}</th>
+								<th width="100">{{__('employee.position')}}</th>
+								<th width="50">{{__('general.date')}}</th>
+								<th width="50">{{__('general.hour')}}</th>
+								<th width="100">{{__('employee.amount')}}</th>
 							</tr>
 						</thead>
 					</table>
