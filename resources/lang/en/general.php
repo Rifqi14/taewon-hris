@@ -89,4 +89,7 @@ return [
     'nov'         => 'November',
     'dec'         => 'December',
     'period'      => 'Periode',
+    'history'     => 'History',
+    'no_phone'    => 'Phone Number',
+    'expired'     => 'Kadaluarsa',
 ];

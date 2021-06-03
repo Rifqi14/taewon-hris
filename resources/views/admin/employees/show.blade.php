@@ -1,20 +1,20 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Detail Employee')
+@section('title',__('employee.employ'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 
 @endsection
 @push('breadcrump')
-    <li class="breadcrumb-item"><a href="{{route('employees.index')}}">Employee</a></li>
-    <li class="breadcrumb-item active">Detail</li>
+    <li class="breadcrumb-item"><a href="{{route('employees.index')}}">{{__('employee.employ')}}</a></li>
+    <li class="breadcrumb-item active">{{__('general.dtl')}}</li>
 @endpush
 @section('content')
 <div class="row">
     <div class="col-lg-4">
         <div class="card card-{{config('configs.app_theme')}} card-outline">
             <div class="card-header">
-                <h3 class="card-title">Detail Employee</h3>
+                <h3 class="card-title">{{__('general.dtl')}} {{__('employee.employ')}}</h3>
                 <div class="pull-right card-tools">
                     <a class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" href="{{url('admin/employees')}}/{{ $employee->id}}/edit"><i class="fas fa-pencil-alt"></i></a>
                 </div>
@@ -25,19 +25,19 @@
                 <p class="text-muted text-center">{{$employee->nid}}</p>
                 <ul class="list-group list-group-unbordered">
                     <li class="list-group-item d-flex">
-                        <b class="mr-auto">Gender</b> <span class="pull-right">{{$employee->gender}}</span>
+                        <b class="mr-auto">{{__('employee.gender')}}</b> <span class="pull-right">{{$employee->gender}}</span>
                     </li>
                     <li class="list-group-item d-flex">
                         <b class="mr-auto">Email</b> <span class="pull-right">{{$employee->email}}</span>
                     </li>
                     <li class="list-group-item d-flex">
-                        <b class="mr-auto">Phone Number</b> <span class="pull-right">{{$employee->phone}}</span>
+                        <b class="mr-auto">{{__('employee.nophone')}}</b> <span class="pull-right">{{$employee->phone}}</span>
                     </li>
                     <li class="list-group-item d-flex">
-                        <b class="mr-auto">Birthday</b> <span class="pull-right">{{$employee->birth_date}}</span>
+                        <b class="mr-auto">{{__('employee.birthday')}}</b> <span class="pull-right">{{$employee->birth_date}}</span>
                     </li>
                     <li class="list-group-item d-flex">
-                        <b class="mr-auto">End Contract Date</b> <span class="pull-right">{{$employee->resign_date}}</span>
+                        <b class="mr-auto">{{__('employee.end_contract')}}</b> <span class="pull-right">{{$employee->resign_date}}</span>
                     </li>
                 </ul>
             </div>
@@ -50,10 +50,10 @@
         <div class="card card-{{config('configs.app_theme')}} card-outline card-outline-tabs">
             <div class="card-header p-0 border-bottom-0">
                 <ul class="nav nav-tabs">
-                    <li class="nav-item"><a class="nav-link active" href="#salary" data-toggle="tab">History Salary</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#leave" data-toggle="tab">History Leave</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contract" data-toggle="tab">History Contract</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#attendance" data-toggle="tab">History Attendance Log</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#salary" data-toggle="tab">{{__('general.history')}} {{__('employee.salary')}}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#leave" data-toggle="tab">{{__('general.history')}} {{__('employee.leave')}}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contract" data-toggle="tab">{{__('general.history')}} {{__('employee.contract')}}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#attendance" data-toggle="tab">{{__('general.history')}} {{__('attendancelog.attenlog')}}</a></li>
                 </ul>
             </div>
             <div class="tab-content">
@@ -68,9 +68,9 @@
                                 <thead>
                                     <tr>
                                         <th style="text-align:center" width="10">#</th>
-                                        <th width="200">Amount</th>
-                                        <th width="150">Description</th>
-                                        <th width="150">Month</th>
+                                        <th width="200">{{__('employee.amount')}}</th>
+                                        <th width="150">{{__('general.desc')}}</th>
+                                        <th width="150">{{__('general.month')}}</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -86,11 +86,11 @@
                             <thead>
                                 <tr>
                                     <th style="text-align:center" width="10">#</th>
-                                    <th width="150">Range Date</th>
-                                    <th width="100">Duration</th>
-                                    <th width="150">Leave Name</th>
+                                    <th width="150">{{__('employee.range_date')}}</th>
+                                    <th width="100">{{__('employee.duration')}}</th>
+                                    <th width="150">{{__('leavesetting.leavename')}}</th>
                                     <th width="150">Status</th>
-                                    <th width="100">Action</th>
+                                    <th width="100">{{__('general.act')}}</th>
                                 </tr>
                             </thead>
                         </table>
@@ -102,9 +102,9 @@
                             <thead>
                                 <tr>
                                     <th style="text-align:center" width="10">No</th>
-                                    <th width="100">Contract</th>
-                                    <th width="100">Period</th>
-                                    <th width="200">Description</th>
+                                    <th width="100">{{__('employee.contract')}}</th>
+                                    <th width="100">{{__('employee.period')}}</th>
+                                    <th width="200">{{__('general.desc')}}</th>
                                     <th width="50">Status</th>
                                 </tr>
                             </thead>
@@ -116,21 +116,21 @@
                 <div class="tab-pane" id="attendance">
                     <div class="card-body">
                         <div class="form-group row">
-                            <label for="period" class="col-sm-2 col-md-1 form-label">Period</label>
+                            <label for="period" class="col-sm-2 col-md-1 form-label">{{__('employee.period')}}</label>
                             <div class="col-sm-5 col-md-2">
                                 <select class="form-control select2" name="month" id="month">
-                                    <option value="01" @if (date('m', time())=="01" ) selected @endif>January</option>
-                                    <option value="02" @if (date('m', time())=="02" ) selected @endif>February</option>
-                                    <option value="03" @if (date('m', time())=="03" ) selected @endif>Maret</option>
-                                    <option value="04" @if (date('m', time())=="04" ) selected @endif>April</option>
-                                    <option value="05" @if (date('m', time())=="05" ) selected @endif>Mei</option>
-                                    <option value="06" @if (date('m', time())=="06" ) selected @endif>Juni</option>
-                                    <option value="07" @if (date('m', time())=="07" ) selected @endif>July</option>
-                                    <option value="08" @if (date('m', time())=="08" ) selected @endif>Agustus</option>
-                                    <option value="09" @if (date('m', time())=="09" ) selected @endif>September</option>
-                                    <option value="10" @if (date('m', time())=="10" ) selected @endif>Oktober</option>
-                                    <option value="11" @if (date('m', time())=="11" ) selected @endif>November</option>
-                                    <option value="12" @if (date('m', time())=="12" ) selected @endif>Desember</option>
+                                    <option value="01" @if (date('m', time())=="01" ) selected @endif>{{__('general.jan')}}</option>
+                                    <option value="02" @if (date('m', time())=="02" ) selected @endif>{{__('general.feb')}}</option>
+                                    <option value="03" @if (date('m', time())=="03" ) selected @endif>{{__('general.march')}}</option>
+                                    <option value="04" @if (date('m', time())=="04" ) selected @endif>{{__('general.apr')}}</option>
+                                    <option value="05" @if (date('m', time())=="05" ) selected @endif>{{__('general.may')}}</option>
+                                    <option value="06" @if (date('m', time())=="06" ) selected @endif>{{__('general.jun')}}</option>
+                                    <option value="07" @if (date('m', time())=="07" ) selected @endif>{{__('general.jul')}}</option>
+                                    <option value="08" @if (date('m', time())=="08" ) selected @endif>{{__('general.aug')}}</option>
+                                    <option value="09" @if (date('m', time())=="09" ) selected @endif>{{__('general.sep')}}</option>
+                                    <option value="10" @if (date('m', time())=="10" ) selected @endif>{{__('general.oct')}}</option>
+                                    <option value="11" @if (date('m', time())=="11" ) selected @endif>{{__('general.nov')}}</option>
+                                    <option value="12" @if (date('m', time())=="12" ) selected @endif>{{__('general.dec')}}</option>
                                 </select>
                             </div>
                             <div class="col-sm-5 col-md-2">
@@ -148,11 +148,11 @@
                             <thead>
                                 <tr>
                                     <th width="10">No</th>
-                                    <th width="50">Date</th>
-                                    <th width="50">Working Shift</th>
-                                    <th width="10">Check In</th>
-                                    <th width="10">Check Out</th>
-                                    <th width="10">Summary</th>
+                                    <th width="50">{{__('general.date')}}</th>
+                                    <th width="50">{{__('employee.workshift')}}</th>
+                                    <th width="10">{{__('employee.check_in')}}</th>
+                                    <th width="10">{{__('employee.check_out')}}</th>
+                                    <th width="10">{{__('employee.summary')}}</th>
                                     <th width="50">Status</th>
                                 </tr>
                             </thead>
@@ -201,6 +201,14 @@
       lengthChange:false,
       responsive: true,
       order: [[ 1, "asc" ]],
+      language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
       lengthMenu: [ 100, 250, 500, 1000, 2000 ],
       pageLength: 1000,
       ajax: {
@@ -257,9 +265,9 @@
           },
           { render: function ( data, type, row ) {
             if (row.status == 0) {
-              return '<span class="badge badge-warning">Waiting Approval</span>'
+              return '<span class="badge badge-warning">{{__('general.wait_approve')}}</span>'
             } else {
-              return '<span class="badge badge-success">Already Approval</span>'
+              return '<span class="badge badge-success">{{__('general.approved')}}</span>'
             }
           },targets: [6]
           },
@@ -291,6 +299,14 @@
 		lengthChange:true,
 		responsive: true,
 		order: [[ 4, "asc" ]],
+        language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
 		ajax: {
 			url: "{{route('employeecontract.read')}}",
 			type: "GET",
@@ -315,12 +331,12 @@
 			{
 				render: function (data, type, row) {
 					if (row.status == 'Active') {
-						return `<span class="badge badge-success">Active</span>`
+						return `<span class="badge badge-success">{{__('general.actv')}}</span>`
 					} else if(row.status == 'Non Active')
 					{
-						return `<span class="badge badge-info">Non Active</span>`
+						return `<span class="badge badge-info">{{__('general.noactv')}}</span>`
 					}else{
-						return `<span class="badge badge-danger">Expired</span>`
+						return `<span class="badge badge-danger">{{__('general.expired')}}</span>`
 					}
 				},
 				targets: [4]
@@ -344,6 +360,14 @@
 		lengthChange:false,
 		responsive: true,
 		order: [[ 1, "desc" ]],
+        language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
 		ajax: {
 			url: "{{ route('salaryemployee.read') }}",
 			type: "GET",
@@ -377,6 +401,14 @@
 		lengthChange:true,
 		responsive: true,
 		order: [[ 1, "asc" ]],
+        language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
 		ajax: {
 			url: "{{ route('employees.showleave') }}",
 			type: "GET",
@@ -400,11 +432,11 @@
                 if (row.status == -1) {
                     return `<span class="badge badge-secondary">Draft</span>`;
                 } else if (row.status == 0) {
-                    return `<span class="badge badge-warning">Waiting Approval</span>`;
+                    return `<span class="badge badge-warning">{{__('general.wait_approve')}}</span>`;
                 } else if (row.status == 1) {
-                    return `<span class="badge badge-success">Approved</span>`;
+                    return `<span class="badge badge-success">{{__('general.approved')}}</span>`;
                 } else {
-                    return `<span class="badge badge-danger">Reject</span>`;
+                    return `<span class="badge badge-danger">{{__('general.reject')}}</span>`;
                 }
 			}, targets:[4]},
 			{ render: function ( data, type, row ) {
@@ -413,7 +445,7 @@
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a class="dropdown-item editsalary" href="#" data-id="${row.id}"><i class="fas fa-search mr-2"></i> Detail</a></li>
+						<li><a class="dropdown-item editsalary" href="#" data-id="${row.id}"><i class="fas fa-search mr-2"></i> {{__('general.dtl')}}</a></li>
 					</ul>
 					</div>`
 			},targets: [5]
