@@ -145,7 +145,7 @@ class LeaveApprovalController extends Controller
             // dd($request->status == "1");
             $leaveSettingType = LeaveSetting::find($leave->leave_setting_id);
             $employee = Employee::find($leave->employee_id);
-            $penalty_config = PenaltyConfig::leftJoin('penalty_config_leave_settings', 'penalty_config_leave_settings.penalty_config_id', '=','penalty_configs.id')
+            $penalty_config = PenaltyConfig::select('penalty_configs.*')->leftJoin('penalty_config_leave_settings', 'penalty_config_leave_settings.penalty_config_id', '=','penalty_configs.id')
             ->where('penalty_config_leave_settings.leave_setting_id', $leaveSettingType->id)->where('workgroup_id', $employee->workgroup_id)->first();
             if (!$penalty_config) {
                 return response()->json([
@@ -160,7 +160,6 @@ class LeaveApprovalController extends Controller
                     // dd($penalty_config);
                     $allowance_id = [];
                     $penaltyconfigdetails = PenaltyConfigDetail::where('penalty_config_id', $penalty_config->id)->get();
-                    dd($penalty_config);
                     foreach($penaltyconfigdetails as $penaltyconfigdetail){
                         $allowance_id[] = $penaltyconfigdetail->allowance_id;
                     }
@@ -284,7 +283,6 @@ class LeaveApprovalController extends Controller
                             }
                             $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $employee->id)
                             ->where('month', $month)->where('year', $year)->whereIn('allowance_id', $allowance_id)->first();
-                            dd($allowance_id);
                             $deletePenalty = AlphaPenalty::where('employee_id', $leave->employee_id)->where('date', $log->date)->first();
                             if ($deletePenalty) {
                                 $deletePenalty->delete();
