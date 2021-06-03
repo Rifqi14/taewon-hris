@@ -119,6 +119,13 @@ class SalaryReportController extends Controller
     }
     if ($department_ids) {
       $string = '';
+      $uniqdepartments = [];
+      foreach($department_ids as $dept){
+          if(!in_array($dept,$uniqdepartments)){
+              $uniqdepartments[] = $dept;
+          }
+      }
+      $department_ids = $uniqdepartments;
       foreach ($department_ids as $dept) {
         $string .= "departments.path like '%$dept%'";
         if (end($department_ids) != $dept) {
