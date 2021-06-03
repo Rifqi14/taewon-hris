@@ -294,8 +294,10 @@ class LeaveApprovalController extends Controller
                                 $alphaPenalty = AlphaPenalty::create([
                                     'employee_id'       => $leave->employee_id,
                                     'date'              => $log->date,
-                                    'salary'            => $employeeAllowance ? $employeeAllowance->total + $employeeBaseSalary->amount : 0,
-                                    'penalty'           => $employeeAllowance ? ($employeeAllowance->total + $employeeBaseSalary->amount) / 30 : 0,
+                                    //'salary'            => $employeeAllowance ? $employeeAllowance->total + $employeeBaseSalary->amount : 0,
+                                    'salary'            => $employeeAllowance ? 500000 + $employeeBaseSalary->amount : 0,
+                                    //'penalty'           => $employeeAllowance ? ($employeeAllowance->total + $employeeBaseSalary->amount) / 30 : 0,
+                                    'penalty'           => $employeeAllowance ? (500000 + $employeeBaseSalary->amount) / 30 : 0,
                                     'leave_id'          => $id,
                                     'year'              => $year,
                                     'month'             => $month
