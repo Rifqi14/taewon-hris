@@ -40,6 +40,7 @@
           <div class="col-lg-4">
             <label for="date" class="control-label">{{ __('general.date') }}</label>
             <input type="text" name="date" id="date" class="form-control" required>
+            <input type="hidden" name="no" id="no" class="form-control" required value="1">
           </div>
           <div class="col-lg-4">
             <label for="time" class="control-label">{{ __('attendancelog.time') }}</label>
@@ -385,6 +386,7 @@
                 period: $("#date").val(),
                 time: $("#time").val(),
                 attendanceMachine: $("#attendanceMachine").val(),
+                no: $("#no").val(),
               };
               $.ajax({
                 url:"{{route('attendance.sync')}}",
@@ -397,11 +399,12 @@
               }).done(function (response) {
                 if (response.status) {
                   $('.overlay').addClass('d-none');
-                  items = {};
+                  //items = {};
                   $.each(response.data,function () {
                     items[this.index] = this;
                   });
                   table_item.clear().draw();
+                  $('#no').attr('val',response.last);
                   loadItem(table_item);
                 } else {
                   $.gritter.add({

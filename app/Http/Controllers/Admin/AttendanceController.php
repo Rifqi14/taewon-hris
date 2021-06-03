@@ -259,6 +259,7 @@ class AttendanceController extends Controller
             'period'            => 'required',
             'time'              => 'required',
             'attendanceMachine' => 'required',
+            'no' => 'required',
         ]);
         $time       = explode(" - ", $request->time);
         $date1      = changeDateFormat('Y-m-d H:i:s', dbDate($request->period) . ' ' . $time[0]);
@@ -266,7 +267,7 @@ class AttendanceController extends Controller
         $attTransaction     = AttTransaction::whereBetween('att_datetime', [$date1, $date2])->where('device_sn', $request->attendanceMachine)->orderBy('att_datetime', 'asc')->get();
 
         $data       = [];
-        $no = 1;
+        $no = $request->no;
         foreach ($attTransaction as $key => $value) {
             $employee       = Employee::whereRaw("upper(nid) like '%$value->pers_person_pin%'")->first();
             $pointName      = AttendanceMachine::where('device_sn', $request->attendanceMachine)->first();
@@ -289,8 +290,9 @@ class AttendanceController extends Controller
 
         return response()->json([
             'status'    => true,
-            'data'      => $data
-        ], 200);
+            'data'      => $data,
+            'last'      => $no,
+        ], 200);    
     }
 
     public function preview(Request $request)
