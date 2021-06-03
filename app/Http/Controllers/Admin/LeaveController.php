@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 use phpDocumentor\Reflection\Types\This;
 
 class LeaveController extends Controller
@@ -534,6 +535,11 @@ class LeaveController extends Controller
         $leave->duration = $request->total_days;
         $leave->leave_setting_id = $request->leave_type;
         $leave->save();
+        // Log History Leave
+        $employee = Employee::where('id',$request->employee_id)->first();
+        $user_id = Auth::user()->id;
+        $LeaveSettings = LeaveSetting::where('id',$request->leave_type)->first();
+        setrecordloghistory($user_id,$employee->id,$employee->department_id,"Leave Application","Edit",date("Y-m-d")." Leave Type",$LeaveSettings->leave_name);
         if ($request->file('document') != null) {
             $file = $request->file('document');
             $file_name = $id . "_" . time() . "_" . $file->getClientOriginalName();
