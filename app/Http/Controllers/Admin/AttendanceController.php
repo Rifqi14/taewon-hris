@@ -1077,7 +1077,10 @@ class AttendanceController extends Controller
                     $attendance_out = AttendanceLog::where('attendance_id', $update->id)->where('employee_id', $update->employee_id)->where('type', 0)->max('attendance_date');
                 }
                 if ($attendance_in && !$attendance_out) {
-                    if (changeDateFormat('H:i', $attendance_in) > changeDateFormat('H:i', '15:00')) {
+                    /* 
+                        Cros Date
+                    */
+                    //if (changeDateFormat('H:i', $attendance_in) > changeDateFormat('H:i', '15:00')) {
                         $date_in = changeDateFormat('Y-m-d', $attendance_in);
                         $date_max = Carbon::parse($date_in)->endOfDay()->toDateTimeString();
                         $out_between = AttendanceLog::where('employee_id', $update->employee_id)->whereBetween('attendance_date', [$attendance_in, $date_max])->where('type', 0)->max('attendance_date');
@@ -1109,9 +1112,9 @@ class AttendanceController extends Controller
                                 $attendance_out = null;
                             }
                         }
-                    } else {
-                        $attendance_out = AttendanceLog::where('attendance_id', $update->id)->where('employee_id', $update->employee_id)->where('type', 0)->max('attendance_date');
-                    }
+                    // } else {
+                    //     $attendance_out = AttendanceLog::where('attendance_id', $update->id)->where('employee_id', $update->employee_id)->where('type', 0)->max('attendance_date');
+                    // }
                 }
                 $update->attendance_in = $attendance_in ? $attendance_in : null;
                 $update->attendance_out = $attendance_out && $attendance_out > $attendance_in ? $attendance_out : null;
