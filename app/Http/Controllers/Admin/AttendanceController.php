@@ -1125,7 +1125,7 @@ class AttendanceController extends Controller
                     //if (changeDateFormat('H:i', $attendance_in) > changeDateFormat('H:i', '15:00')) {
                         $date_out = changeDateFormat('Y-m-d', $attendance_out);
                         $date_start = date('Y-m-d',strtotime($date_out.'-1 days'));
-                        $in_between = AttendanceLog::where('employee_id', $update->employee_id)->whereBetween('attendance_date', [$date_start, $date_out])->where('type', 1)->orderBy('attendace_date','asc')->first();
+                        $in_between = AttendanceLog::where('employee_id', $update->employee_id)->whereBetween('attendance_date', [$date_start, $date_out])->where('type', 1)->orderBy('attendance_date','asc')->first();
                         if ($in_between) {
                             if($in_between->attendance_id && !$in_between->attendance_out){
                                 $attendance_in = $in_between->attendance_date;
