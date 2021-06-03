@@ -160,7 +160,7 @@ class LeaveApprovalController extends Controller
                     // dd($penalty_config);
                     $allowance_id = [];
                     $penaltyconfigdetails = PenaltyConfigDetail::where('penalty_config_id', $penalty_config->id)->get();
-                    dd($penaltyconfigdetails);
+                    dd($penalty_config);
                     foreach($penaltyconfigdetails as $penaltyconfigdetail){
                         $allowance_id[] = $penaltyconfigdetail->allowance_id;
                     }
