@@ -6,7 +6,10 @@ use App\Models\EmployeeSalary;
 use App\Models\Overtime;
 use App\Models\Config;
 use App\Models\OvertimeSchemeList;
+use App\Models\OvertimeScheme;
+use App\Models\OvertimeAllowance;
 use App\Models\LogHistory;
+use App\Models\SalaryIncreases;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
