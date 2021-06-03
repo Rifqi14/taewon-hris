@@ -355,8 +355,7 @@ if (!function_exists('calculateOvertime')) {
       $overtime = Overtime::where('date', $attendance->attendance_date)->where('employee_id', $attendance->employee_id);
       $overtime->delete();
       $rules = OvertimeSchemeList::select('hour', 'amount')->where('overtime_scheme_id', '=', $attendance->overtime_scheme_id)->groupBy('hour','amount')->get();
-      dd($rules);
-      if ($rules) {
+       if ($rules) {
         $i = 0;
         $overtimes = $attendance->adj_over_time;
         $length = count($rules);
