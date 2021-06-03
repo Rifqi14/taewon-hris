@@ -2,5 +2,6 @@
 return [
     /** Allowance Report*/
     'alwrpt'    => 'Laporan Tunjangan',
-    'total'     => 'Total Tunjangan',
+    'alwrptlist' => 'Daftar Laporan Tunjangan',
+    'alw_total'     => 'Total Tunjangan',
 ];
