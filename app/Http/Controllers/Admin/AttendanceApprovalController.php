@@ -1519,11 +1519,13 @@ class AttendanceApprovalController extends Controller
             $attendance->save();
             $employee = Employee::where('id',$attendance->employee_id)->first();
             if($request->type_action == "approval"){
-                $type_action = "Approval";
+                $type_action = "Attendance Approval";
+            }elseif($request->type_action == "approved"){
+                $type_action = "Attendance Approved";
             }else{
-                $type_action = "Approved";
+                $type_action = "Employee Attendance";
             }
-            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Attendance ".$type_action,"Edit",date("Y-m-d")." Shift",$getworkingtimes->description);
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." Shift",$getworkingtimes->description);
             if (!$attendance) {
                 return response()->json([
                     'status'     => false,
@@ -1543,11 +1545,13 @@ class AttendanceApprovalController extends Controller
                 $employee = Employee::where('id',$attendance->employee_id)->first();
                 $user_id = Auth::user()->id;
                 if($request->type_action == "approval"){
-                    $type_action = "Approval";
+                    $type_action = "Attendance Approval";
+                }elseif($request->type_action == "approved"){
+                    $type_action = "Attendance Approved";
                 }else{
-                    $type_action = "Approved";
+                    $type_action = "Employee Attendance";
                 }
-                setrecordloghistory($user_id,$employee->id,$employee->department_id,"Attendance ".$type_action,"Edit",date("Y-m-d")." Check in",$request->first_in);
+                setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." Check in",$request->first_in);
                 $worktime = WorkingtimeDetail::where('workingtime_id', '=', $attendance->workingtime_id)->where('day', '=', $attendance->day)->first();
                 $new_time = changeDateFormat('Y-m-d', $attendance->attendance_in) . ' ' . $request->first_in;
                 $attendance->attendance_in = changeDateFormat('Y-m-d H:i:s', $request->first_in);
@@ -1621,11 +1625,13 @@ class AttendanceApprovalController extends Controller
                 $employee = Employee::where('id',$attendance->employee_id)->first();
                 $user_id = Auth::user()->id;
                 if($request->type_action == "approval"){
-                    $type_action = "Approval";
+                    $type_action = "Attendance Approval";
+                }elseif($request->type_action == "approved"){
+                    $type_action = "Attendance Approved";
                 }else{
-                    $type_action = "Approved";
+                    $type_action = "Employee Attendance";
                 }
-                setrecordloghistory($user_id,$employee->id,$employee->department_id,"Attendance ".$type_action,"Edit",date("Y-m-d")." Check Out",$request->last_out);
+                setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." Check Out",$request->last_out);
                 $worktime = WorkingtimeDetail::where('workingtime_id', '=', $attendance->workingtime_id)->where('day', '=', $attendance->day)->first();
                 $worktime = WorkingtimeDetail::where('workingtime_id', '=', $attendance->workingtime_id)->where('day', '=', $attendance->day)->first();
                 $attendance->attendance_out = changeDateFormat('Y-m-d H:i:s', $request->last_out);
@@ -1702,14 +1708,16 @@ class AttendanceApprovalController extends Controller
             $employee = Employee::where('id',$attendance->employee_id)->first();
             $user_id = Auth::user()->id;
             if($request->type_action == "approval"){
-                $type_action = "Approval";
+                $type_action = "Attendance Approval";
+            }elseif($request->type_action == "approved"){
+                $type_action = "Attendance Approved";
             }else{
-                $type_action = "Approved";
+                $type_action = "Employee Attendance";
             }
             // Log History WO
-            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Attendance ".$type_action,"Edit",date("Y-m-d")." WT",$request->working_time);
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." WT",$request->working_time);
             // Log History OT
-            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Attendance ".$type_action,"Edit",date("Y-m-d")." OT",$request->over_time);
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." OT",$request->over_time);
             if (!$attendance) {
                 return response()->json([
                     'status'     => false,
@@ -1748,11 +1756,13 @@ class AttendanceApprovalController extends Controller
             // Log History scheme
             $user_id = Auth::user()->id;
             if($request->type_action == "approval"){
-                $type_action = "Approval";
+                $type_action = "Attendance Approval";
+            }elseif($request->type_action == "approved"){
+                $type_action = "Attendance Approved";
             }else{
-                $type_action = "Approved";
+                $type_action = "Employee Attendance";
             }
-            setrecordloghistory($user_id,$employee->id,$employee->department_id,"Attendance ".$type_action,"Edit",date("Y-m-d")." Scheme",$overtime_scheme->scheme_name);
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." Scheme",$overtime_scheme->scheme_name);
             if($employee->overtime == 'yes'){
                 $attendance->overtime_scheme_id = $request->scheme;
                 if($request->scheme == 3){
