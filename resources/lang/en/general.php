@@ -73,4 +73,7 @@ return [
     'm'           => 'Male',
     'f'           => 'Female',
     'file'        => 'File',
+    'approved'    => 'Approved',
+    'wait_approve'=> 'Waiting Approval',
+    'reject'      => 'Rejected',
 ];

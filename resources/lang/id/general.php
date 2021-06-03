@@ -71,4 +71,7 @@ return [
     'm'           => 'Laki-Laki',
     'f'           => 'Perempuan',
     'file'        => 'Berkas',
+    'approved'    => 'Disetujui',
+    'wait_approve'=> 'Menunggu Persetujuan',
+    'reject'      => 'Ditolak',
 ];
