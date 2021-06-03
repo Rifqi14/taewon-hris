@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Allowance Increase')
+@section('title',__('allowancemass.alwincr'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -9,8 +9,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('allowanceincrease.index')}}">Allowance Increase</a></li>
-<li class="breadcrumb-item active">Detail</li>
+<li class="breadcrumb-item active"><a href="{{route('allowanceincrease.index')}}">{{__('allowancemass.alwincr')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.dtl')}}</li>
 @endpush
 
 
@@ -21,7 +21,7 @@
                 <div class="col-lg-8">
                     <div class="card card-{{ config('configs.app_theme') }} card-outline">
                         <div class="card-header" style="height:55px;">
-                            <h3 class="card-title">Allowance Increase Data</h3>
+                            <h3 class="card-title">{{__('allowancemass.alwincdata')}}</h3>
                         </div>
                         <div class="card-body">
                             <form id="form" action="{{ route('allowanceincrease.store') }}" method="post" autocomplete="off">
@@ -36,7 +36,7 @@
                                     </div> --}}
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label class="control-label pull-right col-md-2" for="period">Period</label>
+                                            <label class="control-label pull-right col-md-3" for="period">{{__('general.period')}}</label>
                                             <div class="row">
                                                 <div class="col-sm-6">
                                                     <input type="text" value="{{$month}}" class="form-control" readonly>
@@ -52,7 +52,7 @@
                                     <div class="col-sm-6">
                                         <!-- text input -->
                                         <div class="form-group">
-                                            <label>Allowance</label>
+                                            <label>{{__('allowance.alw')}}</label>
                                             <input type="text" class="form-control" readonly value="{{$allowanceincrease->allowance->allowance}}" placeholder="Choose Allowance">
                                         </div>
                                     </div>
@@ -60,14 +60,14 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label>Value</label>
+                                            <label>{{__('general.value')}}</label>
                                             <div class="row">
                                                 <div class="col-sm-6">
                                                 <input type="text" value="{{$allowanceincrease->type_value}}" readonly class="form-control">
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <input type="text" name="value" class="form-control"
-                                                        placeholder="Value" value="{{$allowanceincrease->value}}" readonly>
+                                                        placeholder="{{__('general.value')}}" value="{{$allowanceincrease->value}}" readonly>
                                                 </div>
                                             </div>
                                         </div>
@@ -82,9 +82,9 @@
                 <div class="col-lg-4">
                     <div class="card card-{{ config('configs.app_theme') }} card-outline">
                         <div class="card-header">
-                            <h3 class="card-title">Other</h3>
+                            <h3 class="card-title">{{__('general.other')}}</h3>
                             <div class="pull-right card-tools">
-                                <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+                                <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i
                                         class="fa fa-reply"></i></a>
                             </div>
                         </div>
@@ -92,9 +92,9 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        <label>Notes</label>
+                                        <label>{{__('general.notes')}}</label>
                                         <textarea style="height:110px;" type="text" class="form-control" name="notes"
-                                            placeholder="Notes" value="{{$allowanceincrease->note}}" readonly>{{$allowanceincrease->note}}</textarea>
+                                            placeholder="{{__('general.notes')}}" value="{{$allowanceincrease->note}}" readonly>{{$allowanceincrease->note}}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@
             </div>
             <div class="card card-{{ config('configs.app_theme') }} card-outline">
                 <div class="card-header">
-                    <h3 class="card-title">List Employee</h3>
+                    <h3 class="card-title">{{__('employee.employlist')}}</h3>
                     <div class="pull-right card-tools">
                         <a href="#" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white add_career"
                             data-toggle="tooltip" title="Tambah">
@@ -124,12 +124,12 @@
                                 <thead>
                                     <tr>
                                         <th style="text-align:center" width="10">#</th>
-                                        <th width="250">Employee</th>
-                                        <th width="250">Position</th>
-                                        <th width="100">Current Allowance</th>
-                                        <th width="100">Upcoming Allowance</th>
+                                        <th width="250">{{__('employee.employ')}}</th>
+                                        <th width="250">{{__('employee.position')}}</th>
+                                        <th width="100">{{__('allowancemass.currentalw')}}</th>
+                                        <th width="100">{{__('allowancemass.upcmg')}}</th>
                                         {{-- <th><input type="checkbox" value="" id="deletemassal" autocomplete="off" /></th> --}}
-                                        <th width="100">Action</th>
+                                        <th width="100">{{__('general.act')}}</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -146,7 +146,7 @@
             <div class="modal-content">
                 <div class="overlay-wrapper">
                     <div class="modal-header">
-                        <h4 class="modal-title">Add Employee</h4>
+                        <h4 class="modal-title">{{__('general.add')}} {{__('employee.employ')}}</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -160,7 +160,7 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="employee_name">Employee Name</label>
+                                        <label class="control-label" for="employee_name">{{__('employee.employ')}}</label>
                                         <select name="employee_name[]" id="employee_name" class="form-control select2"
                                             style="width: 100%" aria-hidden="true" multiple>
                                             @foreach ($employees as $employee)
@@ -182,7 +182,7 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="position">Position</label>
+                                        <label class="control-label" for="position">{{__('employee.position')}}</label>
                                         <select name="position[]" id="position" class="form-control select2"
                                             style="width: 100%" aria-hidden="true" multiple >
                                             @foreach ($titles as $position)
@@ -195,7 +195,7 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="department">Department</label>
+                                        <label class="control-label" for="department">{{__('department.dep')}}</label>
                                         <select name="department[]" id="department" class="form-control select2"
                                             style="width: 100%" aria-hidden="true" multiple>
                                             @foreach ($departments as $department)
@@ -208,7 +208,7 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="workgroup">Workgroup Combination</label>
+                                        <label class="control-label" for="workgroup">{{__('employee.workcomb')}}</label>
                                         <select name="workgroup_id[]" id="workgroup_id" class="form-control select2"
                                             style="width: 100%" aria-hidden="true" multiple>
                                             @foreach ($workgroups as $workgroup)
@@ -225,9 +225,9 @@
                                     <thead>
                                         <tr>
                                             <th style="text-align:center" width="10">#</th>
-                                            <th width="250">Employee</th>
-                                            <th width="250">Position</th>
-                                            <th width="200">Current Allowance</th>
+                                            <th width="250">{{__('employee.employ')}}</th>
+                                            <th width="250">{{__('employee.position')}}</th>
+                                            <th width="200">{{__('allowancemass.currentalw')}}</th>
                                             <th><input type="checkbox" value="" id="checkAll" autocomplete="off" />
                                             </th>
                                         </tr>
@@ -369,6 +369,14 @@
                 order: [
                     [5, "asc"]
                 ],
+                language: {
+                    lengthMenu: `{{ __('general.showent') }}`,
+                    processing: `{{ __('general.process') }}`,
+                    paginate: {
+                        previous: `{{ __('general.prev') }}`,
+                        next: `{{ __('general.next') }}`,
+                    }
+                },
                 ajax: {
                     url: "{{ route('allowanceincreasedetail.read') }}",
                     type: "GET",

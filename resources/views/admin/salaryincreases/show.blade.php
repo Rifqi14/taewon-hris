@@ -108,7 +108,7 @@
         </div>
         <div class="card card-{{ config('configs.app_theme') }} card-outline card-outline-tabs" id="primary-card">
             <div class="card-header">
-                <h3 class="card-title">{{__('employee.emplloylist')}}</h3>
+                <h3 class="card-title">{{__('employee.employlist')}}</h3>
                 <div class="pull-right card-tools">
                     <a href="#" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white add_career"
                         data-toggle="tooltip" title="{{__('general.crt')}}">
