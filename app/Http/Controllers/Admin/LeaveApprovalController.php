@@ -283,7 +283,7 @@ class LeaveApprovalController extends Controller
                             }
                             $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $employee->id)
                             ->where('month', $month)->where('year', $year)->whereIn('allowance_id', $allowance_id)->first();
-                            // dd($employeeAllowance);
+                            dd($employeeAllowance);
                             $deletePenalty = AlphaPenalty::where('employee_id', $leave->employee_id)->where('date', $log->date)->first();
                             if ($deletePenalty) {
                                 $deletePenalty->delete();
@@ -294,10 +294,8 @@ class LeaveApprovalController extends Controller
                                 $alphaPenalty = AlphaPenalty::create([
                                     'employee_id'       => $leave->employee_id,
                                     'date'              => $log->date,
-                                    //'salary'            => $employeeAllowance ? $employeeAllowance->total + $employeeBaseSalary->amount : 0,
-                                    'salary'            => $employeeAllowance ? 500000 + $employeeBaseSalary->amount : 0,
-                                    //'penalty'           => $employeeAllowance ? ($employeeAllowance->total + $employeeBaseSalary->amount) / 30 : 0,
-                                    'penalty'           => $employeeAllowance ? (500000 + $employeeBaseSalary->amount) / 30 : 0,
+                                    'salary'            => $employeeAllowance ? $employeeAllowance->total + $employeeBaseSalary->amount : 0,
+                                    'penalty'           => $employeeAllowance ? ($employeeAllowance->total + $employeeBaseSalary->amount) / 30 : 0,
                                     'leave_id'          => $id,
                                     'year'              => $year,
                                     'month'             => $month
