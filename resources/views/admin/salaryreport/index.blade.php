@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Salary Report')
+@section('title',__('salaryreport.reportsl'))
 @section('stylesheets')
 <link href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}" rel="stylesheet">
 <link href="{{asset('adminlte/component/jquery-ui/jquery-ui.min.css')}}" rel="stylesheet">
@@ -45,7 +45,7 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Salary Report</li>
+<li class="breadcrumb-item active">{{__('salaryreport.reportsl')}}</li>
 @endpush
 
 @section('content')
@@ -54,15 +54,15 @@
         <div class="col-lg-12">
             <div class="card card-{{ config('configs.app_theme') }} card-outline">
                 <div class="card-header">
-                    <h3 class="card-title">Salary Report</h3>
+                    <h3 class="card-title">{{__('salaryreport.reportsl')}}</h3>
                     <div class="pull-right card-tools">
                         <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}"
                             title="Generate"><i class="fa fa-sync"></i></button>
                         <a href="javascript:void(0)" onclick="approvemass()" class="btn btn-sm btn-warning text-white"
                             title="Approve Mass"><i class="fa fa-check"></i></a>
                         <a href="javascript:void(0)" onclick="printmass()" class="btn btn-sm btn-info text-white"
-                            title="Print Mass"><i class="fa fa-print"></i></a>
-                        <a href="#" onclick="exportsalary()" class="btn btn-primary btn-sm text-white"><i
+                            title="{{__('general.print')}} Mass"><i class="fa fa-print"></i></a>
+                        <a href="#" onclick="exportsalary()" class="btn btn-primary btn-sm text-white" title="{{__('general.download')}} Mass"><i
                                 class="fa fa-download"></i></a>
                     </div>
                 </div>
@@ -74,12 +74,12 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="employee_name">Employee Name</label>
+                                        <label class="control-label" for="employee_name">{{__('employee.empname')}}</label>
                                         {{-- <input type="text" class="form-control" placeholder="Employee Name"
                                             name="employee_name" id="employee_name"> --}}
                                         <select name="employee_name[]" id="employee_name" class="form-control select2"
                                             style="width: 100%" aria-hidden="true" multiple
-                                            data-placeholder="Employee Name">
+                                            data-placeholder="{{__('employee.empname')}}">
                                             <option value=""></option>
                                             @foreach ($employees as $employee)
                                             <option value="{{ $employee->id }}">{{ $employee->name }}</option>
@@ -100,9 +100,9 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="position">Position</label>
+                                        <label class="control-label" for="position">{{__('employee.position')}}</label>
                                         <select name="position[]" id="position" class="form-control select2"
-                                            style="width: 100%" aria-hidden="true" multiple data-placeholder="Position">
+                                            style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('employee.position')}}">
                                             @foreach ($titles as $position)
                                             <option value="{{ $position->id }}">{{ $position->name }}</option>
                                             @endforeach
@@ -113,10 +113,10 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="department">Department</label>
+                                        <label class="control-label" for="department">{{__('department.dep')}}</label>
                                         <select name="department[]" id="department" class="form-control select2"
                                             style="width: 100%" aria-hidden="true" multiple
-                                            data-placeholder="Department">
+                                            data-placeholder="{{__('department.dep')}}">
                                             @foreach ($departments as $department)
                                             <option value="{{ $department->name }}">{{ $department->path }}</option>
                                             @endforeach
@@ -127,10 +127,10 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="workgroup">Workgroup Combination</label>
+                                        <label class="control-label" for="workgroup">{{__('employee.workcomb')}}</label>
                                         <select name="workgroup_id[]" id="workgroup_id" class="form-control select2"
                                             style="width: 100%" aria-hidden="true" multiple
-                                            data-placeholder="Workgroup Combination">
+                                            data-placeholder="{{__('employee.workcomb')}}">
                                             @foreach ($workgroups as $workgroup)
                                             <option value="{{ $workgroup->id }}">{{ $workgroup->name }}</option>
                                             @endforeach
@@ -141,12 +141,12 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="type">Salary Type</label>
+                                        <label class="control-label" for="type">{{__('salaryreport.sltype')}}</label>
                                         <select name="type" id="type" class="form-control select2" style="width: 100%"
-                                            aria-hidden="true" multiple data-placeholder="Salary Type">
+                                            aria-hidden="true" multiple data-placeholder="{{__('salaryreport.sltype')}}">
                                             <option value=""></option>
-                                            <option value="Hourly">Hourly</option>
-                                            <option value="Monthly">Monthly</option>
+                                            <option value="Hourly">{{__('general.hourly')}}</option>
+                                            <option value="Monthly">{{__('general.monthly')}}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -154,35 +154,35 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="period">Period</label>
+                                        <label class="control-label" for="period">{{__('general.period')}}</label>
                                         <div class="form-row">
                                             <div class="col-sm-8">
                                                 <select class="form-control select2" name="montly" multiple id="montly"
                                                     data-placeholder="Month">
                                                     <option value="01" @if (date('m', time())=="01" ) selected @endif>
-                                                        January</option>
+                                                        {{__('general.jan')}}</option>
                                                     <option value="02" @if (date('m', time())=="02" ) selected @endif>
-                                                        February</option>
+                                                        {{__('general.feb')}}</option>
                                                     <option value="03" @if (date('m', time())=="03" ) selected @endif>
-                                                        March</option>
+                                                        {{__('general.march')}}</option>
                                                     <option value="04" @if (date('m', time())=="04" ) selected @endif>
-                                                        April</option>
+                                                        {{__('general.apr')}}</option>
                                                     <option value="05" @if (date('m', time())=="05" ) selected @endif>
-                                                        May</option>
+                                                        {{__('general.may')}}</option>
                                                     <option value="06" @if (date('m', time())=="06" ) selected @endif>
-                                                        June</option>
+                                                        {{__('general.jun')}}</option>
                                                     <option value="07" @if (date('m', time())=="07" ) selected @endif>
-                                                        July</option>
+                                                        {{__('general.jul')}}</option>
                                                     <option value="08" @if (date('m', time())=="08" ) selected @endif>
-                                                        August</option>
+                                                        {{__('general.aug')}}</option>
                                                     <option value="09" @if (date('m', time())=="09" ) selected @endif>
-                                                        September</option>
+                                                        {{__('general.sep')}}</option>
                                                     <option value="10" @if (date('m', time())=="10" ) selected @endif>
-                                                        October</option>
+                                                        {{__('general.oct')}}</option>
                                                     <option value="11" @if (date('m', time())=="11" ) selected @endif>
-                                                        November</option>
+                                                        {{__('general.nov')}}</option>
                                                     <option value="12" @if (date('m', time())=="12" ) selected @endif>
-                                                        December</option>
+                                                        {{__('general.dec')}}</option>
                                                 </select>
                                             </div>
                                             <div class="col-sm-4">
@@ -211,8 +211,8 @@
                                             style="width: 100%" aria-hidden="true" data-placeholder="Status" multiple>
                                             <option value=""></option>
                                             <option value="-1">Draft</option>
-                                            <option value="0">Waiting Approval</option>
-                                            <option value="1">Approved</option>
+                                            <option value="0">{{__('general.wait_approve')}}</option>
+                                            <option value="1">{{__('general.approved')}}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -222,21 +222,21 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Employee Name</th>
-                                    <th>Position</th>
-                                    <th>Department</th>
-                                    <th>Workgroup</th>
-                                    <th>Salary Type</th>
-                                    <th>Period</th>
-                                    <th>Net Salary</th>
+                                    <th>{{__('employee.empname')}}</th>
+                                    <th>{{__('employee.position')}}</th>
+                                    <th>{{__('department.dep')}}</th>
+                                    <th>{{__('workgroup.workgrp')}}</th>
+                                    <th>{{__('salaryreport.sltype')}}</th>
+                                    <th>{{__('general.period')}}</th>
+                                    <th>{{__('salaryreport.net')}}</th>
                                     <th>Status</th>
-                                    <th>Print</th>
+                                    <th>{{__('general.print')}}</th>
                                     <th>
                                         <div class="customcheckbox">
                                             <input type="checkbox" class="checkall">
                                         </div>
                                     </th>
-                                    <th>Action</th>
+                                    <th>{{__('general.act')}}</th>
                                 </tr>
                             </thead>
                         </table>
@@ -254,7 +254,7 @@
         <div class="modal-content">
             <div class="modal-header no-print">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                <h4 class="modal-title">Print</h4>
+                <h4 class="modal-title">{{__('general.print')}}</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -533,9 +533,9 @@
                         if (row.status == -1) {
                             return `<span class="badge badge-secondary">Draft</span>`;
                         } else if (row.status == 0) {
-                            return `<span class="badge badge-warning">Waiting Approval</span>`
+                            return `<span class="badge badge-warning">{{__('general.wait_approve')}}</span>`
                         } else if (row.status == 1) {
-                            return `<span class="badge badge-success">Approved</span>`
+                            return `<span class="badge badge-success">{{__('general.approved')}}</span>`
                         } else {
                             `<span class="badge badge-danger">Rejected</span>`
                         }
@@ -568,7 +568,7 @@
                         <i class="fa fa-bars"></i>
                       </button>
                       <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" href="{{url('admin/salaryreport/${row.id}/detail')}}"><i class="fas fa-info mr-3"></i> Detail</a></li>
+                        <li><a class="dropdown-item" href="{{url('admin/salaryreport/${row.id}/detail')}}"><i class="fas fa-info mr-3"></i> {{__('general.dtl')}}</a></li>
                       </ul>
                     </div>`
                         } else {
@@ -577,8 +577,8 @@
                         <i class="fa fa-bars"></i>
                       </button>
                       <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" href="{{url('admin/salaryreport/${row.id}/detail')}}"><i class="fas fa-info mr-3"></i> Detail</a></li>
-                        <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+                        <li><a class="dropdown-item" href="{{url('admin/salaryreport/${row.id}/detail')}}"><i class="fas fa-info mr-3"></i> {{__('general.dtl')}}</a></li>
+                        <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{__('general.dlt')}}</a></li>
                       </ul>
                     </div>`
                         }
