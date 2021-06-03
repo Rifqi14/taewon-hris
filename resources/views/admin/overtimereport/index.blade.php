@@ -397,6 +397,14 @@
 			lengthChange: true,
 			responsive: true,
 			order: false,
+			language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
 			lengthMenu: [ 50, 100, 250, 500],
 			ajax: {
 				url: "{{ route('overtimereport.read') }}",
