@@ -21,6 +21,7 @@ use App\Models\LeaveSetting;
 use App\Models\Overtime;
 use App\Models\Workingtime;
 use App\Models\OvertimeSchemeList;
+use App\Models\OvertimeAllowance;
 use App\Models\OvertimeschemeDepartment;
 use App\Models\WorkGroup;
 use App\Models\WorkingtimeDetail;
