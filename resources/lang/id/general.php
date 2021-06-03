@@ -87,4 +87,7 @@ return [
     'nov'         => 'November',
     'dec'         => 'Desember',
     'period'      => 'Period',
+    'history'     => 'Riwayat',
+    'no_phone'    => 'No Telepon',
+    'expired'     => 'Expired',
 ];

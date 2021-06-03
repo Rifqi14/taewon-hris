@@ -86,6 +86,8 @@ return [
     'arr_time'   => 'Kedatangan',
     'pol_no'     => 'No Polisi',
     'add_member' => 'Tambah Anggota',
+    'end_contract'=> 'Tanggal Akhir Kontrak',
+    'range_date'  => 'Rentang Waktu',
     
 
 ];
