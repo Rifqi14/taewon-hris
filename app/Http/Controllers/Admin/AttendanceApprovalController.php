@@ -801,11 +801,11 @@ class AttendanceApprovalController extends Controller
                                         $allowance_id[] = $overtimeallowance->allowance_id;
                                     }
                                     if(count($allowance_id) > 0){
-                                        $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $employee->id)
+                                        $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $approve->employee_id)
                                         ->where('month', $month)->where('year', $year)->whereIn('allowance_id', $allowance_id)->first();
                                     }
                                     else{
-                                        $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $employee->id)
+                                        $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $approve->employee_id)
                                         ->where('month', $month)->where('year', $year)->whereIn('allowance_id', [-1])->first();
                                     }
                                     
