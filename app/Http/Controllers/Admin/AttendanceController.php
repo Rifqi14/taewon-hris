@@ -1132,7 +1132,7 @@ class AttendanceController extends Controller
                                 $update->attendance_in = null;
                                 $update->attendance_out = null;
                                 $update->workingtime_id = null;
-                                $update->overtime_schema_id = null;
+                                $update->overtime_scheme_id = null;
                                 $update->save();
 
                                 $update = Attendance::find($in_between->attendance_id);
