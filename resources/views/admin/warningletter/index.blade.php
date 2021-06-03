@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Warning Letter')
+@section('title',__('warningletter.wl'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/jquery-ui/jquery-ui.min.css')}}" rel="stylesheet">
@@ -17,7 +17,7 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Warning Letter</li>
+<li class="breadcrumb-item active">{{__('warningletter.wl')}}</li>
 @endpush
 
 @section('content')
@@ -26,11 +26,11 @@
 		<div class="col-lg-12">
 			<div class="card ">
 				<div class="card-header">
-					<h3 class="card-title">Warning Letter</h3>
+					<h3 class="card-title">{{__('warningletter.wl')}}</h3>
 					<!-- tools box -->
 					<div class="pull-right card-tools">
 						<a href="{{route('warningletter.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white"
-							data-toggle="tooltip" title="Tambah">
+							data-toggle="tooltip" title="{{__('general.crt')}}">
 							<i class="fa fa-plus"></i>
 						</a>
 					</div>
@@ -40,8 +40,8 @@
 					<div class="row">
 						<div class="col-md-4">
 							<div class="form-group">
-								<label class="control-label" for="employee_id">Employee Name</label>
-								<input type="text" name="employee_name" id="employee_name" class="form-control" placeholder="Employee Name">
+								<label class="control-label" for="employee_id">{{__('employee.empname')}}</label>
+								<input type="text" name="employee_name" id="employee_name" class="form-control" placeholder="{{__('employee.empname')}}">
 							</div>
 							<div id="employee-container"></div>
 						</div>
@@ -54,8 +54,8 @@
 						<div class="col-md-4">
 							<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="department">Department</label>
-								<select name="department" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Department">
+								<label class="control-label" for="department">{{__('department.dep')}}</label>
+								<select name="department" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('department.dep')}}">
 									@foreach ($departments as $department)
 									<option value="{{ $department->name }}">{{ $department->path }}</option>
 									@endforeach
@@ -66,8 +66,8 @@
 						<div class="col-md-4">
 							<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="type">Position</label>
-								<select name="position" id="position" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Position">
+								<label class="control-label" for="type">{{__('employee.position')}}</label>
+								<select name="position" id="position" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('employee.position')}}">
 									@foreach ($titles as $title)
 									<option value="{{ $title->id }}">{{ $title->name }}</option>
 									@endforeach
@@ -81,8 +81,8 @@
 								<label class="control-label" for="workgroup">Status</label>
 								<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true" data-placeholder="Status">
 									<option value=""></option>
-									<option value="0">Active</option>
-									<option value="1">Non Active</option>
+									<option value="0">{{__('general.actv')}}</option>
+									<option value="1">{{__('general.noactv')}}</option>
 								  </select>
 							  </div>
 							</div>
@@ -93,12 +93,12 @@
 							<tr>
 								<th width="10">#</th>
 								<th width="100">NIK</th>
-								<th width="100">Employee Name</th>
-								<th width="100">Position</th>
-								<th width="100">Department</th>
-								<th width="100">Join date</th>
+								<th width="100">{{__('employee.empname')}}</th>
+								<th width="100">{{__('employee.position')}}</th>
+								<th width="100">{{__('department.dep')}}</th>
+								<th width="100">{{__('employee.jd')}}</th>
 								<th width="100">Status</th>
-								<th width="10">Action</th>
+								<th width="10">{{__('general.act')}}</th>
 							</tr>
 						</thead>
 					</table>
@@ -129,6 +129,14 @@
 			lengthChange:true,
 			responsive: true,
 			order: [[ 1, "asc" ]],
+			language: {
+				lengthMenu: `{{ __('general.showent') }}`,
+				processing: `{{ __('general.process') }}`,
+				paginate: {
+					previous: `{{ __('general.prev') }}`,
+					next: `{{ __('general.next') }}`,
+				}
+			},
 			ajax: {
 				url: "{{route('warningletter.read')}}",
 				type: "GET",
@@ -153,9 +161,9 @@
 				{ className: "text-center", targets: [3,4,5,6,7] },
                 { render: function(data, type, row) {
                     if (row.status == 0) {
-                        return '<span class="badge badge-success">Active</span>';
+                        return '<span class="badge badge-success">{{__('general.actv')}}</span>';
                     } else {
-                        return '<span class="badge badge-danger">Non Active</span>';
+                        return '<span class="badge badge-danger">{{__('general.noactv')}}</span>';
                     }
                 }, targets:[6]},
 				{ render: function ( data, type, row ) {
@@ -164,8 +172,8 @@
 					<i class="fa fa-bars"></i>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-					<li><a class="dropdown-item" href="{{url('admin/warningletter')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-					<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+					<li><a class="dropdown-item" href="{{url('admin/warningletter')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{__('general.edt')}}</a></li>
+					<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{__('general.dlt')}}</a></li>
 					</ul></div>`
 				},targets: [7]
 				}

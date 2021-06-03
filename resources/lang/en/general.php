@@ -38,7 +38,7 @@ return [
     'notes'       => 'Notes',
     'chs'         => 'Choose',
     'from'        => 'From',
-    'To'          => 'To',
+    'to'          => 'To',
     'showent'     => 'Show _MENU_ Entries',
     'prev'        => 'Previous',
     'next'        => 'Next',

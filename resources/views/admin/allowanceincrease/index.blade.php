@@ -199,8 +199,8 @@
                         <i class="fa fa-bars"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" href="{{url('admin/allowanceincrease')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-                        <li><a class="dropdown-item" href="{{url('admin/allowanceincrease')}}/${row.id}"><i class="fas fa-user mr-2"></i> Add Massal</a></li>
+                        <li><a class="dropdown-item" href="{{url('admin/allowanceincrease')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{__('general.edt')}}</a></li>
+                        <li><a class="dropdown-item" href="{{url('admin/allowanceincrease')}}/${row.id}"><i class="fas fa-user mr-2"></i> {{__('allowancemass.addmass')}}</a></li>
                     </ul></div>`
                     },
                     targets: [4]
