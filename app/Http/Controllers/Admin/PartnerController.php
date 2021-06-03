@@ -79,12 +79,16 @@ class PartnerController extends Controller
         //Count Data
         $query = DB::table('partners');
         $query->select('partners.*');
+        $query->leftJoin('departments','departments.id','=','partners.department_id');
+        $query->leftJoin('trucks','trucks.id','=','partners.truck_id');
         $query->whereRaw("upper(name) like '%$name%'");
         $recordsTotal = $query->count();
 
         //Select Pagination
         $query = DB::table('partners');
-        $query->select('partners.*');
+        $query->select('partners.*','departments.name as department_name','trucks.name as truck_name');
+        $query->leftJoin('departments','departments.id','=','partners.department_id');
+        $query->leftJoin('trucks','trucks.id','=','partners.truck_id');
         $query->whereRaw("upper(name) like '%$name%'");
         $query->offset($start);
         $query->limit($length);
