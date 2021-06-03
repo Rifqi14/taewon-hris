@@ -404,7 +404,7 @@
                     items[this.index] = this;
                   });
                   table_item.clear().draw();
-                  $('#no').attr('val',response.last);
+                  $('#no').attr('value',response.last);
                   loadItem(table_item);
                 } else {
                   $.gritter.add({
