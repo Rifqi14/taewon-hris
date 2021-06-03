@@ -355,7 +355,7 @@ if (!function_exists('calculateOvertime')) {
       $overtime = Overtime::where('date', $attendance->attendance_date)->where('employee_id', $attendance->employee_id);
       $overtime->delete();
       $rules = OvertimeSchemeList::select('hour', 'amount')->where('overtime_scheme_id', '=', $attendance->overtime_scheme_id)->groupBy('hour','amount')->get();
-
+      dd($rules);
       if ($rules) {
         $i = 0;
         $overtimes = $attendance->adj_over_time;
@@ -377,7 +377,6 @@ if (!function_exists('calculateOvertime')) {
               $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $attendance->employee_id)
               ->where('month', $month)->where('year', $year)->whereIn('allowance_id', [-1])->first();
           }
-          dd($overtimescheme);
           if($overtimescheme->type == 'BASIC'){
             if ($attendance->attendance_date >= $sallary->max('date')) {
                 // $upcomingSalary = SalaryIncreases::whereHas('salaryIncreaseDetail', function($q) use ($emp_id){
