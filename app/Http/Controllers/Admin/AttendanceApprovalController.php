@@ -598,16 +598,16 @@ class AttendanceApprovalController extends Controller
     {
         $query = DB::table('overtime_scheme_lists');
         $query->select('hour', 'amount');
-        $query->leftJoin('overtime_schemes', 'overtime_schemes.id', '=', 'overtime_scheme_lists.overtime_scheme_id');
-        $query->leftJoin('overtime_allowances', 'overtime_allowances.overtime_scheme_id', '=', 'overtime_schemes.id');
+        //$query->leftJoin('overtime_schemes', 'overtime_schemes.id', '=', 'overtime_scheme_lists.overtime_scheme_id');
+        // $query->leftJoin('overtime_allowances', 'overtime_allowances.overtime_scheme_id', '=', 'overtime_schemes.id');
         $query->where('overtime_scheme_lists.overtime_scheme_id', $overtime_scheme_id);
-        if(count($allowance_id) > 0){
-            $query->whereIn('overtime_allowances.allowance_id', $allowance_id);
-        }
-        else{
-            $query->whereIn('overtime_allowances.allowance_id', [-1]);
-        }
-        $query->groupBy('overtime_scheme_lists.hour', 'overtime_scheme_lists.amount');
+        // if(count($allowance_id) > 0){
+        //     $query->whereIn('overtime_allowances.allowance_id', $allowance_id);
+        // }
+        // else{
+        //     $query->whereIn('overtime_allowances.allowance_id', [-1]);
+        // }
+        // $query->groupBy('overtime_scheme_lists.hour', 'overtime_scheme_lists.amount');
         $scheme_lists = $query->get();
 
         return $scheme_lists;
@@ -717,7 +717,7 @@ class AttendanceApprovalController extends Controller
                         foreach($employee_allowance as $allowance){
                             array_push($allowance_id,$allowance->allowance_id);
                         }
-                        $rules = $this->overtimeSchemeList($approve->overtime_scheme_id, $allowance_id);
+                        $rules = OvertimeSchemeList::select('hour', 'amount')->where('overtime_scheme_id', '=', $approve->overtime_scheme_id)->groupBy('hour','amount')->get();
                         // $rules = OvertimeSchemeList::select('hour', 'amount')->where('overtime_scheme_id', '=', $approve->overtime_scheme_id)->groupBy('hour','amount')->get();
                         // $schema_department = OvertimeschemeDepartment::where('overtime_scheme_id', '=', $approve->overtime_scheme_id)->first();
                         // dd($rules);
@@ -794,7 +794,21 @@ class AttendanceApprovalController extends Controller
                                     $date = Carbon::parse($approve->attendance_date);
                                     $sallary = SalaryIncreases::GetSalaryIncreaseDetail($approve->employee_id, $date->month, $date->year)->get();
                                     $overtimescheme = OvertimeScheme::where('id', $approve->overtime_scheme_id)->first();
-                                    $allowances = $this->get_additional_allowance($approve->employee_id, $month, $year);
+                                    $allowance_id = [];
+                                    $overtimeallowances = OvertimeAllowance::where('overtime_scheme_id', $approve->overtime_scheme_id)->get();
+                                    foreach($overtimeallowances as $overtimeallowance){
+                                        $allowance_id[] = $overtimeallowance->allowance_id;
+                                    }
+                                    if(count($allowance_id) > 0){
+                                        $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $employee->id)
+                                        ->where('month', $month)->where('year', $year)->whereIn('allowance_id', $allowance_id)->first();
+                                    }
+                                    else{
+                                        $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))->where('employee_id', $employee->id)
+                                        ->where('month', $month)->where('year', $year)->whereIn('allowance_id', [-1])->first();
+                                    }
+                                    
+                                    //$allowances = $this->get_additional_allowance($approve->employee_id, $month, $year);
                                     // $emp_id = $approve->employee_id;
                                     if($overtimescheme->type == 'BASIC'){
                                         if ($approve->attendance_date >= $sallary->max('date')) {
@@ -865,7 +879,6 @@ class AttendanceApprovalController extends Controller
                                     }
                                     
                                     if($overtimescheme->type == 'BASIC & ALLOWANCE'){
-                                        foreach($allowances as $key => $allowance){
                                             if ($approve->attendance_date >= $sallary->max('date')) {
                                                 // $upcomingSalary = SalaryIncreases::whereHas('salaryIncreaseDetail', function($q) use ($emp_id){
                                                 //     $q->where('employee_id', $emp_id);
@@ -878,7 +891,7 @@ class AttendanceApprovalController extends Controller
                                                         'scheme_rule'   => $value->hour,
                                                         'hour'          => ($i != $length - 1 && $overtimes >= 1) ? 1 : $overtimes,
                                                         'amount'        => $value->amount,
-                                                        'basic_salary'  => $getSallary ? ($getSallary->amount + $allowance->value) / 173 : 0,
+                                                        'basic_salary'  => $getSallary ? ($getSallary->amount + $employeeAllowance->total) / 173 : 0,
                                                         'date'          => changeDateFormat('Y-m-d', $approve->attendance_date),
                                                         'year'          => $year,
                                                         'month'         => $month,
@@ -911,7 +924,7 @@ class AttendanceApprovalController extends Controller
                                                         'scheme_rule'   => $value->hour,
                                                         'hour'          => ($i != $length - 1 && $overtimes >= 1) ? 1 : $overtimes,
                                                         'amount'        => $value->amount,
-                                                        'basic_salary'  => $getSallary ? ($getSallary->amount + $allowance->value) / 173 : 0,
+                                                        'basic_salary'  => $getSallary ? ($getSallary->amount + $employeeAllowance->value) / 173 : 0,
                                                         'date'          => changeDateFormat('Y-m-d', $approve->attendance_date),
                                                         'year'          => $year,
                                                         'month'         => $month,
@@ -931,75 +944,72 @@ class AttendanceApprovalController extends Controller
                                                     ], 400);
                                                 }
                                             }
-                                        }
                                     }
 
                                     if ($overtimescheme->type == 'ALLOWANCE') {
-                                        foreach ($allowances as $key => $allowance) {
-                                            if ($approve->attendance_date >= $sallary->max('date')) {
-                                                // $upcomingSalary = SalaryIncreases::whereHas('salaryIncreaseDetail', function($q) use ($emp_id){
-                                                //     $q->where('employee_id', $emp_id);
-                                                // })->where('date','=', $sallary->max('date'))->first();
-                                                $getSallary = EmployeeSalary::where('employee_id', '=', $approve->employee_id)->orderBy('created_at', 'desc')->first();
-                                                if ($overtimes >= 0) {
-                                                    $overtime = Overtime::create([
-                                                        'employee_id'   => $approve->employee_id,
-                                                        'day'           => $approve->day,
-                                                        'scheme_rule'   => $value->hour,
-                                                        'hour'          => ($i != $length - 1 && $overtimes >= 1) ? 1 : $overtimes,
-                                                        'amount'        => $value->amount,
-                                                        'basic_salary'  => $allowance->value ? $allowance->value / 173 : 0,
-                                                        'date'          => changeDateFormat('Y-m-d', $approve->attendance_date),
-                                                        'year'          => $year,
-                                                        'month'         => $month,
-                                                    ]);
-                                                } else {
-                                                    continue;
-                                                }
-                                                $overtime->final_salary = $overtime->hour * $overtime->amount * $overtime->basic_salary;
-                                                $overtime->save();
-                                                $i++;
-                                                $overtimes = $overtimes - 1;
-                                                if (!$overtime) {
-                                                    DB::rollBack();
-                                                    return response()->json([
-                                                        'status'     => false,
-                                                        'message'     => $overtime
-                                                    ], 400);
-                                                }
+                                        if ($approve->attendance_date >= $sallary->max('date')) {
+                                            // $upcomingSalary = SalaryIncreases::whereHas('salaryIncreaseDetail', function($q) use ($emp_id){
+                                            //     $q->where('employee_id', $emp_id);
+                                            // })->where('date','=', $sallary->max('date'))->first();
+                                            $getSallary = EmployeeSalary::where('employee_id', '=', $approve->employee_id)->orderBy('created_at', 'desc')->first();
+                                            if ($overtimes >= 0) {
+                                                $overtime = Overtime::create([
+                                                    'employee_id'   => $approve->employee_id,
+                                                    'day'           => $approve->day,
+                                                    'scheme_rule'   => $value->hour,
+                                                    'hour'          => ($i != $length - 1 && $overtimes >= 1) ? 1 : $overtimes,
+                                                    'amount'        => $value->amount,
+                                                    'basic_salary'  => $employeeAllowance->total ? $employeeAllowance->total / 173 : 0,
+                                                    'date'          => changeDateFormat('Y-m-d', $approve->attendance_date),
+                                                    'year'          => $year,
+                                                    'month'         => $month,
+                                                ]);
                                             } else {
-                                                // $query = SalaryIncreases::with(['salaryIncreaseDetail' => function ($q) use ($emp_id)
-                                                // {
-                                                //     $q->where('employee_id', $emp_id);
-                                                // }])->whereMonth('date', $date->month)->whereYear('date', $date->year)->where('date', '<', $approve->attendance_date)->orderBy('date', 'desc');
-                                                // $salary = $query->first();
-                                                $getSallary = EmployeeSalary::where('employee_id', '=', $approve->employee_id)->orderBy('created_at', 'desc')->first();
-                                                if ($overtimes >= 0) {
-                                                    $overtime = Overtime::create([
-                                                        'employee_id'   => $approve->employee_id,
-                                                        'day'           => $approve->day,
-                                                        'scheme_rule'   => $value->hour,
-                                                        'hour'          => ($i != $length - 1 && $overtimes >= 1) ? 1 : $overtimes,
-                                                        'amount'        => $value->amount,
-                                                        'basic_salary'  => $allowance->value ? $allowance->value / 173 : 0,
-                                                        'date'          => changeDateFormat('Y-m-d', $approve->attendance_date),
-                                                        'year'          => $year,
-                                                        'month'         => $month,
-                                                    ]);
-                                                } else {
-                                                    continue;
-                                                }
-                                                $overtime->final_salary = $overtime->hour * $overtime->amount * $overtime->basic_salary;
-                                                $overtime->save();
-                                                $i++;
-                                                $overtimes = $overtimes - 1;
-                                                if (!$overtime) {
-                                                    DB::rollBack();
-                                                    return response()->json([
-                                                        'status'     => false,
-                                                        'message'     => $overtime
-                                                    ], 400);
-                                                }
+                                                continue;
+                                            }
+                                            $overtime->final_salary = $overtime->hour * $overtime->amount * $overtime->basic_salary;
+                                            $overtime->save();
+                                            $i++;
+                                            $overtimes = $overtimes - 1;
+                                            if (!$overtime) {
+                                                DB::rollBack();
+                                                return response()->json([
+                                                    'status'     => false,
+                                                    'message'     => $overtime
+                                                ], 400);
+                                            }
+                                        } else {
+                                            // $query = SalaryIncreases::with(['salaryIncreaseDetail' => function ($q) use ($emp_id)
+                                            // {
+                                            //     $q->where('employee_id', $emp_id);
+                                            // }])->whereMonth('date', $date->month)->whereYear('date', $date->year)->where('date', '<', $approve->attendance_date)->orderBy('date', 'desc');
+                                            // $salary = $query->first();
+                                            $getSallary = EmployeeSalary::where('employee_id', '=', $approve->employee_id)->orderBy('created_at', 'desc')->first();
+                                            if ($overtimes >= 0) {
+                                                $overtime = Overtime::create([
+                                                    'employee_id'   => $approve->employee_id,
+                                                    'day'           => $approve->day,
+                                                    'scheme_rule'   => $value->hour,
+                                                    'hour'          => ($i != $length - 1 && $overtimes >= 1) ? 1 : $overtimes,
+                                                    'amount'        => $value->amount,
+                                                    'basic_salary'  => $employeeAllowance->total ? $employeeAllowance->total / 173 : 0,
+                                                    'date'          => changeDateFormat('Y-m-d', $approve->attendance_date),
+                                                    'year'          => $year,
+                                                    'month'         => $month,
+                                                ]);
+                                            } else {
+                                                continue;
+                                            }
+                                            $overtime->final_salary = $overtime->hour * $overtime->amount * $overtime->basic_salary;
+                                            $overtime->save();
+                                            $i++;
+                                            $overtimes = $overtimes - 1;
+                                            if (!$overtime) {
+                                                DB::rollBack();
+                                                return response()->json([
+                                                    'status'     => false,
+                                                    'message'     => $overtime
+                                                ], 400);
                                             }
                                         }
                                     }
