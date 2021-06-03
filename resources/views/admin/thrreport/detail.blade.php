@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'THR Report')
+@section('title',__('thrreport.thrrpt'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -9,8 +9,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('thrreport.index')}}">THR Report</a></li>
-<li class="breadcrumb-item active">Detail Report</li>
+<li class="breadcrumb-item active"><a href="{{route('thrreport.index')}}">{{__('thrreport.thrrpt')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.dtl')}}</li>
 @endpush
 
 
@@ -21,7 +21,7 @@
       <div class="col-lg-8">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header" style="height:54px">
-            <h3 class="card-title">THR Data</h3>
+            <h3 class="card-title">{{__('thrreport.thrrpt')}}</h3>
           </div>
           <div class="card-body">
             <div class="row">
@@ -29,8 +29,8 @@
               <input type="hidden" name="employee_id" value="{{ $thrreport->employee_id }}">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Employee Name</label>
-                  <input type="text" class="form-control" placeholder="Employee Name" value="{{ $thrreport->employee->name }}" readonly>
+                  <label>{{__('employee.empname')}}</label>
+                  <input type="text" class="form-control" placeholder="{{__('employee.empname')}}" value="{{ $thrreport->employee->name }}" readonly>
                 </div>
               </div>
               <div class="col-sm-6">
@@ -43,28 +43,28 @@
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Position</label>
-                  <input type="text" class="form-control" data-placeholder="Position" value="{{ @$employee->title->name }}" readonly>
+                  <label>{{__('employee.position')}}</label>
+                  <input type="text" class="form-control" data-placeholder="{{__('employee.position')}}" value="{{ @$employee->title->name }}" readonly>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Department</label>
-                  <input type="text" class="form-control" data-placeholder="Department" value="{{ @$employee->department->name }}" readonly>
+                  <label>{{__('department.dep')}}</label>
+                  <input type="text" class="form-control" data-placeholder="{{__('department.dep')}}" value="{{ @$employee->department->name }}" readonly>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Workgroup Combination</label>
-                  <input type="text" class="form-control" data-placeholder="Workgroup Combination" value="{{ @$employee->workgroup->name }}" readonly>
+                  <label>{{__('employee.workcomb')}}</label>
+                  <input type="text" class="form-control" data-placeholder="{{__('employee.workcomb')}}" value="{{ @$employee->workgroup->name }}" readonly>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Join Date</label>
-                  <input type="text" class="form-control" data-placeholder="Join Date" value="{{ @$thrreport->working_periode }}" readonly>
+                  <label>{{__('employee.jd')}}</label>
+                  <input type="text" class="form-control" data-placeholder="{{__('employee.jd')}}" value="{{ @$thrreport->working_periode }}" readonly>
                 </div>
               </div>
             </div>
@@ -77,9 +77,9 @@
       <div class="col-lg-4">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header">
-            <h3 class="card-title">Other</h3>
+            <h3 class="card-title">{{__('general.other')}}</h3>
             <div class="pull-right card-tools">
-                <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+                <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i
                         class="fa fa-reply"></i></a>
                 </div>
           </div>
@@ -87,23 +87,23 @@
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <label>Period</label>
-                  <input type="text" class="form-control" data-placeholder="Period" value="{{ changeDateFormat('F', $thrreport->month) }}-{{$thrreport->year}}" readonly>
+                  <label>{{__('general.period')}}</label>
+                  <input type="text" class="form-control" data-placeholder="{{__('general.period')}}" value="{{ changeDateFormat('F', $thrreport->month) }}-{{$thrreport->year}}" readonly>
                 </div>
               </div>
               <div class="col-sm-12">
                 <div class="form-group">
-                  <label>Month</label>
-                  <input type="text" class="form-control" data-placeholder="Period" value="{{$thrreport->period}} Month" readonly>
+                  <label>{{__('general.month')}}</label>
+                  <input type="text" class="form-control" data-placeholder="{{__('general.month')}}" value="{{$thrreport->period}} Month" readonly>
                 </div>
               </div>
               <div class="col-sm-12">
                 <div class="form-group">
                   <label>Status</label>
                   <input type="text" name="status" data-status="{{ $thrreport->status }}" class="form-control" data-placeholder="Status" @if ($thrreport->status < 0) value="Draft" @elseif ($thrreport->status == 0)
-                    value="Waiting Approval"
+                    value="{{__('general.wait_approve')}}"
                     @else
-                    value="Approved"
+                    value="{{__('general.approved')}}"
                     @endif readonly>
                 </div>
               </div>
@@ -120,7 +120,7 @@
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <div class="card-header">
-        <h3 class="card-title">THR Report</h3>
+        <h3 class="card-title">{{__('thrreport.thrrpt')}}</h3>
         
       </div>
       <div class="card-body">
@@ -128,7 +128,7 @@
           <thead>
             <tr>
               <th width="10">No</th>
-              <th width="600">Description</th>
+              <th width="600">{{__('general.desc')}}</th>
               <th width="200">Total</th>
             </tr>
           </thead>

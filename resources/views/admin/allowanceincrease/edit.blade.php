@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Allowance Increase')
+@section('title', __('allowancemass.alwincr'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -9,8 +9,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('allowanceincrease.index')}}">Allowance Increase</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item active"><a href="{{route('allowanceincrease.index')}}">{{__('allowancemass.alwincr')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.edt')}}</li>
 @endpush
 
 
@@ -21,7 +21,7 @@
             <div class="col-lg-8">
                 <div class="card card-{{ config('configs.app_theme') }} card-outline">
                     <div class="card-header" style="height:55px;">
-                        <h3 class="card-title">Allowance Increase Data</h3>
+                        <h3 class="card-title">{{__('allowancemass.alwincdata')}}</h3>
                     </div>
                     <div class="card-body">
                         <form id="form" action="{{ route('allowanceincrease.update', ['id'=>$allowanceincrease->id]) }}" method="post" autocomplete="off">
@@ -37,22 +37,22 @@
                                 </div> --}}
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label class="control-label pull-right col-md-2" for="period">Period</label>
+                                        <label class="control-label pull-right col-md-2" for="period">{{__('general.period')}}</label>
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <select class="form-control select2" name="month" id="month">
-                                                    <option value="01" @if ($allowanceincrease->month == "01" ) selected @endif>January</option>
-                                                    <option value="02" @if ($allowanceincrease->month == "02" ) selected @endif>February</option>
-                                                    <option value="03" @if ($allowanceincrease->month == "03" ) selected @endif>March</option>
-                                                    <option value="04" @if ($allowanceincrease->month == "04" ) selected @endif>April</option>
-                                                    <option value="05" @if ($allowanceincrease->month == "05" ) selected @endif>May</option>
-                                                    <option value="06" @if ($allowanceincrease->month == "06" ) selected @endif>June</option>
-                                                    <option value="07" @if ($allowanceincrease->month == "07" ) selected @endif>July</option>
-                                                    <option value="08" @if ($allowanceincrease->month == "08" ) selected @endif>August</option>
-                                                    <option value="09" @if ($allowanceincrease->month == "09" ) selected @endif>September</option>
-                                                    <option value="10" @if ($allowanceincrease->month == "10" ) selected @endif>October</option>
-                                                    <option value="11" @if ($allowanceincrease->month == "11" ) selected @endif>November</option>
-                                                    <option value="12" @if ($allowanceincrease->month == "12" ) selected @endif>December</option>
+                                                    <option value="01" @if ($allowanceincrease->month == "01" ) selected @endif>{{__('general.jan')}}</option>
+                                                    <option value="02" @if ($allowanceincrease->month == "02" ) selected @endif>{{__('general.feb')}}</option>
+                                                    <option value="03" @if ($allowanceincrease->month == "03" ) selected @endif>{{__('general.march')}}</option>
+                                                    <option value="04" @if ($allowanceincrease->month == "04" ) selected @endif>{{__('general.apr')}}</option>
+                                                    <option value="05" @if ($allowanceincrease->month == "05" ) selected @endif>{{__('general.may')}}</option>
+                                                    <option value="06" @if ($allowanceincrease->month == "06" ) selected @endif>{{__('general.jun')}}</option>
+                                                    <option value="07" @if ($allowanceincrease->month == "07" ) selected @endif>{{__('general.jul')}}</option>
+                                                    <option value="08" @if ($allowanceincrease->month == "08" ) selected @endif>{{__('general.aug')}}</option>
+                                                    <option value="09" @if ($allowanceincrease->month == "09" ) selected @endif>{{__('general.sep')}}</option>
+                                                    <option value="10" @if ($allowanceincrease->month == "10" ) selected @endif>{{__('general.oct')}}</option>
+                                                    <option value="11" @if ($allowanceincrease->month == "11" ) selected @endif>{{__('general.nov')}}</option>
+                                                    <option value="12" @if ($allowanceincrease->month == "12" ) selected @endif>{{__('general.dec')}}</option>
                                                 </select>
                                             </div>
                                             <div class="col-sm-6">
@@ -73,27 +73,27 @@
                                 <div class="col-sm-6">
                                     <!-- text input -->
                                     <div class="form-group">
-                                        <label>Allowance</label>
-                                        <input type="text" name="allowance_id" id="allowance_id" class="form-control select2" placeholder="Choose Allowance">
+                                        <label>{{__('allowance.alw')}}</label>
+                                        <input type="text" name="allowance_id" id="allowance_id" class="form-control select2" placeholder="{{__('general.chs')}} {{__('allowance.alw')}}">
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label>Value</label>
+                                        <label>{{__('general.value')}}</label>
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <select class="form-control select2" data-placeholder="Type" name="type_value"
                                                     id="type">
                                                     <option value=""></option>
-                                                    <option @if($allowanceincrease->type_value == "Percentage") selected @endif value="Percentage">Percentage</option>
-                                                    <option @if($allowanceincrease->type_value == "Nominal" ) selected @endif value="Nominal">Nominal</option>
+                                                    <option @if($allowanceincrease->type_value == "Percentage") selected @endif value="Percentage">{{__('general.percen')}}</option>
+                                                    <option @if($allowanceincrease->type_value == "Nominal" ) selected @endif value="Nominal">{{__('general.nom')}}</option>
                                                 </select>
                                             </div>
                                             <div class="col-sm-6">
                                                 <input type="text" name="value" class="form-control"
-                                                    placeholder="Value" value="{{$allowanceincrease->value}}">
+                                                    placeholder="{{__('general.value')}}" value="{{$allowanceincrease->value}}">
                                             </div>
                                         </div>
                                     </div>
@@ -108,11 +108,11 @@
             <div class="col-lg-4">
                 <div class="card card-{{ config('configs.app_theme') }} card-outline">
                     <div class="card-header">
-                        <h3 class="card-title">Other</h3>
+                        <h3 class="card-title">{{__('general.other')}}</h3>
                         <div class="pull-right card-tools">
                             <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}"
-                                title="Simpan"><i class="fa fa-save"></i></button>
-                            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+                                title="{{__('general.save')}}"><i class="fa fa-save"></i></button>
+                            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i
                                     class="fa fa-reply"></i></a>
                         </div>
                     </div>
@@ -120,9 +120,9 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label>Notes</label>
+                                    <label>{{__('general.notes')}}</label>
                                     <textarea style="height:110px;" type="text" class="form-control" name="note"
-                                        placeholder="Notes" value="{{$allowanceincrease->note}}">{{$allowanceincrease->note}}</textarea>
+                                        placeholder="{{__('general.notes')}}" value="{{$allowanceincrease->note}}">{{$allowanceincrease->note}}</textarea>
                                 </div>
                             </div>
                         </div>

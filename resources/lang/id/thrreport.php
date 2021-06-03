@@ -1,6 +1,7 @@
 <?php
 return [
     /**THR Report */
-    'period' => 'Periode THR',
+    'period_thr' => 'Periode THR',
     'months' => 'Bulan',
+    'thrrpt' => 'Laporan THR',
 ];

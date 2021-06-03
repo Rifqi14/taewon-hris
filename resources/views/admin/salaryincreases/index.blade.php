@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Salary Increases')
+@section('title',__('salarymass.slinc'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 
 @endsection
 @push('breadcrump')
-<li class="breadcrumb-item">Salary Increases</li>
+<li class="breadcrumb-item">{{__('salarymass.slinc')}}</li>
 @endpush
 @section('content')
 <div class="row">
@@ -16,7 +16,7 @@
             <div class="card-header p-0 border-bottom-0">
                 <ul class="nav nav-tabs">
                     <li class="nav-item"><a class="nav-link active" href="#salaryincreases" data-toggle="tab">List
-                            Salary Increases</a></li>
+                            {{__('salarymass.slinc')}}</a></li>
                     <li class="nav-item"><a class="nav-link" href="#employee" data-toggle="tab">List Employee</a></li>
                 </ul>
             </div>
@@ -26,7 +26,7 @@
                         <div class="pull-right card-tools">
                             <a href="{{route('salaryincreases.create')}}"
                                 class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white"
-                                data-toggle="tooltip" title="Tambah">
+                                data-toggle="tooltip" title="{{__('general.crt')}}">
                                 <i class="fa fa-plus"></i>
                             </a>
                         </div>
@@ -49,8 +49,8 @@
                                 <div class="col-md-4">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label class="control-label" for="nid">Description</label>
-                                            <input type="text" class="form-control" placeholder="Description" name="description"
+                                            <label class="control-label" for="nid">{{__('general.desc')}}</label>
+                                            <input type="text" class="form-control" placeholder="{{__('general.desc')}}" name="description"
                                                 id="description">
                                         </div>
                                     </div>
@@ -58,7 +58,7 @@
                                 <div class="form-row col-md-4">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="control-label" for="date_from">From</label>
+                                            <label class="control-label" for="date_from">{{__('general.from')}}</label>
                                             <div class="controls">
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
@@ -73,7 +73,7 @@
                                     </div>
                                     <div class="col-md-6">
                                       <div class="form-group">
-                                        <label class="control-label" for="date_to">To</label>
+                                        <label class="control-label" for="date_to">{{__('salarymass.to')}}</label>
                                         <div class="controls">
                                           <div class="input-group">
                                             <div class="input-group-prepend">
@@ -94,10 +94,10 @@
                                     <tr>
                                         <th style="text-align:center" width="10">#</th>
                                         {{-- <th width="150">Ref No</th> --}}
-                                        <th width="100">Date</th>
-                                        <th width="250">Description</th>
-                                        <th width="100">Total Employee</th>
-                                        <th width="100">Action</th>
+                                        <th width="100">{{__('general.date')}}</th>
+                                        <th width="250">{{__('general.desc')}}</th>
+                                        <th width="100">{{__('salarymass.totalemp')}}</th>
+                                        <th width="100">{{__('general.act')}}</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -114,12 +114,12 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="employee_name">Employee Name</label>
+                                        <label class="control-label" for="employee_name">{{__('employee.empname')}}</label>
                                         {{-- <input type="text" class="form-control" placeholder="Employee Name"
                                             name="employee_name" id="employee_name"> --}}
                                         <select name="employee_name[]" id="employee_name" class="form-control select2 sorting"
                                             style="width: 100%" aria-hidden="true" multiple
-                                            data-placeholder="Employee Name">
+                                            data-placeholder="{{__('employee.empname')}}">
                                             <option value=""></option>
                                             @foreach ($employees as $employee)
                                             <option value="{{ $employee->id }}">{{ $employee->name }}</option>
@@ -140,9 +140,9 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="position">Position</label>
+                                        <label class="control-label" for="position">{{__('employee.position')}}</label>
                                         <select name="position[]" id="position" class="form-control select2 sorting"
-                                            style="width: 100%" aria-hidden="true" multiple data-placeholder="Position">
+                                            style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('employee.position')}}">
                                             @foreach ($titles as $position)
                                             <option value="{{ $position->id }}">{{ $position->name }}</option>
                                             @endforeach
@@ -153,10 +153,10 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="department">Department</label>
+                                        <label class="control-label" for="department">{{__('department.dep')}}</label>
                                         <select name="department[]" id="department" class="form-control select2 sorting"
                                             style="width: 100%" aria-hidden="true" multiple
-                                            data-placeholder="Department">
+                                            data-placeholder="{{__('department.dep')}}">
                                             @foreach ($departments as $department)
                                             <option value="{{ $department->name }}">{{ $department->path }}</option>
                                             @endforeach
@@ -167,10 +167,10 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="workgroup">Workgroup Combination</label>
+                                        <label class="control-label" for="workgroup">{{__('employee.workcomb')}}</label>
                                         <select name="workgroup_id[]" id="workgroup_id" class="form-control select2 sorting"
                                             style="width: 100%" aria-hidden="true" multiple
-                                            data-placeholder="Workgroup Combination">
+                                            data-placeholder="{{__('employee.workcomb')}}">
                                             @foreach ($workgroups as $workgroup)
                                             <option value="{{ $workgroup->id }}">{{ $workgroup->name }}</option>
                                             @endforeach
@@ -183,10 +183,10 @@
                             <thead>
                                 <tr>
                                     <th style="text-align:center" width="10">#</th>
-                                    <th width="200">Reff No</th>
-                                    <th width="250">Employee</th>
-                                    <th width="250">Position</th>
-                                    <th width="100">Increases Amount</th>
+                                    <th width="200">{{__('salarymass.reff_no')}}</th>
+                                    <th width="250">{{__('employee.employ')}}</th>
+                                    <th width="250">{{__('employee.position')}}</th>
+                                    <th width="100">{{__('salarymass.incramt')}}</th>
                                     {{-- <th width="100">Action</th> --}}
                                 </tr>
                             </thead>
@@ -243,6 +243,14 @@
             order: [
                 [4, "asc"]
             ],
+            language: {
+                lengthMenu: `{{ __('general.showent') }}`,
+                processing: `{{ __('general.process') }}`,
+                paginate: {
+                    previous: `{{ __('general.prev') }}`,
+                    next: `{{ __('general.next') }}`,
+                }
+            },
             ajax: {
                 url: "{{route('salaryincreases.read')}}",
                 type: "GET",
@@ -274,8 +282,8 @@
                         <i class="fa fa-bars"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" href="{{url('admin/salaryincreases')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-                        <li><a class="dropdown-item" href="{{url('admin/salaryincreases')}}/${row.id}/show"><i class="fas fa-user mr-2"></i> Add Massal</a></li>
+                        <li><a class="dropdown-item" href="{{url('admin/salaryincreases')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{__('general.edt')}}</a></li>
+                        <li><a class="dropdown-item" href="{{url('admin/salaryincreases')}}/${row.id}/show"><i class="fas fa-user mr-2"></i> Add Mass</a></li>
                     </ul></div>`
                     },
                     targets: [4]
@@ -309,6 +317,14 @@
                 order: [
                     [4, "asc"]
                 ],
+                language: {
+                    lengthMenu: `{{ __('general.showent') }}`,
+                    processing: `{{ __('general.process') }}`,
+                    paginate: {
+                        previous: `{{ __('general.prev') }}`,
+                        next: `{{ __('general.next') }}`,
+                    }
+                },
                 ajax: {
                     url: "{{ route('salaryincreasedetail.read') }}",
                     type: "GET",

@@ -1,20 +1,20 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Allowance Increase')
+@section('title',__('allowancemass.alwincr'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 
 @endsection
 @push('breadcrump')
-<li class="breadcrumb-item">Allowance Increase</li>
+<li class="breadcrumb-item">{{__('allowancemass.alwincr')}}</li>
 @endpush
 @section('content')
 <div class="row">
     <div class="col-lg-12">
         <div class="card card-{{ config('configs.app_theme')}} card-outline">
             <div class="card-header">
-                <h3 class="card-title">Allowance Increase List</h3>
+                <h3 class="card-title">{{__('allowancemass.alwinclist')}}</h3>
                 <!-- tools box -->
                 <div class="pull-right card-tools">
                     <a href="{{route('allowanceincrease.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white"
@@ -42,14 +42,14 @@
                         <div class="col-md-4">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label class="control-label" for="nid">Description</label>
-                                    <input type="text" class="form-control" placeholder="Description" name="note"
+                                    <label class="control-label" for="nid">{{__('general.desc')}}</label>
+                                    <input type="text" class="form-control" placeholder="{{__('general.desc')}}" name="note"
                                         id="note">
                                 </div>
                             </div>
                             </div>
                             <div class="col-md-4">
-                                <label class="control-label" for="period">Period</label>
+                                <label class="control-label" for="period">{{__('general.period')}}</label>
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <select class="form-control select2" name="month" id="month">
@@ -88,10 +88,10 @@
                             <tr>
                                 <th style="text-align:center" width="10">#</th>
                                 {{-- <th width="150">Ref No</th> --}}
-                                <th width="100">Period</th>
-                                <th width="250">Description</th>
-                                <th width="100">Total Employee</th>
-                                <th width="100">Action</th>
+                                <th width="100">{{__('general.period')}}</th>
+                                <th width="250">{{__('general.desc')}}</th>
+                                <th width="100">{{__('salarymass.totalemp')}}</th>
+                                <th width="100">{{__('general.act')}}</th>
                             </tr>
                         </thead>
                     </table>
@@ -149,6 +149,14 @@
             order: [
                 [4, "asc"]
             ],
+            language: {
+                lengthMenu: `{{ __('general.showent') }}`,
+                processing: `{{ __('general.process') }}`,
+                paginate: {
+                    previous: `{{ __('general.prev') }}`,
+                    next: `{{ __('general.next') }}`,
+                }
+            },
             ajax: {
                 url: "{{route('allowanceincrease.read')}}",
                 type: "GET",
