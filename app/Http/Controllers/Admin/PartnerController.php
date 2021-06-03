@@ -31,7 +31,7 @@ class PartnerController extends Controller
         $query->select('partners.*');
         $query->leftJoin('departments','departments.id','=','partners.department_id');
         $query->leftJoin('trucks','trucks.id','=','partners.truck_id');
-        $query->whereRaw("upper(name) like '%$name%'");
+        $query->whereRaw("upper(partners.name) like '%$name%'");
         if($truck_id){
             $query->where('truck_id',$truck_id);
         }
@@ -45,7 +45,7 @@ class PartnerController extends Controller
         $query->select('partners.*','departments.name as department_name','trucks.name as truck_name');
         $query->leftJoin('departments','departments.id','=','partners.department_id');
         $query->leftJoin('trucks','trucks.id','=','partners.truck_id');
-        $query->whereRaw("upper(name) like '%$name%'");
+        $query->whereRaw("upper(partners.name) like '%$name%'");
         if($truck_id){
             $query->where('truck_id',$truck_id);
         }
@@ -81,7 +81,7 @@ class PartnerController extends Controller
         $query->select('partners.*');
         $query->leftJoin('departments','departments.id','=','partners.department_id');
         $query->leftJoin('trucks','trucks.id','=','partners.truck_id');
-        $query->whereRaw("upper(name) like '%$name%'");
+        $query->whereRaw("upper(partners.name) like '%$name%'");
         $recordsTotal = $query->count();
 
         //Select Pagination
@@ -89,7 +89,7 @@ class PartnerController extends Controller
         $query->select('partners.*','departments.name as department_name','trucks.name as truck_name');
         $query->leftJoin('departments','departments.id','=','partners.department_id');
         $query->leftJoin('trucks','trucks.id','=','partners.truck_id');
-        $query->whereRaw("upper(name) like '%$name%'");
+        $query->whereRaw("upper(partners.name) like '%$name%'");
         $query->offset($start);
         $query->limit($length);
         $query->orderBy($sort, $dir);
