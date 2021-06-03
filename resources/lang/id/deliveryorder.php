@@ -13,4 +13,5 @@ return [
     'type_truck'  => 'Tipe Truk',
     'depdate'     => 'Tanggal Berangkat',
     'arrdate'     => 'Tanggal Tiba',
+    'driver'      => 'Supir',
 ];

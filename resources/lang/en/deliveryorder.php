@@ -3,8 +3,8 @@ return[
     /**Delivery Order */
     'do'          => 'Delivery Order',
     'dolist'      => 'Delivery Order List',
-    'nopolice'    => 'Police No',
-    'driver_name' => 'Driver Name',
+    'policeno'    => 'Police No',
+    'drivernm' => 'Driver Name',
     'from'        => 'From',
     'to'          => 'To',
     'deptime'     => 'Departure Time',
@@ -12,4 +12,5 @@ return[
     'type_truck'  => 'Truck Type',
     'depdate'     => 'Departure Date',
     'arrdate'     => 'Arrive Date',
+    'driver'      => 'Driver',
 ];

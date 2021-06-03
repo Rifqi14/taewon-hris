@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Edit Delivery Order')
+@section('title',__('deliveryorder.do'))
 @section('stylesheets')
 <link rel="stylesheet" href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}">
 <link rel="stylesheet" href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}">
@@ -7,8 +7,8 @@
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 @endsection
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{ route('deliveryorder.index') }}">Delivery Order</a></li>
-<li class="breadcrumb-item active">edit</li>
+<li class="breadcrumb-item"><a href="{{ route('deliveryorder.index') }}">{{__('deliveryorder.do')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.edt')}}</li>
 @endpush
 
 @section('content')
@@ -17,10 +17,10 @@
     <div class="col-lg-12">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">List Delivery Order</h3>
+          <h3 class="card-title">{{__('deliveryorder.dolist')}}</h3>
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i class="fa fa-save"></i></button>
-            <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{__('general.save')}}"><i class="fa fa-save"></i></button>
+            <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i class="fa fa-reply"></i></a>
           </div>
         </div>
         <div class="card-body">
@@ -44,7 +44,7 @@
             </div> --}}
             <div class="form-group col-sm-6">
               <div class="row">
-                <label class="col-sm-3 label-controls" for="truck_id">Type Truck</label>
+                <label class="col-sm-3 label-controls" for="truck_id">{{__('deliveryorder.type_truck')}}</label>
                 <div class="col-sm-8 controls">
                   <select name="truck_id" id="truck_id" class="form-control select2" style="width: 100%" required>
                   @foreach($trucks as $truck)
@@ -64,7 +64,7 @@
             </div> --}}
             <div class="form-group col-sm-6">
               <div class="row">
-                <label class="col-sm-3 label-controls" for="driver_id">Driver Name</label>
+                <label class="col-sm-3 label-controls" for="driver_id">{{__('deliveryorder.drivernm')}}</label>
                 <div class="col-sm-8 controls">
                   <input type="text" class="form-control" id="driver_id" name="driver_id" data-placeholder="Select Driver">
                 </div>
@@ -72,23 +72,23 @@
             </div>
             <div class="form-group col-sm-6">
               <div class="row">
-                <label class="col-sm-3 label-controls" for="date">Police No</label>
+                <label class="col-sm-3 label-controls" for="date">{{__('deliveryorder.policeno')}}</label>
                 <div class="col-sm-8 controls">
-                  <input type="text" id="police_no" name="police_no" class="form-control" placeholder="Police No" required value="{{ $deliveryorder->police_no }}"/>
+                  <input type="text" id="police_no" name="police_no" class="form-control" placeholder="{{__('deliveryorder.policeno')}}" required value="{{ $deliveryorder->police_no }}"/>
                 </div>
               </div>
             </div>
             <div class="form-group col-sm-6">
               <div class="row">
-                <label class="col-sm-3 label-controls" for="customer">Customer</label>
+                <label class="col-sm-3 label-controls" for="customer">{{__('customer.cust')}}</label>
                 <div class="col-sm-8 controls">
-                  <input type="text" id="customer" name="customer" class="form-control" placeholder="Customer"/>
+                  <input type="text" id="customer" name="customer" class="form-control" placeholder="{{__('customer.cust')}}"/>
                 </div>
               </div>
             </div>
             <div class="form-group col-sm-6">
               <div class="row">
-                <label class="col-sm-3 label-controls" for="departure_time">Departure Date</label>
+                <label class="col-sm-3 label-controls" for="departure_time">{{__('deliveryorder.depdate')}}</label>
                 <div class="col-sm-8 controls">
                   <div class="input-group">
                     <div class="input-group-prepend">
@@ -96,14 +96,14 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
                     </div>
-                    <input type="text" name="departure_date" class="form-control datepicker" id="departure_date" placeholder="Departure Date" required value="{{ date('d/m/Y', strtotime($deliveryorder->departure_date)) }}" />
+                    <input type="text" name="departure_date" class="form-control datepicker" id="departure_date" placeholder="{{__('deliveryorder.depdate')}}" required value="{{ date('d/m/Y', strtotime($deliveryorder->departure_date)) }}" />
                   </div>
                 </div>
               </div>
             </div>
             <div class="form-group col-sm-6">
               <div class="row">
-                <label class="col-sm-3 label-controls" for="departure_time">Departure Time</label>
+                <label class="col-sm-3 label-controls" for="departure_time">{{__('deliveryorder.deptime')}}</label>
                 <div class="col-sm-8 controls">
                   <div class="input-group">
                     <div class="input-group-prepend">
@@ -111,14 +111,14 @@
                         <i class="fas fa-clock"></i>
                       </span>
                     </div>
-                    <input type="text" name="departure_time" class="form-control timepicker" id="departure_time" placeholder="Departure Time" required value="{{ date('H:i:s', strtotime($deliveryorder->departure_time)) }}" />
+                    <input type="text" name="departure_time" class="form-control timepicker" id="departure_time" placeholder="{{__('deliveryorder.deptime')}}" required value="{{ date('H:i:s', strtotime($deliveryorder->departure_time)) }}" />
                   </div>
                 </div>
               </div>
             </div>
             <div class="form-group col-sm-6">
               <div class="row">
-                <label class="col-sm-3 label-controls" for="arrived_time">Arrived Date</label>
+                <label class="col-sm-3 label-controls" for="arrived_time">{{__('deliveryorder.arrdate')}}</label>
                 <div class="col-sm-8 controls">
                   <div class="input-group">
                     <div class="input-group-prepend">
@@ -126,14 +126,14 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
                     </div>
-                    <input type="text" name="arrived_date" class="form-control datepicker" id="arrived_date" placeholder="Arrived Date" required value="{{ date('d/m/Y', strtotime($deliveryorder->arrived_date)) }}" />
+                    <input type="text" name="arrived_date" class="form-control datepicker" id="arrived_date" placeholder="{{__('deliveryorder.arrdate')}}" required value="{{ date('d/m/Y', strtotime($deliveryorder->arrived_date)) }}" />
                   </div>
                 </div>
               </div>
             </div>
             <div class="form-group col-sm-6">
               <div class="row">
-                <label class="col-sm-3 label-controls" for="arrived_time">Arrived Time</label>
+                <label class="col-sm-3 label-controls" for="arrived_time">{{__('deliveryorder.arrtime')}}</label>
                 <div class="col-sm-8 controls">
                   <div class="input-group">
                     <div class="input-group-prepend">
@@ -141,7 +141,7 @@
                         <i class="fas fa-clock"></i>
                       </span>
                     </div>
-                    <input type="text" name="arrived_time" class="form-control timepicker" id="arrived_time" placeholder="Arrived Time" required value="{{ date('H:i:s', strtotime($deliveryorder->arrived_time)) }}" />
+                    <input type="text" name="arrived_time" class="form-control timepicker" id="arrived_time" placeholder="{{__('deliveryorder.arrtime')}}" required value="{{ date('H:i:s', strtotime($deliveryorder->arrived_time)) }}" />
                   </div>
                 </div>
               </div>

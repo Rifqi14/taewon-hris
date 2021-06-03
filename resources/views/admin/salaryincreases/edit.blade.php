@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Salary Increases')
+@section('title',__('salarymass.slinc'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -9,8 +9,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('salaryincreases.index')}}">Salary Increases</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item active"><a href="{{route('salaryincreases.index')}}">{{__('salarymass.slinc')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.edt')}}</li>
 @endpush
 
 
@@ -21,7 +21,7 @@
             <div class="col-lg-8">
                 <div class="card card-{{ config('configs.app_theme') }} card-outline">
                     <div class="card-header" style="height:55px;">
-                        <h3 class="card-title">Increases Data</h3>
+                        <h3 class="card-title">{{__('salarymass.slinc')}}</h3>
                     </div>
                     <div class="card-body">
                         <form id="form" action="{{route('salaryincreases.update',['id'=>$salaryincreases->id])}}"
@@ -39,7 +39,7 @@
                                 </div> --}}
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label>Date</label>
+                                        <label>{{__('general.date')}}</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">
@@ -47,19 +47,19 @@
                                                 </span>
                                             </div>
                                             <input type="text" name="date" class="form-control datepicker" id="date"
-                                                placeholder="Date" value="{{$salaryincreases->date}}">
+                                                placeholder="{{__('general.date')}}" value="{{$salaryincreases->date}}">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <!-- text input -->
                                     <div class="form-group">
-                                        <label>Increases Type</label>
+                                        <label>{{__('salarymass.incrtype')}}</label>
                                         <select name="increases_type" class="form-control"
-                                            data-placeholder="Select Increases Type" id="increases_type">
+                                            data-placeholder="Select {{__('salarymass.incrtype')}}" id="increases_type">
                                             <option value=""></option>
                                             <option @if($salaryincreases->basic_salary) selected @endif
-                                                value="BasicSalary">Basic Salary
+                                                value="BasicSalary">{{__('employee.bscsl')}}
                                             </option>
                                         </select>
                                     </div>
@@ -75,14 +75,14 @@
                                                     id="type">
                                                     <option value=""></option>
                                                     <option @if($salaryincreases->type == 'Percentage') selected @endif
-                                                        value="Percentage">Percentage</option>
+                                                        value="Percentage">{{__('general.percen')}}</option>
                                                     <option @if($salaryincreases->type == 'Nominal') selected @endif
-                                                        value="Nominal">Nominal</option>
+                                                        value="Nominal">{{__('general.nom')}}</option>
                                                 </select>
                                                 {{-- <input type="text" class="form-control" name="type" id="type" readonly value="{{$salaryincreases->type}}"> --}}
                                             </div>
                                             <div class="col-sm-6">
-                                                <input type="text" name="value" class="form-control" placeholder="Value"
+                                                <input type="text" name="value" class="form-control" placeholder="{{__('general.value')}}"
                                                     value="{{$salaryincreases->value}}" id="value">
                                             </div>
                                         </div>

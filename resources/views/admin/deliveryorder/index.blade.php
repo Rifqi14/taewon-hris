@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Delivery Order')
+@section('title',__('deliveryorder.do'))
 @section('stylesheets')
 <link href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
@@ -16,7 +16,7 @@
 </style>
 @endsection
 @push('breadcrump')
-<li class="breadcrumb-item active">Delivery Order</li>
+<li class="breadcrumb-item active">{{__('deliveryorder.do')}}</li>
 @endpush
 
 @section('content')
@@ -25,12 +25,12 @@
     <div class="col-lg-12">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Delivery Order List</h3>
+          <h3 class="card-title">{{__('deliveryorder.dolist')}}</h3>
           <div class="pull-right card-tools">
-            <a href="{{route('deliveryorder.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="Import" style="cursor: pointer;"><i class="fa fa-file-import"></i></a>
+            <a href="{{route('deliveryorder.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="{{__('general.imp')}}" style="cursor: pointer;"><i class="fa fa-file-import"></i></a>
             <a href="{{route('deliveryorder.create')}}"
               class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip"
-              title="Add Data">
+              title="{{__('general.crt')}}">
               <i class="fa fa-plus"></i>
             </a>
           </div>
@@ -39,8 +39,8 @@
           <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label" for="driver_id">Driver Name</label>
-                  <input type="text" name="driver_id" id="driver_id" class="form-control filter" placeholder="Driver Name">
+                  <label class="control-label" for="driver_id">{{__('deliveryorder.drivernm')}}</label>
+                  <input type="text" name="driver_id" id="driver_id" class="form-control filter" placeholder="{{__('deliveryorder.drivernm')}}">
                   {{-- <select name="driver_id" id="driver_id" class="form-control select2 filter" style="width: 100%" aria-hidden="true"  data-placeholder="Driver Name">
                       <option value=""></option>
                       @foreach ($employees as $employee)
@@ -52,9 +52,9 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label" for="police_no">Police No</label>
+                  <label class="control-label" for="police_no">{{__('deliveryorfer.policeno')}}</label>
                   {{-- <input type="text" name="police_no" id="police_no" class="form-control filter" placeholder="Police No" multiple> --}}
-                  <select name="police_no" id="police_no" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple  data-placeholder="Police No">
+                  <select name="police_no" id="police_no" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple  data-placeholder="{{__('deliveryorfer.policeno')}}">
                     <option value=""></option>
                     @foreach ($police_nomer as $police)
                     <option value="{{ $police->police_no }}">{{ $police->police_no }}</option>
@@ -65,7 +65,7 @@
               <div class="form-row col-md-4">
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label class="control-label" for="date_from">From</label>
+                    <label class="control-label" for="date_from">{{__('deliveryorder.from')}}</label>
                     <div class="controls">
                       <div class="input-group">
                         <div class="input-group-prepend">
@@ -73,14 +73,14 @@
                             <i class="far fa-calendar-alt"></i>
                           </span>
                         </div>
-                        <input type="text" name="date_from" id="date_from" class="form-control filter" placeholder="Date">
+                        <input type="text" name="date_from" id="date_from" class="form-control filter" placeholder="{{__('general.date')}}">
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="col-md-6">
                 <div class="form-group">
-                  <label class="control-label" for="date_to">To</label>
+                  <label class="control-label" for="date_to">{{__('deliveryorder.to')}}</label>
                   <div class="controls">
                     <div class="input-group">
                       <div class="input-group-prepend">
@@ -96,7 +96,7 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label" for="destination">Customer</label>
+                  <label class="control-label" for="destination">{{__('customer.cust')}}</label>
                   {{-- <input type="text" name="destination" id="destination" class="form-control filter" placeholder="Destination"> --}}
                   {{-- <select name="destination" id="destination" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple data-placeholder="Customer">
                     <option value=""></option>
@@ -122,13 +122,13 @@
             <thead>
               <tr>
                 <th width="10">No</th>
-                <th width="70">Departure Time</th>
-                <th width="100">Arrived Time</th>
+                <th width="70">{{__('deliveryorder.deptime')}}</th>
+                <th width="100">{{__('deliveryorder.arrtime')}}</th>
                 <th width="100">Kloter</th>
-                <th width="130" class="text-left">Driver</th>
-                <th width="100">Police No</th>
-                <th width="100">Customer</th>
-                <th width="10">Action</th>
+                <th width="130" class="text-left">{{__('deliveryorder.driver')}}</th>
+                <th width="100">{{__('deliveryorfer.policeno')}}</th>
+                <th width="100">{{__('customer.cust')}}</th>
+                <th width="10">{{__('general.act')}}</th>
               </tr>
             </thead>
           </table>
@@ -145,7 +145,7 @@
     <div class="modal-content">
       <div class="modal-header no-print">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-        <h4 class="modal-title">Print</h4>
+        <h4 class="modal-title">{{__('general.print')}}</h4>
       </div>
       <div class="modal-body">
         <div class="row">
@@ -247,6 +247,14 @@
       lengthChange:true,
       responsive: true,
       order: [[ 1, "asc" ]],
+      language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
       lengthMenu: [ 100, 250, 500, 1000, 2000 ],
       pageLength: 1000,
       ajax: {

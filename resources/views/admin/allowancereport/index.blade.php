@@ -227,6 +227,14 @@
       pageLength: 100,
       responsive:true,
       order: [[ 1, "asc" ]],
+      language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
       ajax: {
         url: "{{route('allowancereport.read')}}",
         type: "GET",
