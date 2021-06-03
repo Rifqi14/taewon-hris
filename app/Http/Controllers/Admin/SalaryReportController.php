@@ -119,6 +119,13 @@ class SalaryReportController extends Controller
     }
     if ($department_ids) {
       $string = '';
+      $uniqdepartments = [];
+      foreach($department_ids as $dept){
+          if(!in_array($dept,$uniqdepartments)){
+              $uniqdepartments[] = $dept;
+          }
+      }
+      $department_ids = $uniqdepartments;
       foreach ($department_ids as $dept) {
         $string .= "departments.path like '%$dept%'";
         if (end($department_ids) != $dept) {
@@ -172,6 +179,13 @@ class SalaryReportController extends Controller
     }
     if ($department_ids) {
       $string = '';
+      $uniqdepartments = [];
+      foreach($department_ids as $dept){
+          if(!in_array($dept,$uniqdepartments)){
+              $uniqdepartments[] = $dept;
+          }
+      }
+      $department_ids = $uniqdepartments;
       foreach ($department_ids as $dept) {
         $string .= "departments.path like '%$dept%'";
         if (end($department_ids) != $dept) {
@@ -1027,7 +1041,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-            if (strpos($employee->department->path, 'Driver') !== false && $driverallowance > 0) {
+            if ($employee->department->driver == 'yes' && $driverallowance > 0) {
               $spsi = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
@@ -1098,11 +1112,7 @@ class SalaryReportController extends Controller
               //PPH Gaji + THR
               $grossSalaryJoinMonth   = getGrossSalaryJoinMonth($gross, $multiplierMonth);
               $getThr                 = $this->getThrReport($month, $year, $employee->id);
-              $total                  = getTotal($grossSalaryJoinMonth, $getThr->amount);
-              $totalPositionAllowance = getTotalPositionAllowance($total);
-              $netSalaryThr           = getNetSalaryThr($total, $totalPositionAllowance);
-              $pkpThr                 = getPkpThr($netSalaryThr, $ptkp->value);
-              $tarifThr               = getTarifThr($pkpThr);
+              
 
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
@@ -1140,15 +1150,24 @@ class SalaryReportController extends Controller
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
               ]);
-              SalaryReportDetail::create([
-                'salary_report_id' => $salaryreport->id,
-                'employee_id'      => $employee->id,
-                'description'      => LABEL_PPH_THR,
-                'total'            => $tarifThr > 0 ? $tarifThr - $pph21Yearly : 0,
-                'type'             => 0,
-                'status'           => 'Draft',
-                'is_added'         => 'NO'
-              ]);
+              if($getThr){
+                $total                  = getTotal($grossSalaryJoinMonth, $getThr->amount);
+                $totalPositionAllowance = getTotalPositionAllowance($total);
+                $netSalaryThr           = getNetSalaryThr($total, $totalPositionAllowance);
+                $pkpThr                 = getPkpThr($netSalaryThr, $ptkp->value);
+                $tarifThr               = getTarifThr($pkpThr);
+
+                SalaryReportDetail::create([
+                  'salary_report_id' => $salaryreport->id,
+                  'employee_id'      => $employee->id,
+                  'description'      => LABEL_PPH_THR,
+                  'total'            => $tarifThr > 0 ? $tarifThr - $pph21Yearly : 0,
+                  'type'             => 0,
+                  'status'           => 'Draft',
+                  'is_added'         => 'NO'
+                ]);
+              }
+              
             }
             $salaryreport->gross_salary = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
             $salaryreport->deduction    = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
@@ -1423,7 +1442,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-            if (strpos($employee->department->path, 'Driver') !== false && $driverallowance > 0) {
+            if ($employee->department->driver == 'yes' && $driverallowance > 0) {
               $spsi = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
@@ -1494,11 +1513,7 @@ class SalaryReportController extends Controller
               //PPH Gaji + THR
               $grossSalaryJoinMonth             = getGrossSalaryJoinMonth($gross, $multiplierMonth);
               $getThr                           = $this->getThrReport($month, $year, $employee->id);
-              $total                            = getTotal($grossSalaryJoinMonth, $getThr->amount);
-              $totalPositionAllowance           = getTotalPositionAllowance($total);
-              $netSalaryThr                     = getNetSalaryThr($total, $totalPositionAllowance);
-              $pkpThr                           = getPkpThr($netSalaryThr, $ptkp->value);
-              $tarifThr                         = getTarifThr($pkpThr);
+              
 
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
@@ -1536,15 +1551,24 @@ class SalaryReportController extends Controller
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
               ]);
-              SalaryReportDetail::create([
-                'salary_report_id' => $salaryreport->id,
-                'employee_id'      => $employee->id,
-                'description'      => LABEL_PPH_THR,
-                'total'            => $tarifThr > 0 ? $tarifThr - $pph21Yearly : 0,
-                'type'             => 0,
-                'status'           => 'Draft',
-                'is_added'         => 'NO'
-              ]);
+              if($getThr){
+                $total                            = getTotal($grossSalaryJoinMonth, $getThr->amount);
+                $totalPositionAllowance           = getTotalPositionAllowance($total);
+                $netSalaryThr                     = getNetSalaryThr($total, $totalPositionAllowance);
+                $pkpThr                           = getPkpThr($netSalaryThr, $ptkp->value);
+                $tarifThr                         = getTarifThr($pkpThr);
+
+                SalaryReportDetail::create([
+                  'salary_report_id' => $salaryreport->id,
+                  'employee_id'      => $employee->id,
+                  'description'      => LABEL_PPH_THR,
+                  'total'            => $tarifThr > 0 ? $tarifThr - $pph21Yearly : 0,
+                  'type'             => 0,
+                  'status'           => 'Draft',
+                  'is_added'         => 'NO'
+                ]);
+              }
+              
             }
             $salaryreport->gross_salary = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
             $salaryreport->deduction    = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
@@ -1819,7 +1843,7 @@ class SalaryReportController extends Controller
                 'is_added'          => 'NO'
               ]);
             }
-            if (strpos($employee->department->path, 'Driver') !== false && $driverallowance > 0) {
+            if ($employee->department->driver == 'yes' && $driverallowance > 0) {
               $spsi = SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
@@ -1891,11 +1915,6 @@ class SalaryReportController extends Controller
               //PPH Gaji + THR
               $grossSalaryJoinMonth   = getGrossSalaryJoinMonth($gross, $multiplierMonth);
               $getThr                 = $this->getThrReport($month, $year, $employee->id);
-              $total                  = getTotal($grossSalaryJoinMonth, $getThr->amount);
-              $totalPositionAllowance = getTotalPositionAllowance($total);
-              $netSalaryThr           = getNetSalaryThr($total, $totalPositionAllowance);
-              $pkpThr                 = getPkpThr($netSalaryThr, $ptkp->value);
-              $tarifThr               = getTarifThr($pkpThr);
 
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
@@ -1933,15 +1952,24 @@ class SalaryReportController extends Controller
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
               ]);
-              SalaryReportDetail::create([
-                'salary_report_id'  => $salaryreport->id,
-                'employee_id'       => $employee->id,
-                'description'       => LABEL_PPH_THR,
-                'total'             => $tarifThr > 0 ? $tarifThr - $pph21Yearly : 0,
-                'type'              => 0,
-                'status'            => 'Draft',
-                'is_added'          => 'NO'
-              ]);
+              if($getThr){
+                $total                  = getTotal($grossSalaryJoinMonth, $getThr->amount);
+                $totalPositionAllowance = getTotalPositionAllowance($total);
+                $netSalaryThr           = getNetSalaryThr($total, $totalPositionAllowance);
+                $pkpThr                 = getPkpThr($netSalaryThr, $ptkp->value);
+                $tarifThr               = getTarifThr($pkpThr);
+
+                SalaryReportDetail::create([
+                  'salary_report_id'  => $salaryreport->id,
+                  'employee_id'       => $employee->id,
+                  'description'       => LABEL_PPH_THR,
+                  'total'             => $tarifThr > 0 ? $tarifThr - $pph21Yearly : 0,
+                  'type'              => 0,
+                  'status'            => 'Draft',
+                  'is_added'          => 'NO'
+                ]);
+              }
+              
             }
             $salaryreport->gross_salary = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
             $salaryreport->deduction    = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
@@ -2270,7 +2298,7 @@ class SalaryReportController extends Controller
               ]);
 
             }
-            if (strpos($employee->department->path, 'Driver') !== false && $driverallowance > 0) {
+            if ($employee->department->driver == 'yes' && $driverallowance > 0) {
               $spsi = SalaryReportDetail::create([
                 'salary_report_id'  => $id,
                 'employee_id'       => $view_employee,
@@ -2352,12 +2380,7 @@ class SalaryReportController extends Controller
               //PPH Gaji + THR
               $grossSalaryJoinMonth   = getGrossSalaryJoinMonth($gross, $multiplierMonth);
               $getThr                 = $this->getThrReport($request->montly, $request->year, $employee->id);
-              $total                  = getTotal($grossSalaryJoinMonth, $getThr->amount);
-              $totalPositionAllowance = getTotalPositionAllowance($total);
-              $netSalaryThr           = getNetSalaryThr($total, $totalPositionAllowance);
-              $pkpThr                 = getPkpThr($netSalaryThr, $ptkp->value);
-              $tarifThr               = getTarifThr($pkpThr);
-    
+              
               SalaryReportDetail::create([
                 'salary_report_id'  => $salaryreport->id,
                 'employee_id'       => $employee->id,
@@ -2394,15 +2417,23 @@ class SalaryReportController extends Controller
                 'status'            => 'Draft',
                 'is_added'          => 'NO'
               ]);
-              SalaryReportDetail::create([
-                'salary_report_id'  => $salaryreport->id,
-                'employee_id'       => $employee->id,
-                'description'       => LABEL_PPH_THR,
-                'total'             => $tarifThr > 0 ? $tarifThr - $pph21Yearly :0,
-                'type'              => 0,
-                'status'            => 'Draft',
-                'is_added'          => 'NO'
-              ]);
+              if ($getThr) {
+                $total                  = getTotal($grossSalaryJoinMonth, $getThr->amount);
+                $totalPositionAllowance = getTotalPositionAllowance($total);
+                $netSalaryThr           = getNetSalaryThr($total, $totalPositionAllowance);
+                $pkpThr                 = getPkpThr($netSalaryThr, $ptkp->value);
+                $tarifThr               = getTarifThr($pkpThr);
+
+                SalaryReportDetail::create([
+                  'salary_report_id'  => $salaryreport->id,
+                  'employee_id'       => $employee->id,
+                  'description'       => LABEL_PPH_THR,
+                  'total'             => $tarifThr > 0 ? $tarifThr - $pph21Yearly : 0,
+                  'type'              => 0,
+                  'status'            => 'Draft',
+                  'is_added'          => 'NO'
+                ]);
+              }
               
             }
             $salaryreport->gross_salary = $this->gross_salary($id) ? $this->gross_salary($id) : 0;

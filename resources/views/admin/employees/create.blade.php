@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Employee')
+@section('title',__('employee.employ'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -9,8 +9,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('employees.index')}}">Employee</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item active"><a href="{{route('employees.index')}}">{{ __('employee.employ') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.crt') }}</li>
 @endpush
 
 
@@ -22,11 +22,11 @@
             <div class="col-lg-12">
                 <div class="card card-{{ config('configs.app_theme') }} card-outline">
                     <div class="card-header">
-                        <h3 class="card-title">Employee Data</h3>
+                        <h3 class="card-title">{{ __('general.crt') }} {{ __('employee.employ') }}</h3>
                         <div class="pull-right card-tools">
                             <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}"
-                                title="Simpan"><i class="fa fa-save"></i></button>
-                            <a href="#"  onClick="backurl()"  class="btn btn-sm btn-default" title="Kembali"><i
+                                title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+                            <a href="#"  onClick="backurl()"  class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i
                                     class="fa fa-reply"></i></a>
                         </div>
                     </div>
@@ -37,8 +37,8 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label>Name <b class="text-danger">*</b></label>
-                                            <input type="text" class="form-control" placeholder="Name"
+                                            <label>{{ __('general.name') }} <b class="text-danger">*</b></label>
+                                            <input type="text" class="form-control" placeholder="{{ __('general.name') }}"
                                                 name="name" required>
                                         </div>
                                     </div>
@@ -54,18 +54,18 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label>Department <b class="text-danger">*</b></label>
+                                            <label>{{ __('department.dep') }} <b class="text-danger">*</b></label>
                                             <input type="text" class="form-control" name="department_id"
-                                                id="department_id" data-placeholder="Select Department"
+                                                id="department_id" data-placeholder="{{ __('general.chs') }} {{ __('department.dep') }}"
                                                 required>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <!-- text input -->
                                         <div class="form-group">
-                                            <label>Position <b class="text-danger">*</b></label>
+                                            <label>{{ __('position.pos') }} <b class="text-danger">*</b></label>
                                             <input type="text" class="form-control" name="title_id"
-                                                id="title_id" data-placeholder="Select Position" required>
+                                                id="title_id" data-placeholder="{{ __('general.chs') }} {{ __('position.pos') }}" required>
                                         </div>
                                     </div>
                                 </div>
@@ -73,17 +73,17 @@
                                     <div class="col-sm-6">
                                         <!-- text input -->
                                         <div class="form-group">
-                                            <label>Work Group Combination <b class="text-danger">*</b></label>
+                                            <label>{{ __('employee.workcomb') }} <b class="text-danger">*</b></label>
                                             <input type="text" class="form-control" name="workgroup_id"
-                                                id="workgroup_id" data-placeholder="Select Workgroup"
+                                                id="workgroup_id" data-placeholder="{{ __('general.chs') }} {{ __('employee.workcomb') }}"
                                                 required>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label>Grade <b class="text-danger">*</b></label>
+                                            <label>{{ __('employee.grade') }} <b class="text-danger">*</b></label>
                                             <input type="text" class="form-control" name="grade_id"
-                                                id="grade_id" data-placeholder="Select Grade" required>
+                                                id="grade_id" data-placeholder="{{ __('general.chs') }} {{ __('employee.grade') }}" required>
                                         </div>
                                     </div>
                                 </div>
@@ -94,7 +94,7 @@
                                         <!-- text input -->
                                         <div class="form-group">
                                             <label for="app_logo"
-                                                class="col-sm-5 control-label">Image </label>
+                                                class="col-sm-5 control-label">{{ __('employee.img') }} </label>
                                             <div class="col-sm-12" style="border:1px solid #bdc3c7; border-radius:5px; height:203px; padding-top:10px;">
                                                 <input type="file" class="form-control" name="photo"
                                                     id="picture" accept="photo/*" />
@@ -112,7 +112,7 @@
             <div class="col-lg-8">
                 <div class="card card-{{ config('configs.app_theme') }} card-outline">
                     <div class="card-header">
-                        <h3 class="card-title">Personal Data</h3>
+                        <h3 class="card-title">{{ __('employee.person_data') }}</h3>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -134,14 +134,14 @@
                             <div class="col-sm-6">
                                 <!-- text input -->
                                 <div class="form-group">
-                                    <label>Place Of Birth <b class="text-danger">*</b></label>
+                                    <label>{{ __('employee.pob') }} <b class="text-danger">*</b></label>
                                     <input type="text" class="form-control" name="place_of_birth" id="place_of_birth"
-                                        data-placeholder="Select Place Of Birth" required>
+                                        data-placeholder="{{ __('general.chs') }} {{ __('employee.pob') }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Birthday <b class="text-danger">*</b></label>
+                                    <label>{{ __('employee.birthday') }} <b class="text-danger">*</b></label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">
@@ -149,7 +149,7 @@
                                             </span>
                                         </div>
                                         <input type="text" name="birth_date" class="form-control datepicker"
-                                            id="birth_date" placeholder="Birthday" required>
+                                            id="birth_date" placeholder="{{ __('employee.birthday') }}" required>
                                     </div>
                                 </div>
                             </div>
@@ -157,20 +157,20 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Gender <b class="text-danger">*</b></label>
+                                    <label>{{ __('employee.gender') }} <b class="text-danger">*</b></label>
                                     <select name="gender" id="gender" class="form-control select2"
-                                        data-placeholder="Select Gender" required>
+                                        data-placeholder="{{ __('general.chs') }} {{ __('employee.gender') }}" required>
                                         <option value=""></option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
+                                        <option value="male">{{ __('general.m') }}</option>
+                                        <option value="female">{{ __('general.f') }}</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <!-- text input -->
                                 <div class="form-group">
-                                    <label> Biological Mother's Name <b class="text-danger">*</b></label>
-                                    <input type="text" class="form-control" required placeholder=" Biological Mother's Name" name="mother_name">
+                                    <label> {{ __('employee.biomoth') }} <b class="text-danger">*</b></label>
+                                    <input type="text" class="form-control" required placeholder="{{ __('employee.biomoth') }}" name="mother_name">
                                 </div>
                             </div>
                         </div>
@@ -178,8 +178,8 @@
                             <div class="col-sm-6">
                                 <!-- text input -->
                                 <div class="form-group">
-                                    <label>BPJS Tenaga Kerja</label>
-                                    <input type="text" class="form-control" placeholder="BPJS Tenaga Kerja"
+                                    <label>{{ __('employee.bpjs') }}</label>
+                                    <input type="text" class="form-control" placeholder="{{ __('employee.bpjs') }}"
                                         name="bpjs_tenaga_kerja">
                                 </div>
                             </div>
@@ -188,7 +188,7 @@
                                 <div class="form-group">
                                     <label>PTKP <b class="text-danger">*</b></label>
                                     <select name="ptkp" id="ptkp" class="form-control select2"
-                                        data-placeholder="Select PTKP" required>
+                                        data-placeholder="{{ __('general.chs') }} PTKP" required>
                                         <option value=""></option>
                                         @foreach(config('enums.ptkp') as $key => $value)
                                         <option value="{{ $key }}" @if($key=='None') selected @endif>{{ $value }}</option>
@@ -201,8 +201,8 @@
                             <div class="col-sm-6">
                                 <!-- text input -->
                                 <div class="form-group">
-                                    <label>Phone No <b class="text-danger">*</b></label>
-                                    <input type="number" class="form-control" placeholder="Phone No" name="phone" required>
+                                    <label>{{ __('employee.nophone') }} <b class="text-danger">*</b></label>
+                                    <input type="number" class="form-control" placeholder="{{ __('employee.nophone') }}" name="phone" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -224,25 +224,25 @@
                             <div class="col-sm-12">
                                 <!-- text input -->
                                 <div class="form-group">
-                                    <label>Address <b class="text-danger">*</b></label>
-                                    <input type="text" class="form-control" placeholder="Address" name="address" required>
+                                    <label>{{ __('employee.address') }} <b class="text-danger">*</b></label>
+                                    <input type="text" class="form-control" placeholder="{{ __('employee.address') }}" name="address" required>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Province <b class="text-danger">*</b></label>
+                                    <label>{{ __('general.province') }} <b class="text-danger">*</b></label>
                                     <input type="text" class="form-control" name="province_id" id="province_id"
-                                        data-placeholder="Select Province" required>
+                                        data-placeholder="{{ __('general.chs') }} {{ __('general.province') }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <!-- text input -->
                                 <div class="form-group">
-                                    <label>City <b class="text-danger">*</b></label>
+                                    <label>{{ __('employee.city') }} <b class="text-danger">*</b></label>
                                     <input type="text" class="form-control" name="region_id" id="region_id"
-                                        data-placeholder="Select Region" required>
+                                        data-placeholder="{{ __('general.chs') }} {{ __('employee.city') }}" required>
                                 </div>
                             </div>
                         </div>
@@ -250,7 +250,7 @@
                             <div class="col-sm-6">
                                 <!-- text input -->
                                 <div class="form-group">
-                                    <label>Account No</label>
+                                    <label>{{ __('employee.acc_no') }}</label>
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <input type="text" class="form-control" name="account_bank"
@@ -258,15 +258,15 @@
                                         </div>
                                         <div class="col-sm-8">
                                             <input type="number" class="form-control" name="account_no"
-                                                placeholder="Account No">
+                                                placeholder="{{ __('employee.acc_no') }}">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Account Name</label>
-                                    <input type="text" class="form-control" placeholder="Account Name"
+                                    <label>{{ __('employee.acc_name') }}</label>
+                                    <input type="text" class="form-control" placeholder="{{ __('employee.acc_name') }}"
                                         name="account_name">
                                 </div>
                             </div>
@@ -275,15 +275,15 @@
                             <div class="col-sm-6">
                                 <!-- text input -->
                                 <div class="form-group">
-                                    <label>Emergency Contact No <b class="text-danger">*</b></label>
-                                    <input type="number" class="form-control" placeholder="Emergency Contact No"
+                                    <label>{{ __('employee.emr_no') }} <b class="text-danger">*</b></label>
+                                    <input type="number" class="form-control" placeholder="{{ __('employee.emr_no') }}"
                                         name="emergency_contact_no" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Emergency Contact Name <b class="text-danger">*</b></label>
-                                    <input type="text" class="form-control" placeholder="Emergency Contact Name"
+                                    <label>{{ __('employee.emr_name') }} <b class="text-danger">*</b></label>
+                                    <input type="text" class="form-control" placeholder="{{ __('employee.emr_name') }}"
                                         name="emergency_contact_name" required>
                                 </div>
                             </div>
@@ -292,9 +292,9 @@
                             <div class="col-sm-6">
                                 <!-- text input -->
                                 <div class="form-group">
-                                    <label>Working Time Type <b class="text-danger">*</b></label>
+                                    <label>{{ __('employee.worktype') }} <b class="text-danger">*</b></label>
                                     <select name="working_time_type" id="working_time_type" class="form-control select2"
-                                        data-placeholder="Select Working Time Type"  required >
+                                        data-placeholder="{{ __('general.chs') }} {{ __('employee.worktype') }}"  required >
                                         @foreach(config('enums.workingtime_type') as $value)
                                         <option value="{{ $value }}" @if($value=='Shift') selected @endif>{{ $value }}</option>
                                         @endforeach
@@ -303,26 +303,26 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Working Time</label>
+                                    <label>{{ __('employee.workingtime') }}</label>
                                     <input type="text" class="form-control" name="working_time" id="working_time"
-                                        data-placeholder="Select Working Time" readonly>
+                                        data-placeholder="{{ __('general.chs') }} {{ __('employee.workingtime') }}" readonly>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Calendar <b class="text-danger">*</b></label>
+                                    <label>{{ __('calendar.calendar') }} <b class="text-danger">*</b></label>
                                     <input type="text" class="form-control select2" name="calendar_id" id="calendar_id"
-                                        data-placeholder="Select Calendar" required>
+                                        data-placeholder="{{ __('general.chs') }} {{ __('calendar.calendar') }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <!-- text input -->
                                 <div class="form-group">
-                                    <label>Tax Calculation Method <b class="text-danger">*</b></label>
+                                    <label>{{ __('employee.tax_cal') }} <b class="text-danger">*</b></label>
                                     <select name="tax_calculation" id="calculation" class="form-control select2"
-                                        data-placeholder="Select Calculation" required>
+                                        data-placeholder="{{ __('general.chs') }} {{ __('employee.tax_cal') }}" required>
                                         <option value=""></option>
                                         @foreach(config('enums.calculation') as $key => $value)
                                         <option value="{{ $key }}" @if($key == 'Gross') selected @endif>{{ $value }}</option>
@@ -340,7 +340,7 @@
             <div class="col-lg-4">
                 <div class="card card-{{ config('configs.app_theme') }} card-outline">
                     <div class="card-header">
-                        <h3 class="card-title">Other</h3>
+                        <h3 class="card-title">{{ __('general.other') }}</h3>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -349,55 +349,55 @@
                                 <div class="form-group">
                                     <label>Status <b class="text-danger">*</b></label>
                                     <select name="status" id="status" class="form-control select2"
-                                        data-placeholder="Select Status" required>
-                                        <option value="1">Active</option>
-                                        <option value="0">Non Active</option>
+                                        data-placeholder="{{ __('general.chs') }} Status" required>
+                                        <option value="1">{{ __('general.actv') }}</option>
+                                        <option value="0">{{ __('general.noactv') }}</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label>Notes</label>
+                                    <label>{{ __('general.notes') }}</label>
                                     <textarea type="text" class="form-control" name="notes"
-                                        placeholder="Notes"> </textarea>
+                                        placeholder="{{ __('general.notes') }}"> </textarea>
                                 </div>
                             </div>
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label>Join The Union Labor <b class="text-danger">*</b></label>
+                                    <label>{{ __('employee.join_labor') }} <b class="text-danger">*</b></label>
                                     <select id="join" class="form-control select2" name="join"
-                                        data-placeholder="Select Join Teh Union Labor" required>
-                                        <option value="yes">Yes</option>
-                                        <option value="no">No</option>
+                                        data-placeholder="{{ __('general.chs') }} {{ __('employee.join_labor') }}" required>
+                                        <option value="yes">{{ __('general.yes') }}</option>
+                                        <option value="no">{{ __('generl.no') }}</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label>Outsourcing</label>
+                                    <label>{{ __('employee.outsrc') }}</label>
                                     <input type="text" class="form-control" name="outsourcing_id" id="outsourcing_id"
-                                        placeholder="Outsourcing" readonly>
+                                        placeholder="{{ __('employee.outsrc') }}" readonly>
                                 </div>
                             </div>
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label>Overtime <b class="text-danger">*</b></label>
+                                    <label>{{ __('employee.ot') }} <b class="text-danger">*</b></label>
                                     <select id="overtime" class="form-control select2" name="overtime"
-                                        data-placeholder="Overtime" required>
+                                        data-placeholder="{{ __('employee.ot') }}" required>
                                         <option value=""></option>
-                                        <option value="yes" selected>Yes</option>
-                                        <option value="no">No</option>
+                                        <option value="yes" selected>{{ __('general.yes') }}</option>
+                                        <option value="no">{{ __('generl.no') }}</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label>Timeout <b class="text-danger">*</b></label>
+                                    <label>{{ __('employee.to') }} <b class="text-danger">*</b></label>
                                     <select id="timeout" class="form-control select2" name="timeout"
-                                        data-placeholder="Timeout" required>
+                                        data-placeholder="{{ __('employee.to') }}" required>
                                         <option value=""></option>
-                                        <option value="yes" selected>Yes</option>
-                                        <option value="no">No</option>
+                                        <option value="yes" selected>{{ __('general.yes') }}</option>
+                                        <option value="no">{{ __('generl.no') }}</option>
                                     </select>
                                 </div>
                             </div>
@@ -405,16 +405,16 @@
                                 <div class="form-group">
                                     <label>SPL <b class="text-danger">*</b></label>
                                     <select id="spl" class="form-control select2" name="spl"
-                                        data-placeholder="Select SPL" required>
+                                        data-placeholder="{{ __('general.chs') }} SPL" required>
                                         <option value=""></option>
-                                        <option value="yes" selected>Yes</option>
-                                        <option value="no">No</option>
+                                        <option value="yes" selected>{{ __('general.yes') }}</option>
+                                        <option value="no">{{ __('generl.no') }}</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label>Join Date <b class="text-danger">*</b></label>
+                                    <label>{{ __('employee.jd') }} <b class="text-danger">*</b></label>
                                     <!-- <input type="date" class="form-control select2" name="join_date" id="join_date"> -->
 									<div class="input-group">
                                         <div class="input-group-prepend">
@@ -423,13 +423,13 @@
                                             </span>
                                         </div>
                                         <input type="text" name="join_date" class="form-control datepicker"
-                                    id="join_date" placeholder="Join Date" required value="{{date('d/m/Y')}}">
+                                    id="join_date" placeholder="{{ __('employee.jd') }}" required value="{{date('d/m/Y')}}">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label>Resign Date</label>
+                                    <label>{{ __('employee.rd') }}</label>
                                     <!-- <input type="date" class="form-control select2" name="resign_date" id="resign_date"> -->
 									<div class="input-group">
                                         <div class="input-group-prepend">
@@ -438,12 +438,12 @@
                                             </span>
                                         </div>
                                         <input type="text" name="resign_date" class="form-control datepicker"
-                                            id="resign_date" placeholder="Resign Date">
+                                            id="resign_date" placeholder="{{ __('employee.rd') }}">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-12">
-                                <small>Note : <b class="text-danger">*</b> data wajib diisi</small>
+                                <small>Note : <b class="text-danger">*</b> {{ __('employee.note') }}</small>
                             </div>
                         </div>
                         <div style="height: 120px;"></div>

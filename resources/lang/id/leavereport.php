@@ -2,7 +2,7 @@
 return [
     'leaverpt' => 'Laporan Cuti',
     'listleav' => 'Daftar Cuti',
-    'detaillv' => 'Detail Pengajuan Cuti',
+    'detaillv' => 'Detail Laporan Cuti',
     'fulltime' => 'Sehari penuh',
     'rangedt'  => 'Rentang Tanggal',
     'rangetm'  => 'Rentang Waktu',

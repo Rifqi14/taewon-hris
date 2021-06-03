@@ -57,9 +57,9 @@
 						</a> -->
 						<a href="{{route('employees.create')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="{{ __('general.crt') }}"><i class="fa fa-plus"></i></a>
 
-					<a href="{{route('employees.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="Import" style="cursor: pointer;"><i class="fa fa-file-import"></i></a>
-					<a href="javascript:void(0)" onclick="printmass()" class="btn btn-sm btn-info text-white" title="Print Mass"><i class="fa fa-print"></i></a>
-					<a href="javascript:void(0)" onclick="exportemployee()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="Export" style="cursor: pointer;"><i class="fa fa-download"></i></a>
+					<a href="{{route('employees.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="{{ __('general.imp') }}" style="cursor: pointer;"><i class="fa fa-file-import"></i></a>
+					<a href="javascript:void(0)" onclick="printmass()" class="btn btn-sm btn-info text-white" title="{{ __('general.print') }} Mass"><i class="fa fa-print"></i></a>
+					<a href="javascript:void(0)" onclick="exportemployee()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="{{ __('general.exp') }}" style="cursor: pointer;"><i class="fa fa-download"></i></a>
 					<!-- <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
 						<i class="fa fa-search"></i>
 					</a> -->

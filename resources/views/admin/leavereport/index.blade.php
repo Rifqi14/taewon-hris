@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Leave Report')
+@section('title', __('leavereport.leaverpt'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
@@ -19,7 +19,7 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Leave Report</li>
+<li class="breadcrumb-item active">{{ __('leavereport.leaverpt') }}</li>
 @endpush
 
 @section('content')
@@ -28,8 +28,8 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-header">
-          <div class="card-title">List Leave Report</div>
-          <div class="pull-right card-tools"><a href="javascript:void(0)" onclick="exportleave()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="Export" style="cursor: pointer;"><i class="fa fa-download"></i></a></div>
+          <div class="card-title">{{ __('leavereport.listleav') }}</div>
+          <div class="pull-right card-tools"><a href="javascript:void(0)" onclick="exportleave()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="{{ __('general.exp') }}" style="cursor: pointer;"><i class="fa fa-download"></i></a></div>
         </div>
         <div class="card-body">
           <form id="form" class="form-horizontal" method="post">
@@ -40,18 +40,18 @@
                 <input type="text" class="form-control" id="nik" placeholder="NIK" name="nik">
               </div>
               <div class="form-group col-md-4">
-                <label for="employee_id">Employee Name</label>
-                <input type="text" class="form-control" id="employee_id" placeholder="Employee Name" name="employee_id">
+                <label for="employee_id">{{ __('employee.empname') }}</label>
+                <input type="text" class="form-control" id="employee_id" placeholder="{{ __('employee.empname') }}" name="employee_id">
               </div>
               <div id="employee-container"></div>
               <div class="form-row col-md-4">
                 <div class="form-group col-md-6">
-                  <label for="from">From</label>
-                  <input type="text" class="form-control datepicker" id="from" placeholder="From" name="from">
+                  <label for="from">{{ __('general.from') }}</label>
+                  <input type="text" class="form-control datepicker" id="from" placeholder="{{ __('general.from') }}" name="from">
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="to">To</label>
-                  <input type="text" class="form-control datepicker" id="to" placeholder="To" name="to">
+                  <label for="to">{{ __('general.To') }}</label>
+                  <input type="text" class="form-control datepicker" id="to" placeholder="{{ __('general.To') }}" name="to">
                 </div>
               </div>
             </div>
@@ -60,13 +60,13 @@
             <thead>
               <tr>
                 <th width="10">#</th>
-                <th width="10">Tanggal</th>
-                <th width="10">Employee</th>
-                <th width="10">Position</th>
-                <th width="10">Leave Type</th>
-                <th width="10">Duration</th>
+                <th width="10">{{ __('general.date') }}</th>
+                <th width="10">{{ __('employee.employ') }}</th>
+                <th width="10">{{ __('position.pos') }}</th>
+                <th width="10">{{ __('leave.leavetp') }}</th>
+                <th width="10">{{ __('employee.duration') }}</th>
                 <th width="10">Status</th>
-                <th width="10">Action</th>
+                <th width="10">{{ __('general.act') }}</th>
               </tr>
             </thead>
           </table>
@@ -145,6 +145,9 @@
       responsive:true,
       order: [[ 2, "asc" ]],
       lengthMenu: [ 100, 250, 500, 1000, 2000 ],
+      language: {
+        url: language_choosen == 'id' ? urlLocaleId : '',
+      },
       pageLength: 500,
       ajax: {
         url: "{{route('leavereport.read')}}",
@@ -192,7 +195,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                       <li><a class="dropdown-item" href="{{url('admin/leavereport')}}/${row.id}/detail"><i class="fas fa-search mr-2"></i> Detail</a></li>
-                      <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+                      <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{ __('general.dlt') }}</a></li>
                     </ul>
                   </div>`
           },targets: [7]

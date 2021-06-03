@@ -87,6 +87,13 @@ class AllowanceReportController extends Controller
     }
     if ($departments) {
       $string = '';
+      $uniqdepartments = [];
+      foreach($departments as $department){
+          if(!in_array($department,$uniqdepartments)){
+              $uniqdepartments[] = $department;
+          }
+      }
+      $departments = $uniqdepartments;
       foreach ($departments as $department) {
         $string .= "departments.path like '%$department%'";
         if (end($departments) != $department) {
@@ -139,6 +146,13 @@ class AllowanceReportController extends Controller
     }
     if ($departments) {
       $string = '';
+      $uniqdepartments = [];
+      foreach($departments as $department){
+          if(!in_array($department,$uniqdepartments)){
+              $uniqdepartments[] = $department;
+          }
+      }
+      $departments = $uniqdepartments;
       foreach ($departments as $department) {
         $string .= "departments.path like '%$department%'";
         if (end($departments) != $department) {

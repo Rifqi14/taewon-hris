@@ -30,7 +30,8 @@
                     <tr>
                         <th width="10">#</th>
                         <th width="100">{{ __('general.name') }}</th>
-                        <th width="100">Email</th>
+                        <th width="100">{{__('department.dep')}}</th>
+                        <th width="100">{{__('general.truck')}}</th>
                         <th width="100">RIT</th>
                         <th width="50">Status</th>
                         <th width="10">#</th>
@@ -89,7 +90,7 @@ $(function(){
         info:false,
         lengthChange:true,
         responsive: true,
-        order: [[ 4, "asc" ]],
+        order: [[ 5, "asc" ]],
         language: {
             lengthMenu: `{{ __('general.showent') }}`,
             processing: `{{ __('general.process') }}`,
@@ -110,21 +111,18 @@ $(function(){
             {
                 orderable: false,targets:[0]
             },
-            { className: "text-right", targets: [0,3] },
-            { className: "text-center", targets: [4,5] },
+            { className: "text-right", targets: [0,4] },
+            { className: "text-center", targets: [5,6] },
             { render: function ( data, type, row ) {
                 return `${row.name} <br><small>${row.code}</small>`
             },targets: [1]},
-            { render: function ( data, type, row ) {
-                return `${row.email} <br><small>${row.phone}</small>`
-            },targets: [2]},
             { render: function(data, type, row) {
                 if (data == 1) {
                     return '<span class="badge badge-success">{{ __('general.actv') }}</span>';
                 } else {
                     return '<span class="badge badge-danger">{{ __('general.noactv') }}</span>';
                 }
-            }, targets:[4]},
+            }, targets:[5]},
             { render: function ( data, type, row ) {
                 return `<div class="dropdown">
                     <button class="btn  btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -134,13 +132,14 @@ $(function(){
                         <li><a class="dropdown-item" href="{{url('admin/partner')}}/${row.id}/edit"><i class="fa fa-edit"></i> {{ __('general.edt') }}</a></li>
                         <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fa fa-trash"></i> {{ __('general.dlt') }}</a></li>
                     </ul></div>`
-            },targets: [5]
+            },targets: [6]
             }
         ],
         columns: [
             { data: "no" },
             { data: "name" },
-            { data: "email" },
+            { data: "department_name" },
+            { data: "truck_name" },
             { data: "rit" },
             { data: "status" },
             { data: "id" },

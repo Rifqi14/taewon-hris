@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit Leave Approval')
+@section('title', __('leaveapproval.editleav'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -9,8 +9,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('leaveapproval.indexapproval')}}">Leave Approval</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item"><a href="{{route('leaveapproval.indexapproval')}}">{{ __('leaveapproval.leaveapr') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.edt') }}</li>
 @endpush
 
 @section('content')
@@ -23,14 +23,14 @@
         <div class="col-lg-12">
           <div class="card card-{{ config('configs.app_theme') }} card-outline">
             <div class="card-header">
-              <div class="card-title">Data Employee</div>
+              <div class="card-title">Data {{ __('employee.employ') }}</div>
             </div>
             <div class="card-body">
               <div class="row">
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Employee</label>
-                    <input type="text" class="form-control" placeholder="Employee" id="employee" name="employee" value="{{ $leave->employee->name }}" required readonly>
+                    <label>{{ __('employee.employ') }}</label>
+                    <input type="text" class="form-control" placeholder="{{ __('employee.employ') }}" id="employee" name="employee" value="{{ $leave->employee->name }}" required readonly>
                   </div>
                 </div>
                 <div class="col-sm-6">
@@ -44,14 +44,14 @@
               <div class="row">
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" class="form-control" placeholder="Title" id="title" name="title" value="{{ $leave->employee->title->name }}" readonly>
+                    <label>{{ __('position.pos') }}</label>
+                    <input type="text" class="form-control" placeholder="{{ __('position.pos') }}" id="title" name="title" value="{{ $leave->employee->title->name }}" readonly>
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Department</label>
-                    <input type="text" class="form-control" placeholder="Department" id="department" name="department" value="{{ $leave->employee->department->name }}" readonly>
+                    <label>{{ __('department.dep') }}</label>
+                    <input type="text" class="form-control" placeholder="{{ __('department.dep') }}" id="department" name="department" value="{{ $leave->employee->department->name }}" readonly>
                   </div>
                 </div>
               </div>
@@ -61,7 +61,7 @@
         <div class="col-lg-12">
           <div class="card card-{{ config('configs.app_theme')}} card-outline">
             <div class="card-header">
-              <h3 class="card-title">List Leave</h3>
+              <h3 class="card-title">{{ __('leaveapproval.listleav') }}</h3>
               <div class="pull-right card-tools">
 
               </div>
@@ -73,9 +73,9 @@
                   <thead>
                     <tr>
                       <th style="text-align: right" width="25">No</th>
-                      <th style="text-align: center">Date</th>
-                      <th style="text-align: center">Time</th>
-                      <th style="text-align: center">Type</th>
+                      <th style="text-align: center">{{ __('general.date') }}</th>
+                      <th style="text-align: center">{{ __('attendancelog.time') }}</th>
+                      <th style="text-align: center">{{ __('general.type') }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -101,8 +101,8 @@
                   </tbody>
                   <tfoot>
                     <tr>
-                      <th colspan="2" class="text-right">Total (Day)</th>
-                      <th colspan="3" data-total_days="{{ $leave->duration }}">{{ $leave->duration }} Days</th>
+                      <th colspan="2" class="text-right">Total ({{ __('general.day') }})</th>
+                      <th colspan="3" data-total_days="{{ $leave->duration }}">{{ $leave->duration }} {{ __('general.day') }}</th>
                     </tr>
                   </tfoot>
                 </table>
@@ -115,10 +115,10 @@
     <div class="col-lg-4">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <div class="card-title">Others</div>
+          <div class="card-title">{{ __('general.other') }}</div>
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i class="fa fa-save"></i></button>
-            <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+            <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
           </div>
         </div>
         <div class="card-body">
@@ -126,14 +126,14 @@
 
             <div class="col-sm-12">
               <div class="form-group">
-                <label class="control-label" for="leave_type">Leave Type</label>
-                <input type="text" class="form-control" placeholder="Leave Type" id="leave_type" name="leave_type" @if ($leave->leavesetting) value="{{ $leave->leavesetting->leave_name }}" @endif readonly>
+                <label class="control-label" for="leave_type">{{ __('leave.leavetp') }}</label>
+                <input type="text" class="form-control" placeholder="{{ __('leave.leavetp') }}" id="leave_type" name="leave_type" @if ($leave->leavesetting) value="{{ $leave->leavesetting->leave_name }}" @endif readonly>
               </div>
             </div>
             <div class="col-sm-12">
               <div class="form-group">
-                <label class="control-label" for="remaining">Remaining Balance</label>
-                <input type="text" class="form-control" placeholder="Remaining Balance" id="remaining" name="remaining" @if ($leave->leavesetting)
+                <label class="control-label" for="remaining">{{ __('leave.remain') }}</label>
+                <input type="text" class="form-control" placeholder="{{ __('leave.remain') }}" id="remaining" name="remaining" @if ($leave->leavesetting)
                 @foreach ($leave->leavesetting->leavedetail as $detail)
                 @if ($detail->employee_id == $leave->employee->id)
                 @if ($detail->balance == -1)
@@ -148,7 +148,7 @@
             </div>
             <div class="col-sm-12">
               <div class="form-group">
-                <label for="document">Supporting Document(s)</label>
+                <label for="document">{{ __('leave.supdoc') }}</label>
                 <div class="custom-file">
                   <input type="file" class="form-control" name="document" id="document" accept="image/jpeg,image/png,application/pdf" />
                 </div>
@@ -156,8 +156,8 @@
             </div>
             <div class="col-sm-12">
               <div class="form-group">
-                <label class="control-label" for="notes">Notes</label>
-                <textarea class="form-control" id="notes" name="notes" rows="5" placeholder="Notes" readonly>{{ $leave->notes }}</textarea>
+                <label class="control-label" for="notes">{{ __('general.notes') }}</label>
+                <textarea class="form-control" id="notes" name="notes" rows="5" placeholder="{{ __('general.notes') }}" readonly>{{ $leave->notes }}</textarea>
               </div>
             </div>
             <div class="col-sm-12">
@@ -183,7 +183,7 @@
   <div class="modal-dialog modal-md">
     <div class="modal-content">
       <div class="modal-header no-print">
-        <h5 class="modal-title">Add Date</h5>
+        <h5 class="modal-title">{{ __('general.add') }} {{ __('general.date') }}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -194,9 +194,9 @@
           <input type="hidden" name="status_list" value="add">
           <input type="hidden" name="key_list" value="0">
           <div class="form-group">
-            <label for="list_type">Type</label>
+            <label for="list_type">{{ __('general.type') }}</label>
             <div class="controls">
-              <select name="list_type" id="list_type" class="form-control select2" data-placeholder="Select Type" required>
+              <select name="list_type" id="list_type" class="form-control select2" data-placeholder="{{ __('general.chs') }} {{ __('general.type') }}" required>
                 <option value="fullday">Full Day</option>
                 <option value="hours">Hours</option>
               </select>
@@ -204,20 +204,20 @@
           </div>
           <div class="form-row">
             <div class="form-group col-md-12">
-              <label>Range Date</label>
+              <label>{{ __('leave.rangedt') }}</label>
               <div class="controls">
                 <div class="row">
                   <div class="col-md-2">
-                    <label for="range_date_start">Start</label>
+                    <label for="range_date_start">{{ __('general.start') }}</label>
                   </div>
                   <div class="col-md-4">
-                    <input type="text" name="range_date_start" id="range_date_start" class="form-control datepicker" placeholder="Start" value="<?= date('d/m/Y') ?>">
+                    <input type="text" name="range_date_start" id="range_date_start" class="form-control datepicker" placeholder="{{ __('general.start') }}" value="<?= date('d/m/Y') ?>">
                   </div>
                   <div class="col-md-2">
-                    <label for="range_date_finish">Finish</label>
+                    <label for="range_date_finish">{{ __('general.finish') }}</label>
                   </div>
                   <div class="col-md-4">
-                    <input type="text" name="range_date_finish" id="range_date_finish" class="form-control datepicker" placeholder="Start" value="<?= date('d/m/Y') ?>">
+                    <input type="text" name="range_date_finish" id="range_date_finish" class="form-control datepicker" placeholder="{{ __('general.finish') }}" value="<?= date('d/m/Y') ?>">
                   </div>
                 </div>
               </div>
@@ -225,20 +225,20 @@
           </div>
           <div class="form-row">
             <div class="form-group col-md-12">
-              <label>Range Time</label>
+              <label>{{ __('leave.rangetm') }}</label>
               <div class="controls">
                 <div class="row">
                   <div class="col-md-2">
-                    <label for="range_time_start">Start</label>
+                    <label for="range_time_start">{{ __('general.start') }}</label>
                   </div>
                   <div class="col-md-4">
-                    <input type="text" name="range_time_start" id="range_time_start" class="form-control timepicker" value="09:00" placeholder="Start" readonly>
+                    <input type="text" name="range_time_start" id="range_time_start" class="form-control timepicker" value="09:00" placeholder="{{ __('general.start') }}" readonly>
                   </div>
                   <div class="col-md-2">
-                    <label for="range_time_finish">Finish</label>
+                    <label for="range_time_finish">{{ __('general.finish') }}</label>
                   </div>
                   <div class="col-md-4">
-                    <input type="text" name="range_time_finish" id="range_time_finish" class="form-control timepicker" value="17:00" placeholder="Start" readonly>
+                    <input type="text" name="range_time_finish" id="range_time_finish" class="form-control timepicker" value="17:00" placeholder="{{ __('general.finish') }}" readonly>
                   </div>
                 </div>
               </div>
@@ -247,7 +247,7 @@
         </form>
       </div>
       <div class="modal-footer no-print">
-        <button form="form_date" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Save"><i class="fa fa-plus"></i></button>
+        <button form="form_date" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{ __('general.save') }}"><i class="fa fa-plus"></i></button>
         <button type="button" class="btn btn-secondary btn-sm color-palette btn-labeled legitRipple" data-dismiss="modal">
           <b><i class="fa fa-reply"></i></b>
         </button>
