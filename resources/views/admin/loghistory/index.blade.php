@@ -54,7 +54,7 @@
               <label for="employee_id">{{__('employee.empname')}}</label>
               <select name="employee_id" id="employee_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
                 @foreach ($employees as $employee)
-                <option value="{{ $employee->name }}">{{ $employee->name }}</option>
+                <option value="{{ $employee->id }}">{{ $employee->name }}</option>
                 @endforeach
               </select>
             </div>

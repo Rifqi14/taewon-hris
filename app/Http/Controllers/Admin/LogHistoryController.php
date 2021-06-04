@@ -50,7 +50,7 @@ class LogHistoryController extends Controller
         $query->leftJoin('departments', 'departments.id', '=', 'log_histories.department_id');
         $query->leftJoin('users', 'users.id', '=', 'log_histories.user_id');
         if ($employee) {
-            $query->whereRaw("upper(employees.name) like '%$employee%'");
+            $query->whereIn('log_histories.employee_id', $employee);
         }
         if ($user_id) {
             $query->whereIn('log_histories.user_id', $user_id);
@@ -93,7 +93,7 @@ class LogHistoryController extends Controller
         $query->leftJoin('departments', 'departments.id', '=', 'log_histories.department_id');
         $query->leftJoin('users', 'users.id', '=', 'log_histories.user_id');
         if ($employee) {
-            $query->whereRaw("upper(employees.name) like '%$employee%'");
+            $query->whereIn('log_histories.employee_id', $employee);
         }
         if ($user_id) {
             $query->whereIn('log_histories.user_id', $user_id);
