@@ -92,12 +92,12 @@
 						<thead>
 							<tr>
 								<th width="10">#</th>
-								<th width="100">NIK</th>
 								<th width="100">{{__('employee.empname')}}</th>
-								<th width="100">{{__('employee.position')}}</th>
-								<th width="100">{{__('department.dep')}}</th>
-								<th width="100">{{__('employee.jd')}}</th>
-								<th width="100">Status</th>
+								<th width="100">{{__('department.dep')}}<br> {{__('employee.position')}}</th>
+								<th width="50">{{__('employee.jd')}}</th>
+								<th width="50">{{__('document.from')}}</th>
+								<th width="50">{{__('document.to')}}</th>
+								<th width="50">Status</th>
 								<th width="10">{{__('general.act')}}</th>
 							</tr>
 						</thead>
@@ -158,7 +158,13 @@
 					orderable: false,targets:[0]
 				},
 				{ className: "text-right", targets: [0] },
-				{ className: "text-center", targets: [3,4,5,6,7] },
+				{ className: "text-center", targets: [2,3,4,5,6,7] },
+				{ render: function(data, type, row) {
+                   		return `${row.employee_name}<br> <i>NIK: ${row.nid}</i>`;
+                }, targets:[1]},
+				{ render: function(data, type, row) {
+                   		return `${row.department_name}<br>${row.title_name}`;
+                }, targets:[2]},
                 { render: function(data, type, row) {
                     if (row.status == 0) {
                         return '<span class="badge badge-success">{{__('general.actv')}}</span>';
@@ -180,11 +186,11 @@
 			],
 			columns: [
 			{ data: "no" },
-			{ data: "nid" },
 			{ data: "employee_name" },
-			{ data: "title_name" },
 			{ data: "department_name" },
 			{ data: "join_date" },
+			{ data: "from" },
+			{ data: "to"},
 			{ data: "status" },
 			{ data: "id" },
 			]
