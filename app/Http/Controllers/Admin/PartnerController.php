@@ -341,7 +341,7 @@ class PartnerController extends Controller
             if ($name) {
                 $data[] = array(
                     'index'         => $no,
-                    'nid'           => $name,
+                    'name'           => $name,
                     'email'         => $email ? $email : null,
                     'phone'         => $phone ? $phone : null,
                     'department'    => $department,
@@ -356,7 +356,7 @@ class PartnerController extends Controller
                 );
                 $no++;
             }
-            dd($data);
+            // dd($data);
         }
         return response()->json([
             'status'     => true,
