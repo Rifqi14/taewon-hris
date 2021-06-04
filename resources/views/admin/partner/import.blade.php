@@ -120,8 +120,8 @@
             this.name,
             this.phone,
             this.email,
-            this.truck,
             this.rit,
+            this.truck,
             this.department,
             this.address,
             this.error_message,
@@ -154,17 +154,17 @@
           order: [[ 0, "asc" ]],
           columnDefs: [
               {
-                  orderable: false,targets:[0,1,2,3,4,5,6,7,8,9,10]
+                  orderable: false,targets:[0,1,2,3,4,5,6,7,8,9]
               },
               { render: function ( data, type, row ) {
-                  if (row[10] == 1) {
+                  if (row[9] == 1) {
                     return '<span class="badge badge-success"><i class="fa fa-check"></i></span>';
                   } else {
                     return '<span class="badge badge-danger"><i class="fa fa-times"></i></span>';
                   }
-                },targets: [10]
+                },targets: [9]
               },
-              { className: "text-center", targets: [10] },
+              { className: "text-center", targets: [9] },
           ],
       });
 
