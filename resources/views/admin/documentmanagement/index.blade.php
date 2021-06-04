@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Document Management')
+@section('title',__('document.docmanaj'))
     @section('stylesheets')
     <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
     <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -23,14 +23,14 @@
     </style>
     @endsection
     @push('breadcrump')
-        <li class="breadcrumb-item active">Document Management</li>
+        <li class="breadcrumb-item active">{{__('document.docmanaj')}}</li>
     @endpush
 @section('content')
 <div class="row">
     <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Document Management</h3>
+          <h3 class="card-title">{{__('document.docmanaj')}}</h3>
           <!-- tools card -->
           <div class="pull-right card-tools">
             <a href="#" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white add_document" data-toggle="tooltip" title="Tambah">
@@ -45,23 +45,23 @@
                         
                 <div class="col-md-6">
                     <div class="form-group">
-                    <label class="control-label" for="name">Document Name</label>
-                    <input type="text" name="name" id="name" class="form-control filter" placeholder="Document Name">
+                    <label class="control-label" for="name">{{__('document.docname')}}</label>
+                    <input type="text" name="name" id="name" class="form-control filter" placeholder="{{__('document.docname')}}">
                     </div>
                     <div id="document-container"></div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                    <label class="control-label" for="code">No.Document</label>
-                    <input type="text" name="code" id="code" class="form-control filter" placeholder="No.Document">
+                    <label class="control-label" for="code">{{__('document.nodoc')}}</label>
+                    <input type="text" name="code" id="code" class="form-control filter" placeholder="{{__('document.nodoc')}}">
                     </div>
                     <div id="nodoc-container"></div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="control-label" for="code">PIC</label>
+                        <label class="control-label" for="code">{{__('document.pic')}}</label>
                         {{-- <input type="text" name="pic" id="pic" class="form-control filter" placeholder="PIC"> --}}
-                        <select name="pic" id="pic" class="form-control select2 filter" style="width: 100%" multiple aria-hidden="true" data-placeholder="PIC">
+                        <select name="pic" id="pic" class="form-control select2 filter" style="width: 100%" multiple aria-hidden="true" data-placeholder="{{__('document.pic')}}">
                             <option value=""></option>
                             @foreach ($pics as $v_pic)
                             <option value="{{ $v_pic->pic }}">{{ $v_pic->pic }}</option>
@@ -72,7 +72,7 @@
                 <div class="form-row col-md-6">
                     <div class="col-md-6">
                     <div class="form-group">
-                        <label class="control-label" for="date_from">From</label>
+                        <label class="control-label" for="date_from">{{__('document.from')}}</label>
                         <div class="controls">
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -87,7 +87,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                        <label class="control-label" for="date_to">To</label>
+                        <label class="control-label" for="date_to">{{__('document.to')}}</label>
                             <div class="controls">
                                 <div class="input-group">
                                 <div class="input-group-prepend">
@@ -107,12 +107,12 @@
                 <thead>
                     <tr>
                         <th width="10">#</th>
-                        <th width="100">No.Document</th>
-                        <th width="100">Name</th>
-                        <th width="100">Expired Date</th>
-                        <th width="50">Reminder</th>
-                        <th width="100">PIC</th>
-                        <th width="50">File</th>
+                        <th width="100">{{__('document.nodoc')}}</th>
+                        <th width="100">{{__('general.name')}}</th>
+                        <th width="100">{{__('document.exp_date')}}</th>
+                        <th width="50">{{__('document.reminder')}}</th>
+                        <th width="100">{{__('document.pic')}}</th>
+                        <th width="50">{{__('document.file')}}</th>
                         <th width="50">Status</th>
                         <th width="10">#</th>
                     </tr>
@@ -133,7 +133,7 @@
         <div class="modal-content">
             <div class="overlay-wrapper">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add Document</h4>
+                    <h4 class="modal-title">{{__('document.adddoc')}}</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -142,44 +142,44 @@
                     <form id="form_document" class="form-horizontal" method="post" autocomplete="off">
                             
                         <div class="form-group col-sm-12">
-                            <label for="code" class="control-label">No.Document <b class="text-danger">*</b></label>
+                            <label for="code" class="control-label">{{__('document.nodoc')}} <b class="text-danger">*</b></label>
                             <input type="code" class="form-control" id="code" name="code" placeholder="Index Document">
                         </div>
                         <div class="d-flex">
                             <div class="form-group col-sm-6">
-                                <label for="name" class="control-label">Name<b class="text-danger">*</b></label>
-                                <input type="text" class="form-control" id="name" name="name" placeholder="Name"
+                                <label for="name" class="control-label">{{__('general.name')}}<b class="text-danger">*</b></label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="{{__('general.name')}}"
                                     required>
                             </div>
                             <div class="form-group col-sm-6">
-                                <label for="date" class="control-label">Expired Date<b class="text-danger">*</b></label>
-                                <input type="text" class="form-control" id="expired_date" name="expired_date" placeholder="Expired Date"
+                                <label for="date" class="control-label">{{__('document.exp_date')}}<b class="text-danger">*</b></label>
+                                <input type="text" class="form-control" id="expired_date" name="expired_date" placeholder="{{__('document.exp_date')}}"
                                     required>
                             </div>
                         </div>
                         <div class="d-flex">
                             
                             <div class="form-group col-sm-6">
-                                <label for="nilai" class="control-label">Reminder(days)<b class="text-danger">*</b></label>
-                                <input type="number" class="form-control" id="nilai" name="nilai" placeholder="Reminder"
+                                <label for="nilai" class="control-label">{{__('document.reminder')}}({{__('general.day')}})<b class="text-danger">*</b></label>
+                                <input type="number" class="form-control" id="nilai" name="nilai" placeholder="{{__('document.reminder')}}"
                                     required>
                             </div>
                             <div class="form-group col-sm-6">
-                                <label for="pic" class="control-label">PIC</label><b class="text-danger">*</b></label>
-                                <input type="text" class="form-control" id="pic" name="pic" placeholder="PIC"
+                                <label for="pic" class="control-label">{{__('document.pic')}}</label><b class="text-danger">*</b></label>
+                                <input type="text" class="form-control" id="pic" name="pic" placeholder="{{__('document.pic')}}"
                                     required>
                             </div>
                             
                         </div>
                         <div class="form-group col-sm-12">
-                            <label for="file" class="control-label">File <b class="text-danger">*</b></label>
+                            <label for="file" class="control-label">{{__('document.file')}} <b class="text-danger">*</b></label>
                             <input type="file" class="form-control" name="file" id="file" accept="image/*, .pdf, .doc, .docx, .xls, .xlsx" />
                             <a id="document-preview" onclick="showDocument(this)" href="#" data-url="" class="mt-2"></a>
                         </div>
                         <div class="form-group col-sm-12">
-                            <label for="description" class="control-label">Description</label>
+                            <label for="description" class="control-label">{{__('general.desc')}}</label>
                             <textarea name="description" id="description" class="form-control"
-                                placeholder="Description"></textarea>
+                                placeholder="{{__('general.desc')}}"></textarea>
                         </div>
                         {{ csrf_field() }}
                         <input type="hidden" name="_method" />
@@ -187,7 +187,7 @@
                 </div>
                 <div class="modal-footer">
                     <button form="form_document" type="submit"
-                        class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i
+                        class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{__('general.save')}}"><i
                             class="fa fa-save"></i></button>
                 </div>
                 <div class="overlay d-none">
@@ -203,7 +203,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <embed id="url-document" src="" style="height:500px;width:500px;object-fit:contain;padding:20px;">
-            <a href="" class="btn btn-{{ config('configs.app_theme') }} rounded-0 download-button" download>Download</a>
+            <a href="" class="btn btn-{{ config('configs.app_theme') }} rounded-0 download-button" download>{{__('general.download')}}</a>
         </div>
     </div>
 </div>
@@ -446,6 +446,14 @@ $(function(){
         lengthChange:true,
         responsive: true,
         order: [[ 8, "asc" ]],
+        language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
         ajax: {
             url: "{{route('documentmanagement.read')}}",
             type: "GET",
@@ -477,16 +485,16 @@ $(function(){
 					{
 					render: function (data, type, row) {
 						// return `<a href="${row.file}" target="_blank"><img class="img-fluid" src="${row.file}" height=\"100\" width=\"150\"/><a/>`
-							return `<a onclick="showDocument(this)" data-url="${row.link}" href="#"><span class="badge badge-info">Preview</span><a/>`
+							return `<a onclick="showDocument(this)" data-url="${row.link}" href="#"><span class="badge badge-info">{{__('document.prv')}}</span><a/>`
 					},
 					targets: [6]
                     },
                     {
 						render: function (data, type, row) {
 							if (row.status == 'Active') {
-								return `<span class="badge badge-success">Active</span>`
+								return `<span class="badge badge-success">{{__('general.actv')}}</span>`
 							}else{
-								return `<span class="badge badge-danger">Expired</span>`
+								return `<span class="badge badge-danger">{{__('general.expired')}}</span>`
 							}
 						},
 						targets: [7]
@@ -498,8 +506,8 @@ $(function(){
 							<i class="fa fa-bars"></i>
 							</button>
 							<ul class="dropdown-menu dropdown-menu-right">
-								<li><a class="dropdown-item editdocument" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> Edit</a></li>
-								<li><a class="dropdown-item deletedocument" href="#" data-id="${row.id}"><i class="fa fa-trash mr-2"></i> Delete</a></li>
+								<li><a class="dropdown-item editdocument" href="#" data-id="${row.id}"><i class="fa fa-pencil-alt mr-2"></i> {{__('general.edt')}}</a></li>
+								<li><a class="dropdown-item deletedocument" href="#" data-id="${row.id}"><i class="fa fa-trash mr-2"></i> {{__('general.dlt')}}</a></li>
 							</ul>
 							</div>`
 					},targets: [8]
@@ -533,7 +541,7 @@ $(function(){
 				$('#form_document textarea[name=description]').html('');
 				$('#form_document .invalid-feedback').each(function () { $(this).remove(); });
 				$('#form_document .form-group').removeClass('has-error').removeClass('has-success');
-				$('#add_document .modal-title').html('Add Document');
+				$('#add_document .modal-title').html('{{__('document.adddoc')}}');
 				$('#document-preview').html('').attr('data-url','');
 				$('#add_document').modal('show');
 			});
@@ -564,7 +572,7 @@ $(function(){
                             }).done(function(response){
                                 $('#box-menu .overlay').addClass('d-none');
                                 if(response.status){
-                                    $('#add_document .modal-title').html('Edit Document');
+                                    $('#add_document .modal-title').html('{{__('document.edtdoc')}}');
                                     $('#add_document').modal('show');
                                     $('#form_document')[0].reset();
                                     $('#form_document .invalid-feedback').each(function () { $(this).remove(); });
