@@ -35,7 +35,7 @@
         <div class="card-body">
           <div class="form-row">
             <div class="form-group col-md-4">
-              <label for="user_id">User</label>
+              <label for="user_id">{{__('activity.user')}}</label>
               <select name="user_id" id="user_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
                 @foreach ($users as $user)
                 <option value="{{ $user->id }}">{{ $user->name }}</option>
@@ -43,7 +43,7 @@
               </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="page_id">Page</label>
+              <label for="page_id">{{__('activity.page')}}</label>
               <select name="page_id" id="page_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
                 @foreach ($pages as $page)
                 <option value="{{ $page->page }}">{{ $page->page }}</option>
@@ -51,7 +51,7 @@
               </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="employee_id">Employee Name</label>
+              <label for="employee_id">{{__('employee.empname')}}</label>
               <select name="employee_id" id="employee_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
                 @foreach ($employees as $employee)
                 <option value="{{ $employee->name }}">{{ $employee->name }}</option>
@@ -59,7 +59,7 @@
               </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="department_id">Department</label>
+              <label for="department_id">{{__('department.dep')}}</label>
               <select name="department_id" id="department_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{ __('general.chs') }} {{ __('department.dep') }}">
                 @foreach ($departments as $department)
                 <option value="{{ $department->name }}">{{ $department->path }}</option>
@@ -67,7 +67,7 @@
               </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="activity_id">Activity</label>
+              <label for="activity_id">{{__('activity.activity')}}</label>
               <select name="activity_id" id="activity_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
                 @foreach ($activitys as $activity)
                 <option value="{{ $activity->activity }}">{{ $activity->activity }}</option>
@@ -76,16 +76,16 @@
             </div>
             <div class="form-row col-md-4">
               <div class="form-group col-md-6">
-                <label for="from">From</label>
-                <input type="text" class="form-control datepicker" id="from" placeholder="From" name="from">
+                <label for="from">{{__('activity.from')}}</label>
+                <input type="text" class="form-control datepicker" id="from" placeholder="{{__('activity.from')}}" name="from">
               </div>
               <div class="form-group col-md-6">
-                <label for="to">To</label>
-                <input type="text" class="form-control datepicker" id="to" placeholder="To" name="to">
+                <label for="to">{{__('activity.to')}}</label>
+                <input type="text" class="form-control datepicker" id="to" placeholder="{{__('activity.to')}}" name="to">
               </div>
             </div>
             <div class="form-group col-md-4">
-              <label for="detail_id">Detail</label>
+              <label for="detail_id">{{__('general.dtl')}}</label>
               <select name="detail_id" id="detail_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
                 @foreach ($details as $detail)
                 <option value="{{ $detail->detail }}">{{ $detail->detail }}</option>
@@ -97,14 +97,14 @@
             <thead>
               <tr>
                 <th width="5">No</th>
-                <th width="100">Date</th>
-                <th width="100">User</th>
-                <th width="100">Page</th>
-                <th width="100">Employee Name</th>
-                <th width="100">Department</th>
-                <th width="100">Activity</th>
-                <th width="100">Detail</th>
-                <th width="2">Result</th>
+                <th width="100">{{__('general.date')}}</th>
+                <th width="100">{{__('activity.user')}}</th>
+                <th width="100">{{__('activity.page')}}</th>
+                <th width="100">{{__('employee.empname')}}</th>
+                <th width="100">{{__('department.dep')}}</th>
+                <th width="100">{{__('activity.activity')}}</th>
+                <th width="100">{{__('general.dtl')}}</th>
+                <th width="2">{{__('activity.rslt')}}</th>
               </tr>
             </thead>
           </table>
@@ -156,6 +156,14 @@
       lengthChange:true,
       responsive: true,
       order: [[ 1, "asc" ]],
+      language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
       lengthMenu: [ 100, 250, 500, 1000, 2000 ],
       ajax: {
         url: "{{route('loghistory.read')}}",
