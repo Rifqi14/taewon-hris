@@ -317,7 +317,7 @@ class PartnerController extends Controller
             $address        = $sheet->getCellByColumnAndRow(6, $row)->getValue();
             $active         = strtoupper($sheet->getCellByColumnAndRow(7, $row)->getValue());
             $truck_id       = Truck::whereRaw("upper(name) = '$truck'")->first();
-            $department_id  = Department::whereRaw("upper(nid) = '$department'")->first();
+            $department_id  = Department::whereRaw("upper(name) = '$department'")->first();
            
             // $departure_time = $sheet->getCellByColumnAndRow(5, $row)->getValue();
             // $arrived_time = $sheet->getCellByColumnAndRow(6, $row)->getValue();
