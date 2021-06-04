@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'THR Report')
+@section('title',__('thrreport.thrrpt'))
 @section('stylesheets')
 <link href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}" rel="stylesheet">
 <link href="{{asset('adminlte/component/jquery-ui/jquery-ui.min.css')}}" rel="stylesheet">
@@ -45,7 +45,7 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">THR Report</li>
+<li class="breadcrumb-item active">{{__('thrreport.thrrpt')}}</li>
 @endpush
 
 @section('content')
@@ -54,7 +54,7 @@
         <div class="col-lg-12">
             <div class="card card-{{ config('configs.app_theme') }} card-outline">
                 <div class="card-header">
-                    <h3 class="card-title">THR Report</h3>
+                    <h3 class="card-title">{{__('thrreport.thrrpt')}}</h3>
                     <div class="pull-right card-tools">
                         <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}"
                             title="Generate"><i class="fa fa-sync"></i></button>
@@ -68,12 +68,12 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="employee_name">Employee Name</label>
+                                        <label class="control-label" for="employee_name">{{__('employee.empname')}}</label>
                                         {{-- <input type="text" class="form-control" placeholder="Employee Name"
                                             name="employee_name" id="employee_name"> --}}
                                         <select name="employee_name[]" id="employee_name" class="form-control select2"
                                             style="width: 100%" aria-hidden="true" multiple
-                                            data-placeholder="Employee Name">
+                                            data-placeholder="{{__('employee.empname')}}">
                                             <option value=""></option>
                                             @foreach ($employees as $employee)
                                             <option value="{{ $employee->id }}">{{ $employee->name }}</option>
@@ -94,9 +94,9 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="position">Position</label>
+                                        <label class="control-label" for="position">{{__('employee.position')}}</label>
                                         <select name="position[]" id="position" class="form-control select2"
-                                            style="width: 100%" aria-hidden="true" multiple data-placeholder="Position">
+                                            style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('employee.position')}}">
                                             @foreach ($titles as $position)
                                             <option value="{{ $position->id }}">{{ $position->name }}</option>
                                             @endforeach
@@ -107,10 +107,10 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="department">Department</label>
+                                        <label class="control-label" for="department">{{__('department.dep')}}</label>
                                         <select name="department[]" id="department" class="form-control select2"
                                             style="width: 100%" aria-hidden="true" multiple
-                                            data-placeholder="Department">
+                                            data-placeholder="{{__('department.dep')}}">
                                             @foreach ($departments as $department)
                                             <option value="{{ $department->name }}">{{ $department->path }}</option>
                                             @endforeach
@@ -121,10 +121,10 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="workgroup">Workgroup Combination</label>
+                                        <label class="control-label" for="workgroup">{{__('employee.workcomb')}}</label>
                                         <select name="workgroup_id[]" id="workgroup_id" class="form-control select2"
                                             style="width: 100%" aria-hidden="true" multiple
-                                            data-placeholder="Workgroup Combination">
+                                            data-placeholder="{{__('employee.workcomb')}}">
                                             @foreach ($workgroups as $workgroup)
                                             <option value="{{ $workgroup->id }}">{{ $workgroup->name }}</option>
                                             @endforeach
@@ -135,7 +135,7 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="period">Months</label>
+                                        <label class="control-label" for="period">{{__('general.month')}}</label>
                                         <select name="period" class="form-control select2" multiple id="period"
                                             data-placeholder="Period">
                                             @php
@@ -152,41 +152,28 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="period">THR Period</label>
+                                        <label class="control-label" for="period">{{__('thrreport.period_thr')}}</label>
                                         <div class="form-row">
                                             <div class="col-sm-8">
-                                                <select class="form-control select2" name="montly" multiple id="montly"
-                                                    data-placeholder="Month">
-                                                    <option value="01" @if (date('m', time())=="01" ) selected @endif>
-                                                        January</option>
-                                                    <option value="02" @if (date('m', time())=="02" ) selected @endif>
-                                                        February</option>
-                                                    <option value="03" @if (date('m', time())=="03" ) selected @endif>
-                                                        March</option>
-                                                    <option value="04" @if (date('m', time())=="04" ) selected @endif>
-                                                        April</option>
-                                                    <option value="05" @if (date('m', time())=="05" ) selected @endif>
-                                                        May</option>
-                                                    <option value="06" @if (date('m', time())=="06" ) selected @endif>
-                                                        June</option>
-                                                    <option value="07" @if (date('m', time())=="07" ) selected @endif>
-                                                        July</option>
-                                                    <option value="08" @if (date('m', time())=="08" ) selected @endif>
-                                                        August</option>
-                                                    <option value="09" @if (date('m', time())=="09" ) selected @endif>
-                                                        September</option>
-                                                    <option value="10" @if (date('m', time())=="10" ) selected @endif>
-                                                        October</option>
-                                                    <option value="11" @if (date('m', time())=="11" ) selected @endif>
-                                                        November</option>
-                                                    <option value="12" @if (date('m', time())=="12" ) selected @endif>
-                                                        December</option>
+                                                <select class="form-control select2" name="montly" multiple id="montly" data-placeholder="Month">
+                                                    <option value="01" @if (date('m', time()) == "01") selected @endif>{{__('general.jan')}}</option>
+                                                    <option value="02" @if (date('m', time()) == "02") selected @endif>{{__('general.feb')}}</option>
+                                                    <option value="03" @if (date('m', time()) == "03") selected @endif>{{__('general.march')}}</option>
+                                                    <option value="04" @if (date('m', time()) == "04") selected @endif>{{__('general.apr')}}</option>
+                                                    <option value="05" @if (date('m', time()) == "05") selected @endif>{{__('general.may')}}</option>
+                                                    <option value="06" @if (date('m', time()) == "06") selected @endif>{{__('general.jun')}}</option>
+                                                    <option value="07" @if (date('m', time()) == "07") selected @endif>{{__('general.jul')}}</option>
+                                                    <option value="08" @if (date('m', time()) == "08") selected @endif>{{__('general.aug')}}</option>
+                                                    <option value="09" @if (date('m', time()) == "09") selected @endif>{{__('general.sep')}}</option>
+                                                    <option value="10" @if (date('m', time()) == "10") selected @endif>{{__('general.oct')}}</option>
+                                                    <option value="11" @if (date('m', time()) == "11") selected @endif>{{__('general.nov')}}</option>
+                                                    <option value="12" @if (date('m', time()) == "12") selected @endif>{{__('general.dec')}}</option>
                                                 </select>
                                             </div>
                                             <div class="col-sm-4">
                                                 <div class="input-group">
                                                     <select name="year" class="form-control select2" multiple id="year"
-                                                        data-placeholder="Year">
+                                                        data-placeholder="{{__('general.year')}}">
                                                         @php
                                                         $thn_skr = date('Y');
                                                         @endphp
@@ -209,8 +196,8 @@
                                             style="width: 100%" aria-hidden="true" data-placeholder="Status" multiple>
                                             <option value=""></option>
                                             <option value="-1">Draft</option>
-                                            <option value="0">Waiting Approval</option>
-                                            <option value="1">Approved</option>
+                                            <option value="0">{{__('general.wait_approve')}}</option>
+                                            <option value="1">{{__('general.approved')}}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -220,21 +207,21 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Employee Name</th>
-                                    <th>Position</th>
-                                    <th>Department</th>
-                                    <th>Workgroup</th>
-                                    <th>THR Period</th>
-                                    <th>Months</th>
+                                    <th>{{__('employee.empname')}}</th>
+                                    <th>{{__('employee.position')}}</th>
+                                    <th>{{__('department.dep')}}</th>
+                                    <th>{{__('workgroup.workgrp')}}</th>
+                                    <th>{{__('thrreport.period_thr')}}</th>
+                                    <th>{{__('general.month')}}</th>
                                     <th>THR</th>
                                     <th>Status</th>
-                                    <th>Print</th>
+                                    <th>{{__('general.print')}}</th>
                                     <th>
                                         <div class="customcheckbox">
                                             <input type="checkbox" class="checkall">
                                         </div>
                                     </th>
-                                    <th>Action</th>
+                                    <th>{{__('general.act')}}</th>
                                 </tr>
                             </thead>
                         </table>
@@ -252,7 +239,7 @@
         <div class="modal-content">
             <div class="modal-header no-print">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                <h4 class="modal-title">Print</h4>
+                <h4 class="modal-title">{{__('general.print')}}</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -509,6 +496,14 @@
             order: [
                 [1, "asc"]
             ],
+            language: {
+                lengthMenu: `{{ __('general.showent') }}`,
+                processing: `{{ __('general.process') }}`,
+                paginate: {
+                    previous: `{{ __('general.prev') }}`,
+                    next: `{{ __('general.next') }}`,
+                }
+            },
             ajax: {
                 url: "{{route('thrreport.read')}}",
                 type: "GET",
@@ -584,7 +579,7 @@
                         if (row.status == -1) {
                             return `<span class="badge badge-secondary">Draft</span>`;
                         } else if (row.status == 0) {
-                            return `<span class="badge badge-warning">Waiting Approval</span>`
+                            return `<span class="badge badge-warning">{{__('general.wait_approve')}}</span>`
                         } else if (row.status == 1) {
                             return `<span class="badge badge-success">Approved</span>`
                         } else {

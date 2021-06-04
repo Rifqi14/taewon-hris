@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Tax Calculation')
+@section('title',__('taxreport.tax_cal'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -9,8 +9,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('pph.index')}}">Tax Report</a></li>
-<li class="breadcrumb-item active">Tax Calculation</li>
+<li class="breadcrumb-item active"><a href="{{route('pph.index')}}">{{__('taxreport.taxrpt')}}</a></li>
+<li class="breadcrumb-item active">{{__('taxreport.tax_cal')}}</li>
 @endpush
 
 
@@ -21,7 +21,7 @@
       <div class="col-lg-8">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header">
-            <h3 class="card-title">Employee Data</h3>
+            <h3 class="card-title">{{__('employee.empdata')}}</h3>
           </div>
           <div class="card-body">
             <div class="row">
@@ -29,8 +29,8 @@
               <input type="hidden" name="employee_id" value="{{ $pph_detail->employee_id }}">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Employee Name</label>
-                  <input type="text" class="form-control" placeholder="Employee Name" value="{{ $pph_detail->employee->name }}" readonly>
+                  <label>{{__('employee.empname')}}</label>
+                  <input type="text" class="form-control" placeholder="{{__('employee.empname')}}" value="{{ $pph_detail->employee->name }}" readonly>
                 </div>
               </div>
               <div class="col-sm-6">
@@ -50,7 +50,7 @@
               <div class="col-sm-6">
                 <div class="form-group">
                   <label>PTKP</label>
-                  <input type="text" class="form-control" data-placeholder="Department" value="{{ $pph_detail->employee->ptkp }}" readonly>
+                  <input type="text" class="form-control" data-placeholder="PTKP" value="{{ $pph_detail->employee->ptkp }}" readonly>
                 </div>
               </div>
             </div>
@@ -63,14 +63,14 @@
       <div class="col-lg-4">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
           <div class="card-header">
-            <h3 class="card-title">Other</h3>
+            <h3 class="card-title">{{__('general.other')}}</h3>
           </div>
           <div class="card-body">
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <label>Period</label>
-                  <input type="text" class="form-control" data-placeholder="Period" value="{{ changeDateFormat('F - Y', $pph_detail->period) }}" readonly>
+                  <label>{{__('general.period')}}</label>
+                  <input type="text" class="form-control" data-placeholder="{{__('general.period')}}" value="{{ changeDateFormat('F - Y', $pph_detail->period) }}" readonly>
                 </div>
               </div>
               <div style="height: 165px;"></div>
@@ -87,14 +87,14 @@
   <div class="col-lg-12">
     <div class="card card-{{ config('configs.app_theme') }} card-outline">
       <div class="card-header">
-        <h3 class="card-title">Tax Calculation Detail</h3>
+        <h3 class="card-title">{{__('taxreport.tax_cal')}}</h3>
       </div>
       <div class="card-body">
         <table class="table table-striped table-bordered datatable" id="gross-table" style="width: 100%">
           <thead>
             <tr>
               <th width="10">No</th>
-              <th width="600">Description</th>
+              <th width="600">{{__('general.desc')}}</th>
               <th width="200" class="text-right">Total</th>
             </tr>
           </thead>
@@ -132,7 +132,7 @@
             @if (strpos($value->description, 'Net Salary') !== false)
             <tr>
               <td>5</td>
-              <td>Net Salary (Monthly)</td>
+              <td>{{__('salaryreport.net')}} ({{__('general.monthly')}})</td>
               <td class="text-right">{{ 'Rp. ' . number_format($value->total / $multipleMonth,0,",",".") }}</td>
             </tr>
             @endif
@@ -174,14 +174,14 @@
             @if (strpos($value->description, 'Potongan PPh 21') !== false)
             <tr>
               <td>10</td>
-              <td>PPh 21 (Monthly)</td>
+              <td>{{__('taxreport.tax')}} ({{__('general.monthly')}})</td>
               <td class="text-right"></td>
             </tr>
             @endif
             @if (strpos($value->description, 'Potongan PPh 21') !== false)
             <tr>
               <td></td>
-              <td>&emsp;&emsp;&emsp;PPh 21 (Monthly)</td>
+              <td>&emsp;&emsp;&emsp;{{__('taxreport.tax')}} ({{__('general.monthly')}})</td>
               <td class="text-right">{{ 'Rp. ' . number_format($value->total,0,",",".") }}</td>
             </tr>
             @endif

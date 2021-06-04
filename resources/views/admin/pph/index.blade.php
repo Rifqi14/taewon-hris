@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Tax Report')
+@section('title',__('taxreport.taxrpt'))
 @section('stylesheets')
 <link href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}" rel="stylesheet">
 <link href="{{asset('adminlte/component/jquery-ui/jquery-ui.min.css')}}" rel="stylesheet">
@@ -17,7 +17,7 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Tax Report</li>
+<li class="breadcrumb-item active">{{__('taxreport.taxrpt')}}</li>
 @endpush
 
 @section('content')
@@ -26,7 +26,7 @@
     <div class="col-lg-12">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Tax List</h3>
+          <h3 class="card-title">{{__('taxreport.taxrpt')}}</h3>
           {{-- <div class="pull-right card-tools">
             <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Generate"><i class="fa fa-sync"></i></button>
           </div> --}}
@@ -39,8 +39,8 @@
                 <div class="col-md-4">
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label class="control-label" for="employee_name">Employee Name</label>
-                      <input type="text" class="form-control" placeholder="Search" name="employee_name" id="employee_name">
+                      <label class="control-label" for="employee_name">{{__('employee.empname')}}</label>
+                      <input type="text" class="form-control" placeholder="{{__('employee.empname')}}" name="employee_name" id="employee_name">
                       {{-- <select name="employee_name" id="employee_name" class="form-control select2" multiple style="width: 100%" aria-hidden="true" data-placeholder="Employee Name">
                         <option value=""></option>
                         @foreach ($employees as $employee)
@@ -61,9 +61,9 @@
                 <div class="col-md-4">
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label class="control-label" for="position">Position</label>
+                      <label class="control-label" for="position">{{__('employee.position')}}</label>
                       {{-- <input type="text" class="form-control" placeholder="Position" name="position" id="position"> --}}
-                      <select name="position" id="position" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Position">
+                      <select name="position" id="position" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('employee.position')}}">
                         @foreach ($titles as $title)
                         <option value="{{ $title->id }}">{{ $title->name }}</option>
                         @endforeach
@@ -74,9 +74,9 @@
                 <div class="col-md-4">
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label class="control-label" for="department">Department</label>
+                      <label class="control-label" for="department">{{__('department.dep')}}</label>
                       {{-- <input type="text" class="form-control" placeholder="Department" name="department" id="department"> --}}
-                      <select name="department" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Department">
+                      <select name="department" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('department.dep')}}">
                         @foreach ($departments as $department)
                         <option value="{{ $department->name }}">{{ $department->path }}</option>
                         @endforeach
@@ -87,9 +87,9 @@
                 <div class="col-md-4">
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label class="control-label" for="workgroup">Workgroup Combination</label>
+                      <label class="control-label" for="workgroup">{{__('employee.workcomb')}}</label>
                       {{-- <input type="text" class="form-control" placeholder="Workgroup Combination" name="workgroup_id" id="workgroup_id"> --}}
-                      <select name="workgroup_id" id="workgroup_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Workgroup Combination">
+                      <select name="workgroup_id" id="workgroup_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('employee.workcomb')}}">
                         @foreach ($workgroups as $workgroup)
                         <option value="{{ $workgroup->id }}">{{ $workgroup->name }}</option>
                         @endforeach
@@ -100,22 +100,22 @@
                 <div class="col-md-4">
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label class="control-label" for="period">Period</label>
+                      <label class="control-label" for="period">{{__('general.period')}}</label>
                       <div class="form-row">
                         <div class="col-sm-8">
                             <select class="form-control select2" name="montly" multiple id="montly" data-placeholder="Month">
-                              <option value="01" @if (date('m', time()) == "01") selected @endif>January</option>
-                              <option value="02" @if (date('m', time()) == "02") selected @endif>February</option>
-                              <option value="03" @if (date('m', time()) == "03") selected @endif>March</option>
-                              <option value="04" @if (date('m', time()) == "04") selected @endif>April</option>
-                              <option value="05" @if (date('m', time()) == "05") selected @endif>May</option>
-                              <option value="06" @if (date('m', time()) == "06") selected @endif>June</option>
-                              <option value="07" @if (date('m', time()) == "07") selected @endif>July</option>
-                              <option value="08" @if (date('m', time()) == "08") selected @endif>August</option>
-                              <option value="09" @if (date('m', time()) == "09") selected @endif>September</option>
-                              <option value="10" @if (date('m', time()) == "10") selected @endif>October</option>
-                              <option value="11" @if (date('m', time()) == "11") selected @endif>November</option>
-                              <option value="12" @if (date('m', time()) == "12") selected @endif>December</option>
+                              <option value="01" @if (date('m', time()) == "01") selected @endif>{{__('general.jan')}}</option>
+                              <option value="02" @if (date('m', time()) == "02") selected @endif>{{__('general.feb')}}</option>
+                              <option value="03" @if (date('m', time()) == "03") selected @endif>{{__('general.march')}}</option>
+                              <option value="04" @if (date('m', time()) == "04") selected @endif>{{__('general.apr')}}</option>
+                              <option value="05" @if (date('m', time()) == "05") selected @endif>{{__('general.may')}}</option>
+                              <option value="06" @if (date('m', time()) == "06") selected @endif>{{__('general.jun')}}</option>
+                              <option value="07" @if (date('m', time()) == "07") selected @endif>{{__('general.jul')}}</option>
+                              <option value="08" @if (date('m', time()) == "08") selected @endif>{{__('general.aug')}}</option>
+                              <option value="09" @if (date('m', time()) == "09") selected @endif>{{__('general.sep')}}</option>
+                              <option value="10" @if (date('m', time()) == "10") selected @endif>{{__('general.oct')}}</option>
+                              <option value="11" @if (date('m', time()) == "11") selected @endif>{{__('general.nov')}}</option>
+                              <option value="12" @if (date('m', time()) == "12") selected @endif>{{__('general.dec')}}</option>
                             </select>
                         </div>
                         <div class="col-sm-4">
@@ -140,13 +140,13 @@
             <thead>
               <tr>
                 <th width="10">No</th>
-                <th width="250">Employee Name</th>
+                <th width="250">{{__('employee.empname')}}</th>
                 <th width="200">NPWP</th>
                 <th width="150">Metode</th>
-                <th width="150">Period</th>
-                <th width="200">Basic Salary</th>
-                <th width="200">Tax</th>
-                <th width="100">Action</th>
+                <th width="150">{{__('general.period')}}</th>
+                <th width="200">{{__('employee.bscslr')}}</th>
+                <th width="200">{{__('taxreport.tax')}}</th>
+                <th width="100">{{__('general.act')}}</th>
               </tr>
             </thead>
           </table>
@@ -179,6 +179,14 @@
       lengthChange:true,
       responsive:true,
       order: [[ 1, "asc" ]],
+      language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
 			lengthMenu: [ 100, 250, 500, 1000, 2000 ],
       pageLength: 100,
       ajax: {
@@ -228,8 +236,8 @@
                       <i class="fa fa-bars"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                      <li><a class="dropdown-item" href="{{url('admin/pph/${row.id}/detail')}}"><i class="fas fa-info mr-3"></i> Detail</a></li>
-                      <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+                      <li><a class="dropdown-item" href="{{url('admin/pph/${row.id}/detail')}}"><i class="fas fa-info mr-3"></i> {{__('general.dtl')}}</a></li>
+                      <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{__('general.dlt')}}</a></li>
                     </ul>
                   </div>`
           },targets: [7]

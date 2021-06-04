@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Salary Increases')
+@section('title',__('salarymass.slinc'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -9,8 +9,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('salaryincreases.index')}}">Salary Increases</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item active"><a href="{{route('salaryincreases.index')}}">{{__('salarymass.slinc')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.crt')}}</li>
 @endpush
 
 
@@ -21,7 +21,7 @@
             <div class="col-lg-8">
                 <div class="card card-{{ config('configs.app_theme') }} card-outline">
                     <div class="card-header" style="height:55px;">
-                        <h3 class="card-title">Increases Data</h3>
+                        <h3 class="card-title">{{__('general.crt')}}</h3>
                     </div>
                     <div class="card-body">
                         <form id="form" action="{{ route('salaryincreases.store') }}" method="post" autocomplete="off">
@@ -36,7 +36,7 @@
                                 </div> --}}
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label>Date</label>
+                                        <label>{{__('general.date')}}</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">
@@ -44,18 +44,18 @@
                                                 </span>
                                             </div>
                                             <input type="text" name="date" class="form-control datepicker" id="date"
-                                                placeholder="Date" value="{{date('d/m/Y')}}">
+                                                placeholder="{{__('general.date')}}" value="{{date('d/m/Y')}}">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <!-- text input -->
                                     <div class="form-group">
-                                        <label>Increases Type</label>
+                                        <label>{{__('salarymass.incrtype')}}</label>
                                         <select name="increases_type" class="form-control select2"
-                                            data-placeholder="Select Increases Type" id="increases_type">
+                                            data-placeholder="Select {{__('salarymass.incrtype')}}" id="increases_type">
                                             <option value=""></option>
-                                            <option value="basic_salary">Basic Salary</option>
+                                            <option value="basic_salary">{{__('employee.bscslr')}}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -63,19 +63,19 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label>Value</label>
+                                        <label>{{__('general.value')}}</label>
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <select class="form-control select2" data-placeholder="Type" name="type"
                                                     id="type">
                                                     <option value=""></option>
-                                                    <option value="Percentage">Percentage</option>
-                                                    <option value="Nominal">Nominal</option>
+                                                    <option value="Percentage">{{__('general.percen')}}</option>
+                                                    <option value="Nominal">{{__('general.nom')}}</option>
                                                 </select>
                                             </div>
                                             <div class="col-sm-6">
                                                 <input type="text" name="value" class="form-control"
-                                                    placeholder="Value">
+                                                    placeholder="{{__('general.value')}}">
                                             </div>
                                         </div>
                                     </div>
@@ -90,11 +90,11 @@
             <div class="col-lg-4">
                 <div class="card card-{{ config('configs.app_theme') }} card-outline">
                     <div class="card-header">
-                        <h3 class="card-title">Other</h3>
+                        <h3 class="card-title">{{__('general.other')}}</h3>
                         <div class="pull-right card-tools">
                             <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}"
-                                title="Simpan"><i class="fa fa-save"></i></button>
-                            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+                                title="{{__('general.save')}}"><i class="fa fa-save"></i></button>
+                            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i
                                     class="fa fa-reply"></i></a>
                         </div>
                     </div>
@@ -102,9 +102,9 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label>Notes</label>
+                                    <label>{{__('general.notes')}}</label>
                                     <textarea style="height:110px;" type="text" class="form-control" name="notes"
-                                        placeholder="Notes"> </textarea>
+                                        placeholder="{{__('general.notes')}}"> </textarea>
                                 </div>
                             </div>
                         </div>
@@ -178,7 +178,7 @@
                     </div>
                     <div class="modal-footer">
                         <button form="form_career" type="submit"
-                            class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i
+                            class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{__('general.save')}}"><i
                                 class="fa fa-save"></i></button>
                     </div>
                     <div class="overlay d-none">

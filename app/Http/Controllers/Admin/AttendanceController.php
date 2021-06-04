@@ -1077,7 +1077,10 @@ class AttendanceController extends Controller
                     $attendance_out = AttendanceLog::where('attendance_id', $update->id)->where('employee_id', $update->employee_id)->where('type', 0)->max('attendance_date');
                 }
                 if ($attendance_in && !$attendance_out) {
-                    if (changeDateFormat('H:i', $attendance_in) > changeDateFormat('H:i', '15:00')) {
+                    /* 
+                        Cros Date
+                    */
+                    //if (changeDateFormat('H:i', $attendance_in) > changeDateFormat('H:i', '15:00')) {
                         $date_in = changeDateFormat('Y-m-d', $attendance_in);
                         $date_max = Carbon::parse($date_in)->endOfDay()->toDateTimeString();
                         $out_between = AttendanceLog::where('employee_id', $update->employee_id)->whereBetween('attendance_date', [$attendance_in, $date_max])->where('type', 0)->max('attendance_date');
@@ -1109,10 +1112,43 @@ class AttendanceController extends Controller
                                 $attendance_out = null;
                             }
                         }
-                    } else {
-                        $attendance_out = AttendanceLog::where('attendance_id', $update->id)->where('employee_id', $update->employee_id)->where('type', 0)->max('attendance_date');
-                    }
+                    // } else {
+                    //     $attendance_out = AttendanceLog::where('attendance_id', $update->id)->where('employee_id', $update->employee_id)->where('type', 0)->max('attendance_date');
+                    // }
                 }
+
+                //Check Out
+                if(!$attendance_in && $attendance_out){
+                    /* 
+                        Cros Date
+                    */
+                    //if (changeDateFormat('H:i', $attendance_in) > changeDateFormat('H:i', '15:00')) {
+                        $date_out = changeDateFormat('Y-m-d', $attendance_out);
+                        $date_start = date('Y-m-d',strtotime($date_out.'-1 days'));
+                        $in_between = AttendanceLog::where('employee_id', $update->employee_id)->whereBetween('attendance_date', [$date_start, $date_out])->where('type', 1)->orderBy('attendance_date','asc')->first();
+                        if ($in_between) {
+                            if($in_between->attendance_id && !$in_between->attendance_out){
+                                $attendance_in = $in_between->attendance_date;
+                                $update->attendance_in = null;
+                                $update->attendance_out = null;
+                                $update->workingtime_id = null;
+                                $update->overtime_scheme_id = null;
+                                $update->save();
+                                $outs = AttendanceLog::whereBetween('attendance_date', [$date_start, $date_out])->where('employee_id', '=', $update->employee_id)->where('type', '=', 0)->get();
+                                if ($outs->count() > 0) {
+                                    foreach ($outs as $key => $value) {
+                                        $value->attendance_id = $in_between->attendance_id;
+                                        $value->save();
+                                    }
+                                } 
+                                $update = Attendance::find($in_between->attendance_id);
+                            }
+                        } 
+                    // } else {
+                    //     $attendance_out = AttendanceLog::where('attendance_id', $update->id)->where('employee_id', $update->employee_id)->where('type', 0)->max('attendance_date');
+                    // }
+                }
+                /*Check Out Different File*/
                 $update->attendance_in = $attendance_in ? $attendance_in : null;
                 $update->attendance_out = $attendance_out && $attendance_out > $attendance_in ? $attendance_out : null;
                 $exception_date = $this->employee_calendar($update->employee_id);

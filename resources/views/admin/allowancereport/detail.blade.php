@@ -1,9 +1,9 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Detail Allowance')
+@section('title',__('allowancereport.alwrpt'))
 @push('breadcrump')
-    <li class="breadcrumb-item"><a href="{{route('allowancereport.index')}}">Allowance Report</a></li>
-    <li class="breadcrumb-item active">Detail</li>
+    <li class="breadcrumb-item"><a href="{{route('allowancereport.index')}}">{{__('allowancereport.alwrpt')}}</a></li>
+    <li class="breadcrumb-item active">{{__('general.dtl')}}</li>
 @endpush
 @section('stylesheets')
 <link rel="stylesheet" href="{{asset('adminlte/component/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}">
@@ -17,7 +17,7 @@
     <div class="col-lg-12">
         <div class="card card-{{config('configs.app_theme')}} card-outline">
             <div class="card-header">
-                <h3 class="card-title">Employee Data</h3>
+                <h3 class="card-title">{{__('employee.empdata')}}</h3>
             </div>
             <div class="card-body">
                 <form id="form" action="{{route('employees.store')}}" class="form-horizontal" method="post"
@@ -30,15 +30,15 @@
                                 <input type="hidden" name="employee_id" value="{{ $allowance_detail->employee_id }}">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label>Name</label>
-                                        <input type="text" class="form-control" placeholder="Name" name="name"
+                                        <label>{{__('employee.empname')}}</label>
+                                        <input type="text" class="form-control" placeholder="{{__('employee.empname')}}" name="name"
                                             value="{{$employee->name}}" readonly>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <!-- text input -->
                                     <div class="form-group">
-                                        <label>NIK Bosung</label>
+                                        <label>NIK Taewon</label>
                                         <input type="text" class="form-control" placeholder="NIK" name="nid"
                                             value="{{$employee->nid}}" readonly>
                                     </div>
@@ -47,17 +47,17 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label>Department</label>
+                                        <label>{{__('department.dep')}}</label>
                                         <input type="text" class="form-control" name="department_id" id="department_id"
-                                            data-placeholder="Select Department" readonly>
+                                            data-placeholder="{{__('general.chs')}} {{__('department.dep')}}" readonly>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <!-- text input -->
                                     <div class="form-group">
-                                        <label>Position</label>
+                                        <label>{{__('employee.position')}}</label>
                                         <input type="text" class="form-control" name="title_id" id="title_id"
-                                            data-placeholder="Select Position" readonly>
+                                            data-placeholder="Select {{__('employee.position')}}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -65,16 +65,16 @@
                                 <div class="col-sm-6">
                                     <!-- text input -->
                                     <div class="form-group">
-                                        <label>Work Group Combination</label>
+                                        <label>{{__('employee.workcomb')}}</label>
                                         <input type="text" class="form-control" name="workgroup_id" id="workgroup_id"
                                             data-placeholder="Select Workgroup" readonly>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label>Grade</label>
+                                        <label>{{__('employee.grade')}}</label>
                                         <input type="text" class="form-control" name="grade_id" id="grade_id"
-                                            data-placeholder="Select Grade" readonly>
+                                            data-placeholder="Select {{__('employee.grade')}}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -84,7 +84,7 @@
                                 <div class="col-sm-12">
                                     <!-- text input -->
                                     <div class="form-group">
-                                        <label for="app_logo" class="col-sm-5 control-label">Image</label>
+                                        <label for="app_logo" class="col-sm-5 control-label">{{__('employee.img')}}</label>
                                         <div class="col-sm-12"
                                             style="border:1px solid #bdc3c7; border-radius:5px; height:203px; padding-top:10px;">
                                             <input type="file" class="form-control" name="photo" id="picture"
@@ -101,16 +101,16 @@
     <div class="col-lg-12">
         <div class="card card-{{ config('configs.app_theme') }} card-outline">
             <div class="card-header">
-                <h3 class="card-title">Allowance Details</h3>
+                <h3 class="card-title">{{__('general.dtl')}} {{__('allowance.alw')}}</h3>
             </div>
             <div class="card-body">
                 <table class="table table-striped table-bordered datatable" id="table-allowance" style="width: 100%">
                     <thead>
                         <tr>
                             <th width="10">No</th>
-                            <th width="600">Description</th>
-                            <th width="100">Factor</th>
-                            <th width="100">Value</th>
+                            <th width="600">{{__('general.desc')}}</th>
+                            <th width="100">{{__('employee.factor')}}</th>
+                            <th width="100">{{__('general.value')}}</th>
                             <th width="200">Total</th>
                         </tr>
                     </thead>

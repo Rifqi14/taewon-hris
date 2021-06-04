@@ -38,7 +38,7 @@ return [
     'notes'       => 'Notes',
     'chs'         => 'Choose',
     'from'        => 'From',
-    'To'          => 'To',
+    'to'          => 'To',
     'showent'     => 'Show _MENU_ Entries',
     'prev'        => 'Previous',
     'next'        => 'Next',
@@ -91,5 +91,7 @@ return [
     'period'      => 'Periode',
     'history'     => 'History',
     'no_phone'    => 'Phone Number',
-    'expired'     => 'Kadaluarsa',
+    'expired'     => 'Expired',
+    'monthly'     => 'Monthly',
+    'hourly'      => 'Hourly',
 ];

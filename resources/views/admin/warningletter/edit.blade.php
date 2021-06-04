@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit Warning Letter')
+@section('title',__('warningletter.wl'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -9,8 +9,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('warningletter.index')}}">Warning Letter</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item"><a href="{{route('warningletter.index')}}">{{__('warningletter.wl')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.edt')}}</li>
 @endpush
 
 @section('content')
@@ -23,14 +23,14 @@
         <div class="col-lg-12">
           <div class="card card-{{ config('configs.app_theme') }} card-outline">
             <div class="card-header">
-              <div class="card-title">Data Employee</div>
+              <div class="card-title">{{__('employee.empdata')}}</div>
             </div>
             <div class="card-body">
               <div class="row">
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Employee</label>
-                    <input type="text" class="form-control" placeholder="Employee" id="employee" name="employee"value="{{ $warningletter->employee->name }}" required>
+                    <label>{{__('employee.employ')}}</label>
+                    <input type="text" class="form-control" placeholder="{{__('employee.employ')}}" id="employee" name="employee"value="{{ $warningletter->employee->name }}" required>
                   </div>
                 </div>
                 <div class="col-sm-6">
@@ -44,20 +44,20 @@
               <div class="row">
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Position</label>
-                    <input type="text" class="form-control" placeholder="Position" id="title" name="title" value="{{ $warningletter->employee->title->name }}" readonly>
+                    <label>{{__('employee.position')}}</label>
+                    <input type="text" class="form-control" placeholder="{{__('employee.position')}}" id="title" name="title" value="{{ $warningletter->employee->title->name }}" readonly>
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Department</label>
-                    <input type="text" class="form-control" placeholder="Department" id="department" name="department" value="{{ $warningletter->employee->department->name }}" readonly>
+                    <label>{{__('department.dep')}}</label>
+                    <input type="text" class="form-control" placeholder="{{__('department.dep')}}" id="department" name="department" value="{{ $warningletter->employee->department->name }}" readonly>
                   </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                      <label>Join Date</label>
-                      <input type="text" class="form-control" placeholder="Join Date" id="join_date" name="join_date" value="{{ $warningletter->employee->join_date }}" readonly>
+                      <label>{{__('employee.jd')}}</label>
+                      <input type="text" class="form-control" placeholder="{{__('employee.jd')}}" id="join_date" name="join_date" value="{{ $warningletter->employee->join_date }}" readonly>
                     </div>
                   </div>
               </div>
@@ -70,7 +70,7 @@
         <div class="col-lg-12">
           <div class="card card-{{ config('configs.app_theme')}} card-outline">
             <div class="card-header">
-              <h3 class="card-title">Reason</h3>
+              <h3 class="card-title">{{__('warningletter.reason')}}</h3>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -87,10 +87,10 @@
     <div class="col-lg-4">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <div class="card-title">Others</div>
+          <div class="card-title">{{__('general.other')}}</div>
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" id="simpan" title="Simpan"><i class="fa fa-save"></i></button>
-            <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" id="simpan" title="{{__('general.save')}}"><i class="fa fa-save"></i></button>
+            <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i class="fa fa-reply"></i></a>
           </div>
         </div>
         <div class="card-body">
@@ -103,24 +103,24 @@
             </div> --}}
             <div class="col-sm-12">
               <div class="form-group">
-                <label class="control-label" for="number_warning_letter">Number of Warning Letter</label>
-                <input type="text" class="form-control" placeholder="Number of Warning Letter" id="number_warning_letter" value="{{ $warningletter->number_warning_letter }}" name="number_warning_letter" readonly>
+                <label class="control-label" for="number_warning_letter">{{__('warningletter.number')}}</label>
+                <input type="text" class="form-control" placeholder="{{__('warningletter.number')}}" id="number_warning_letter" value="{{ $warningletter->number_warning_letter }}" name="number_warning_letter" readonly>
               </div>
             </div>
             <div class="col-sm-12">
               <div class="form-group">
-                <label for="document">Effective Date</label>
+                <label for="document">{{__('warningletter.effdate')}}</label>
                 <div class="row">
                     <div class="col-sm-6">
                       <div class="form-group">
-                        <label>From</label>
-                        <input type="text" class="form-control datepicker" placeholder="From" id="from" name="from" value="{{ date('d/m/Y',strtotime($warningletter->from)) }}">
+                        <label>{{__('general.from')}}</label>
+                        <input type="text" class="form-control datepicker" placeholder="{{__('general.from')}}" id="from" name="from" value="{{ date('d/m/Y',strtotime($warningletter->from)) }}">
                       </div>
                     </div>
                     <div class="col-sm-6">
                       <div class="form-group">
-                        <label>To</label>
-                        <input type="text" class="form-control datepicker" placeholder="To" id="to" name="to" value="{{ date('d/m/Y',strtotime($warningletter->to)) }}" readonly>
+                        <label>{{__('general.to')}}</label>
+                        <input type="text" class="form-control datepicker" placeholder="{{__('general.to')}}" id="to" name="to" value="{{ date('d/m/Y',strtotime($warningletter->to)) }}" readonly>
                       </div>
                     </div>
                   </div>

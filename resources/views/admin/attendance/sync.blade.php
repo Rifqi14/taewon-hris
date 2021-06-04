@@ -336,7 +336,10 @@
               }).done(function(response){
                   $('.overlay').addClass('d-none');
                   if(response.status){
+                    items = {};
                     table_item.clear().draw();
+                    $('#no').attr('value',response.last);
+                    loadItem(table_item);
                     $.gritter.add({
                         title: 'Success!',
                         text: response.message,

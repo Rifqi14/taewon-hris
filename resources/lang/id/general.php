@@ -36,7 +36,7 @@ return [
     'notes'       => 'Catatan',
     'chs'         => 'Pilih',
     'from'        => 'Dari',
-    'To'          => 'Ke',
+    'to'          => 'Ke',
     'showent'     => 'Tampilkan _MENU_ Baris',
     'prev'        => 'Sebelumnya',
     'next'        => 'Berikutnya',
@@ -89,5 +89,7 @@ return [
     'period'      => 'Period',
     'history'     => 'Riwayat',
     'no_phone'    => 'No Telepon',
-    'expired'     => 'Expired',
+    'expired'     => 'Kadaluarsa',
+    'monthly'     => 'Bulanan',
+    'hourly'      => 'Perjam',
 ];
