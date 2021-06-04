@@ -210,7 +210,7 @@ class GroupAllowanceController extends Controller
         }
 
         if ($request->coordinate > 0) {
-            $cek_coordinate = GroupAllowance::where('coordinate', $request->coordinate)->first();
+            $cek_coordinate = GroupAllowance::where('coordinate', $request->coordinate)->where('id', '!=', $id)->first();
 
             if ($cek_coordinate) {
                 return response()->json([
@@ -220,10 +220,10 @@ class GroupAllowanceController extends Controller
             }
         }
         $groupAllowance = GroupAllowance::find($id);
-        $groupAllowance->code = $request->code;
-        $groupAllowance->name = $request->group_allowance;
-        $groupAllowance->notes = $request->notes;
-        $groupAllowance->status = $request->status;
+        $groupAllowance->code       = $request->code;
+        $groupAllowance->name       = $request->group_allowance;
+        $groupAllowance->notes      = $request->notes;
+        $groupAllowance->status     = $request->status;
         $groupAllowance->group_type = $request->type;
         $groupAllowance->coordinate = $request->coordinate;
         $groupAllowance->save();
