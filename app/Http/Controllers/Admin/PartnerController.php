@@ -375,8 +375,7 @@ class PartnerController extends Controller
             ], 400);
         }
         $partners = json_decode($request->partners);
-        // dd($deliveryorders);
-        DB::beginTransaction();
+        dd($partners);
         foreach ($partners as $partner){
             $insert = Partner::create([
                 'code'     =>  '',
