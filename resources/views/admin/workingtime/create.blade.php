@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Working Shift')
+@section('title', __('employee.workshift'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
@@ -39,8 +39,8 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active"><a href="{{route('workingtime.index')}}">Working Shift</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item active"><a href="{{route('workingtime.index')}}">{{ __('employee.workshift') }}</a></li>
+<li class="breadcrumb-item active">{{ __('general.crt') }}</li>
 @endpush
 
 
@@ -50,7 +50,7 @@
 		<div class="col-lg-8">
 			<div class="card card-{{ config('configs.app_theme') }} card-outline">
 				<div class="card-header" style="height: 55px;">
-					<h3 class="card-title">Working Shift Data</h3>
+					<h3 class="card-title">{{ __('employee.workshift') }} Data</h3>
 				</div>
 				<div class="card-body">
 					{{ csrf_field() }}
@@ -58,8 +58,8 @@
 						<div class="col-sm-6">
 							<!-- text input -->
 							<div class="form-group">
-								<label>Working Shift Type <b class="text-danger">*</b></label>
-								<select name="working_time_type" id="working_time_type" class="form-control select2" data-placeholder="Select Working Time">
+								<label>{{ __('shift.wttype') }} <b class="text-danger">*</b></label>
+								<select name="working_time_type" id="working_time_type" class="form-control select2" data-placeholder="{{ __('general.chs') }} {{ __('shift.wttype') }}">
 									@foreach(config('enums.workingtime_type') as $key => $value)
 									<option value="{{ $key }}">{{ $value }}</option>
 									@endforeach
@@ -68,8 +68,8 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label>Shift Detail <b class="text-danger">*</b></label>
-								<input type="text" name="description" class="form-control" placeholder="Shift Detail" required>
+								<label>{{ __('shift.shftdet') }} <b class="text-danger">*</b></label>
+								<input type="text" name="description" class="form-control" placeholder="{{ __('shift.shftdet') }}" required>
 							</div>
 						</div>
 					</div>
@@ -82,10 +82,10 @@
 		<div class="col-lg-4">
 			<div class="card card-{{ config('configs.app_theme') }} card-outline">
 				<div class="card-header">
-					<h3 class="card-title">Other</h3>
+					<h3 class="card-title">{{ __('general.other') }}</h3>
 					<div class="pull-right card-tools">
-						<button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Simpan"><i class="fa fa-save"></i></button>
-						<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i class="fa fa-reply"></i></a>
+						<button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{ __('general.save') }}"><i class="fa fa-save"></i></button>
+						<a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{ __('general.prvious') }}"><i class="fa fa-reply"></i></a>
 					</div>
 				</div>
 				<div class="card-body">
@@ -93,8 +93,8 @@
 						<div class="col-sm-12">
 							<!-- text input -->
 							<div class="form-group">
-								<label>Notes</label>
-								<textarea style="height: 120px;" class="form-control" name="notes" placeholder="Notes"></textarea>
+								<label>{{ __('general.notes') }}</label>
+								<textarea style="height: 120px;" class="form-control" name="notes" placeholder="{{ __('general.notes') }}"></textarea>
 							</div>
 						</div>
 					</div>
@@ -107,25 +107,25 @@
 		<div class="col-lg-12">
 			<div class="card card-{{ config('configs.app_theme') }} card-outline">
 				<div class="nav nav-tabs" id="nav-tab" role="tablist">
-					<a class="nav-item nav-link active" id="nav-shift-tab" data-toggle="tab" href="#nav-shift" role="tab" aria-controls="nav-shift" aria-selected="true">Working Shift</a>
-					<a class="nav-item nav-link" id="nav-department-tab" data-toggle="tab" href="#nav-department" role="tab" aria-controls="nav-department" aria-selected="false">Department</a>
+					<a class="nav-item nav-link active" id="nav-shift-tab" data-toggle="tab" href="#nav-shift" role="tab" aria-controls="nav-shift" aria-selected="true">{{ __('employee.workshift') }}</a>
+					<a class="nav-item nav-link" id="nav-department-tab" data-toggle="tab" href="#nav-department" role="tab" aria-controls="nav-department" aria-selected="false">{{ __('department.dep') }}</a>
 				</div>
 				<div class="tab-content" id="nav-tabContent">
 					<div class="tab-pane fade show active" id="nav-shift" role="tabpanel" aria-labelledby="nav-shift-tab">
 						<div class="card-header">
-							<h3 class="card-title">Working Shift Rule</h3>
+							<h3 class="card-title">{{ __('shift.shiftrule') }}</h3>
 						</div>
 						<div class="card-body">
 							<table class="table table-striped table-bordered datatable" id="shift-table" style="width: 100%">
 								<thead>
 									<tr>
 										<th width="10" class="text-center align-middle">No</th>
-										<th width="50">Day</th>
-										<th width="25" class="text-center align-middle">Start Time</th>
-										<th width="25" class="text-center align-middle">Finish Time</th>
-										<th width="25" class="text-center align-middle">Min Time In</th>
-										<th width="25" class="text-center align-middle">Max Time Out</th>
-										<th width="25" class="text-center align-middle">Min Workingtime</th>
+										<th width="50">{{ __('general.day') }}</th>
+										<th width="25" class="text-center align-middle">{{ __('shift.startime') }}</th>
+										<th width="25" class="text-center align-middle">{{ __('shift.fintime') }}</th>
+										<th width="25" class="text-center align-middle">{{ __('shift.mintime') }}</th>
+										<th width="25" class="text-center align-middle">{{ __('shift.maxtime') }}</th>
+										<th width="25" class="text-center align-middle">{{ __('shift.minwork') }}</th>
 										<th width="50" class="text-center align-middle">Status</th>
 									</tr>
 								</thead>
@@ -164,14 +164,14 @@
 					</div>
 					<div class="tab-pane fade show" id="nav-department" role="tabpanel" aria-labelledby="nav-department-tab">
 						<div class="card-header">
-							<h3 class="card-title">Department</h3>
+							<h3 class="card-title">{{ __('department.dep') }}</h3>
 						</div>
 						<div class="card-body">
 							<table class="table table-striped table-bordered datatable" id="department-table" style="width: 100%">
 								<thead>
 									<tr>
 										<th class="text-center align-middle">No</th>
-										<th width="400">Department Name</th>
+										<th width="400">{{ __('department.depname') }}</th>
 										<th class="text-center align-middle">
 											<div class="customcheckbox">
 												<input type="checkbox" name="checkall" class="checkall">
@@ -223,6 +223,9 @@
 			lengtChange: true,
 			responsive: true,
 			order: [[1, "asc"]],
+			language: {
+				url: language_choosen == 'id' ? urlLocaleId : '',
+			},
 			lengthMenu: [ 100, 250, 500, 1000 ],
 			ajax: {
 				url: "{{ route('departmentshift.read') }}",
