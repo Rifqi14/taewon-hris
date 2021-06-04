@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Log History')
+@section('title',__('activity.aclog'))
 @section('stylesheets')
 <link href="{{ asset('adminlte/component/dataTables/css/datatables.min.css') }}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
@@ -19,7 +19,7 @@
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Log History</li>
+<li class="breadcrumb-item active">{{__('activity.aclog')}}</li>
 @endpush
 
 @section('content')
@@ -29,64 +29,82 @@
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         {{-- Title, Button Approve & Search --}}
         <div class="card-header">
-          <h3 class="card-title">List Log History</h3>
+          <h3 class="card-title">{{__('activity.listaclog')}}</h3>
         </div>
         {{-- .Title, Button Approve & Search --}}
         <div class="card-body">
           <div class="form-row">
             <div class="form-group col-md-4">
-              <label for="user_id">User</label>
-              <input type="text" class="form-control" id="user_id" placeholder="User" name="user_id">
-              <div id="user-container"></div>
+              <label for="user_id">{{__('activity.user')}}</label>
+              <select name="user_id" id="user_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
+                @foreach ($users as $user)
+                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="page_id">Page</label>
-              <input type="text" class="form-control" id="page_id" placeholder="Page" name="page_id">
-              <div id="page-container"></div>
+              <label for="page_id">{{__('activity.page')}}</label>
+              <select name="page_id" id="page_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
+                @foreach ($pages as $page)
+                <option value="{{ $page->page }}">{{ $page->page }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="employee_id">Employee Name</label>
-              <input type="text" class="form-control" id="employee_id" placeholder="Employee Name" name="employee_id">
-              <div id="employee-container"></div>
+              <label for="employee_id">{{__('employee.empname')}}</label>
+              <select name="employee_id" id="employee_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
+                @foreach ($employees as $employee)
+                <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="department_id">Department</label>
-              <input type="text" class="form-control" id="department_id" placeholder="Department" name="department_id">
-              <div id="department-container"></div>
+              <label for="department_id">{{__('department.dep')}}</label>
+              <select name="department_id" id="department_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{ __('general.chs') }} {{ __('department.dep') }}">
+                @foreach ($departments as $department)
+                <option value="{{ $department->name }}">{{ $department->path }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="activity_id">Activity</label>
-              <input type="text" class="form-control" id="activity_id" placeholder="Activity" name="activity_id">
-              <div id="activity-container"></div>
+              <label for="activity_id">{{__('activity.activity')}}</label>
+              <select name="activity_id" id="activity_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
+                @foreach ($activitys as $activity)
+                <option value="{{ $activity->activity }}">{{ $activity->activity }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="form-row col-md-4">
               <div class="form-group col-md-6">
-                <label for="from">From</label>
-                <input type="text" class="form-control datepicker" id="from" placeholder="From" name="from">
+                <label for="from">{{__('activity.from')}}</label>
+                <input type="text" class="form-control datepicker" id="from" placeholder="{{__('activity.from')}}" name="from">
               </div>
               <div class="form-group col-md-6">
-                <label for="to">To</label>
-                <input type="text" class="form-control datepicker" id="to" placeholder="To" name="to">
+                <label for="to">{{__('activity.to')}}</label>
+                <input type="text" class="form-control datepicker" id="to" placeholder="{{__('activity.to')}}" name="to">
               </div>
             </div>
             <div class="form-group col-md-4">
-              <label for="detail_id">Detail</label>
-              <input type="text" class="form-control" id="detail_id" placeholder="Detail" name="detail_id">
-              <div id="detail-container"></div>
+              <label for="detail_id">{{__('general.dtl')}}</label>
+              <select name="detail_id" id="detail_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
+                @foreach ($details as $detail)
+                <option value="{{ $detail->detail }}">{{ $detail->detail }}</option>
+                @endforeach
+              </select>
             </div>
           </div>
           <table class="table table-striped table-bordered datatable" style="width: 100%">
             <thead>
               <tr>
                 <th width="5">No</th>
-                <th width="100">Date</th>
-                <th width="100">User</th>
-                <th width="100">Page</th>
-                <th width="100">Employee Name</th>
-                <th width="100">Department</th>
-                <th width="100">Activity</th>
-                <th width="100">Detail</th>
-                <th width="2">Result</th>
+                <th width="100">{{__('general.date')}}</th>
+                <th width="100">{{__('activity.user')}}</th>
+                <th width="100">{{__('activity.page')}}</th>
+                <th width="100">{{__('employee.empname')}}</th>
+                <th width="100">{{__('department.dep')}}</th>
+                <th width="100">{{__('activity.activity')}}</th>
+                <th width="100">{{__('general.dtl')}}</th>
+                <th width="2">{{__('activity.rslt')}}</th>
               </tr>
             </thead>
           </table>
@@ -138,21 +156,33 @@
       lengthChange:true,
       responsive: true,
       order: [[ 1, "asc" ]],
+      language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
       lengthMenu: [ 100, 250, 500, 1000, 2000 ],
       ajax: {
         url: "{{route('loghistory.read')}}",
         type: "GET",
         data:function(data){
-          var employee = $('input[name=employee_id]').val();
-          var nik = $('input[name=nik]').val();
-          var working_group = $('select[name=working_group]').val();
-          var status = $('select[name=status]').val();
+          var employee_id = $('select[name=employee_id]').val();
+          var user_id = $('select[name=user_id]').val();
+          var page_id = $('select[name=page_id]').val();
+          var activity_id = $('select[name=activity_id]').val();
+          var detail_id = $('select[name=detail_id]').val();
+          var department_id = $('select[name=department_id]').val();
           var from = $('input[name=from]').val();
           var to = $('input[name=to]').val();
-          data.employee = employee;
-          data.nik = nik;
-          data.working_group = working_group;
-          data.status = status;
+          data.employee_id = employee_id;
+          data.user_id = user_id;
+          data.page_id = page_id;
+          data.department_id = department_id;
+          data.detail_id = detail_id;
+          data.activity_id = activity_id;
           data.from = from;
           data.to = to;
         }
@@ -176,68 +206,22 @@
         { data: "result"},
       ]
     });
-    $(document).ready(function(){
-			var employees = [
-				@foreach($employees as $employee)
-                	"{!!$employee->name!!}",
-            	@endforeach
-			];
-			$( "input[name=employee_id]" ).autocomplete({
-			source: employees,
-			minLength:0,
-			appendTo: '#employee-container',
-			select: function(event, response) {
-				if(event.preventDefault(), 0 !== response.item.id){
-					$(this).val(response.item.value);
-					dataTable.draw();
-				}
-			}
-			}).focus(function () {
-				$(this).autocomplete("search");
-			});
-			$("input[name=employee_id]").keydown(function(event){
-				if(event.keyCode == 13) {
-					event.preventDefault();
-					$('input[name=employee_id]').autocomplete('close');
-					return false;
-				}
-			});
-      var employees = [
-				@foreach($employees as $nik)
-                	"{!!$nik->nid!!}",
-            	@endforeach
-			];
-			$( "input[name=nik]" ).autocomplete({
-			source: employees,
-			minLength:0,
-			appendTo: '#employee-container',
-			select: function(event, response) {
-				if(event.preventDefault(), 0 !== response.item.id){
-					$(this).val(response.item.value);
-					dataTable.draw();
-				}
-			}
-			}).focus(function () {
-				$(this).autocomplete("search");
-			});
-			$("input[name=nik]").keydown(function(event){
-				if(event.keyCode == 13) {
-					event.preventDefault();
-					$('input[name=nik]').autocomplete('close');
-					return false;
-				}
-			});
-    $(document).on('keyup', '#nik', function() {
+    $(document).on('change', '#user_id', function() {
       dataTable.draw();
     });
-		});
-    $(document).on('change', '#working_group', function() {
+    $(document).on('change', '#page_id', function() {
       dataTable.draw();
     });
-    $(document).on('change', '#status', function() {
+    $(document).on('change', '#employee_id', function() {
       dataTable.draw();
     });
-    $(document).on('keyup', '#employee_id', function() {
+    $(document).on('change', '#department_id', function() {
+      dataTable.draw();
+    });
+    $(document).on('change', '#activity_id', function() {
+      dataTable.draw();
+    });
+    $(document).on('change', '#detail_id', function() {
       dataTable.draw();
     });
     $(document).on('apply.daterangepicker', function() {
