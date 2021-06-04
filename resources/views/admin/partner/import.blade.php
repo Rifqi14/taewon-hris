@@ -43,7 +43,7 @@
         <table class="table table-striped table-bordered" style="width:100%" id="table-item">
           <thead>
             <tr>
-              <th width="100">No</th>
+              <th width="10">No</th>
               <th width="100">Name</th>
               <th width="100">No. Phone</th>
               <th width="100">Email</th>
