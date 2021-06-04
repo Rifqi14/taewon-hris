@@ -18,7 +18,7 @@
 @section('content')
 <div class="row">
   <div class="col-lg-12">
-    <div class="card card-{{ config('configs.app_theme') }} card-outline" id="attendance-preview">
+    <div class="card card-{{ config('configs.app_theme') }} card-outline" id="customer-preview">
       <div class="card-header">
         <h3 class="card-title">Import Preview</h3>
         <!-- tools card -->
@@ -38,7 +38,7 @@
         <!-- /. tools -->
       </div>
       <div class="card-body">
-        <form id="form" action="{{route('partner.storemass')}}">
+        <form id="form" action="{{route('partner.storemas')}}">
         </form>
         <table class="table table-striped table-bordered" style="width:100%" id="table-item">
           <thead>
@@ -249,7 +249,7 @@
                   }); 
                   return false;
               }
-              var deliveryorders =[];
+              var partners =[];
               $.each(items, function() {
                 if(this.status == 1){
                   partners.push(this);
@@ -264,7 +264,7 @@
                       partners: JSON.stringify(partners)
                   },
                   beforeSend:function(){
-                      $('#attendance-preview .overlay').removeClass('d-none');
+                      $('#customer-preview .overlay').removeClass('d-none');
                   }
               }).done(function(response){
                   $('.overlay').addClass('d-none');

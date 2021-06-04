@@ -348,7 +348,7 @@ class PartnerController extends Controller
                     'department_id' => $department_id ? $department_id->id : null,
                     'truck_id'      => $truck ? $truck_id->id : null,
                     'truck'         => $truck,
-                    'active'        => $active == 'Active' ? 1 : 0,
+                    'active'        => $active == 'ACTIVE' ? 1 : 0,
                     'rit'           => $rit,
                     'address'       => $address ? $address : null,
                     'error_message' => $error_message,
@@ -365,6 +365,8 @@ class PartnerController extends Controller
     }
     public function storemass(Request $request)
     {
+        // echo'aaaaaaaaa';
+        // return;
         $validator = Validator::make($request->all(), [
             // 'name' => 'required'
         ]);
@@ -375,10 +377,11 @@ class PartnerController extends Controller
             ], 400);
         }
         $partners = json_decode($request->partners);
-        dd($partners);
+        DB::beginTransaction();
         foreach ($partners as $partner){
             $insert = Partner::create([
                 'code'     =>  '',
+                'site_id'  => Session::get('site_id'),
                 'name'     => $partner->name,
                 'email'    => $partner->email,
                 'phone'    => $partner->phone,
@@ -388,7 +391,9 @@ class PartnerController extends Controller
                 'department_id' => $partner->department_id,
                 'status'    => $partner->active,
             ]);
-            $insert->code = $partner->code;
+
+            // dd($insert);
+            $insert->code = $insert->code_system;
             $insert->save();
 
             if (!$insert) {
@@ -399,6 +404,7 @@ class PartnerController extends Controller
                 ], 400);
             }
         }
+        DB::commit();
         return response()->json([
             'status' => true,
             'results' => route('partner.index'),
