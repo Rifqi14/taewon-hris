@@ -18,6 +18,7 @@
             <a href="{{route('partner.create')}}" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="{{ __('general.crt') }}">
               <i class="fa fa-plus"></i>
             </a>
+            <a href="{{route('partner.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="{{__('general.imp')}}" style="cursor: pointer;"><i class="fa fa-file-import"></i></a>
             <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
                 <i class="fa fa-search"></i>
             </a>

@@ -279,4 +279,130 @@ class PartnerController extends Controller
             'message' => 'Success delete data'
         ], 200);
     }
+
+    public function import()
+    {
+        return view('admin.partner.import');
+    }
+    public function preview(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'file'         => 'required|mimes:xlsx'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'    => false,
+                'message'   => $validator->errors()->first()
+            ], 400);
+        }
+        $file = $request->file('file');
+        try {
+            $filetype       = \PHPExcel_IOFactory::identify($file);
+            $objReader      = \PHPExcel_IOFactory::createReader($filetype);
+            $objPHPExcel    = $objReader->load($file);
+        } catch (\Exception $e) {
+            die('Error loading file "' . pathinfo($file, PATHINFO_BASENAME) . '": ' . $e->getMessage());
+        }
+        $data     = [];
+        $no = 1;
+        $sheet = $objPHPExcel->getActiveSheet(0);
+        $highestRow = $sheet->getHighestRow();
+        for ($row = 2; $row <= $highestRow; $row++) {
+            $name           = $sheet->getCellByColumnAndRow(0, $row)->getValue();
+            $phone          = $sheet->getCellByColumnAndRow(1, $row)->getValue();
+            $email          = $sheet->getCellByColumnAndRow(2, $row)->getValue();
+            $department     = strtoupper($sheet->getCellByColumnAndRow(3, $row)->getValue());
+            $truck          = strtoupper($sheet->getCellByColumnAndRow(4, $row)->getValue());
+            $rit            = $sheet->getCellByColumnAndRow(5, $row)->getValue();
+            $address        = $sheet->getCellByColumnAndRow(6, $row)->getValue();
+            $active         = strtoupper($sheet->getCellByColumnAndRow(7, $row)->getValue());
+            $truck_id       = Truck::whereRaw("upper(name) = '$truck'")->first();
+            $department_id  = Department::whereRaw("upper(nid) = '$department'")->first();
+           
+            // $departure_time = $sheet->getCellByColumnAndRow(5, $row)->getValue();
+            // $arrived_time = $sheet->getCellByColumnAndRow(6, $row)->getValue();
+            $status = 1;
+            $error_message = '';
+            if (!$name || !$department_id || !$truck_id || !$rit) {
+                $status = 0;
+                if (!$name) {
+                    $error_message .= 'Customer Name Not Found</br>';
+                }
+                if (!$truck_id) {
+                    $error_message .= 'Truck Not Found</br>';
+                }
+                if (!$department_id) {
+                    $error_message .= 'Department Not Found</br>';
+                }
+                if (!$rit) {
+                    $error_message .= 'Rit Time Not Found</br>';
+                }
+            }
+            if ($name) {
+                $data[] = array(
+                    'index'         => $no,
+                    'nid'           => $name,
+                    'email'         => $email ? $email : null,
+                    'phone'         => $phone ? $phone : null,
+                    'department'    => $department,
+                    'department_id' => $department_id ? $department_id->id : null,
+                    'truck_id'      => $truck ? $truck_id->id : null,
+                    'truck'         => $truck,
+                    'active'        => $active == 'Active' ? 1 : 0,
+                    'rit'           => $rit,
+                    'address'       => $address ? $address : null,
+                    'error_message' => $error_message,
+                    'status'        => $status
+                );
+                $no++;
+            }
+            dd($data);
+        }
+        return response()->json([
+            'status'     => true,
+            'data'     => $data
+        ], 200);
+    }
+    public function storemass(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            // 'name' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'    => false,
+                'message'   => $validator->errors()->first()
+            ], 400);
+        }
+        $partners = json_decode($request->partners);
+        // dd($deliveryorders);
+        DB::beginTransaction();
+        foreach ($partners as $partner){
+            $insert = Partner::create([
+                'code'     =>  '',
+                'name'     => $partner->name,
+                'email'    => $partner->email,
+                'phone'    => $partner->phone,
+                'address'  => $partner->address,
+                'rit'      => $partner->rit,
+                'truck_id' => $partner->truck_id,
+                'department_id' => $partner->department_id,
+                'status'    => $partner->active,
+            ]);
+            $insert->code = $partner->code;
+            $insert->save();
+
+            if (!$insert) {
+                DB::rollback();
+                return response()->json([
+                    'status' => false,
+                    'message'   => $insert
+                ], 400);
+            }
+        }
+        return response()->json([
+            'status' => true,
+            'results' => route('partner.index'),
+        ], 200);
+    }
 }

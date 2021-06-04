@@ -552,6 +552,9 @@ Route::group(['prefix' => 'admin'], function () {
         // Route Attendance Machine
         Route::get('/partner/read', 'Admin\PartnerController@read')->name('partner.read');
         Route::get('/partner/select', 'Admin\PartnerController@select')->name('partner.select');
+        Route::get('/partner/import', 'Admin\PartnerController@import')->name('partner.import');
+        Route::post('/partner/preview', 'Admin\PartnerController@preview')->name('partner.preview');
+        Route::post('/partner/storemass', 'Admin\PartnerController@storemass')->name('partner.storemass');
         Route::resource('/partner', 'Admin\PartnerController');
         //Route Attendance Cut Off
         Route::get('/attendancecutoff/read', 'Admin\AttendanceCutOffController@read')->name('attendancecutoff.read');
