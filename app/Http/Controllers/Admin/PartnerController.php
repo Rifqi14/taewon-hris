@@ -131,7 +131,7 @@ class PartnerController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * {{__('general.imp')}} a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
