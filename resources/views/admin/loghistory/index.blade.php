@@ -70,9 +70,18 @@
               </div>
             </div>
             <div class="form-group col-md-4">
+<<<<<<< HEAD
               <label for="detail_id">{{__('general.dtl')}}</label>
               <input type="text" class="form-control" id="detail_id" placeholder="{{__('general.dtl')}}" name="detail_id">
               <div id="detail-container"></div>
+=======
+              <label for="detail_id">Detail</label>
+              <select name="detail_id" id="detail_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
+                @foreach ($details as $detail)
+                <option value="{{ $detail->detail }}">{{ $detail->detail }}</option>
+                @endforeach
+              </select>
+>>>>>>> dba140484448f1daf08bb97a37a747f7373590ad
             </div>
           </div>
           <table class="table table-striped table-bordered datatable" style="width: 100%">
@@ -143,16 +152,20 @@
         url: "{{route('loghistory.read')}}",
         type: "GET",
         data:function(data){
-          var employee = $('input[name=employee_id]').val();
-          var nik = $('input[name=nik]').val();
-          var working_group = $('select[name=working_group]').val();
-          var status = $('select[name=status]').val();
+          var employee_id = $('select[name=employee_id]').val();
+          var user_id = $('select[name=user_id]').val();
+          var page_id = $('select[name=page_id]').val();
+          var activity_id = $('select[name=activity_id]').val();
+          var detail_id = $('select[name=detail_id]').val();
+          var department_id = $('select[name=department_id]').val();
           var from = $('input[name=from]').val();
           var to = $('input[name=to]').val();
-          data.employee = employee;
-          data.nik = nik;
-          data.working_group = working_group;
-          data.status = status;
+          data.employee_id = employee_id;
+          data.user_id = user_id;
+          data.page_id = page_id;
+          data.department_id = department_id;
+          data.detail_id = detail_id;
+          data.activity_id = activity_id;
           data.from = from;
           data.to = to;
         }
@@ -176,68 +189,22 @@
         { data: "result"},
       ]
     });
-    $(document).ready(function(){
-			var employees = [
-				@foreach($employees as $employee)
-                	"{!!$employee->name!!}",
-            	@endforeach
-			];
-			$( "input[name=employee_id]" ).autocomplete({
-			source: employees,
-			minLength:0,
-			appendTo: '#employee-container',
-			select: function(event, response) {
-				if(event.preventDefault(), 0 !== response.item.id){
-					$(this).val(response.item.value);
-					dataTable.draw();
-				}
-			}
-			}).focus(function () {
-				$(this).autocomplete("search");
-			});
-			$("input[name=employee_id]").keydown(function(event){
-				if(event.keyCode == 13) {
-					event.preventDefault();
-					$('input[name=employee_id]').autocomplete('close');
-					return false;
-				}
-			});
-      var employees = [
-				@foreach($employees as $nik)
-                	"{!!$nik->nid!!}",
-            	@endforeach
-			];
-			$( "input[name=nik]" ).autocomplete({
-			source: employees,
-			minLength:0,
-			appendTo: '#employee-container',
-			select: function(event, response) {
-				if(event.preventDefault(), 0 !== response.item.id){
-					$(this).val(response.item.value);
-					dataTable.draw();
-				}
-			}
-			}).focus(function () {
-				$(this).autocomplete("search");
-			});
-			$("input[name=nik]").keydown(function(event){
-				if(event.keyCode == 13) {
-					event.preventDefault();
-					$('input[name=nik]').autocomplete('close');
-					return false;
-				}
-			});
-    $(document).on('keyup', '#nik', function() {
+    $(document).on('change', '#user_id', function() {
       dataTable.draw();
     });
-		});
-    $(document).on('change', '#working_group', function() {
+    $(document).on('change', '#page_id', function() {
       dataTable.draw();
     });
-    $(document).on('change', '#status', function() {
+    $(document).on('change', '#employee_id', function() {
       dataTable.draw();
     });
-    $(document).on('keyup', '#employee_id', function() {
+    $(document).on('change', '#department_id', function() {
+      dataTable.draw();
+    });
+    $(document).on('change', '#activity_id', function() {
+      dataTable.draw();
+    });
+    $(document).on('change', '#detail_id', function() {
       dataTable.draw();
     });
     $(document).on('apply.daterangepicker', function() {

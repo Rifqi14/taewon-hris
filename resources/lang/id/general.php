@@ -37,6 +37,7 @@ return [
     'chs'         => 'Pilih',
     'from'        => 'Dari',
     'to'          => 'Ke',
+    'To'          => 'Ke',
     'showent'     => 'Tampilkan _MENU_ Baris',
     'prev'        => 'Sebelumnya',
     'next'        => 'Berikutnya',

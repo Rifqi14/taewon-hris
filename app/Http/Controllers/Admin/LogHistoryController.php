@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use App\Models\Employee;
+use App\User;
+use App\Models\LogHistory;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 
 class LogHistoryController extends Controller
 {
@@ -25,17 +29,19 @@ class LogHistoryController extends Controller
      */
     public function read(Request $request)
     {
-        $start = $request->start;
-        $length = $request->length;
-        $query = $request->search['value'];
-        $sort = $request->columns[$request->order[0]['column']]['data'];
-        $dir = $request->order[0]['dir'];
-        $employee = strtoupper(str_replace("'","''",$request->employee));
-        $nik = $request->nik;
-        $working_group = $request->working_group;
-        $status = $request->status;
-        $from = $request->from ? Carbon::parse($request->from)->startOfDay()->toDateTimeString() : null;
-        $to = $request->to ? Carbon::parse($request->to)->endOfDay()->toDateTimeString() : null;
+        $start          = $request->start;
+        $length         = $request->length;
+        $query          = $request->search['value'];
+        $sort           = $request->columns[$request->order[0]['column']]['data'];
+        $dir            = $request->order[0]['dir'];
+        $employee       = $request->employee_id;
+        $user_id        = $request->user_id;
+        $page_id        = $request->page_id;
+        $activity_id    = $request->activity_id;
+        $detail_id      = $request->detail_id;
+        $department_ids = $request->department_id ? $request->department_id : null;
+        $from           = $request->from ? Carbon::parse($request->from)->startOfDay()->toDateTimeString() : null;
+        $to             = $request->to ? Carbon::parse($request->to)->endOfDay()->toDateTimeString() : null;
 
         //Count Data
         $query = DB::table('log_histories');
@@ -45,6 +51,35 @@ class LogHistoryController extends Controller
         $query->leftJoin('users', 'users.id', '=', 'log_histories.user_id');
         if ($employee) {
             $query->whereRaw("upper(employees.name) like '%$employee%'");
+        }
+        if ($user_id) {
+            $query->whereIn('log_histories.user_id', $user_id);
+        }
+        if ($page_id) {
+            $query->whereIn('log_histories.page', $page_id);
+        }
+        if ($activity_id) {
+            $query->whereIn('log_histories.activity', $activity_id);
+        }
+        if ($detail_id) {
+            $query->whereIn('log_histories.detail', $detail_id);
+        }
+        if ($department_ids) {
+            $string = '';
+            $uniqdepartments = [];
+            foreach($department_ids as $dept){
+                if(!in_array($dept,$uniqdepartments)){
+                    $uniqdepartments[] = $dept;
+                }
+            }
+            $department_ids = $uniqdepartments;
+            foreach ($department_ids as $dept) {
+                $string .= "departments.path like '%$dept%'";
+                if (end($department_ids) != $dept) {
+                $string .= ' or ';
+                }
+            }
+            $query->whereRaw('(' . $string . ')');
         }
         if ($from && $to) {
             $query->whereBetween('log_histories.date', [$from, $to]);
@@ -59,6 +94,35 @@ class LogHistoryController extends Controller
         $query->leftJoin('users', 'users.id', '=', 'log_histories.user_id');
         if ($employee) {
             $query->whereRaw("upper(employees.name) like '%$employee%'");
+        }
+        if ($user_id) {
+            $query->whereIn('log_histories.user_id', $user_id);
+        }
+        if ($page_id) {
+            $query->whereIn('log_histories.page', $page_id);
+        }
+        if ($activity_id) {
+            $query->whereIn('log_histories.activity', $activity_id);
+        }
+        if ($detail_id) {
+            $query->whereIn('log_histories.detail', $detail_id);
+        }
+        if ($department_ids) {
+            $string = '';
+            $uniqdepartments = [];
+            foreach($department_ids as $dept){
+                if(!in_array($dept,$uniqdepartments)){
+                    $uniqdepartments[] = $dept;
+                }
+            }
+            $department_ids = $uniqdepartments;
+            foreach ($department_ids as $dept) {
+                $string .= "departments.path like '%$dept%'";
+                if (end($department_ids) != $dept) {
+                $string .= ' or ';
+                }
+            }
+            $query->whereRaw('(' . $string . ')');
         }
         if ($from && $to) {
             $query->whereBetween('log_histories.date', [$from, $to]);
@@ -84,11 +148,30 @@ class LogHistoryController extends Controller
 
     public function index()
     {
-        $query = DB::table('employees');
-        $query->select('employees.name','employees.nid', 'employees.status');
-        $query->where('employees.status', 1);
-        $employees = $query->get();
-        return view('admin.loghistory.index', compact('employees'));
+        $emp = DB::table('employees');
+        $emp->select('employees.*');
+        $emp->where('status', 1);
+        $employees = $emp->get();
+
+        $query = DB::table('departments');
+        $query->select('departments.*');
+        $query->orderBy('path','asc');
+        $departments = $query->get();
+
+        $users = User::all();
+        $pages = DB::table('log_histories')
+                 ->select('page')
+                 ->groupBy('page')
+                 ->get();
+        $activitys = DB::table('log_histories')
+                 ->select('activity')
+                 ->groupBy('activity')
+                 ->get();
+        $details = DB::table('log_histories')
+                 ->select('detail')
+                 ->groupBy('detail')
+                 ->get();
+        return view('admin.loghistory.index', compact('employees','users','pages','departments','activitys','details'));
     }
 
     /**

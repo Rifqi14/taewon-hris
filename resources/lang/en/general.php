@@ -39,6 +39,7 @@ return [
     'chs'         => 'Choose',
     'from'        => 'From',
     'to'          => 'To',
+    'To'          => 'To',
     'showent'     => 'Show _MENU_ Entries',
     'prev'        => 'Previous',
     'next'        => 'Next',
