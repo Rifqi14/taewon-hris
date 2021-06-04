@@ -35,58 +35,76 @@
         <div class="card-body">
           <div class="form-row">
             <div class="form-group col-md-4">
-              <label for="user_id">{{__('activity.user')}}</label>
-              <input type="text" class="form-control" id="user_id" placeholder="{{__('activity.user')}}" name="user_id">
-              <div id="user-container"></div>
+              <label for="user_id">User</label>
+              <select name="user_id" id="user_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
+                @foreach ($users as $user)
+                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="page_id">{{__('activity.page')}}</label>
-              <input type="text" class="form-control" id="page_id" placeholder="{{__('activity.page')}}" name="page_id">
-              <div id="page-container"></div>
+              <label for="page_id">Page</label>
+              <select name="page_id" id="page_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
+                @foreach ($pages as $page)
+                <option value="{{ $page->page }}">{{ $page->page }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="employee_id">{{__('employee.empname')}}</label>
-              <input type="text" class="form-control" id="employee_id" placeholder="{{__('employee.empname')}}" name="employee_id">
-              <div id="employee-container"></div>
+              <label for="employee_id">Employee Name</label>
+              <select name="employee_id" id="employee_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
+                @foreach ($employees as $employee)
+                <option value="{{ $employee->name }}">{{ $employee->name }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="department_id">{{__('department.dep')}}</label>
-              <input type="text" class="form-control" id="department_id" placeholder="{{__('department.dep')}}" name="department_id">
-              <div id="department-container"></div>
+              <label for="department_id">Department</label>
+              <select name="department_id" id="department_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{ __('general.chs') }} {{ __('department.dep') }}">
+                @foreach ($departments as $department)
+                <option value="{{ $department->name }}">{{ $department->path }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="activity_id">{{__('activity.activity')}}</label>
-              <input type="text" class="form-control" id="activity_id" placeholder="{{__('activity.activity')}}" name="activity_id">
-              <div id="activity-container"></div>
+              <label for="activity_id">Activity</label>
+              <select name="activity_id" id="activity_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
+                @foreach ($activitys as $activity)
+                <option value="{{ $activity->activity }}">{{ $activity->activity }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="form-row col-md-4">
               <div class="form-group col-md-6">
-                <label for="from">{{__('activity.from')}}</label>
-                <input type="text" class="form-control datepicker" id="from" placeholder="{{__('activity.from')}}" name="from">
+                <label for="from">From</label>
+                <input type="text" class="form-control datepicker" id="from" placeholder="From" name="from">
               </div>
               <div class="form-group col-md-6">
-                <label for="to">{{__('activity.to')}}</label>
-                <input type="text" class="form-control datepicker" id="to" placeholder="{{__('activity.to')}}" name="to">
+                <label for="to">To</label>
+                <input type="text" class="form-control datepicker" id="to" placeholder="To" name="to">
               </div>
             </div>
             <div class="form-group col-md-4">
-              <label for="detail_id">{{__('general.dtl')}}</label>
-              <input type="text" class="form-control" id="detail_id" placeholder="{{__('general.dtl')}}" name="detail_id">
-              <div id="detail-container"></div>
+              <label for="detail_id">Detail</label>
+              <select name="detail_id" id="detail_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
+                @foreach ($details as $detail)
+                <option value="{{ $detail->detail }}">{{ $detail->detail }}</option>
+                @endforeach
+              </select>
             </div>
           </div>
           <table class="table table-striped table-bordered datatable" style="width: 100%">
             <thead>
               <tr>
                 <th width="5">No</th>
-                <th width="100">{{__('general.date')}}</th>
-                <th width="100">{{__('activity.user')}}</th>
-                <th width="100">{{__('activity.page')}}</th>
-                <th width="100">{{__('employee.empname')}}</th>
-                <th width="100">{{__('department.dep')}}</th>
-                <th width="100">{{__('activity.activity')}}</th>
-                <th width="100">{{__('general.dtl')}}</th>
-                <th width="2">{{__('activity.rslt')}}</th>
+                <th width="100">Date</th>
+                <th width="100">User</th>
+                <th width="100">Page</th>
+                <th width="100">Employee Name</th>
+                <th width="100">Department</th>
+                <th width="100">Activity</th>
+                <th width="100">Detail</th>
+                <th width="2">Result</th>
               </tr>
             </thead>
           </table>
