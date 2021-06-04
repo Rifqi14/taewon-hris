@@ -162,7 +162,7 @@
         type: "GET",
         data:function(data){
           var employee_id = $('input[name=employee_id]').val();
-          var user_id = $('input[name=user_id]').val();
+          var user_id = $('select[name=user_id]').val();
           var page_id = $('select[name=page_id]').val();
           var activity_id = $('select[name=activity_id]').val();
           var detail_id = $('select[name=detail_id]').val();
@@ -174,6 +174,7 @@
           data.page_id = page_id;
           data.department_id = department_id;
           data.detail_id = detail_id;
+          data.activity_id = activity_id;
           data.from = from;
           data.to = to;
         }

@@ -39,7 +39,7 @@ class LogHistoryController extends Controller
         $page_id        = $request->page_id;
         $activity_id    = $request->activity_id;
         $detail_id      = $request->detail_id;
-        $department     = $request->department_id;
+        $department_ids = $request->department_id ? $request->department_id : null;
         $from           = $request->from ? Carbon::parse($request->from)->startOfDay()->toDateTimeString() : null;
         $to             = $request->to ? Carbon::parse($request->to)->endOfDay()->toDateTimeString() : null;
 
@@ -64,12 +64,19 @@ class LogHistoryController extends Controller
         if ($detail_id) {
             $query->whereIn('log_histories.detail', $detail_id);
         }
-        if ($department) {
+        if ($department_ids) {
             $string = '';
-            foreach ($department as $dept) {
+            $uniqdepartments = [];
+            foreach($department_ids as $dept){
+                if(!in_array($dept,$uniqdepartments)){
+                    $uniqdepartments[] = $dept;
+                }
+            }
+            $department_ids = $uniqdepartments;
+            foreach ($department_ids as $dept) {
                 $string .= "departments.path like '%$dept%'";
-                if (end($department) != $dept) {
-                    $string .= ' or ';
+                if (end($department_ids) != $dept) {
+                $string .= ' or ';
                 }
             }
             $query->whereRaw('(' . $string . ')');
@@ -100,12 +107,19 @@ class LogHistoryController extends Controller
         if ($detail_id) {
             $query->whereIn('log_histories.detail', $detail_id);
         }
-        if ($department) {
+        if ($department_ids) {
             $string = '';
-            foreach ($department as $dept) {
+            $uniqdepartments = [];
+            foreach($department_ids as $dept){
+                if(!in_array($dept,$uniqdepartments)){
+                    $uniqdepartments[] = $dept;
+                }
+            }
+            $department_ids = $uniqdepartments;
+            foreach ($department_ids as $dept) {
                 $string .= "departments.path like '%$dept%'";
-                if (end($department) != $dept) {
-                    $string .= ' or ';
+                if (end($department_ids) != $dept) {
+                $string .= ' or ';
                 }
             }
             $query->whereRaw('(' . $string . ')');
