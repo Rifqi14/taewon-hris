@@ -70,18 +70,9 @@
               </div>
             </div>
             <div class="form-group col-md-4">
-<<<<<<< HEAD
               <label for="detail_id">{{__('general.dtl')}}</label>
               <input type="text" class="form-control" id="detail_id" placeholder="{{__('general.dtl')}}" name="detail_id">
               <div id="detail-container"></div>
-=======
-              <label for="detail_id">Detail</label>
-              <select name="detail_id" id="detail_id" class="form-control select2" style="width: 100%" aria-hidden="true" multiple>
-                @foreach ($details as $detail)
-                <option value="{{ $detail->detail }}">{{ $detail->detail }}</option>
-                @endforeach
-              </select>
->>>>>>> dba140484448f1daf08bb97a37a747f7373590ad
             </div>
           </div>
           <table class="table table-striped table-bordered datatable" style="width: 100%">
