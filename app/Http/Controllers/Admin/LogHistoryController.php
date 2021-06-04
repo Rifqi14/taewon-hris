@@ -34,7 +34,7 @@ class LogHistoryController extends Controller
         $query          = $request->search['value'];
         $sort           = $request->columns[$request->order[0]['column']]['data'];
         $dir            = $request->order[0]['dir'];
-        $employee       = $request->employee_id;
+        $employee       = strtoupper(str_replace("'","''",$request->employee_id));
         $user_id        = $request->user_id;
         $page_id        = $request->page_id;
         $activity_id    = $request->activity_id;
