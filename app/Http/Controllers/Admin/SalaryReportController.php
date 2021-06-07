@@ -2588,10 +2588,13 @@ class SalaryReportController extends Controller
     $total_deductions= [];
     foreach ($salaries as $salary) {
 
-      $overtime = Overtime::selectRaw("sum(case when amount = 1.5 then hour else 0 end) ot_15,
+      $overtime = Overtime::selectRaw("
+        sum(case when amount = 1 then hour else 0 end) ot_1,
+        sum(case when amount = 1.5 then hour else 0 end) ot_15,
         sum(case when amount = 2 then hour else 0 end) ot_20,
         sum(case when amount = 3 then hour else 0 end) ot_30,
         sum(case when amount = 4 then hour else 0 end) ot_40,
+        sum(case when amount = 1 then final_salary::numeric else 0 end) value_1,
         sum(case when amount = 1.5 then final_salary::numeric else 0 end) value_15,
         sum(case when amount = 2 then final_salary::numeric else 0 end) value_20,
         sum(case when amount = 3 then final_salary::numeric else 0 end) value_30,
@@ -2604,13 +2607,13 @@ class SalaryReportController extends Controller
       $overtimes[$salary->id] = $overtime;
       // Jumlah Jam Overtime
       if($overtimes[$salary->id]){
-        $total_jam = $overtimes[$salary->id]->ot_15 + $overtimes[$salary->id]->ot_20 + $overtimes[$salary->id]->ot_30 + $overtimes[$salary->id]->ot_40;
+        $total_jam = $overtimes[$salary->id]->ot_1 + ($overtimes[$salary->id]->ot_15 * 1.5) + ($overtimes[$salary->id]->ot_20 * 2) + ($overtimes[$salary->id]->ot_30 * 3) + ($overtimes[$salary->id]->ot_40 * 4);
       }else{
         $total_jam = 0;
       }
       // Total Overtime
       if ($overtimes[$salary->id]) {
-        $value_overtime = $overtimes[$salary->id]->value_15 + $overtimes[$salary->id]->value_20 + $overtimes[$salary->id]->value_30 + $overtimes[$salary->id]->value_40;
+        $value_overtime = $overtimes[$salary->id]->value_1 + $overtimes[$salary->id]->value_15 + $overtimes[$salary->id]->value_20 + $overtimes[$salary->id]->value_30 + $overtimes[$salary->id]->value_40;
       } else {
         $value_overtime = 0;
       }
