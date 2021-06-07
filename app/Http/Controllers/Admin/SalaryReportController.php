@@ -2747,7 +2747,7 @@ class SalaryReportController extends Controller
           $coordinate51value += $value;
         }
       }else{
-        $coordinate51value = 0;
+        $coordinate51value =0;
       }
       $coordinate51values[$salary->id] = $coordinate51value;
 
