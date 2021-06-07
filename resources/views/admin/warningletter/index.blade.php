@@ -33,75 +33,81 @@
 							data-toggle="tooltip" title="{{__('general.crt')}}">
 							<i class="fa fa-plus"></i>
 						</a>
+						<a href="javascript:void(0)" onclick="exportwl()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="{{ __('general.exp') }}" style="cursor: pointer;"><i class="fa fa-download"></i></a>
 					</div>
 					<!-- /. tools -->
 				</div>
 				<div class="card-body">
-					<div class="row">
-						<div class="col-md-4">
+					<form id="form" action="{{ route('warningletter.store') }}" class="form-horizontal" method="post">
+			          	{{ csrf_field() }}
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="control-label" for="employee_id">{{__('employee.empname')}}</label>
+									<input type="text" name="employee_name" id="employee_name" class="form-control" placeholder="{{__('employee.empname')}}">
+								</div>
+								<div id="employee-container"></div>
+							</div>
+							<div class="col-md-4">
 							<div class="form-group">
-								<label class="control-label" for="employee_id">{{__('employee.empname')}}</label>
-								<input type="text" name="employee_name" id="employee_name" class="form-control" placeholder="{{__('employee.empname')}}">
+								<label class="control-label" for="nik">NIK</label>
+								<input type="text" name="nik" id="nik" class="form-control" placeholder="NIK" multiple>
 							</div>
-							<div id="employee-container"></div>
+							</div>
+							<div class="col-md-4">
+								<div class="col-md-12">
+								<div class="form-group">
+									<label class="control-label" for="department">{{__('department.dep')}}</label>
+									<select name="department" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('department.dep')}}">
+										@foreach ($departments as $department)
+										<option value="{{ $department->name }}">{{ $department->path }}</option>
+										@endforeach
+									</select>
+								</div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="col-md-12">
+								<div class="form-group">
+									<label class="control-label" for="type">{{__('employee.position')}}</label>
+									<select name="position" id="position" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('employee.position')}}">
+										@foreach ($titles as $title)
+										<option value="{{ $title->id }}">{{ $title->name }}</option>
+										@endforeach
+									</select>
+								</div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="col-md-12">
+								<div class="form-group">
+									<label class="control-label" for="workgroup">Status</label>
+									<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true" data-placeholder="Status">
+										<option value=""></option>
+										<option value="0">{{__('general.actv')}}</option>
+										<option value="1">{{__('general.noactv')}}</option>
+									</select>
+								</div>
+								</div>
+							</div>
 						</div>
-						<div class="col-md-4">
-						  <div class="form-group">
-							<label class="control-label" for="nik">NIK</label>
-							<input type="text" name="nik" id="nik" class="form-control" placeholder="NIK" multiple>
-						  </div>
-						</div>
-						<div class="col-md-4">
-							<div class="col-md-12">
-							<div class="form-group">
-								<label class="control-label" for="department">{{__('department.dep')}}</label>
-								<select name="department" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('department.dep')}}">
-									@foreach ($departments as $department)
-									<option value="{{ $department->name }}">{{ $department->path }}</option>
-									@endforeach
-								</select>
-							</div>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="col-md-12">
-							<div class="form-group">
-								<label class="control-label" for="type">{{__('employee.position')}}</label>
-								<select name="position" id="position" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('employee.position')}}">
-									@foreach ($titles as $title)
-									<option value="{{ $title->id }}">{{ $title->name }}</option>
-									@endforeach
-								</select>
-							</div>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="col-md-12">
-							  <div class="form-group">
-								<label class="control-label" for="workgroup">Status</label>
-								<select name="status" id="status" class="form-control select2" style="width: 100%" aria-hidden="true" data-placeholder="Status">
-									<option value=""></option>
-									<option value="0">{{__('general.actv')}}</option>
-									<option value="1">{{__('general.noactv')}}</option>
-								  </select>
-							  </div>
-							</div>
-						  </div>
-					</div>
-					<table class="table table-striped table-bordered datatable" style="width:100%">
-						<thead>
-							<tr>
-								<th width="10">#</th>
-								<th width="100">NIK</th>
-								<th width="100">{{__('employee.empname')}}</th>
-								<th width="100">{{__('employee.position')}}</th>
-								<th width="100">{{__('department.dep')}}</th>
-								<th width="100">{{__('employee.jd')}}</th>
-								<th width="100">Status</th>
-								<th width="10">{{__('general.act')}}</th>
-							</tr>
-						</thead>
-					</table>
+						<table class="table table-striped table-bordered datatable" style="width:100%">
+							<thead>
+								<tr>
+									<th width="10">#</th>
+									<th width="100">NIK</th>
+									<th width="100">{{__('employee.empname')}}</th>
+									<th width="100">{{__('employee.position')}}</th>
+									<th width="100">{{__('department.dep')}}</th>
+									<th width="100">{{__('employee.jd')}}</th>
+									<th width="100">Status</th>
+									<th width="100">Total SP Aktif</th>
+									<th width="120">Total SP Non Aktif</th>
+									<th width="10">{{__('general.act')}}</th>
+								</tr>
+							</thead>
+						</table>
+					</form>
 				</div>
 				<div class="overlay d-none">
 					<i class="fa fa-refresh fa-spin"></i>
@@ -118,6 +124,53 @@
 <script type="text/javascript">
 	function filter(){
 		$('#add-filter').modal('show');
+	}
+	function exportwl() {
+		$.ajax({
+			url: "{{ route('warningletter.export') }}",
+			type: 'POST',
+			dataType: 'JSON',
+			data: $("#form").serialize(),
+			beforeSend:function(){
+				// $('.overlay').removeClass('d-none');
+				waitingDialog.show('Loading...');
+			}
+		}).done(function(response){
+			waitingDialog.hide();
+			if(response.status){
+			$('.overlay').addClass('d-none');
+			$.gritter.add({
+				title: 'Success!',
+				text: response.message,
+				class_name: 'gritter-success',
+				time: 1000,
+			});
+			let download = document.createElement("a");
+			download.href = response.file;
+			document.body.appendChild(download);
+			download.download = response.name;
+			download.click();
+			download.remove();
+			}
+			else{
+			$.gritter.add({
+				title: 'Warning!',
+				text: response.message,
+				class_name: 'gritter-warning',
+				time: 1000,
+			});
+			}
+		}).fail(function(response){
+			waitingDialog.hide();
+			var response = response.responseJSON;
+			$('.overlay').addClass('d-none');
+			$.gritter.add({
+				title: 'Error!',
+				text: response.message,
+				class_name: 'gritter-error',
+				time: 1000,
+			});
+		});
 	}
 	$(function(){
 		dataTable = $('.datatable').DataTable( {
@@ -157,7 +210,7 @@
 				{
 					orderable: false,targets:[0]
 				},
-				{ className: "text-right", targets: [0] },
+				{ className: "text-right", targets: [0,7,8] },
 				{ className: "text-center", targets: [3,4,5,6,7] },
                 { render: function(data, type, row) {
                     if (row.status == 0) {
@@ -175,7 +228,7 @@
 					<li><a class="dropdown-item" href="{{url('admin/warningletter')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{__('general.edt')}}</a></li>
 					<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{__('general.dlt')}}</a></li>
 					</ul></div>`
-				},targets: [7]
+				},targets: [9]
 				}
 			],
 			columns: [
@@ -186,6 +239,8 @@
 			{ data: "department_name" },
 			{ data: "join_date" },
 			{ data: "status" },
+			{ data: "aktif" },
+			{ data: "nonaktif" },
 			{ data: "id" },
 			]
 		});

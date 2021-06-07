@@ -600,6 +600,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         //Route Warning Letter
         Route::get('/warningletter/read', 'Admin\WarningLetterController@read')->name('warningletter.read');
+        Route::post('/warningletter/export', 'Admin\WarningLetterController@export')->name('warningletter.export');
         Route::resource('/warningletter', 'Admin\WarningLetterController');
 
         //Route Salary Deduction
