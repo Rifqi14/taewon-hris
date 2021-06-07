@@ -2585,6 +2585,7 @@ class SalaryReportController extends Controller
     $coordinate52values = [];
     $coordinate53values = [];
     $basic_salaries = [];
+    $total_deductions= [];
     foreach ($salaries as $salary) {
 
       $overtime = Overtime::selectRaw("sum(case when amount = 1.5 then hour else 0 end) ot_15,
@@ -2702,6 +2703,15 @@ class SalaryReportController extends Controller
       }
       $coordinate56values[$salary->id] = $coordinate56value;
 
+      // deduction
+      $deduction = SalaryReportDetail::where('salary_report_id', $salary->id)->where('type', 0)->get()->sum('total');
+      if ($deduction) {
+        $total_deduction = $deduction->total;
+      } else {
+        $total_deduction = 0.0;
+      }
+      $total_deductions[$salary->id] = $total_deduction;
+
       if ($basic_salaries[$salary->id]) {
         $jumlah_month = $coordinate12values[$salary->id] + $coordinate13values[$salary->id] + $coordinate14values[$salary->id] + $basic_salaries[$salary->id]->total;
       }else{
@@ -2742,6 +2752,7 @@ class SalaryReportController extends Controller
       }else{
         $jumlah_pendapatan = 0;
       }
+      
       // Coordinate51
       if($coordinate51){
         $coordinate51value = 0;
@@ -2797,7 +2808,7 @@ class SalaryReportController extends Controller
 
       // Jumlah Potongan
       $jumlah_potongan = $coordinate51values[$salary->id] + $coordinate52values[$salary->id] + $coordinate53values[$salary->id] + $coordinate54values[$salary->id] + $coordinate55values[$salary->id] + $coordinate56values[$salary->id];
-      $grand_total = $jumlah_pendapatan - $jumlah_potongan;
+      $grand_total = $jumlah_pendapatan - $jumlah_potongan - $total_deductions[$salary->id] ;
       // dd($coordinate51values[$salary->id]);
     }
     // dd($overtimes);
