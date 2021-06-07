@@ -2681,7 +2681,7 @@ class SalaryReportController extends Controller
 
       // coordinate54
       if ($coordinate54) {
-        $coordinate54value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('group_allowance_id', $coordinate54->id)->get()->sum('total');
+        $coordinate54value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('description', '=','Potongan PPh 21')->get()->sum('total');
       } else {
         $coordinate54value = 0.0;
       }
@@ -2709,28 +2709,28 @@ class SalaryReportController extends Controller
       }
       // Coordinate33
       if($coordinate33){
-        $coordinate33value = Leave::where('leave_setting_id', $coordinate33->id)->where('employee_id')->where('status', 1)->get()->sum('duration');
+        $coordinate33value = Leave::where('leave_setting_id', $coordinate33->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       }else{
         $coordinate33value = 0;
       }
       $coordinate33values[$salary->id] = $coordinate33value;
       // Coordinate34
       if ($coordinate34) {
-        $coordinate34value = Leave::where('leave_setting_id', $coordinate34->id)->where('employee_id')->where('status', 1)->get()->sum('duration');
+        $coordinate34value = Leave::where('leave_setting_id', $coordinate34->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       } else {
         $coordinate34value = 0;
       }
       $coordinate34values[$salary->id] = $coordinate34value;
       // Coordinate35
       if ($coordinate35) {
-        $coordinate35value = Leave::where('leave_setting_id', $coordinate35->id)->where('employee_id')->where('status', 1)->get()->sum('duration');
+        $coordinate35value = Leave::where('leave_setting_id', $coordinate35->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       } else {
         $coordinate35value = 0;
       }
       $coordinate35values[$salary->id] = $coordinate35value;
       // Coordinate34
       if ($coordinate36) {
-        $coordinate36value = Leave::where('leave_setting_id', $coordinate36->id)->where('employee_id')->where('status', 1)->get()->sum('duration');
+        $coordinate36value = Leave::where('leave_setting_id', $coordinate36->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       } else {
         $coordinate36value = 0;
       }
