@@ -65,6 +65,7 @@
                 <th width="10">{{ __('position.pos') }}</th>
                 <th width="10">{{ __('leave.leavetp') }}</th>
                 <th width="10">{{ __('employee.duration') }}</th>
+                <th width="10">{{ __('leavereport.remain') }}</th>
                 <th width="10">Status</th>
                 <th width="10">{{ __('general.act') }}</th>
               </tr>
@@ -88,52 +89,52 @@
 <script src="{{asset('adminlte/component/jquery-ui/jquery-ui.min.js')}}"></script>
 <script type="text/javascript">
   function exportleave() {
-    $.ajax({
-        url: "{{ route('leavereport.export') }}",
-        type: 'POST',
-        dataType: 'JSON',
-        data: $("#form").serialize(),
-        beforeSend:function(){
-            // $('.overlay').removeClass('d-none');
-            waitingDialog.show('Loading...');
-        }
-    }).done(function(response){
-      if(response.status){
-        // $('.overlay').addClass('d-none');
-        $.gritter.add({
-          title: 'Success!',
-          text: response.message,
-          class_name: 'gritter-success',
-          time: 1000,
-        });
-          waitingDialog.hide();
-          let download = document.createElement("a");
-          download.href = response.file;
-          document.body.appendChild(download);
-          download.download = response.name;
-          download.click();
-          download.remove();
-        }
-        else{
-          $.gritter.add({
-              title: 'Warning!',
-              text: response.message,
-              class_name: 'gritter-warning',
-              time: 1000,
-          });
-        }
-    }).fail(function(response){
-        waitingDialog.hide();
-        var response = response.responseJSON;
-        // $('.overlay').addClass('d-none');
-        $.gritter.add({
-            title: 'Error!',
-            text: response.message,
-            class_name: 'gritter-error',
-            time: 1000,
-        });
-    });
-  }
+		$.ajax({
+			url: "{{ route('leavereport.export') }}",
+			type: 'POST',
+			dataType: 'JSON',
+			data: $("#form").serialize(),
+			beforeSend:function(){
+				// $('.overlay').removeClass('d-none');
+				waitingDialog.show('Loading...');
+			}
+		}).done(function(response){
+			waitingDialog.hide();
+			if(response.status){
+			$('.overlay').addClass('d-none');
+			$.gritter.add({
+				title: 'Success!',
+				text: response.message,
+				class_name: 'gritter-success',
+				time: 1000,
+			});
+			let download = document.createElement("a");
+			download.href = response.file;
+			document.body.appendChild(download);
+			download.download = response.name;
+			download.click();
+			download.remove();
+			}
+			else{
+			$.gritter.add({
+				title: 'Warning!',
+				text: response.message,
+				class_name: 'gritter-warning',
+				time: 1000,
+			});
+			}
+		}).fail(function(response){
+			waitingDialog.hide();
+			var response = response.responseJSON;
+			$('.overlay').addClass('d-none');
+			$.gritter.add({
+				title: 'Error!',
+				text: response.message,
+				class_name: 'gritter-error',
+				time: 1000,
+			});
+		});
+	}
   $(function () {
     dataTable = $('.datatable').DataTable({
       stateSave:true,
@@ -166,7 +167,7 @@
       columnDefs:[
         { orderable: false,targets:[0] },
         { className: "text-right", targets: [0] },
-        { className: "text-center", targets: [4,5,6,7] },
+        { className: "text-center", targets: [4,5,6,7,8] },
         { render: function(data, type, row) {
             return row.start_date ? `${row.start_date} s/d ${row.finish_date}` : '';
           }, targets:[1]},
@@ -187,7 +188,7 @@
             }else{
               return `<span class="badge badge-warning">Waiting Approval</span>`;
             }
-          }, targets:[6]},
+          }, targets:[7]},
         { render: function ( data, type, row ) {
           return `<div class="dropdown">
                     <button class="btn  btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -198,7 +199,7 @@
                       <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{ __('general.dlt') }}</a></li>
                     </ul>
                   </div>`
-          },targets: [7]
+          },targets: [8]
         }
       ],
       columns: [
@@ -208,6 +209,7 @@
         { data: "title_name" },
         { data: "leave_type" },
         { data: "duration" },
+        { data:"remaining"},
         { data: "status" },
         { data: "id" },
       ]

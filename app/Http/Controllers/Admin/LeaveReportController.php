@@ -39,10 +39,12 @@ class LeaveReportController extends Controller
             'titles.name as title_name',
             'departments.name as department_name',
             'leave_settings.leave_name as leave_type',
+            'leave_details.remaining_balance as remaining',
             DB::raw("(SELECT MIN(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as start_date"),
             DB::raw("(SELECT MAX(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as finish_date")
         );
         $query->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id');
+        $query->leftJoin('leave_details', 'leave_details.leavesetting_id', '=', 'leave_settings.id');
         $query->leftJoin('employees', 'employees.id', '=', 'leaves.employee_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
@@ -56,7 +58,7 @@ class LeaveReportController extends Controller
         if ($nik) {
             $query->whereRaw("employees.nid like '%$nik%'");
         }
-        $query->groupBy('leaves.id', 'employees.name', 'employees.nid', 'titles.name', 'departments.name', 'leave_settings.leave_name');
+        $query->groupBy('leaves.id', 'employees.name', 'employees.nid', 'titles.name', 'departments.name', 'leave_settings.leave_name', 'leave_details.remaining_balance');
         $query->whereIn('leaves.status', [1, 2]);
         $recordsTotal = $query->count();
 
@@ -68,11 +70,13 @@ class LeaveReportController extends Controller
             'employees.nid as employee_id',
             'titles.name as title_name',
             'departments.name as department_name',
+            'leave_details.remaining_balance as remaining',
             'leave_settings.leave_name as leave_type',
             DB::raw("(SELECT MIN(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as start_date"),
             DB::raw("(SELECT MAX(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as finish_date")
         );
         $query->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id');
+        $query->leftJoin('leave_details', 'leave_details.leavesetting_id', '=', 'leave_settings.id');
         $query->leftJoin('employees', 'employees.id', '=', 'leaves.employee_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
@@ -86,7 +90,7 @@ class LeaveReportController extends Controller
         if ($nik) {
             $query->whereRaw("employees.nid like '%$nik%'");
         }
-        $query->groupBy('leaves.id', 'employees.name', 'employees.nid', 'titles.name', 'departments.name', 'leave_settings.leave_name');
+        $query->groupBy('leaves.id', 'employees.name', 'employees.nid', 'titles.name', 'departments.name', 'leave_settings.leave_name', 'leave_details.remaining_balance');
         $query->whereIn('leaves.status', [1, 2]);
         $query->offset($start);
         $query->limit($length);
@@ -103,7 +107,7 @@ class LeaveReportController extends Controller
             'draw'              => $request->draw,
             'recordsTotal'      => $recordsTotal,
             'recordsFiltered'   => $recordsTotal,
-            'data'              => $data
+            'data'              => $data,
         ], 200);
     }
     /**
@@ -236,21 +240,23 @@ class LeaveReportController extends Controller
             'employees.nid as employee_id',
             'titles.name as title_name',
             'departments.name as department_name',
+            'leave_details.remaining_balance',
             'leave_settings.leave_name as leave_type',
             DB::raw("(SELECT MIN(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as start_date"),
             DB::raw("(SELECT MAX(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as finish_date")
         );
         $query->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id');
+        $query->leftJoin('leave_details', 'leave_details.leavesetting_id', '=', 'leave_settings.id');
         $query->leftJoin('employees', 'employees.id', '=', 'leaves.employee_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
         $query->leftJoin('leave_logs', 'leave_logs.leave_id', '=', 'leaves.id');
+        $query->groupBy('leaves.id', 'employees.name', 'employees.nid', 'titles.name', 'departments.name', 'leave_settings.leave_name', 'leave_details.remaining_balance');
         $query->whereIn('leaves.status', [1, 2]);
         if ($from && $to) {
             $query->whereBetween('leave_logs.date', [$from, $to]);
         }
         $leaves = $query->get();
-
         $sheet->setCellValue('A1', 'No');
         $sheet->setCellValue('B1', 'Department');
         $sheet->setCellValue('C1', 'Position');
@@ -259,11 +265,13 @@ class LeaveReportController extends Controller
         $sheet->setCellValue('F1', 'Duration');
         $sheet->setCellValue('G1', 'From');
         $sheet->setCellValue('H1', 'To');
-        $sheet->setCellValue('I1', 'Status');
-        $sheet->setCellValue('J1', 'Note');
+        $sheet->setCellValue('I1', 'Remaining Balance');
+        $sheet->setCellValue('J1', 'Status');
+        $sheet->setCellValue('K1', 'Note');
 
         $row_number = 2;
         foreach ($leaves as $key => $leave) {
+            // dd($leave);
             $sheet->setCellValue('A' . $row_number, ++$key);
             $sheet->setCellValue('B' . $row_number, $leave->department_name);
             $sheet->setCellValue('C' . $row_number, $leave->title_name);
@@ -272,11 +280,12 @@ class LeaveReportController extends Controller
             $sheet->setCellValue('F' . $row_number, $leave->duration);
             $sheet->setCellValue('G' . $row_number, $leave->start_date);
             $sheet->setCellValue('H' . $row_number, $leave->finish_date);
-            $sheet->setCellValue('I' . $row_number, $leave->status == 1 ? 'Approved' : 'Rejected');
-            $sheet->setCellValue('J' . $row_number, $leave->notes);
+            $sheet->setCellValue('I' . $row_number, $leave->remaining_balance);
+            $sheet->setCellValue('J' . $row_number, $leave->status == 1 ? 'Approved' : 'Rejected');
+            $sheet->setCellValue('K' . $row_number, $leave->notes);
             $row_number++;
         }
-        foreach (range('A', 'J') as $column) {
+        foreach (range('A', 'K') as $column) {
             $sheet->getColumnDimension($column)->setAutoSize(true);
         }
         $sheet->getPageSetup()->setFitToWidth(1);
