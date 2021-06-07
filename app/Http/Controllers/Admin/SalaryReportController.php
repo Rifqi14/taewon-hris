@@ -2561,9 +2561,9 @@ class SalaryReportController extends Controller
     $coordinate34 = LeaveSetting::where('coordinate', 'like', '%3.4%')->first();
     $coordinate35 = LeaveSetting::where('coordinate', 'like', '%3.5%')->first();
     $coordinate36 = LeaveSetting::where('coordinate', 'like', '%3.6%')->first();
-    $coordinate51 = LeaveSetting::where('coordinate', 'like', '%5.1%')->first();
-    $coordinate52 = LeaveSetting::where('coordinate', 'like', '%5.2%')->first();
-    $coordinate53 = LeaveSetting::where('coordinate', 'like', '%5.3%')->first();
+    $coordinate51 = LeaveSetting::where('coordinate', 'like', '%5.1%')->get();
+    $coordinate52 = LeaveSetting::where('coordinate', 'like', '%5.2%')->get();
+    $coordinate53 = LeaveSetting::where('coordinate', 'like', '%5.3%')->get();
     
     $overtimes = [];
     $coordinate12values = [];
@@ -2735,13 +2735,17 @@ class SalaryReportController extends Controller
       }
       // Coordinate51
       if($coordinate51){
-          $coordinate51value = AlphaPenalty::select('alpha_penalties.*')
-          ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
-          ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
-          ->where('leaves.employee_id', $salary->employee_id)
-          ->where('leaves.status', 1)
-          ->where('leaves.leave_setting_id', $coordinate51->id)
-          ->get()->sum('penalty');
+        $coordinate51value = 0;
+        foreach($coordinate51 as $row){
+          $value = AlphaPenalty::select('alpha_penalties.*')
+            ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
+            ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
+            ->where('leaves.employee_id', $salary->employee_id)
+            ->where('leaves.status', 1)
+            ->where('leaves.leave_setting_id', $row->id)
+            ->get()->sum('penalty');
+          $coordinate51value += $value;
+        }
       }else{
         $coordinate51value = 0;
       }
@@ -2749,26 +2753,34 @@ class SalaryReportController extends Controller
 
       // Coordinate52
       if ($coordinate52) {
-        $coordinate52value = AlphaPenalty::select('alpha_penalties.*')
-        ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
-        ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
-        ->where('leaves.employee_id', $salary->employee_id)
+        $coordinate52value = 0;
+        foreach($coordinate52 as $row){
+          $value = AlphaPenalty::select('alpha_penalties.*')
+          ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
+          ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
+          ->where('leaves.employee_id', $salary->employee_id)
           ->where('leaves.status', 1)
-          ->where('leaves.leave_setting_id', $coordinate52->id)
+          ->where('leaves.leave_setting_id', $row->id)
           ->get()->sum('penalty');
+          $coordinate52value += $value;
+        }
       } else {
         $coordinate52value = 0;
       }
       $coordinate52values[$salary->id] = $coordinate52value;
       // Coordinate53
       if ($coordinate53) {
-        $coordinate53value = AlphaPenalty::select('alpha_penalties.*')
-        ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
-        ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
-        ->where('leaves.employee_id', $salary->employee_id)
+        $coordinate53value = 0;
+        foreach($coordinate53 as $row){
+          $value = AlphaPenalty::select('alpha_penalties.*')
+          ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
+          ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
+          ->where('leaves.employee_id', $salary->employee_id)
           ->where('leaves.status', 1)
-          ->where('leaves.leave_setting_id', $coordinate53->id)
+          ->where('leaves.leave_setting_id', $row->id)
           ->get()->sum('penalty');
+          $coordinate53value += $value;
+        }
       } else {
         $coordinate53value = 0;
       }
@@ -2804,10 +2816,10 @@ class SalaryReportController extends Controller
     // $coordinate13 = SalaryReport::with('employee')->with(['salarydetail' => function ($q) {
     //   $q->with(['groupAllowance'])->where('coordinate', '1.3');
     // }])->whereIn('id', $id)->first();
-    // foreach ($salaries as $salary) {
-    //   $salary->print_status = 1;
-    //   $salary->save();
-    // }
+    foreach ($salaries as $salary) {
+      $salary->print_status = 1;
+      $salary->save();
+    }
     // return response()->json($coordinate12);
     // dd($coordinate13);
     

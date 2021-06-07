@@ -6,14 +6,13 @@
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/jquery-ui/jquery-ui.min.css')}}" rel="stylesheet">
 <style type="text/css">
-  .ui-state-active {
-    background: #28a745 !important;
-    border-color: #28a745 !important;
-  }
-
+  .ui-state-active{
+        background: #28a745 !important;
+        border-color: #28a745 !important;
+    }
   .ui-menu {
-    overflow: auto;
-    height: 200px;
+      overflow: auto;
+      height:200px;
   }
 </style>
 @endsection
