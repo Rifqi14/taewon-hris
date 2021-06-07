@@ -28,11 +28,11 @@
 			margin: 0;
 		}
 		.text-header {
-			font-size: 10pt !important;
+			font-size: 8pt !important;
 			margin: 0;
 		}
 		.text-content {
-			font-size: 10pt !important;
+			font-size: 7pt !important;
 			margin: 0;
 		}
 
@@ -185,7 +185,7 @@
                     <td class="p-0 text-right text-content">31</td>
                 </tr>
         </table>
-        <h5 class="text-header"><b>PENDAPATAN</b></h5>
+        <h5 class="text-content"><b>PENDAPATAN</b></h5>
         <table class="table table-bordered">
                 <tr>
                     <th rowspan="2" class="th-first p-0 text-content">Pendapatan</th>
@@ -209,12 +209,12 @@
                 </tr>
                 <tr>
                     <th rowspan="2" class="p-0 text-content" style="vertical-align: middle; text-align: center;">Potongan</th>
-                    <th class="th-slip p-0 text-content">{{$coordinate51 ? $coordinate51->leave_name : 'Kosong'}}</th>
-                    <th class="th-slip p-0 text-content">{{$coordinate52 ? $coordinate52->leave_name : 'Kosong'}}</th>
-                    <th class="th-slip p-0 text-content">{{$coordinate53 ? $coordinate53->leave_name : 'Kosong'}}</th>
-                    <th class="th-slip p-0 text-content">{{$coordinate54 ? $coordinate54->name : 'Kosong'}}</th>
+                    <th class="th-slip p-0 text-content">{{$coordinate51 ? $coordinate51[0]->leave_name : 'Kosong'}}</th>
+                    <th class="th-slip p-0 text-content">{{$coordinate52 ? $coordinate52[0]->leave_name : 'Kosong'}}</th>
+                    <th class="th-slip p-0 text-content">{{$coordinate53 ? $coordinate53[0]->leave_name : 'Kosong'}}</th>
+                    <th class="th-slip p-0 text-content">PPh 21</th>
                     <th class="th-slip p-0 text-content">{{$coordinate55 ? $coordinate55->name : 'Kosong'}}</th>
-                    <th class="th-slip p-0 text-content">Pinjaman ACC</th>
+                    <th class="th-slip p-0 text-content">{{$coordinate56 ? $coordinate56->name : 'Kosong'}}</th>
                     <th class="th-slip p-0 text-content">Jumlah</th>
                 </tr>
                 <tr>
@@ -224,7 +224,7 @@
                     <td class="p-0 text-right text-content" >{{number_format($coordinate53values[$salary->id], 0, '.', ',')}}</td>
                     <td class="p-0 text-right text-content" >{{number_format($coordinate54values[$salary->id], 0, '.', ',')}}</td>
                     <td class="p-0 text-right text-content" >{{number_format($coordinate55values[$salary->id], 0, '.', ',')}}</td>
-                    <td class="p-0 text-right text-content" >0</td>
+                    <td class="p-0 text-right text-content" >{{number_format($coordinate56values[$salary->id], 0, '.', ',')}}</td>
                     <td class="p-0 text-right text-content" >{{number_format($jumlah_potongan, 0, '.', ',')}}</td>
                 </tr>
                 <tr>

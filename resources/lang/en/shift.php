@@ -14,4 +14,7 @@ return [
     'sat'           => 'Saturday',
     'sun'           => 'Sunday',
     'off'           => 'Off',
+    'wttype'        => 'Working Shift Type',
+    'shftdet'       => 'Shift Detail',
+    'shiftrule'     => 'Working Shift Rule',
 ];

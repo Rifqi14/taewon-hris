@@ -328,52 +328,52 @@
         });
     }
 	function exportemployee() {
-    $.ajax({
-        url: "{{ route('employees.export') }}",
-        type: 'POST',
-        dataType: 'JSON',
-        data: $("#form").serialize(),
-        beforeSend:function(){
-			// $('.overlay').removeClass('d-none');
-			waitingDialog.show('Loading...');
-        }
-    }).done(function(response){
-		waitingDialog.hide();
-        if(response.status){
-          $('.overlay').addClass('d-none');
-          $.gritter.add({
-              title: 'Success!',
-              text: response.message,
-              class_name: 'gritter-success',
-              time: 1000,
-          });
-          let download = document.createElement("a");
-          download.href = response.file;
-          document.body.appendChild(download);
-          download.download = response.name;
-          download.click();
-          download.remove();
-        }
-        else{
-          $.gritter.add({
-              title: 'Warning!',
-              text: response.message,
-              class_name: 'gritter-warning',
-              time: 1000,
-          });
-        }
-    }).fail(function(response){
-		waitingDialog.hide();
-        var response = response.responseJSON;
-        $('.overlay').addClass('d-none');
-        $.gritter.add({
-            title: 'Error!',
-            text: response.message,
-            class_name: 'gritter-error',
-            time: 1000,
-        });
-    });
-  }
+		$.ajax({
+			url: "{{ route('employees.export') }}",
+			type: 'POST',
+			dataType: 'JSON',
+			data: $("#form").serialize(),
+			beforeSend:function(){
+				// $('.overlay').removeClass('d-none');
+				waitingDialog.show('Loading...');
+			}
+		}).done(function(response){
+			waitingDialog.hide();
+			if(response.status){
+			$('.overlay').addClass('d-none');
+			$.gritter.add({
+				title: 'Success!',
+				text: response.message,
+				class_name: 'gritter-success',
+				time: 1000,
+			});
+			let download = document.createElement("a");
+			download.href = response.file;
+			document.body.appendChild(download);
+			download.download = response.name;
+			download.click();
+			download.remove();
+			}
+			else{
+			$.gritter.add({
+				title: 'Warning!',
+				text: response.message,
+				class_name: 'gritter-warning',
+				time: 1000,
+			});
+			}
+		}).fail(function(response){
+			waitingDialog.hide();
+			var response = response.responseJSON;
+			$('.overlay').addClass('d-none');
+			$.gritter.add({
+				title: 'Error!',
+				text: response.message,
+				class_name: 'gritter-error',
+				time: 1000,
+			});
+		});
+	}
 	$(function(){
 		dataTable = $('.datatable').DataTable( {
 			stateSave:true,

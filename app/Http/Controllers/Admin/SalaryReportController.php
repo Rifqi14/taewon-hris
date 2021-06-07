@@ -2556,14 +2556,15 @@ class SalaryReportController extends Controller
     $coordinate46 = GroupAllowance::where('coordinate', '4.6')->first();
     $coordinate54 = GroupAllowance::where('coordinate', '5.4')->first();
     $coordinate55 = GroupAllowance::where('coordinate', '5.5')->first();
+    $coordinate56 = GroupAllowance::where('coordinate', '5.6')->first();
 
     $coordinate33 = LeaveSetting::where('coordinate', 'like', '%3.3%')->first();
     $coordinate34 = LeaveSetting::where('coordinate', 'like', '%3.4%')->first();
     $coordinate35 = LeaveSetting::where('coordinate', 'like', '%3.5%')->first();
     $coordinate36 = LeaveSetting::where('coordinate', 'like', '%3.6%')->first();
-    $coordinate51 = LeaveSetting::where('coordinate', 'like', '%5.1%')->first();
-    $coordinate52 = LeaveSetting::where('coordinate', 'like', '%5.2%')->first();
-    $coordinate53 = LeaveSetting::where('coordinate', 'like', '%5.3%')->first();
+    $coordinate51 = LeaveSetting::where('coordinate', 'like', '%5.1%')->get();
+    $coordinate52 = LeaveSetting::where('coordinate', 'like', '%5.2%')->get();
+    $coordinate53 = LeaveSetting::where('coordinate', 'like', '%5.3%')->get();
     
     $overtimes = [];
     $coordinate12values = [];
@@ -2575,6 +2576,7 @@ class SalaryReportController extends Controller
     $coordinate46values = [];
     $coordinate54values = [];
     $coordinate55values = [];
+    $coordinate56values = [];
     $coordinate33values = [];
     $coordinate34values = [];
     $coordinate35values = [];
@@ -2583,6 +2585,7 @@ class SalaryReportController extends Controller
     $coordinate52values = [];
     $coordinate53values = [];
     $basic_salaries = [];
+    $total_deductions= [];
     foreach ($salaries as $salary) {
 
       $overtime = Overtime::selectRaw("sum(case when amount = 1.5 then hour else 0 end) ot_15,
@@ -2679,7 +2682,7 @@ class SalaryReportController extends Controller
 
       // coordinate54
       if ($coordinate54) {
-        $coordinate54value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('group_allowance_id', $coordinate54->id)->get()->sum('total');
+        $coordinate54value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('description', '=','Potongan PPh 21')->get()->sum('total');
       } else {
         $coordinate54value = 0.0;
       }
@@ -2692,6 +2695,22 @@ class SalaryReportController extends Controller
         $coordinate55value = 0.0;
       }
       $coordinate55values[$salary->id] = $coordinate55value;
+      // coordinate55
+      if ($coordinate56) {
+        $coordinate56value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('group_allowance_id', $coordinate56->id)->get()->sum('total');
+      } else {
+        $coordinate56value = 0.0;
+      }
+      $coordinate56values[$salary->id] = $coordinate56value;
+
+      // deduction
+      $deduction = SalaryReportDetail::where('salary_report_id', $salary->id)->where('type', 0)->get()->sum('total');
+      if ($deduction) {
+        $total_deduction = $deduction->total;
+      } else {
+        $total_deduction = 0.0;
+      }
+      $total_deductions[$salary->id] = $total_deduction;
 
       if ($basic_salaries[$salary->id]) {
         $jumlah_month = $coordinate12values[$salary->id] + $coordinate13values[$salary->id] + $coordinate14values[$salary->id] + $basic_salaries[$salary->id]->total;
@@ -2700,28 +2719,28 @@ class SalaryReportController extends Controller
       }
       // Coordinate33
       if($coordinate33){
-        $coordinate33value = Leave::where('leave_setting_id', $coordinate33->id)->where('employee_id')->where('status', 1)->get()->sum('duration');
+        $coordinate33value = Leave::where('leave_setting_id', $coordinate33->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       }else{
         $coordinate33value = 0;
       }
       $coordinate33values[$salary->id] = $coordinate33value;
       // Coordinate34
       if ($coordinate34) {
-        $coordinate34value = Leave::where('leave_setting_id', $coordinate34->id)->where('employee_id')->where('status', 1)->get()->sum('duration');
+        $coordinate34value = Leave::where('leave_setting_id', $coordinate34->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       } else {
         $coordinate34value = 0;
       }
       $coordinate34values[$salary->id] = $coordinate34value;
       // Coordinate35
       if ($coordinate35) {
-        $coordinate35value = Leave::where('leave_setting_id', $coordinate35->id)->where('employee_id')->where('status', 1)->get()->sum('duration');
+        $coordinate35value = Leave::where('leave_setting_id', $coordinate35->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       } else {
         $coordinate35value = 0;
       }
       $coordinate35values[$salary->id] = $coordinate35value;
       // Coordinate34
       if ($coordinate36) {
-        $coordinate36value = Leave::where('leave_setting_id', $coordinate36->id)->where('employee_id')->where('status', 1)->get()->sum('duration');
+        $coordinate36value = Leave::where('leave_setting_id', $coordinate36->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       } else {
         $coordinate36value = 0;
       }
@@ -2733,50 +2752,63 @@ class SalaryReportController extends Controller
       }else{
         $jumlah_pendapatan = 0;
       }
+      
       // Coordinate51
       if($coordinate51){
-          $coordinate51value = AlphaPenalty::select('alpha_penalties.*')
-          ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
-          ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
-          ->where('leaves.employee_id', $salary->employee_id)
-          ->where('leaves.status', 1)
-          ->where('leaves.leave_setting_id', $coordinate51->id)
-          ->get()->sum('penalty');
-      }else{
         $coordinate51value = 0;
+        foreach($coordinate51 as $row){
+          $value = AlphaPenalty::select('alpha_penalties.*')
+            ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
+            ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
+            ->where('leaves.employee_id', $salary->employee_id)
+            ->where('leaves.status', 1)
+            ->where('leaves.leave_setting_id', $row->id)
+            ->get()->sum('penalty');
+          $coordinate51value += $value;
+        }
+      }else{
+        $coordinate51value =0;
       }
       $coordinate51values[$salary->id] = $coordinate51value;
 
       // Coordinate52
       if ($coordinate52) {
-        $coordinate52value = AlphaPenalty::select('alpha_penalties.*')
-        ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
-        ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
-        ->where('leaves.employee_id', $salary->employee_id)
+        $coordinate52value = 0;
+        foreach($coordinate52 as $row){
+          $value = AlphaPenalty::select('alpha_penalties.*')
+          ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
+          ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
+          ->where('leaves.employee_id', $salary->employee_id)
           ->where('leaves.status', 1)
-          ->where('leaves.leave_setting_id', $coordinate52->id)
+          ->where('leaves.leave_setting_id', $row->id)
           ->get()->sum('penalty');
+          $coordinate52value += $value;
+        }
       } else {
         $coordinate52value = 0;
       }
       $coordinate52values[$salary->id] = $coordinate52value;
       // Coordinate53
       if ($coordinate53) {
-        $coordinate53value = AlphaPenalty::select('alpha_penalties.*')
-        ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
-        ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
-        ->where('leaves.employee_id', $salary->employee_id)
+        $coordinate53value = 0;
+        foreach($coordinate53 as $row){
+          $value = AlphaPenalty::select('alpha_penalties.*')
+          ->leftJoin('leaves', 'leaves.id', '=', 'alpha_penalties.leave_id')
+          ->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id')
+          ->where('leaves.employee_id', $salary->employee_id)
           ->where('leaves.status', 1)
-          ->where('leaves.leave_setting_id', $coordinate53->id)
+          ->where('leaves.leave_setting_id', $row->id)
           ->get()->sum('penalty');
+          $coordinate53value += $value;
+        }
       } else {
         $coordinate53value = 0;
       }
       $coordinate53values[$salary->id] = $coordinate53value;
 
       // Jumlah Potongan
-      $jumlah_potongan = $coordinate51values[$salary->id] + $coordinate52values[$salary->id] + $coordinate53values[$salary->id] + $coordinate54values[$salary->id] + $coordinate55values[$salary->id];
-      $grand_total = $jumlah_pendapatan - $jumlah_potongan;
+      $jumlah_potongan = $coordinate51values[$salary->id] + $coordinate52values[$salary->id] + $coordinate53values[$salary->id] + $coordinate54values[$salary->id] + $coordinate55values[$salary->id] + $coordinate56values[$salary->id];
+      $grand_total = $jumlah_pendapatan - $jumlah_potongan - $total_deductions[$salary->id] ;
       // dd($coordinate51values[$salary->id]);
     }
     // dd($overtimes);
@@ -2804,20 +2836,20 @@ class SalaryReportController extends Controller
     // $coordinate13 = SalaryReport::with('employee')->with(['salarydetail' => function ($q) {
     //   $q->with(['groupAllowance'])->where('coordinate', '1.3');
     // }])->whereIn('id', $id)->first();
-    // foreach ($salaries as $salary) {
-    //   $salary->print_status = 1;
-    //   $salary->save();
-    // }
+    foreach ($salaries as $salary) {
+      $salary->print_status = 1;
+      $salary->save();
+    }
     // return response()->json($coordinate12);
     // dd($coordinate13);
     
     
     
     return view('admin.salaryreport.newprint', compact('salaries','overtimes', 'coordinate12', 'coordinate13', 'coordinate14',
-  'coordinate43', 'coordinate44', 'coordinate45', 'coordinate46', 'coordinate54', 'coordinate55', 'coordinate33',
+  'coordinate43', 'coordinate44', 'coordinate45', 'coordinate46', 'coordinate54', 'coordinate55' , 'coordinate56', 'coordinate33',
   'coordinate34', 'coordinate35', 'coordinate36', 'coordinate51', 'coordinate52', 'coordinate53', 'coordinate12values',
   'coordinate13values','coordinate14values','coordinate43values','coordinate44values','coordinate45values','coordinate46values',
-  'coordinate54values','coordinate55values','basic_salaries','jumlah_month', 'total_jam', 'value_overtime', 'everage_overtime',
+  'coordinate54values','coordinate55values','coordinate56values','basic_salaries','jumlah_month', 'total_jam', 'value_overtime', 'everage_overtime',
   'coordinate33values','coordinate34values','coordinate35values','coordinate36values','jumlah_pendapatan','coordinate51values',
   'coordinate52values','coordinate53values','jumlah_potongan', 'grand_total'));
   }

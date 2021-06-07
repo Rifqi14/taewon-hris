@@ -233,11 +233,11 @@
 			],
 			columns: [
 			{ data: "no" },
-			{ data: "nid" },
 			{ data: "employee_name" },
-			{ data: "title_name" },
 			{ data: "department_name" },
 			{ data: "join_date" },
+			{ data: "from" },
+			{ data: "to"},
 			{ data: "status" },
 			{ data: "aktif" },
 			{ data: "nonaktif" },

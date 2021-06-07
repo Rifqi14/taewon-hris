@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Working Shift')
+@section('title', __('employee.workshift'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Working Shift Type</li>
+<li class="breadcrumb-item active">{{ __('employee.workshift') }}</li>
 @endpush
 
 @section('content')
@@ -15,7 +15,7 @@
 		<div class="col-lg-12">
 			<div class="card ">
 				<div class="card-header">
-					<h3 class="card-title">Working Shift Type</h3>
+					<h3 class="card-title">{{ __('employee.workshift') }}</h3>
 					<!-- tools box -->
 					<div class="pull-right card-tools">
 						<a href="{{route('workingtime.create')}}" class="btn btn-{{ config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="Tambah">
@@ -32,10 +32,10 @@
 						<thead>
 							<tr>
 								<th width="10">#</th>
-								<th width="150">Working Shift Type</th>
-								<th width="100">Shift Detail</th>
-								<th width="100">Note</th>
-								<th width="10">Action</th>
+								<th width="150">{{ __('shift.wttype') }}</th>
+								<th width="100">{{ __('shift.shftdet') }}</th>
+								<th width="100">{{ __('general.notes') }}</th>
+								<th width="10">{{ __('general.act') }}</th>
 							</tr>
 						</thead>
 					</table>
@@ -51,7 +51,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Filter</h4>
+				<h4 class="modal-title">{{ __('general.srch') }}</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			</div>
 			<div class="modal-body">
@@ -59,8 +59,8 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label class="control-label" for="name">Working Time Type</label>
-								<select name="working_time_type" id="working_time_type" class="form-control select2" data-placeholder="Select Working Time">
+								<label class="control-label" for="name">{{ __('shift.wttype') }}</label>
+								<select name="working_time_type" id="working_time_type" class="form-control select2" data-placeholder="{{ __('general.chs') }} {{ __('shift.wttype') }}">
 									<option value="">Show All</option>
 									@foreach(config('enums.workingtime_type') as $key => $value)
 									<option value="{{ $key }}">{{ $value }}</option>
@@ -72,7 +72,7 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button form="form-search" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="Apply"><i class="fa fa-search"></i></button>
+				<button form="form-search" type="submit" class="btn btn-{{ config('configs.app_theme') }}" title="{{ __('general.srch') }}"><i class="fa fa-search"></i></button>
 			</div>
 		</div>
 	</div>
@@ -96,6 +96,9 @@
 			lengthChange:true,
 			responsive: true,
 			order: [[ 1, "asc" ]],
+			language: {
+				url: language_choosen == 'id' ? urlLocaleId : '',
+			},
 			ajax: {
 				url: "{{route('workingtime.read')}}",
 				type: "GET",

@@ -14,4 +14,7 @@ return [
     'sat'           => 'Sab',
     'sun'           => 'Ming',
     'off'           => 'Off',   
+    'wttype'        => 'Tipe Jam Kerja',
+    'shftdet'       => 'Detil Shift',
+    'shiftrule'     => 'Aturan Jam Kerja',
 ];

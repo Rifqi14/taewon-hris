@@ -573,12 +573,12 @@ class EmployeesController extends Controller
         if ($departments) {
             $string = '';
             $uniqdepartments = [];
-            foreach($department_ids as $dept){
-                if(!in_array($dept,$uniqdepartments)){
-                    $uniqdepartments[] = $dept;
+            foreach($departments as $department){
+                if(!in_array($department,$uniqdepartments)){
+                    $uniqdepartments[] = $department;
                 }
             }
-            $department_ids = $uniqdepartments;
+            $departments = $uniqdepartments;
             foreach ($departments as $department) {
                 $string .= "departments.path like '%$department%'";
                 if (end($departments) != $department) {
