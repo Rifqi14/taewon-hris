@@ -100,6 +100,7 @@
                     <option value="4.6" @if ($groupAllowance->coordinate == "4.6") selected @endif>4.6</option>
                     <option value="5.4" @if ($groupAllowance->coordinate == "5.4") selected @endif>5.4</option>
                     <option value="5.5" @if ($groupAllowance->coordinate == "5.5") selected @endif>5.5</option>
+                    <option value="5.6" @if ($groupAllowance->coordinate == "5.6") selected @endif>5.6</option>
                   </select>
                 </div>
               </div>

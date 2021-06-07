@@ -214,7 +214,7 @@
                     <th class="th-slip p-0 text-content">{{$coordinate53 ? $coordinate53[0]->leave_name : 'Kosong'}}</th>
                     <th class="th-slip p-0 text-content">{{$coordinate54 ? $coordinate54->name : 'Kosong'}}</th>
                     <th class="th-slip p-0 text-content">{{$coordinate55 ? $coordinate55->name : 'Kosong'}}</th>
-                    <th class="th-slip p-0 text-content">Pinjaman ACC</th>
+                    <th class="th-slip p-0 text-content">{{$coordinate56 ? $coordinate56->name : 'Kosong'}}</th>
                     <th class="th-slip p-0 text-content">Jumlah</th>
                 </tr>
                 <tr>
@@ -224,7 +224,7 @@
                     <td class="p-0 text-right text-content" >{{number_format($coordinate53values[$salary->id], 0, '.', ',')}}</td>
                     <td class="p-0 text-right text-content" >{{number_format($coordinate54values[$salary->id], 0, '.', ',')}}</td>
                     <td class="p-0 text-right text-content" >{{number_format($coordinate55values[$salary->id], 0, '.', ',')}}</td>
-                    <td class="p-0 text-right text-content" >0</td>
+                    <td class="p-0 text-right text-content" >{{number_format($coordinate56values[$salary->id], 0, '.', ',')}}</td>
                     <td class="p-0 text-right text-content" >{{number_format($jumlah_potongan, 0, '.', ',')}}</td>
                 </tr>
                 <tr>
