@@ -10,6 +10,13 @@ use App\Models\WarningLetter;
 use App\Models\Employee;
 use App\Models\Title;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+use PHPExcel;
+use PHPExcel_Cell;
+use PHPExcel_Cell_DataType;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Font;
 
 class WarningLetterController extends Controller
 {
@@ -82,11 +89,14 @@ class WarningLetterController extends Controller
             'employees.nid as nid',
             'employees.join_date as join_date',
             'titles.name as title_name',
-            'departments.name as department_name'
+            'departments.name as department_name',
+            'wl.aktif',
+            'wl.nonaktif'
         );
         $query->leftJoin('employees', 'employees.id', '=', 'warning_letters.employee_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
+        $query->leftJoin(DB::Raw('(select employee_id,sum(case when status = 0 then 1 else 0 end) as aktif, sum(case when status = 1 then 1 else 0 end) as nonaktif from warning_letters group by employee_id) as wl'),'wl.employee_id', '=', 'warning_letters.employee_id');
         if ($employee_id != '') {
             $query->whereRaw("upper(employees.name) like '%$employee_id%'");
         }
@@ -340,5 +350,114 @@ class WarningLetterController extends Controller
             'status'     => true,
             'message' => 'Success delete data'
         ], 200);
+    }
+
+    public function export(Request $request)
+    {
+        $employee_id = strtoupper(str_replace("'","''",$request->employee_id));
+        $nid = $request->nid;
+        $departments = $request->department;
+        $position = $request->position;
+        $status = $request->status;
+
+        $object = new \PHPExcel();
+        $object->getProperties()->setCreator('Taewon Indonesia');
+        $object->setActiveSheetIndex(0);
+        $sheet = $object->getActiveSheet();
+
+        $query = DB::table('warning_letters');
+        $query->select(
+            'warning_letters.*',
+            'employees.name as employee_name',
+            'employees.title_id as title_id',
+            'employees.nid as nid',
+            'employees.nik as nik',
+            'employees.join_date as join_date',
+            'titles.name as title_name',
+            'departments.name as department_name'
+        );
+        $query->leftJoin('employees', 'employees.id', '=', 'warning_letters.employee_id');
+        $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
+        $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
+        if ($employee_id != '') {
+            $query->whereRaw("upper(employees.name) like '%$employee_id%'");
+        }
+        if ($nid != '') {
+            $query->whereRaw("employees.nid like '%$nid%'");
+        }
+        if ($departments != '') {
+            $string = '';
+            foreach ($departments as $department) {
+                $string .= "departments.path like '%$department%'";
+                if (end($departments) != $department) {
+                    $string .= ' or ';
+                }
+            }
+            $query->whereRaw('(' . $string . ')');
+        }
+        if ($position != '') {
+            $query->whereIn('employees.title_id', $position);
+        }
+        if ($status != '') {
+            $query->where('warning_letters.status', $status);
+        }
+        $warning_latters = $query->get();
+
+        // Header Columne Excel
+        $sheet->setCellValue('A1', 'Position');
+        $sheet->setCellValue('B1', 'Dept');
+        $sheet->setCellValue('C1', 'NIK');
+        $sheet->setCellValue('D1', 'Name');
+        $sheet->setCellValue('E1', 'Join Date');
+        $sheet->setCellValue('F1', 'From');
+        $sheet->setCellValue('G1', 'To');
+        $sheet->setCellValue('H1', 'Total SP Active');
+        $sheet->setCellValue('I1', 'Total SP Non Active');
+        $sheet->setCellValue('J1', 'Status');
+        $sheet->setCellValue('K1', 'Reason'); 
+        // $sheet->getColumnDimensionByColumn('A1:K1')->setAutoSize(true);
+        $row_number = 2;
+        foreach ($warning_latters as $key => $warning_latter) {
+            $sheet->setCellValue('A' . $row_number, $warning_latter->title_name);
+            $sheet->setCellValue('B' . $row_number, $warning_latter->department_name);
+            $sheet->setCellValue('C' . $row_number, $warning_latter->nik);
+            $sheet->setCellValue('D' . $row_number, $warning_latter->employee_name);
+            $sheet->setCellValue('E' . $row_number, $warning_latter->join_date);
+            $sheet->setCellValue('F' . $row_number, $warning_latter->from);
+            $sheet->setCellValue('G' . $row_number, $warning_latter->to);
+            $sheet->setCellValue('H' . $row_number, "SP Active");
+            $sheet->setCellValue('I' . $row_number, "SP Non Active");
+            $sheet->setCellValue('J' . $row_number, $warning_latter->status);
+            $sheet->setCellValue('K' . $row_number, $warning_latter->notes);
+        }
+
+        $row_number++;
+        
+        foreach (range(0, 10) as $column) {
+        $sheet->getColumnDimensionByColumn($column)->setAutoSize(true);
+        // $sheet->getCellByColumnAndRow($column, 1)->getStyle()->getFont()->setBold(true);
+        // $sheet->getCellByColumnAndRow($column, 2)->getStyle()->getFont()->setBold(true);
+        // $sheet->getCellByColumnAndRow($column, 1)->getStyle()->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        }
+        $sheet->getPageSetup()->setFitToWidth(1);
+        $objWriter = \PHPExcel_IOFactory::createWriter($object, 'Excel2007');
+        ob_start();
+        $objWriter->save('php://output');
+        $export = ob_get_contents();
+        ob_end_clean();
+        header('Content-Type: application/json');
+        if ($warning_latters->count() > 0) {
+        return response()->json([
+            'status'     => true,
+            'name'        => 'warning-latter-' . date('d-m-Y') . '.xlsx',
+            'message'    => "Success Download Warning Latter Data",
+            'file'         => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," . base64_encode($export)
+        ], 200);
+        } else {
+        return response()->json([
+            'status'     => false,
+            'message'    => "Data not found",
+        ], 400);
+        }
     }
 }
