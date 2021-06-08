@@ -733,7 +733,7 @@ class DeliveryOrderController extends Controller
                         DB::rollback();
                         return response()->json([
                             'status' => false,
-                            'message'   => $deliveryorder
+                            'message'   => $checkupdate
                         ], 400);
                     }
                     $checkupdate->rit = $driverlist->value;
