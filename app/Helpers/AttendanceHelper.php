@@ -820,7 +820,7 @@ if (!function_exists('getAllBreaktime')) {
     $nextDay = Carbon::parse($datetime_in)->addDays(1);
     $finishNow = changeDateFormat('Y-m-d H:i:s', Carbon::parse($datetime_in)->toDateString() . ' ' . $time_out);
     $finishTomorrow = changeDateFormat('Y-m-d H:i:s', $nextDay->toDateString() . ' ' . $time_out);
-    $finishAttendance = $time_out > $time_in ? $finishTomorrow : $finishNow;
+    $finishAttendance = $time_out < $time_in ? $finishTomorrow : $finishNow;
     $finishAttendance = $finishAttendance > $datetime_out ? $datetime_out : $finishAttendance;
     foreach ($array as $break) {
       $dateIn = $time_in > $break->start_time ? $nextDay->toDateString() : $datetime_in;
