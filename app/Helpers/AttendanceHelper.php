@@ -51,16 +51,16 @@ if (!function_exists('calculateAttendance')) {
     
     
     /*End Get Workhour*/
-    $brekworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime); //Count Breaktime Worktime
+    $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime); //Count Breaktime Worktime
     $breakovertime = getBreaktimeOvertime($breaktimes, $attendance_hour, $workingtime); //Count Breaktime Overtime
     if($cek_minworkhour >= $min_workhour){
         $min_workhour = $workingtime->min_workhour;
     }else{
-        $min_workhour = $cek_minworkhour - $brekworkingtime;
+        $min_workhour = $cek_minworkhour - $breakworkingtime;
     }
     if ($attendance->attendance_in) {
       $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
-      $totalbreaktime = $brekworkingtime + $breakovertime;
+      $totalbreaktime = $breakworkingtime + $breakovertime;
       $totalworkingtime = $totalattendance - $totalbreaktime;
       
       /* 
@@ -83,26 +83,27 @@ if (!function_exists('calculateAttendance')) {
                         $attendance->adj_over_time = $totalovertime;
                     }
                     $attendance->adj_working_time = 0;
-                    $attendance->code_case  = "A01/BW$brekworkingtime/BO$breakovertime";
+                    $attendance->code_case  = "A01/BW$breakworkingtime/BO$breakovertime";
                     $attendance->breaktime = $totalbreaktime;
                 } else {
                     $attendance->adj_over_time = 0;
                     $attendance->adj_working_time = 0;
-                    $attendance->code_case  = "A02/BW$brekworkingtime/BO$breakovertime";
+                    $attendance->code_case  = "A02/BW$breakworkingtime/BO$breakovertime";
                     $attendance->breaktime = $totalbreaktime;
                 }
             } else {
                 //  spl not
                 $attendance->adj_over_time = $totalovertime;
                 $attendance->adj_working_time = 0;
-                $attendance->code_case  = "A03/BW$brekworkingtime/BO$breakovertime";
+                $attendance->code_case  = "A03/BW$breakworkingtime/BO$breakovertime";
+                $attendance->note = json_encode($breaktimes);
                 $attendance->breaktime = $totalbreaktime;
             }
         } else {
             // overtime no
             $attendance->adj_over_time = 0;
             $attendance->adj_working_time = 0;
-            $attendance->code_case  = "A04/BW$brekworkingtime/BO$breakovertime";
+            $attendance->code_case  = "A04/BW$breakworkingtime/BO$breakovertime";
             $attendance->breaktime = $totalbreaktime;  
         }
       }
@@ -117,11 +118,11 @@ if (!function_exists('calculateAttendance')) {
       if($attendance->day == 'Off' && $employee->timeout == 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
           $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
           $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
-          $brekworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
-          $attendance_out = Carbon::parse($timeout)->addHours($brekworkingtime)->toDateTimeString();
+          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $attendance_out = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
 
           $totalattendance = Carbon::parse($attendance_out)->diffInHours($attendance->attendance_in);
-          $totalbreaktime = $brekworkingtime;
+          $totalbreaktime = $breakworkingtime;
           $totalworkingtime = $totalattendance - $totalbreaktime;
           if ($employee->overtime == 'yes') {
               $totalovertime = $totalworkingtime - $min_workhour;
@@ -134,24 +135,24 @@ if (!function_exists('calculateAttendance')) {
                           $attendance->adj_over_time = $totalovertime;
                       }
                       $attendance->adj_working_time = 0;
-                      $attendance->code_case  = "A05/BW$brekworkingtime/BO$breakovertime";
+                      $attendance->code_case  = "A05/BW$breakworkingtime/BO$breakovertime";
                       $attendance->breaktime = $totalbreaktime;
                   } else {
                       $attendance->adj_over_time = 0;
                       $attendance->adj_working_time = 0;
-                      $attendance->code_case  = "A06/BW$brekworkingtime/BO$breakovertime";
+                      $attendance->code_case  = "A06/BW$breakworkingtime/BO$breakovertime";
                       $attendance->breaktime = $totalbreaktime;
                   }
               } else {
                   $attendance->adj_over_time = 0;
                   $attendance->adj_working_time = 0;
-                  $attendance->code_case  = "A07/BW$brekworkingtime/BO$breakovertime";
+                  $attendance->code_case  = "A07/BW$breakworkingtime/BO$breakovertime";
                   $attendance->breaktime = $totalbreaktime;
               }
           } else {
               $attendance->adj_over_time = 0;
               $attendance->adj_working_time = 0;
-              $attendance->code_case  = "A08/BW$brekworkingtime/BO$breakovertime";
+              $attendance->code_case  = "A08/BW$breakworkingtime/BO$breakovertime";
               $attendance->breaktime = $totalbreaktime;
           }
       }
@@ -176,24 +177,24 @@ if (!function_exists('calculateAttendance')) {
                     }
 
                     $attendance->adj_working_time = 0;
-                    $attendance->code_case  = "A09/BW$brekworkingtime/BO$breakovertime";
+                    $attendance->code_case  = "A09/BW$breakworkingtime/BO$breakovertime";
                     $attendance->breaktime = $totalbreaktime;
                 } else {
                     $attendance->adj_over_time = 0;
                     $attendance->adj_working_time = 0;
-                    $attendance->code_case  = "A10/BW$brekworkingtime/BO$breakovertime";
+                    $attendance->code_case  = "A10/BW$breakworkingtime/BO$breakovertime";
                     $attendance->breaktime = $totalbreaktime;
                 }
             } else {
                 $attendance->adj_over_time = $totalovertime;
                 $attendance->adj_working_time = 0;
-                $attendance->code_case  = "A11/BW$brekworkingtime/BO$breakovertime";
+                $attendance->code_case  = "A11/BW$breakworkingtime/BO$breakovertime";
                 $attendance->breaktime = $totalbreaktime;
             }
         } else {
             $attendance->adj_over_time = 0;
             $attendance->adj_working_time = 0;
-            $attendance->code_case  = "A12/BW$brekworkingtime/BO$breakovertime";
+            $attendance->code_case  = "A12/BW$breakworkingtime/BO$breakovertime";
             $attendance->breaktime = $totalbreaktime;
         }
       }
@@ -208,12 +209,12 @@ if (!function_exists('calculateAttendance')) {
       if($attendance->day == 'Off' && $employee->timeout != 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
           $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
           $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
-          $brekworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
-          $attendance->attendance_out = Carbon::parse($timeout)->addHours($brekworkingtime)->toDateTimeString();
+          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $attendance->attendance_out = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
 
           $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
-          $totalbreaktime = $brekworkingtime;
-          $totalworkingtime = $totalattendance - $brekworkingtime;
+          $totalbreaktime = $breakworkingtime;
+          $totalworkingtime = $totalattendance - $breakworkingtime;
 
           if ($employee->overtime == 'yes') {
               $totalovertime = $totalworkingtime - $min_workhour;
@@ -229,25 +230,25 @@ if (!function_exists('calculateAttendance')) {
                           $attendance->adj_over_time = $totalovertime;
                       }
                       $attendance->adj_working_time = 0;
-                      $attendance->code_case  = "A13/BW$brekworkingtime/BO$breakovertime";
+                      $attendance->code_case  = "A13/BW$breakworkingtime/BO$breakovertime";
                       $attendance->breaktime = $totalbreaktime;
                   } else {
                       $attendance->adj_over_time = 0;
                       $attendance->adj_working_time = 0;
-                      $attendance->code_case  = "A14/BW$brekworkingtime/BO$breakovertime";
+                      $attendance->code_case  = "A14/BW$breakworkingtime/BO$breakovertime";
                       $attendance->breaktime = $totalbreaktime;
                   }
               } else {
                   //  spl not
                   $attendance->adj_over_time = $totalovertime;
                   $attendance->adj_working_time = 0;
-                  $attendance->code_case  = "A15/BW$brekworkingtime/BO$breakovertime";
+                  $attendance->code_case  = "A15/BW$breakworkingtime/BO$breakovertime";
                   $attendance->breaktime = $totalbreaktime;
               }
           } else {
               $attendance->adj_over_time = 0;
               $attendance->adj_working_time = 0;
-              $attendance->code_case  = "A16/BW$brekworkingtime/BO$breakovertime";
+              $attendance->code_case  = "A16/BW$breakworkingtime/BO$breakovertime";
               $attendance->breaktime = $totalbreaktime;
           }
       }
@@ -272,25 +273,25 @@ if (!function_exists('calculateAttendance')) {
                     }
 
                     $attendance->adj_working_time = $min_workhour;
-                    $attendance->code_case  = "A17/BW$brekworkingtime/BO$breakovertime";
+                    $attendance->code_case  = "A17/BW$breakworkingtime/BO$breakovertime";
                     $attendance->breaktime = $totalbreaktime;
                     
                 } else {
                     $attendance->adj_over_time = 0;
                     $attendance->adj_working_time = $min_workhour;
-                    $attendance->code_case  = "A18/BW$brekworkingtime/BO$breakovertime";
+                    $attendance->code_case  = "A18/BW$breakworkingtime/BO$breakovertime";
                     $attendance->breaktime = $totalbreaktime;
                 }
             } else {
                 $attendance->adj_over_time = $totalovertime;
                 $attendance->adj_working_time = $min_workhour;
-                $attendance->code_case  = "A19/BW$brekworkingtime/BO$breakovertime";
+                $attendance->code_case  = "A19/BW$breakworkingtime/BO$breakovertime";
                 $attendance->breaktime = $totalbreaktime;
             }
         } else {
             $attendance->adj_over_time = 0;
             $attendance->adj_working_time = $totalattendance;
-            $attendance->code_case  = "A20/BW$brekworkingtime/BO$breakovertime";
+            $attendance->code_case  = "A20/BW$breakworkingtime/BO$breakovertime";
             $attendance->breaktime = $totalbreaktime;
         }
       }
@@ -305,10 +306,10 @@ if (!function_exists('calculateAttendance')) {
       if($attendance->day != 'Off' && $employee->timeout == 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
           $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
           $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
-          $brekworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
-          $attendance_out  = Carbon::parse($timeout)->addHours($brekworkingtime)->toDateTimeString();
+          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $attendance_out  = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
           $totalattendance = Carbon::parse($attendance_out)->diffInHours($attendance->attendance_in);
-          $totalbreaktime = $brekworkingtime;
+          $totalbreaktime = $breakworkingtime;
           $totalworkingtime = $totalattendance - $totalbreaktime;
 
           if ($employee->overtime == 'yes') {
@@ -323,25 +324,25 @@ if (!function_exists('calculateAttendance')) {
                           $attendance->adj_over_time = $ot;
                       }
                       $attendance->adj_working_time = $min_workhour;
-                      $attendance->code_case  = "A21/BW$brekworkingtime/BO$breakovertime";
+                      $attendance->code_case  = "A21/BW$breakworkingtime/BO$breakovertime";
                       $attendance->breaktime = $totalbreaktime;
                   } else {
                       $attendance->adj_over_time = 0;
                       $attendance->adj_working_time = $min_workhour;
-                      $attendance->code_case  = "A22/BW$brekworkingtime/BO$breakovertime";
+                      $attendance->code_case  = "A22/BW$breakworkingtime/BO$breakovertime";
                       $attendance->breaktime = $totalbreaktime;
                   }
               } else {
                   //  spl not
                   $attendance->adj_over_time = $ot;
                   $attendance->adj_working_time = $min_workhour;
-                  $attendance->code_case  = "A23/BW$brekworkingtime/BO$breakovertime";
+                  $attendance->code_case  = "A23/BW$breakworkingtime/BO$breakovertime";
                   $attendance->breaktime = $totalbreaktime;
               }
           } else {
               $attendance->adj_over_time = 0;
               $attendance->adj_working_time = $min_workhour;
-              $attendance->code_case  = "A24/BW$brekworkingtime/BO$breakovertime";
+              $attendance->code_case  = "A24/BW$breakworkingtime/BO$breakovertime";
               $attendance->breaktime = $totalbreaktime;
           }
       }
@@ -367,24 +368,24 @@ if (!function_exists('calculateAttendance')) {
                     }
 
                     $attendance->adj_working_time = $min_workhour;
-                    $attendance->code_case  = "A25/BW$brekworkingtime/BO$breakovertime";
+                    $attendance->code_case  = "A25/BW$breakworkingtime/BO$breakovertime";
                     $attendance->breaktime = $totalbreaktime;
                 } else {
                     $attendance->adj_over_time = 0;
                     $attendance->adj_working_time = $min_workhour;
-                    $attendance->code_case  = "A26/BW$brekworkingtime/BO$breakovertime";
+                    $attendance->code_case  = "A26/BW$breakworkingtime/BO$breakovertime";
                     $attendance->breaktime = $totalbreaktime;
                 }
             } else {
                 $attendance->adj_over_time = $totalovertime;
                 $attendance->adj_working_time = $min_workhour;
-                $attendance->code_case  = "A27/BW$brekworkingtime/BO$breakovertime";
+                $attendance->code_case  = "A27/BW$breakworkingtime/BO$breakovertime";
                 $attendance->breaktime = $totalbreaktime;
             }
         } else {
             $adjustment->adj_over_time = 0;
             $adjustment->adj_working_time = $totalattendance;
-            $adjustment->code_case  = "A28/BW$brekworkingtime/BO$breakovertime";
+            $adjustment->code_case  = "A28/BW$breakworkingtime/BO$breakovertime";
             $adjustment->breaktime = $totalbreaktime;
         }
       }
@@ -399,13 +400,13 @@ if (!function_exists('calculateAttendance')) {
       if($attendance->day != 'Off' && $employee->timeout != 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
           $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
           $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
-          $brekworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
-          $attendance->attendance_out = Carbon::parse($timeout)->addHours($brekworkingtime)->toDateTimeString();
+          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $attendance->attendance_out = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
 
           $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
 
-          $totalbreaktime = $brekworkingtime;
-          $totalworkingtime = $totalattendance - $brekworkingtime;
+          $totalbreaktime = $breakworkingtime;
+          $totalworkingtime = $totalattendance - $breakworkingtime;
 
           if ($employee->overtime == 'yes') {
               $totalovertime = $totalworkingtime - $min_workhour;
@@ -418,24 +419,24 @@ if (!function_exists('calculateAttendance')) {
                           $attendance->adj_over_time = $totalovertime;
                       }
                       $attendance->adj_working_time = $min_workhour;
-                      $attendance->code_case  = "A29/BW$brekworkingtime/BO$breakovertime";
+                      $attendance->code_case  = "A29/BW$breakworkingtime/BO$breakovertime";
                       $attendance->breaktime = $totalbreaktime;
                   } else {
                       $attendance->adj_over_time = 0;
                       $attendance->adj_working_time = $min_workhour;
-                      $attendance->code_case  = "A30/BW$brekworkingtime/BO$breakovertime";
+                      $attendance->code_case  = "A30/BW$breakworkingtime/BO$breakovertime";
                       $attendance->breaktime = $totalbreaktime;
                   }
               } else {   
                   $attendance->adj_over_time = $totalovertime;
                   $attendance->adj_working_time = $min_workhour;
-                  $attendance->code_case  = "A31/BW$brekworkingtime/BO$breakovertime";
+                  $attendance->code_case  = "A31/BW$breakworkingtime/BO$breakovertime";
                   $attendance->breaktime = $totalbreaktime;
               }
           } else {
               $attendance->adj_over_time = 0;
               $attendance->adj_working_time = $totalworkingtime;
-              $attendance->code_case  = "A32/BW$brekworkingtime/BO$breakovertime";
+              $attendance->code_case  = "A32/BW$breakworkingtime/BO$breakovertime";
               $attendance->breaktime = $totalbreaktime;
           }
       }
