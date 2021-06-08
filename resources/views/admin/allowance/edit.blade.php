@@ -343,23 +343,26 @@
 		});
   }
   function updateAllowance(data) {
-    var allowanceID,allowanceDetailID, status;
+    var allowanceID,allowance_id, status;
 		if (data.checked) {
-			allowanceID	= `{{ $allowance->id }}`;
-			allowanceDetailID		  =	data.value;
+      
+			allowance_id	= `{{ $allowance->id }}`;
+			allowanceID		  =	data.value;
 			status					= 1;
 		} else {
-			allowanceID	= `{{ $allowance->id }}`;
-			allowanceDetailID		  =	data.value;
+			allowance_id	= `{{ $allowance->id }}`;
+			allowanceID		  =	data.value;
 			status					= 0;
 		}
+     console.log(allowance_id);
+      console.log(allowanceID);
 		$.ajax({
 			url: `{{ route('allowance.updateallowance') }}`,
 			method: 'post',
 			data: {
 				_token: "{{ csrf_token() }}",
+				allowance_id: allowance_id,
 				allowanceID: allowanceID,
-				allowanceDetailID: allowanceID,
 				status: status,
 			},
 			dataType: 'json',
@@ -645,15 +648,18 @@
 				type: "GET",
 				data: function(data) {
           data.allowanceId = `{{ $allowance->id }}`
+          console.log(data.allowanceId);
 				}
+        // console.log()
 			},
 			columnDefs: [
 				{ orderable: false, targets: [0, 4] },
 				{ className: 'text-right', targets: [0] },
 				{ className: 'text-center', targets: [4] },
-				{ render: function( data, type, row ) {
-				return `<label class="customcheckbox checked"><input value="${row.id}" type="checkbox" name="allowanceID[]" onclick="updateAllowance(this)" checked><span class="checkmark"></span></label>`
-				}, targets: [4] }
+        { render: function( data, type, row ) {
+          return row.parentdetail.length > 0 ? `<label class="customcheckbox checked"><input value="${row.id}" type="checkbox" name="allowanceID[]" onclick="updateAllowance(this)" checked><span class="checkmark"></span></label>` : `<label class="customcheckbox"><input value="${row.id}" type="checkbox" name="allowanceID[]" onclick="updateAllowance(this)"><span class="checkmark"></span></label>`
+        }, targets: [4] }
+				
 			],
 			columns: [
 				{ data: 'no' },

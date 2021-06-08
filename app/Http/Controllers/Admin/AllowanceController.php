@@ -98,11 +98,13 @@ class AllowanceController extends Controller
         $sort               = $request->columns[$request->order[0]['column']]['data'];
         $dir                = $request->order[0]['dir'];
         $allowanceId        = $request->allowanceId;
+        
 
         // Count Data
         $allowance          = Allowance::with(['groupallowance', 'parentdetail' => function ($query) use ($allowanceId) {
             $query->where('allowance_id', $allowanceId);
         }])->get();
+        // dd($allowance);
         $recordsTotal       = $allowance->count();
 
         // Select Pagination
@@ -266,8 +268,10 @@ class AllowanceController extends Controller
 
         DB::beginTransaction();
         if ($status == 1) {
-            $allowance = Allowance::find($request->allowanceID);
-            $allowance->allowance()->attach($request->allowanceDetailID);
+            // dd($request->allowanceID, $request->allowance_id);
+            $allowance = Allowance::find($request->allowance_id);
+            // dd()
+            $allowance->allowance()->attach($request->allowanceID);
 
             if (!$allowance) {
                 DB::rollBack();
@@ -282,8 +286,8 @@ class AllowanceController extends Controller
                 'message'   => 'Success add allowance'
             ], 200);
         } else {
-            $allowance = Allowance::find($request->allowanceID);
-            $allowance->allowance()->detach($request->allowanceDetailID);
+            $allowance = Allowance::find($request->allowance_id);
+            $allowance->allowance()->detach($request->allowanceID);
 
             if (!$allowance) {
                 DB::rollBack();
