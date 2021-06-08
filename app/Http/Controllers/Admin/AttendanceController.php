@@ -2439,55 +2439,55 @@ class AttendanceController extends Controller
 
     public function storeheader(Request $request){
         $order = $request->order;
-        if($request->period){
-            $month   = date('m',strtotime(dbDate($request->period)));
-            $year    = date('Y', strtotime(dbDate($request->period)));
-        }else{
-            $month = $request->month;
-            $year = $request->year;
-        }
-        $dates = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-        $amonth = [];
-        for ($i = 1; $i <= $dates; $i++) {
-            $amonth[] = $i;
-        }
-        $employees = Employee::where('status', 1)->get();
-        $employee = Employee::limit(1)->offset($order)->orderBy('id','asc')->first();
-        foreach ($amonth as $key1 => $value) {
-            $new_date = changeDateFormat('Y-m-d', $year . '-' . $month . '-' . $value);
-            if ($new_date <= date('Y-m-d')) {
-                $check = Attendance::where('employee_id', $employee->id)->where('attendance_date', '=', $new_date)->first();
-                // Initiate attendance data
-                if (!$check) {
-                    $exception_date = $this->employee_calendar($employee->id);
-                    $date = $new_date;
-                    $createAttendance = Attendance::create([
-                        'employee_id'       => $employee->id,
-                        'attendance_date'   => $new_date,
-                        'adj_working_time'  => 0,
-                        'adj_over_time'     => 0,
-                        'day'               => (in_array($date, $exception_date)) ? 'Off' : changeDateFormat('D', $date),
-                        'created_at'        => Carbon::now()->toDateTimeString(),
-                        'updated_at'        => Carbon::now()->toDateTimeString(),
-                        'breaktime'         => 0,
-                    ]);
-                    if (!$createAttendance) {
-                        return response()->json([
-                            'status'     => false,
-                            'message'    => $createAttendance
-                        ], 400);
-                    }
-                } else {
-                    continue;
-                }
-            } else {
-                continue;
-            }
-        }
+        // if($request->period){
+        //     $month   = date('m',strtotime(dbDate($request->period)));
+        //     $year    = date('Y', strtotime(dbDate($request->period)));
+        // }else{
+        //     $month = $request->month;
+        //     $year = $request->year;
+        // }
+        // $dates = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        // $amonth = [];
+        // for ($i = 1; $i <= $dates; $i++) {
+        //     $amonth[] = $i;
+        // }
+        // $employees = Employee::where('status', 1)->get();
+        // $employee = Employee::limit(1)->offset($order)->orderBy('id','asc')->first();
+        // foreach ($amonth as $key1 => $value) {
+        //     $new_date = changeDateFormat('Y-m-d', $year . '-' . $month . '-' . $value);
+        //     if ($new_date <= date('Y-m-d')) {
+        //         $check = Attendance::where('employee_id', $employee->id)->where('attendance_date', '=', $new_date)->first();
+        //         // Initiate attendance data
+        //         if (!$check) {
+        //             $exception_date = $this->employee_calendar($employee->id);
+        //             $date = $new_date;
+        //             $createAttendance = Attendance::create([
+        //                 'employee_id'       => $employee->id,
+        //                 'attendance_date'   => $new_date,
+        //                 'adj_working_time'  => 0,
+        //                 'adj_over_time'     => 0,
+        //                 'day'               => (in_array($date, $exception_date)) ? 'Off' : changeDateFormat('D', $date),
+        //                 'created_at'        => Carbon::now()->toDateTimeString(),
+        //                 'updated_at'        => Carbon::now()->toDateTimeString(),
+        //                 'breaktime'         => 0,
+        //             ]);
+        //             if (!$createAttendance) {
+        //                 return response()->json([
+        //                     'status'     => false,
+        //                     'message'    => $createAttendance
+        //                 ], 400);
+        //             }
+        //         } else {
+        //             continue;
+        //         }
+        //     } else {
+        //         continue;
+        //     }
+        // }
 
-        if($order == $employees->count()){
-            sleep(3);
-        }
+        // if($order == $employees->count()){
+        //     sleep(3);
+        // }
         return response()->json([
             'status'    => true,
             'order'     => ++$order,
