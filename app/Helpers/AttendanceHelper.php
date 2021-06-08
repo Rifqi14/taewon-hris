@@ -120,12 +120,24 @@ if (!function_exists('calculateAttendance')) {
                   $finish_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->finish_time);
                   $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $time_start_shift);
                   $diff = Carbon::parse($start_shift)->diffInHours(Carbon::parse($start_break));
+                  $diffIn = Carbon::parse($datetime_in)->diffInHours(Carbon::parse($start_break));
+                  $breakcut = false;
+                  if ($diff >= 2) {
+                    $diffIn = Carbon::parse($datetime_in)->diffInHours(Carbon::parse($start_break));
+                    if ($diffIn >= 2) {
+                      if (((($datetime_in <= $start_break) && ($finish_break <= $finishShift)))) {
+                        $breakcut = true;
+                      } 
+                    }
+                  }
                   array_push($breaknote,array(
                       'dateIn' => $dateIn,
                       'start_break' => $start_break,
                       'finish_break' => $finish_break,
                       'start_shift' => $start_shift,
                       'diff' => $diff,
+                      'diffIn' => $diffIn,
+                      'breakcut' => $breakcut,
                   ));
                 }
                 /* Check Breaktime*/
