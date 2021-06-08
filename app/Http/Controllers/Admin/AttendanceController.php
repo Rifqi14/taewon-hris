@@ -2550,7 +2550,7 @@ class AttendanceController extends Controller
                 }
             }
         }
-        
+        $order = $order + count($attendances);
         if($order == $total){
             sleep(3);
         }

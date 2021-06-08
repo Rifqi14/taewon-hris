@@ -204,7 +204,7 @@ Object.size = function(obj) {
         type:'POST',
         data: {
           _token: "{{ csrf_token() }}",
-          order:order+attendance.length,
+          order:order,
           attendance: JSON.stringify(attendance),
           total:Object.size(items)
         },
