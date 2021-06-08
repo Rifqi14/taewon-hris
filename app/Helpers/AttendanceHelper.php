@@ -827,7 +827,7 @@ if (!function_exists('getAllBreaktime')) {
       $start_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->start_time);
       $finish_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->finish_time);
       $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $time_in);
-      $diff = Carbon::parse($start_shift)->diffInHours(Carbon::parse($break->start_break));
+      $diff = Carbon::parse($start_shift)->diffInHours(Carbon::parse($start_break));
       if ($diff >= 2) {
         $diffIn = Carbon::parse($datetime_in)->diffInHours(Carbon::parse($start_break));
         if ($diffIn >= 2) {
