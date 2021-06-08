@@ -174,7 +174,7 @@ Object.size = function(obj) {
           data: {
             _token: "{{ csrf_token() }}",
             order:order,
-            limit: 50,
+            limit: 100,
             month: $('#month').val(),
             year: $('#year').val()
           },
@@ -195,7 +195,7 @@ Object.size = function(obj) {
 
   function storeLog(order){
     var attendance =[];
-    for(i=order;i<=(order+49);order++){
+    for(var i = order;i<= (order + 49);order++){
       attendance.push(items[order]);
     }
     $('#progress').find('#progress-message').text('Insert Log Attendace');
@@ -204,7 +204,7 @@ Object.size = function(obj) {
         type:'POST',
         data: {
           _token: "{{ csrf_token() }}",
-          order:order+(attendance.length),
+          order:order+attendance.length,
           attendance: JSON.stringify(attendance),
           total:Object.size(items)
         },
