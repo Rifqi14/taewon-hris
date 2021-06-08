@@ -95,14 +95,15 @@
 							<thead>
 								<tr>
 									<th width="10">#</th>
-									<th width="100">NIK</th>
 									<th width="100">{{__('employee.empname')}}</th>
 									<th width="100">{{__('employee.position')}}</th>
 									<th width="100">{{__('department.dep')}}</th>
 									<th width="100">{{__('employee.jd')}}</th>
-									<th width="100">Status</th>
+									<th width="100">From</th>
+									<th width="100">To</th>
 									<th width="100">Total SP Aktif</th>
 									<th width="120">Total SP Non Aktif</th>
+									<th width="100">Status</th>
 									<th width="10">{{__('general.act')}}</th>
 								</tr>
 							</thead>
@@ -212,13 +213,19 @@
 				},
 				{ className: "text-right", targets: [0,7,8] },
 				{ className: "text-center", targets: [3,4,5,6,7] },
+				{
+                    render: function (data, type, row) {
+                        return `<span>${row.employee_name}</span><br>${row.nik}`;
+                    },
+                    targets: [1]
+                },
                 { render: function(data, type, row) {
                     if (row.status == 0) {
                         return '<span class="badge badge-success">{{__('general.actv')}}</span>';
                     } else {
                         return '<span class="badge badge-danger">{{__('general.noactv')}}</span>';
                     }
-                }, targets:[6]},
+                }, targets:[9]},
 				{ render: function ( data, type, row ) {
 					return `<div class="dropdown">
 					<button class="btn  btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -228,19 +235,20 @@
 					<li><a class="dropdown-item" href="{{url('admin/warningletter')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{__('general.edt')}}</a></li>
 					<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{__('general.dlt')}}</a></li>
 					</ul></div>`
-				},targets: [9]
+				},targets: [10]
 				}
 			],
 			columns: [
 			{ data: "no" },
-			{ data: "nik" },
 			{ data: "employee_name" },
 			{ data: "title_name" },
 			{ data: "department_name" },
 			{ data: "join_date" },
-			{ data: "status" },
+			{ data: "from" },
+			{ data: "to" },
 			{ data: "sp_active" },
 			{ data: "sp_non_active" },
+			{ data: "status" },
 			{ data: "id" },
 			]
 		});
