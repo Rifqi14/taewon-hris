@@ -174,7 +174,7 @@ Object.size = function(obj) {
           data: {
             _token: "{{ csrf_token() }}",
             order:order,
-            limit: 100,
+            limit: 25,
             month: $('#month').val(),
             year: $('#year').val()
           },
@@ -196,7 +196,9 @@ Object.size = function(obj) {
   function storeLog(order){
     var attendance =[];
     for(var i = order;i<= (order + 99);i++){
-      attendance.push(items[order]);
+      if(items[i]){
+        attendance.push(items[i]);
+      }
     }
     $('#progress').find('#progress-message').text('Insert Log Attendace');
     $.ajax({
