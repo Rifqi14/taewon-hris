@@ -53,6 +53,7 @@ if (!function_exists('calculateAttendance')) {
     /*End Get Workhour*/
     $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime); //Count Breaktime Worktime
     $breakovertime = getBreaktimeOvertime($breaktimes, $attendance_hour, $workingtime); //Count Breaktime Overtime
+    $breakall = getAllBreaktime($breaktimes, $attendance_hour); //Count Breaktime All
     if($cek_minworkhour >= $min_workhour){
         $min_workhour = $workingtime->min_workhour;
     }else{
@@ -60,7 +61,8 @@ if (!function_exists('calculateAttendance')) {
     }
     if ($attendance->attendance_in) {
       $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
-      $totalbreaktime = $breakworkingtime + $breakovertime;
+      //$totalbreaktime = $breakworkingtime + $breakovertime;
+      $totalbreaktime = $breakall;
       $totalworkingtime = $totalattendance - $totalbreaktime;
       
       /* 
@@ -96,54 +98,6 @@ if (!function_exists('calculateAttendance')) {
                 $attendance->adj_over_time = $totalovertime;
                 $attendance->adj_working_time = 0;
                 $attendance->code_case  = "A03/BW$breakworkingtime/BO$breakovertime";
-                /* Check Breaktime*/
-                $datetime_in = changeDateFormat('Y-m-d H:i:s', $attendance->attendance_in);
-                $datetime_out = changeDateFormat('Y-m-d H:i:s', $attendance->attendance_out);
-                $time_in = changeDateFormat('H:i:s', $attendance->attendance_in);
-                $time_out = changeDateFormat('H:i:s', $attendance->attendance_out);
-            
-                $time_start_shift = changeDateFormat('H:i:s', $workingtime->start);
-                $time_finish_shift = changeDateFormat('H:i:s', $workingtime->finish);
-                $time_min_in_shift = changeDateFormat('H:i:s', $workingtime->min_in);
-                $time_max_out_shift = changeDateFormat('H:i:s', $workingtime->max_out);
-                $between = array();
-                $breaktime = 0;
-                $nextDay = Carbon::parse($datetime_in)->addDays(1);
-                $finishNow = changeDateFormat('Y-m-d H:i:s', Carbon::parse($datetime_in)->toDateString() . ' ' . $time_finish_shift);
-                $finishTomorrow = changeDateFormat('Y-m-d H:i:s', $nextDay->toDateString() . ' ' . $time_finish_shift);
-                $finishShift = $time_finish_shift < $time_start_shift ? $finishTomorrow : $finishNow;
-                $finishShift = $finishShift > $datetime_out ? $datetime_out : $finishShift;
-                $breaknote = [];
-                foreach ($breaktimes as $break) {
-                  $dateIn = $time_start_shift > $break->start_time ? $nextDay->toDateString() : $datetime_in;
-                  $start_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->start_time);
-                  $finish_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->finish_time);
-                  $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $time_start_shift);
-                  $diff = Carbon::parse($start_shift)->diffInHours(Carbon::parse($start_break));
-                  $diffIn = Carbon::parse($datetime_in)->diffInHours(Carbon::parse($start_break));
-                  $breakcut = false;
-                  if ($diff >= 2) {
-                    $diffIn = Carbon::parse($datetime_in)->diffInHours(Carbon::parse($start_break));
-                    if ($diffIn >= 2) {
-                      if (((($datetime_in <= $start_break) && ($finish_break <= $finishShift)))) {
-                        $breakcut = true;
-                      } 
-                    }
-                  }
-                  array_push($breaknote,array(
-                      'datetime_in' => $datetime_in,
-                      'dateIn' => $dateIn,
-                      'start_break' => $start_break,
-                      'finish_break' => $finish_break,
-                      'finishShift' => $finishShift,
-                      'start_shift' => $start_shift,
-                      'diff' => $diff,
-                      'diffIn' => $diffIn,
-                      'breakcut' => $breakcut,
-                  ));
-                }
-                /* Check Breaktime*/
-                $attendance->note = json_encode($breaknote);
                 $attendance->breaktime = $totalbreaktime;
             }
         } else {
@@ -843,6 +797,31 @@ if (!function_exists('getBreaktimeWorkingtime')) {
             continue;
           }
         }
+      }
+    }
+
+    foreach ($between as $value) {
+      $breaktime += $value->breaktime;
+    }
+    return $breaktime;
+  }
+}
+
+if (!function_exists('getAllBreaktime')) {
+  function getAllBreaktime($array, $hour)
+  {
+    $datetime_in = changeDateFormat('Y-m-d H:i:s', $hour['attendance_in']);
+    $datetime_out = changeDateFormat('Y-m-d H:i:s', $hour['attendance_out']);
+    $time_in = changeDateFormat('H:i:s', $hour['attendance_in']);
+    $time_out = changeDateFormat('H:i:s', $hour['attendance_out']);
+
+    $between = array();
+    $breaktime = 0;
+    
+    foreach ($array as $break) {
+      $diff = Carbon::parse($time_in)->diffInHours(Carbon::parse($break));
+      if ($diff >= 2) {
+        $between[] = $break;
       }
     }
 
