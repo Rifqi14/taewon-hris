@@ -2556,7 +2556,7 @@ class AttendanceController extends Controller
         }
         return response()->json([
             'status'    => true,
-            'order'     => ++$order,
+            'order'     => $order,
             'total'     => $total
         ], 200);
     }
