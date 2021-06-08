@@ -195,7 +195,7 @@ Object.size = function(obj) {
 
   function storeLog(order){
     var attendance =[];
-    for(var i = order;i<= (order + 98);i++){
+    for(var i = order;i<= (order + 99);i++){
       if(items[i]){
         attendance.push(items[i]);
       }
