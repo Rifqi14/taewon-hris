@@ -2488,13 +2488,13 @@ class AttendanceController extends Controller
             }
             
         }
-
+        $order = $order + $employee->count();
         if($order == $employees->count()){
             sleep(3);
         }
         return response()->json([
             'status'    => true,
-            'order'     => $order+$limit,
+            'order'     => $order,
             'total'     => $employees->count()
             //'total'     => 10
         ], 200);
