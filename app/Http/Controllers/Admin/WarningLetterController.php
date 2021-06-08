@@ -188,13 +188,10 @@ class WarningLetterController extends Controller
                             ['employee_id', $request->employee_id],
                             ['status', 0]
                         ])->orderBy('id', 'DESC')->first();
-
         if($readNumbers){
-            if($readNumbers->to < changeDateFormat('Y-m-d', changeSlash($request->from))){
                 DB::table('warning_letters')
                 ->where('employee_id', $readNumbers->employee_id)
                 ->update(['status' => 1]);
-            }
         }
         $readNumbers = WarningLetter::where([
                             ['employee_id', $request->employee_id],
@@ -222,7 +219,13 @@ class WarningLetterController extends Controller
                 'notes'                 => $request->reason,
                 'from'                  => changeDateFormat('Y-m-d', changeSlash($request->from)),
                 'to'                    => $to_date,
-            ]);               
+            ]);
+            $status = WarningLetter::select(DB::raw('sum(case when status = 0 then 1 else 0 end) as aktif, sum(case when status = 1 then 1 else 0 end) as nonaktif'))
+                                    ->where('employee_id',$request->employee_id)
+                                    ->first();
+            $warningletter->sp_active  = $status->aktif;
+            $warningletter->sp_non_active  = $status->nonaktif;
+            $warningletter->save();               
             if (!$warningletter) {
                 return response()->json([
                     'status' => false,
@@ -292,11 +295,9 @@ class WarningLetterController extends Controller
                         ])->orderBy('id', 'DESC')->first();
 
         if($readNumbers){
-            if($readNumbers->to < changeDateFormat('Y-m-d', changeSlash($request->from))){
                 DB::table('warning_letters')
                 ->where('employee_id', $readNumbers->employee_id)
                 ->update(['status' => 1]);
-            }
         }
         $readNumbers = WarningLetter::where([
                             ['employee_id', $request->employee_id],
@@ -318,6 +319,12 @@ class WarningLetterController extends Controller
         $warningletter->from = changeDateFormat('Y-m-d', changeSlash($request->from));
         $warningletter->to = $to_date;
         $warningletter->save();
+        $status = WarningLetter::select(DB::raw('sum(case when status = 0 then 1 else 0 end) as aktif, sum(case when status = 1 then 1 else 0 end) as nonaktif'))
+                                    ->where('employee_id',$request->employee_id)
+                                    ->first();
+        $warningletter->sp_active  = $status->aktif;
+        $warningletter->sp_non_active  = $status->nonaktif;
+        $warningletter->save();   
         if (!$warningletter) {
             DB::rollBack();
             return response()->json([
@@ -382,7 +389,9 @@ class WarningLetterController extends Controller
             'titles.name as title_name',
             'departments.name as department_name',
             'wl.aktif',
-            'wl.nonaktif'
+            'wl.nonaktif',
+            'warning_letters.sp_active',
+            'warning_letters.sp_non_active'
         );
         $query->leftJoin('employees', 'employees.id', '=', 'warning_letters.employee_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
@@ -423,7 +432,9 @@ class WarningLetterController extends Controller
             'titles.name',
             'departments.name',
             'warning_letters.status',
-            'warning_letters.notes'
+            'warning_letters.notes',
+            'warning_letters.sp_active',
+            'warning_letters.sp_non_active'
         );
         $warning_latters = $query->get();
 
@@ -452,8 +463,8 @@ class WarningLetterController extends Controller
             $sheet->setCellValue('E' . $row_number, $warning_latter->join_date);
             $sheet->setCellValue('F' . $row_number, $warning_latter->from);
             $sheet->setCellValue('G' . $row_number, $warning_latter->to);
-            $sheet->setCellValue('H' . $row_number, $warning_latter->aktif);
-            $sheet->setCellValue('I' . $row_number, $warning_latter->nonaktif);
+            $sheet->setCellValue('H' . $row_number, $warning_latter->sp_active);
+            $sheet->setCellValue('I' . $row_number, $warning_latter->sp_non_active);
             $sheet->setCellValue('J' . $row_number, $warning_latter->status == 0 ? 'Active' : 'Non Active');
             $sheet->setCellValue('K' . $row_number, $warning_latter->notes);
             $row_number++;

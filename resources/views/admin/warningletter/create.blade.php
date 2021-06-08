@@ -119,7 +119,7 @@
                     <div class="col-sm-6">
                       <div class="form-group">
                         <label>{{__('general.to')}}</label>
-                        <input type="text" class="form-control datepicker" placeholder="{{__('general.to')}}" id="to" name="to" readonly>
+                        <input type="text" class="form-control" placeholder="{{__('general.to')}}" id="to" name="to" readonly>
                       </div>
                     </div>
                   </div>

@@ -239,8 +239,8 @@
 			{ data: "from" },
 			{ data: "to"},
 			{ data: "status" },
-			{ data: "aktif" },
-			{ data: "nonaktif" },
+			{ data: "sp_active" },
+			{ data: "sp_non_active" },
 			{ data: "id" },
 			]
 		});
