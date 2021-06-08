@@ -229,7 +229,13 @@ class WarningLetterController extends Controller
                                     ->first();
             $warningletter->sp_active  = $status->aktif;
             $warningletter->sp_non_active  = $status->nonaktif;
-            $warningletter->save();               
+            $warningletter->save(); 
+            
+            if($warningletter->to < date("Y-m-d'")){
+                    $updateStatus = WarningLetter::where('id', $warningletter->id)->first();
+                    $updateStatus->status  = 1;
+                    $updateStatus->save(); 
+                }
             if (!$warningletter) {
                 return response()->json([
                     'status' => false,
@@ -299,7 +305,7 @@ class WarningLetterController extends Controller
                         ])->orderBy('id', 'DESC')->first();
 
         if($readNumbers){
-            if($readNumbers->to < changeDateFormat('Y-m-d', changeSlash($request->from))){
+            if($readNumbers->to < changeDateFormat('Y-m-d', changeSlash($request->from)) && $readNumbers->to > date('Y-m-d')){
                 DB::table('warning_letters')
                 ->where('employee_id', $readNumbers->employee_id)
                 ->update(['status' => 1]);
