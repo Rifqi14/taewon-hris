@@ -447,7 +447,7 @@ class WarningLetterController extends Controller
         foreach ($warning_latters as $key => $warning_latter) {
             $sheet->setCellValue('A' . $row_number, $warning_latter->title_name);
             $sheet->setCellValue('B' . $row_number, $warning_latter->department_name);
-            $sheet->setCellValue('C' . $row_number, "'".$warning_latter->nik);
+            $sheet->setCellValue('C' . $row_number, "'".$warning_latter->nid);
             $sheet->setCellValue('D' . $row_number, $warning_latter->employee_name);
             $sheet->setCellValue('E' . $row_number, $warning_latter->join_date);
             $sheet->setCellValue('F' . $row_number, $warning_latter->from);
