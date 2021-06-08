@@ -2564,152 +2564,156 @@ class AttendanceController extends Controller
     function storeupdatelog(Request $request){
         $order = $request->order;
         $total = $request->total;
-        $attendance = json_decode($request->attendance);
-        $new_date = changeDateFormat('Y-m-d', $attendance->attendance_date);
-        $attendance = Attendance::where('employee_id', $attendance->employee_id)->where('attendance_date', '=', $new_date)->where('status', '<>', 1)->first();
-        if ($attendance) {
-            $employee = Employee::find($attendance->employee_id);
-            $attendance_in = AttendanceLog::where('attendance_id', $attendance->id)->where('employee_id', $attendance->employee_id)->where('type', 1)->min('attendance_date');
-            if ($attendance_in) {
-                $attendance_out = AttendanceLog::where('attendance_date', '>', $attendance_in)->where('attendance_id', $attendance->id)->where('employee_id', $attendance->employee_id)->where('type', 0)->max('attendance_date');
-            } else {
-                $attendance_out = AttendanceLog::where('attendance_id', $attendance->id)->where('employee_id', $attendance->employee_id)->where('type', 0)->max('attendance_date');
-            }
-            /* Attendance Out Not Found*/
-            if ($attendance_in && !$attendance_out) {
-                $date_in = changeDateFormat('Y-m-d', $attendance_in);
-                $date_max = Carbon::parse($date_in)->endOfDay()->toDateTimeString();
-                $out_between = AttendanceLog::where('employee_id', $attendance->employee_id)->whereBetween('attendance_date', [$attendance_in, $date_max])->where('type', 0)->max('attendance_date');
-                if ($out_between) {
-                    $attendance_out = $out_between;
+        $attendances = json_decode($request->attendance);
+        foreach($attendances as $attendance){
+            $new_date = changeDateFormat('Y-m-d', $attendance->attendance_date);
+            $attendance = Attendance::where('employee_id', $attendance->employee_id)->where('attendance_date', '=', $new_date)->where('status', '<>', 1)->first();
+            if ($attendance) {
+                $employee = Employee::find($attendance->employee_id);
+                $attendance_in = AttendanceLog::where('attendance_id', $attendance->id)->where('employee_id', $attendance->employee_id)->where('type', 1)->min('attendance_date');
+                if ($attendance_in) {
+                    $attendance_out = AttendanceLog::where('attendance_date', '>', $attendance_in)->where('attendance_id', $attendance->id)->where('employee_id', $attendance->employee_id)->where('type', 0)->max('attendance_date');
                 } else {
-                    $date_out = date('Y-m-d', strtotime('+1 day', strtotime($attendance->attendance_date)));
-                    $date_day = changeDateFormat('Y-m-d H:i:s', $date_out . '09:00:00');
-                    
-                    // Attendance Cut Off
-                    $attendance_cutoff = $this->attendance_cutoff($employee->department_id);
-                    if($attendance_cutoff){
-                        if ($attendance_cutoff->option == 'Static') {
-                            $date_day = changeDateFormat('Y-m-d H:i:s', $date_out . $attendance_cutoff->hour);
-                        }
-                        if ($attendance_cutoff->option == 'Flexible') {
-                            $date_day = date('Y-m-d H:i:s', strtotime($attendance_in . '+' . $attendance_cutoff->duration . 'Hours'));
-                        }
-                    }
-                    // End Attendance Cut Off
-
-                    $outs = AttendanceLog::whereBetween('attendance_date', [$attendance_in, $date_day])->where('employee_id', '=', $attendance->employee_id)->where('type', '=', 0)->get();
-                    if ($outs->count() > 0) {
-                        $attendance_out = $outs->max('attendance_date');
-                        foreach ($outs as $key => $value) {
-                            $value->attendance_id = $attendance->id;
-                            $value->save();
-                        }
-                    } else {
-                        $attendance_out = null;
-                    }
+                    $attendance_out = AttendanceLog::where('attendance_id', $attendance->id)->where('employee_id', $attendance->employee_id)->where('type', 0)->max('attendance_date');
                 }
-            }
-            /*End If Attendance Out Not Found*/
+                /* Attendance Out Not Found*/
+                if ($attendance_in && !$attendance_out) {
+                    $date_in = changeDateFormat('Y-m-d', $attendance_in);
+                    $date_max = Carbon::parse($date_in)->endOfDay()->toDateTimeString();
+                    $out_between = AttendanceLog::where('employee_id', $attendance->employee_id)->whereBetween('attendance_date', [$attendance_in, $date_max])->where('type', 0)->max('attendance_date');
+                    if ($out_between) {
+                        $attendance_out = $out_between;
+                    } else {
+                        $date_out = date('Y-m-d', strtotime('+1 day', strtotime($attendance->attendance_date)));
+                        $date_day = changeDateFormat('Y-m-d H:i:s', $date_out . '09:00:00');
+                        
+                        // Attendance Cut Off
+                        $attendance_cutoff = $this->attendance_cutoff($employee->department_id);
+                        if($attendance_cutoff){
+                            if ($attendance_cutoff->option == 'Static') {
+                                $date_day = changeDateFormat('Y-m-d H:i:s', $date_out . $attendance_cutoff->hour);
+                            }
+                            if ($attendance_cutoff->option == 'Flexible') {
+                                $date_day = date('Y-m-d H:i:s', strtotime($attendance_in . '+' . $attendance_cutoff->duration . 'Hours'));
+                            }
+                        }
+                        // End Attendance Cut Off
 
-            /*Attendance In Different File*/
-            if(!$attendance_in && $attendance_out){
-                
-                $date_out = changeDateFormat('Y-m-d', $attendance_out);
-                $date_start = date('Y-m-d',strtotime($date_out.'-1 days'));
-                $in_between = AttendanceLog::where('employee_id', $attendance->employee_id)->whereBetween('attendance_date', [$date_start, $date_out])->where('type', 1)->orderBy('attendance_date','asc')->first();
-                if ($in_between) {
-                    if($in_between->attendance_id && !$in_between->attendance_out){
-                        $attendance_in = $in_between->attendance_date;
-                        $attendance->attendance_in = null;
-                        $attendance->attendance_out = null;
-                        $attendance->workingtime_id = null;
-                        $attendance->overtime_scheme_id = null;
-                        $attendance->save();
-                        $outs = AttendanceLog::whereBetween('attendance_date', [$date_start, $date_out])->where('employee_id', '=', $attendance->employee_id)->where('type', '=', 0)->get();
+                        $outs = AttendanceLog::whereBetween('attendance_date', [$attendance_in, $date_day])->where('employee_id', '=', $attendance->employee_id)->where('type', '=', 0)->get();
                         if ($outs->count() > 0) {
+                            $attendance_out = $outs->max('attendance_date');
                             foreach ($outs as $key => $value) {
-                                $value->attendance_id = $in_between->attendance_id;
+                                $value->attendance_id = $attendance->id;
                                 $value->save();
                             }
-                        } 
-                        $attendance = Attendance::find($in_between->attendance_id);
+                        } else {
+                            $attendance_out = null;
+                        }
                     }
-                } 
-            }
-            /*End If Attendance In Different File*/
+                }
+                /*End If Attendance Out Not Found*/
 
-            $attendance->attendance_in = $attendance_in ? $attendance_in : null;
-            $attendance->attendance_out = $attendance_out && $attendance_out > $attendance_in ? $attendance_out : null;
-            
-            /*Exception Date*/
-            $exception_date = $this->employee_calendar($attendance->employee_id);
-            if (!$exception_date) {
-                return response()->json([
-                    'status'     => false,
-                    'message'     => 'Calendar for this employee name ' . $employee->name . ' not found. Please set employee calendar first.'
-                ], 400);
-            }
+                /*Attendance In Different File*/
+                if(!$attendance_in && $attendance_out){
+                    
+                    $date_out = changeDateFormat('Y-m-d', $attendance_out);
+                    $date_start = date('Y-m-d',strtotime($date_out.'-1 days'));
+                    $in_between = AttendanceLog::where('employee_id', $attendance->employee_id)->whereBetween('attendance_date', [$date_start, $date_out])->where('type', 1)->orderBy('attendance_date','asc')->first();
+                    if ($in_between) {
+                        if($in_between->attendance_id && !$in_between->attendance_out){
+                            $attendance_in = $in_between->attendance_date;
+                            $attendance->attendance_in = null;
+                            $attendance->attendance_out = null;
+                            $attendance->workingtime_id = null;
+                            $attendance->overtime_scheme_id = null;
+                            $attendance->save();
+                            $outs = AttendanceLog::whereBetween('attendance_date', [$date_start, $date_out])->where('employee_id', '=', $attendance->employee_id)->where('type', '=', 0)->get();
+                            if ($outs->count() > 0) {
+                                foreach ($outs as $key => $value) {
+                                    $value->attendance_id = $in_between->attendance_id;
+                                    $value->save();
+                                }
+                            } 
+                            $attendance = Attendance::find($in_between->attendance_id);
+                        }
+                    } 
+                }
+                /*End If Attendance In Different File*/
 
-            $attendance->day = (in_array($attendance->attendance_date, $exception_date)) ? 'Off' : changeDateFormat('D', $attendance->attendance_date);
-            $overtime_list = $this->overtimeSchemeList($employee->department_id, $attendance->day);
-            if (!$overtime_list) {
-                return response()->json([
-                    'status'    => false,
-                    'message'   => 'Overtime schema list for this day ' . $attendance->day . ' and this date ' . $attendance->attendance_date . ' and this employee id ' . $attendance->employee_id . ' not found'
-                ], 400);
-            }
-            $attendance->overtime_scheme_id = $overtime_list->overtime_scheme_id;
-            $attendance->save();
-            /*Exception Date*/
-
-            /*Process Find And Calculate Attendance*/
-            $attendance = Attendance::find($attendance->id);
-            if ($attendance->attendance_in || $attendance->attendance_out) {
-                $attendance_in = $attendance->attendance_in ? $attendance->attendance_in : null;
-                $attendance_out = $attendance->attendance_out ? $attendance->attendance_out : null;
+                $attendance->attendance_in = $attendance_in ? $attendance_in : null;
+                $attendance->attendance_out = $attendance_out && $attendance_out > $attendance_in ? $attendance_out : null;
                 
-                /* Get Working Time*/
-                $workingtimes = $this->get_workingtime($attendance->day, $employee->department_id);
-                if (!$workingtimes) {
+                /*Exception Date*/
+                $exception_date = $this->employee_calendar($attendance->employee_id);
+                if (!$exception_date) {
                     return response()->json([
                         'status'     => false,
-                        'message'     => 'Working Shift for this day ' . $attendance->day . ' not found. Please check master shift.'
+                        'message'     => 'Calendar for this employee name ' . $employee->name . ' not found. Please set employee calendar first.'
                     ], 400);
                 }
-                $attendance_hour = array('attendance_in' => $attendance_in, 'attendance_out' => $attendance_out);
-                $shift = findShift(shiftBetween($workingtimes, $attendance_hour), $attendance_hour);
 
-                $worktime = $this->employee_worktime($attendance->employee_id);
-                if (!$worktime->working_time) {
-                    if (!$shift) {
+                $attendance->day = (in_array($attendance->attendance_date, $exception_date)) ? 'Off' : changeDateFormat('D', $attendance->attendance_date);
+                $overtime_list = $this->overtimeSchemeList($employee->department_id, $attendance->day);
+                if (!$overtime_list) {
+                    return response()->json([
+                        'status'    => false,
+                        'message'   => 'Overtime schema list for this day ' . $attendance->day . ' and this date ' . $attendance->attendance_date . ' and this employee id ' . $attendance->employee_id . ' not found'
+                    ], 400);
+                }
+                $attendance->overtime_scheme_id = $overtime_list->overtime_scheme_id;
+                $attendance->save();
+                /*Exception Date*/
+
+                /*Process Find And Calculate Attendance*/
+                $attendance = Attendance::find($attendance->id);
+                if ($attendance->attendance_in || $attendance->attendance_out) {
+                    $attendance_in = $attendance->attendance_in ? $attendance->attendance_in : null;
+                    $attendance_out = $attendance->attendance_out ? $attendance->attendance_out : null;
+                    
+                    /* Get Working Time*/
+                    $workingtimes = $this->get_workingtime($attendance->day, $employee->department_id);
+                    if (!$workingtimes) {
                         return response()->json([
                             'status'     => false,
-                            'message'     => 'Shift for this employee workgroup ' . $employee->name . ' not found. Please check master break.',
-                            'shifts' => shiftBetween($workingtimes, $attendance_hour),
-                            'attendance_hour' => $attendance_hour
+                            'message'     => 'Working Shift for this day ' . $attendance->day . ' not found. Please check master shift.'
                         ], 400);
                     }
+                    $attendance_hour = array('attendance_in' => $attendance_in, 'attendance_out' => $attendance_out);
+                    $shift = findShift(shiftBetween($workingtimes, $attendance_hour), $attendance_hour);
+
+                    $worktime = $this->employee_worktime($attendance->employee_id);
+                    if (!$worktime->working_time) {
+                        if (!$shift) {
+                            return response()->json([
+                                'status'     => false,
+                                'message'     => 'Shift for this employee workgroup ' . $employee->name . ' not found. Please check master break.',
+                                'shifts' => shiftBetween($workingtimes, $attendance_hour),
+                                'attendance_hour' => $attendance_hour
+                            ], 400);
+                        }
+                    }
+
+                    $attendance->workingtime_id = $worktime->working_time ? $worktime->working_time : $shift->id;
+                    /*End Get Working Time*/
                 }
+                if (($attendance->attendance_in && $attendance->attendance_out) && $attendance->status == -1) {
+                    $attendance->status = 0;
+                    $attendance->code_case = 'A33';
+                }
+                $attendance->save();
+                calculateAttendance($attendance);
+                /*End Process Find And Calculate Attendance*/
 
-                $attendance->workingtime_id = $worktime->working_time ? $worktime->working_time : $shift->id;
-                /*End Get Working Time*/
             }
-            if (($attendance->attendance_in && $attendance->attendance_out) && $attendance->status == -1) {
-                $attendance->status = 0;
-                $attendance->code_case = 'A33';
-            }
-            $attendance->save();
-            calculateAttendance($attendance);
-            /*End Process Find And Calculate Attendance*/
-
         }
+        
+        $order = $order + count($attendances);
         if($order == $total){
             sleep(3);
         }
         return response()->json([
             'status'    => true,
-            'order'     => ++$order,
+            'order'     => $order,
             'total'     => $total
         ], 200);
     }
