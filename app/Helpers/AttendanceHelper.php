@@ -817,11 +817,25 @@ if (!function_exists('getAllBreaktime')) {
 
     $between = array();
     $breaktime = 0;
+    $nextDay = Carbon::parse($datetime_in)->addDays(1);
+    $finishNow = changeDateFormat('Y-m-d H:i:s', Carbon::parse($datetime_in)->toDateString() . ' ' . $time_out);
+    $finishTomorrow = changeDateFormat('Y-m-d H:i:s', $nextDay->toDateString() . ' ' . $time_out);
+    $finishAttendance = $datetime_out > $datetime_in ? $finishTomorrow : $finishNow;
     
     foreach ($array as $break) {
-      $diff = Carbon::parse($time_in)->diffInHours(Carbon::parse($break->start_time));
+      $dateIn = $time_in > $break->start_time ? $nextDay->toDateString() : $datetime_in;
+      $start_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->start_time);
+      $finish_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->finish_time);
+      $diff = Carbon::parse($start_shift)->diffInHours(Carbon::parse($break->start_break));
       if ($diff >= 2) {
-        $between[] = $break;
+        $diffIn = Carbon::parse($datetime_in)->diffInHours(Carbon::parse($start_break));
+        if ($diffIn >= 2) {
+          if (((($datetime_in <= $start_break) && ($finish_break <= $finishAttendance)))) {
+            $between[] = $break;
+          } else {
+            continue;
+          }
+        }
       }
     }
 
