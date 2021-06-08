@@ -392,7 +392,7 @@ class WarningLetterController extends Controller
         ], 200);
     }
 
-    public function export(Request $request)
+    public function exportwl(Request $request)
     {
         $employee_id = strtoupper(str_replace("'","''",$request->employee_name));
         $nid = $request->nid;

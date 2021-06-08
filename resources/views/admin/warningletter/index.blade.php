@@ -157,7 +157,7 @@
 	}
 	function exportwl() {
 		$.ajax({
-			url: "{{ route('warningletter.export') }}",
+			url: "{{ route('warningletter.exportwl') }}",
 			type: 'POST',
 			dataType: 'JSON',
 			data: $("#form").serialize(),
