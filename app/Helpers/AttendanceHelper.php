@@ -71,7 +71,7 @@ if (!function_exists('calculateAttendance')) {
       */
       if($attendance->day == 'Off' && $employee->timeout == 'yes'  && $attendance->attendance_in && $attendance->attendance_out){
         if ($employee->overtime == 'yes') {
-            $totalovertime = $totalworkingtime - $min_workhour;
+            $totalovertime = $totalworkingtime;
             if ($employee->spl == 'yes') {
                 $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id',$employee->id)->first();
                 // ketika ada spl
@@ -143,7 +143,7 @@ if (!function_exists('calculateAttendance')) {
                       $attendance->breaktime = $totalbreaktime;
                   }
               } else {
-                  $attendance->adj_over_time = $totalovertime;
+                  $attendance->adj_over_time = 0;
                   $attendance->adj_working_time = 0;
                   $attendance->code_case  = "A07/BW$brekworkingtime/BO$breakovertime";
                   $attendance->breaktime = $totalbreaktime;
