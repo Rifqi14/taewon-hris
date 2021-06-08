@@ -728,6 +728,14 @@ class DeliveryOrderController extends Controller
                     if (!$driverlist) {
                         $driverlist = DriverList::where('truck_id', $deliveryorder->truck_id)->orderBy('rit', 'desc')->first();
                     }
+
+                    if (!$driverlist) {
+                        DB::rollback();
+                        return response()->json([
+                            'status' => false,
+                            'message'   => $driverlist
+                        ], 400);
+                    }
                     $checkupdate->rit = $driverlist->value;
                     $checkupdate->total_value = ($checkupdate->value / 100) * $driverlist->value;
                     $checkupdate->save();
