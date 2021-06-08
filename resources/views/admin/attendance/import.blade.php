@@ -174,6 +174,7 @@ Object.size = function(obj) {
           data: {
             _token: "{{ csrf_token() }}",
             order:order,
+            limit:100,
             month: $('#month').val(),
             year: $('#year').val()
           },
