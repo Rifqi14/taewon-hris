@@ -169,6 +169,7 @@ Object.size = function(obj) {
           data: {
             _token: "{{ csrf_token() }}",
             order:order,
+            limit: 25,
             period: $("#date").val(),
           },
           dataType: 'json',
@@ -187,14 +188,20 @@ Object.size = function(obj) {
   }
 
   function storeLog(order){
+    var attendance =[];
+    for(var i = order;i<= (order + 99);i++){
+      if(items[i]){
+        attendance.push(items[i]);
+      }
+    }
     $('#progress').find('#progress-message').text('Insert Log Attendace');
     $.ajax({
         url:"{{route('attendance.storelog')}}",
         type:'POST',
         data: {
           _token: "{{ csrf_token() }}",
-          order:order,
-          attendance: JSON.stringify(items[order]),
+          order:order-1,
+          attendance: JSON.stringify(attendance),
           total:Object.size(items)
         },
         dataType: 'json',
@@ -213,14 +220,20 @@ Object.size = function(obj) {
     
   }
   function storeUpdateLog(order){
+    var attendance =[];
+    for(var i = order;i<= (order + 99);i++){
+      if(items[i]){
+        attendance.push(items[i]);
+      }
+    }
     $('#progress').find('#progress-message').text('Update Log Attendace');
     $.ajax({
         url:"{{route('attendance.storeupdatelog')}}",
         type:'POST',
         data: {
           _token: "{{ csrf_token() }}",
-          order:order,
-          attendance: JSON.stringify(items[order]),
+          order:order-1,
+          attendance: JSON.stringify(attendance),
           total:Object.size(items)
         },
         dataType: 'json',
