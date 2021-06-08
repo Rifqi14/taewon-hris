@@ -65,16 +65,6 @@
 			<div class="infobox-3 nunito">
 				<h5 class="text-center info-heading-count m-0">{{ $yesterdayAttendance }}</h5>
 				<div class="text-center">Yesterday Attendance Count</div>
-				<div class="row mt-3 dashed-top">
-					<div class="col pr-2 pl-0 pt-2 dashed-right">
-						<h5 class="text-center info-plus m-0">{{ $dayBeforeCount }}%</h5>
-						<div class="text-center text-xs">2 Days Before Attendance</div>
-					</div>
-					<div class="col pr-0 pl-2 pt-2">
-						<h5 class="text-center info-min m-0">{{ $dayBeforeNotCount }}%</h5>
-						<div class="text-center text-xs">2 Days Before Not Attendance</div>
-					</div>
-				</div>
 			</div>
 			<div class="row mt-30">
 				<div class="col">
@@ -94,7 +84,7 @@
 	<div class="row mt-2">
 		<div class="col-lg-6">
 			<div class="card nunito">
-	            <div class="card-header bg-dark-green">
+	            <div class="card-header" style="background-color:#263e8a;color: white; ">
 	                <h3 class="card-title">Yesterday Overtime Report</h3>
 	            </div>
 	            <div class="card-body table-responsive p-0">

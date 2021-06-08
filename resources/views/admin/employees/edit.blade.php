@@ -664,9 +664,7 @@
 									<a class="nav-link" id="driver-allowance-tab" data-toggle="pill" href="#tabs-driver-allowance" role="tab" aria-controls="vert-tabs-messages" aria-selected="false">{{ __('employee.driveralw') }}</a>
 									@endif
 									<a class="nav-link" id="vert-tabs-messages-tab" data-toggle="pill" href="#vert-tabs-messages" role="tab" aria-controls="vert-tabs-messages" aria-selected="false">{{ __('employee.ot') }}</a>
-									@if ($employee->workgroup->penalty == 'Basic')
 									<a class="nav-link" id="vert-tabs-messages-tab" data-toggle="pill" href="#vert-tabs-penalti" role="tab" aria-controls="vert-tabs-messages" aria-selected="false">Potongan Absen</a>
-									@endif
 								</div>
 							</div>
 							<div class="col-9 col-sm-10">
@@ -835,9 +833,7 @@
 														<th width="150">{{ __('employee.factor') }}</th>
 														<th width="150">{{ __('general.value') }}</th>
 														<th width="150">Status</th>
-														@if ($employee->workgroup->penalty == 'Gross')
 														<th width="150">{{ __('employee.pnlty') }}</th>
-														@endif
 														<th width="100">{{ __('general.act') }}</th>
 													</tr>
 												</thead>
