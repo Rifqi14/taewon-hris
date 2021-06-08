@@ -285,6 +285,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/attendance/preview2', 'Admin\AttendanceController@preview2')->name('attendance.preview2');
         Route::post('/attendance/storemass2', 'Admin\AttendanceController@storemass2')->name('attendance.storemass2');
         Route::post('/attendance/syncmass', 'Admin\AttendanceController@syncMass')->name('attendance.syncmass');
+        Route::post('/attendance/storeheader', 'Admin\AttendanceController@storeheader')->name('attendance.storeheader');
+        Route::post('/attendance/storelog', 'Admin\AttendanceController@storelog')->name('attendance.storelog');
+        Route::post('/attendance/storeupdatelog', 'Admin\AttendanceController@storeupdatelog')->name('attendance.storeupdatelog');
         Route::resource('/attendance', 'Admin\AttendanceController')->except(['show']);
         // Route Daily Report
         Route::get('/dailyreport/read', 'Admin\DailyReportController@read')->name('dailyreport.read');
