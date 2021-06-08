@@ -833,7 +833,6 @@
 														<th width="150">{{ __('employee.factor') }}</th>
 														<th width="150">{{ __('general.value') }}</th>
 														<th width="150">Status</th>
-														<th width="150">{{ __('employee.pnlty') }}</th>
 														<th width="100">{{ __('general.act') }}</th>
 													</tr>
 												</thead>
