@@ -4,7 +4,7 @@ return[
     'employ'     => 'Employee',
     'empdata'    => 'Data Employee',
     'empname'    => 'Employee Name',
-    'employlist' => 'Employee List',
+    'emplist' => 'Employee List',
     'search'     => 'Searching For',
     'birthday'   => 'Birthday',
     'department' => 'Department',
