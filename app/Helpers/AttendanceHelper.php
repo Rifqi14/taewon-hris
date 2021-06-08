@@ -819,7 +819,7 @@ if (!function_exists('getAllBreaktime')) {
     $breaktime = 0;
     
     foreach ($array as $break) {
-      $diff = Carbon::parse($time_in)->diffInHours(Carbon::parse($break));
+      $diff = Carbon::parse($time_in)->diffInHours(Carbon::parse($break->start_time));
       if ($diff >= 2) {
         $between[] = $break;
       }
