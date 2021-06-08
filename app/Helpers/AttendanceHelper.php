@@ -335,14 +335,14 @@ if (!function_exists('calculateAttendance')) {
                   }
               } else {
                   //  spl not
-                  $attendance->adj_over_time = $totalovertime;
-                  $attendance->adj_working_time = $min_workhour;
+                  $attendance->adj_over_time = 0;
+                  $attendance->adj_working_time = 0;
                   $attendance->code_case  = "A23/BW$breakworkingtime/BO$breakovertime";
                   $attendance->breaktime = $totalbreaktime;
               }
           } else {
               $attendance->adj_over_time = 0;
-              $attendance->adj_working_time = $min_workhour;
+              $attendance->adj_working_time = 0;
               $attendance->code_case  = "A24/BW$breakworkingtime/BO$breakovertime";
               $attendance->breaktime = $totalbreaktime;
           }
@@ -823,7 +823,7 @@ if (!function_exists('getAllBreaktime')) {
     $finishAttendance = $time_out < $time_in ? $finishTomorrow : $finishNow;
     $finishAttendance = $finishAttendance > $datetime_out ? $datetime_out : $finishAttendance;
     foreach ($array as $break) {
-      $dateIn = $time_in > $break->start_time ? $nextDay->toDateString() : $datetime_in;
+      $dateIn = $time_in > $break->start_time ? $nextDay->toDateString() : ($break->cross_date? $nextDay->toDateString():$datetime_in);
       $start_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->start_time);
       $finish_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->finish_time);
       $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $time_in);
