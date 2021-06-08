@@ -131,9 +131,11 @@ if (!function_exists('calculateAttendance')) {
                     }
                   }
                   array_push($breaknote,array(
+                      'datetime_in' => $datetime_in,
                       'dateIn' => $dateIn,
                       'start_break' => $start_break,
                       'finish_break' => $finish_break,
+                      'finishShift' => $finishShift,
                       'start_shift' => $start_shift,
                       'diff' => $diff,
                       'diffIn' => $diffIn,
