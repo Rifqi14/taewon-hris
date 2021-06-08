@@ -191,9 +191,11 @@ class WarningLetterController extends Controller
                             ['status', 0]
                         ])->orderBy('id', 'DESC')->first();
         if($readNumbers){
+            if($readNumbers->to < changeDateFormat('Y-m-d', changeSlash($request->from))){
                 DB::table('warning_letters')
                 ->where('employee_id', $readNumbers->employee_id)
                 ->update(['status' => 1]);
+            }
         }
         $readNumbers = WarningLetter::where([
                             ['employee_id', $request->employee_id],
@@ -297,9 +299,11 @@ class WarningLetterController extends Controller
                         ])->orderBy('id', 'DESC')->first();
 
         if($readNumbers){
+            if($readNumbers->to < changeDateFormat('Y-m-d', changeSlash($request->from))){
                 DB::table('warning_letters')
                 ->where('employee_id', $readNumbers->employee_id)
                 ->update(['status' => 1]);
+            }
         }
         $readNumbers = WarningLetter::where([
                             ['employee_id', $request->employee_id],
@@ -491,7 +495,7 @@ class WarningLetterController extends Controller
         if ($warning_latters->count() > 0) {
         return response()->json([
             'status'     => true,
-            'name'        => 'warning-latter-' . date('d-m-Y') . '.xlsx',
+            'name'        => 'warning-letter-' . date('d-m-Y') . '.xlsx',
             'message'    => "Success Download Warning Latter Data",
             'file'         => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," . base64_encode($export)
         ], 200);
