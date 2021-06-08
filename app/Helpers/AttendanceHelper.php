@@ -114,7 +114,7 @@ if (!function_exists('calculateAttendance')) {
                 $finishShift = $time_finish_shift < $time_start_shift ? $finishTomorrow : $finishNow;
                 $finishShift = $finishShift > $datetime_out ? $datetime_out : $finishShift;
                 $breaknote = [];
-                foreach ($array as $break) {
+                foreach ($breaktimes as $break) {
                   $dateIn = $time_start_shift > $break->start_time ? $nextDay->toDateString() : $datetime_in;
                   $start_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->start_time);
                   $finish_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->finish_time);
