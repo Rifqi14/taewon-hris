@@ -11,6 +11,14 @@
   .overlay-wrapper {
     position: relative;
   }
+  .progress span {
+      position: absolute;
+      display: block;
+      width: 100%;
+      color: #000;
+      font-weight:bold;
+
+  }
 </style>
 @endsection
 @push('breadcrump')
@@ -109,6 +117,24 @@
     </div>
   </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="progress" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Please Wait</h4>
+      </div>
+      <div class="modal-body center-block">
+        <span id="progress-message">Create Attendance Header</span>
+        <div class="progress" style="height: 25px;">
+          <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <span class="show"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -120,12 +146,105 @@
 <script src="{{asset('adminlte/component/daterangepicker/daterangepicker.js')}}"></script>
 <script src="{{asset('adminlte/component/jquery-ui/jquery-ui.min.js')}}"></script>
 <script type="text/javascript">
+Object.size = function(obj) {
+  var size = 0,
+    key;
+  for (key in obj) {
+    if (obj.hasOwnProperty(key)) size++;
+  }
+  return size;
+};
   var items = {},count=0;
   function addImport(){
       $('#form-import')[0].reset();
       $('#form-import').find('.help-block').remove();
       $('#form-import .form-group').removeClass('has-error').removeClass('has-success');
       $('#select-file').modal('show');
+  }
+  function storeHeader(order){
+      $('#progress').find('#progress-message').text('Create Employee Attendace');
+      $.ajax({
+          url:"{{route('attendance.storeheader')}}",
+          type:'POST',
+          data: {
+            _token: "{{ csrf_token() }}",
+            order:order,
+            period: $("#date").val(),
+          },
+          dataType: 'json',
+      }).done(function(response){
+         $('#progress').find('.show').text(response.order+'/'+response.total+' Employee');
+         $('#progress').find('.progress-bar').width(((response.order/response.total)*100)+'%');
+         if(response.order == response.total){
+           $('#progress').find('.show').text('');
+           $('#progress').find('.progress-bar').width('0%');
+           storeLog(1);
+         }
+         else{
+           storeHeader(response.order);
+         }
+      })
+  }
+
+  function storeLog(order){
+    $('#progress').find('#progress-message').text('Insert Log Attendace');
+    $.ajax({
+        url:"{{route('attendance.storelog')}}",
+        type:'POST',
+        data: {
+          _token: "{{ csrf_token() }}",
+          order:order,
+          attendance: JSON.stringify(items[order]),
+          total:Object.size(items)
+        },
+        dataType: 'json',
+    }).done(function(response){
+      $('#progress').find('.show').text(response.order+'/'+response.total+' Log');
+          $('#progress').find('.progress-bar').width(((response.order/response.total)*100)+'%');
+        if(response.order == response.total){
+          $('#progress').find('.show').text('');
+          $('#progress').find('.progress-bar').width('0%');
+          storeUpdateLog(1);
+        }
+        else{
+          storeLog(response.order);
+        }
+    })
+    
+  }
+  function storeUpdateLog(order){
+    $('#progress').find('#progress-message').text('Update Log Attendace');
+    $.ajax({
+        url:"{{route('attendance.storeupdatelog')}}",
+        type:'POST',
+        data: {
+          _token: "{{ csrf_token() }}",
+          order:order,
+          attendance: JSON.stringify(items[order]),
+          total:Object.size(items)
+        },
+        dataType: 'json',
+    }).done(function(response){
+      $('#progress').find('.show').text(response.order+'/'+response.total+' Log');
+          $('#progress').find('.progress-bar').width(((response.order/response.total)*100)+'%');
+        if(response.order == response.total){
+          items = {};
+          table_item.clear().draw();
+          loadItem(table_item);
+          $('#no').attr('value',1);
+          $.gritter.add({
+              title: 'Success!',
+              text: 'Success save attendance',
+              class_name: 'gritter-success',
+              time: 1000,
+          });
+          $('#progress').modal('hide');
+        }
+        else{
+          storeUpdateLog(response.order);
+        }
+    })
+    
   }
   function loadItem(table_item){
       count=0;
@@ -321,51 +440,53 @@
               $.each(items, function() {
                 attendance.push(this);
               });
-              $.ajax({
-                  url:$('#form').attr('action'),
-                  dataType: 'json',
-                  type:'POST',
-                  data: {
-                      _token: "{{ csrf_token() }}",
-                      attendance: JSON.stringify(attendance),
-                      period: $("#date").val(),
-                  },
-                  beforeSend:function(){
-                      $('#attendance-preview .overlay').removeClass('d-none');
-                  }
-              }).done(function(response){
-                  $('.overlay').addClass('d-none');
-                  if(response.status){
-                    items = {};
-                    table_item.clear().draw();
-                    $('#no').attr('value',response.last);
-                    loadItem(table_item);
-                    $.gritter.add({
-                        title: 'Success!',
-                        text: response.message,
-                        class_name: 'gritter-success',
-                        time: 1000,
-                    });
-                  }
-                  else{	
-                    $.gritter.add({
-                        title: 'Warning!',
-                        text: response.message,
-                        class_name: 'gritter-warning',
-                        time: 1000,
-                    });
-                  }
-                  return;
-            }).fail(function(response){
-                $('.overlay').addClass('d-none');
-                var response = response.responseJSON;
-                $.gritter.add({
-                    title: 'Error!',
-                    text: response.message,
-                    class_name: 'gritter-error',
-                    time: 1000,
-                });
-            });		
+              $('#progress').modal('show');
+              storeHeader(0);
+              // $.ajax({
+              //     url:$('#form').attr('action'),
+              //     dataType: 'json',
+              //     type:'POST',
+              //     data: {
+              //         _token: "{{ csrf_token() }}",
+              //         attendance: JSON.stringify(attendance),
+              //         period: $("#date").val(),
+              //     },
+              //     beforeSend:function(){
+              //         $('#attendance-preview .overlay').removeClass('d-none');
+              //     }
+              // }).done(function(response){
+              //     $('.overlay').addClass('d-none');
+              //     if(response.status){
+              //       items = {};
+              //       table_item.clear().draw();
+              //       $('#no').attr('value',response.last);
+              //       loadItem(table_item);
+              //       $.gritter.add({
+              //           title: 'Success!',
+              //           text: response.message,
+              //           class_name: 'gritter-success',
+              //           time: 1000,
+              //       });
+              //     }
+              //     else{	
+              //       $.gritter.add({
+              //           title: 'Warning!',
+              //           text: response.message,
+              //           class_name: 'gritter-warning',
+              //           time: 1000,
+              //       });
+              //     }
+            //       return;
+            // }).fail(function(response){
+            //     $('.overlay').addClass('d-none');
+            //     var response = response.responseJSON;
+            //     $.gritter.add({
+            //         title: 'Error!',
+            //         text: response.message,
+            //         class_name: 'gritter-error',
+            //         time: 1000,
+            //     });
+            // });		
           }
       });
       $(document).on('click', '.sync', function(){

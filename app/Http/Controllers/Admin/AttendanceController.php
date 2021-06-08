@@ -2692,6 +2692,7 @@ class AttendanceController extends Controller
                 $attendance->code_case = 'A33';
             }
             $attendance->save();
+            calculateAttendance($attendance);
             /*End Process Find And Calculate Attendance*/
 
         }
