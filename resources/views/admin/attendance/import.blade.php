@@ -195,7 +195,7 @@ Object.size = function(obj) {
 
   function storeLog(order){
     var attendance =[];
-    for(var i = order;i<= (order + 49);order++){
+    for(var i = order;i<= (order + 49);i++){
       attendance.push(items[order]);
     }
     $('#progress').find('#progress-message').text('Insert Log Attendace');
