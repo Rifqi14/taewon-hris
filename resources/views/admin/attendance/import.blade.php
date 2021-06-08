@@ -407,45 +407,45 @@ Object.size = function(obj) {
               $.each(items, function() {
                 attendance.push(this);
               });
-              $('#progress').modal('show');
-              storeHeader(0);
-            //   $.ajax({
-            //       url:$('#form').attr('action'),
-            //       dataType: 'json',
-            //       type:'POST',
-            //       data: {
-            //           _token: "{{ csrf_token() }}",
-            //           attendance: JSON.stringify(attendance),
-            //           month: $('#month').val(),
-            //           year: $('#year').val()
-            //       },
-            //       beforeSend:function(){
-            //           $('#attendance-preview .overlay').removeClass('d-none');
-            //       }
-            //   }).done(function(response){
-            //       $('.overlay').addClass('d-none');
-            //       if(response.status){
-            //         document.location = response.results;
-            //       }
-            //       else{	
-            //         $.gritter.add({
-            //             title: 'Warning!',
-            //             text: response.message,
-            //             class_name: 'gritter-warning',
-            //             time: 1000,
-            //         });
-            //       }
-            //       return;
-            // }).fail(function(response){
-            //     $('.overlay').addClass('d-none');
-            //     var response = response.responseJSON;
-            //     $.gritter.add({
-            //         title: 'Error!',
-            //         text: response.message,
-            //         class_name: 'gritter-error',
-            //         time: 1000,
-            //     });
-            // });		
+              // $('#progress').modal('show');
+              // storeHeader(0);
+              $.ajax({
+                  url:$('#form').attr('action'),
+                  dataType: 'json',
+                  type:'POST',
+                  data: {
+                      _token: "{{ csrf_token() }}",
+                      attendance: JSON.stringify(attendance),
+                      month: $('#month').val(),
+                      year: $('#year').val()
+                  },
+                  beforeSend:function(){
+                      $('#attendance-preview .overlay').removeClass('d-none');
+                  }
+              }).done(function(response){
+                  $('.overlay').addClass('d-none');
+                  if(response.status){
+                    document.location = response.results;
+                  }
+                  else{	
+                    $.gritter.add({
+                        title: 'Warning!',
+                        text: response.message,
+                        class_name: 'gritter-warning',
+                        time: 1000,
+                    });
+                  }
+                  return;
+            }).fail(function(response){
+                $('.overlay').addClass('d-none');
+                var response = response.responseJSON;
+                $.gritter.add({
+                    title: 'Error!',
+                    text: response.message,
+                    class_name: 'gritter-error',
+                    time: 1000,
+                });
+            });		
           }
       });
   });
