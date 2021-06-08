@@ -84,7 +84,7 @@
 	<div class="row mt-2">
 		<div class="col-lg-6">
 			<div class="card nunito">
-	            <div class="card-header bg-dark-green">
+	            <div class="card-header" style="background-color:#263e8a;color: white; ">
 	                <h3 class="card-title">Yesterday Overtime Report</h3>
 	            </div>
 	            <div class="card-body table-responsive p-0">
