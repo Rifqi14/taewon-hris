@@ -2503,51 +2503,54 @@ class AttendanceController extends Controller
     function storelog(Request $request){
         $order = $request->order;
         $total = $request->total;
-        $attendance = json_decode($request->attendance);
+        $attendances = json_decode($request->attendance);
         $batch_name = "FILE/" . date('Y-m-d H:i');
-        if ($attendance->employee_id) {
-            $new_date = changeDateFormat('Y-m-d', $attendance->attendance_date);
-            $check = Attendance::where('employee_id', '=', $attendance->employee_id)->where('attendance_date', '=', $new_date)->first();
-            if ($check) {
-                $createAttendanceLog = Attendancelog::create([
-                    'attendance_id'     => $check->id,
-                    'employee_id'       => $attendance->employee_id,
-                    'serial_number'     => $attendance->serial_number,
-                    'device_name'       => $attendance->device_name,
-                    'attendance_area'   => $attendance->attendance_area,
-                    'type'              => strtoupper($attendance->point_name) == 'MASUK' ? 1 : 0,
-                    'attendance_date'   => $attendance->attendance_date,
-                    'created_at'        => Carbon::now()->toDateTimeString(),
-                    'updated_at'        => Carbon::now()->toDateTimeString(),
-                    'batch_upload'      => $batch_name,
-                ]);
-                if (!$createAttendanceLog) {
-                    return response()->json([
-                        'status'     => false,
-                        'message'     => $createAttendanceLog
-                    ], 400);
-                }
-            } else {
-                $createAttendanceLog = AttendanceLog::create([
-                    'attendance_id'     => null,
-                    'employee_id'       => $attendance->employee_id,
-                    'serial_number'     => $attendance->serial_number,
-                    'device_name'       => $attendance->device_name,
-                    'attendance_area'   => $attendance->attendance_area,
-                    'type'              => strtoupper($attendance->point_name) == 'MASUK' ? 1 : 0,
-                    'attendance_date'   => $attendance->attendance_date,
-                    'created_at'        => Carbon::now()->toDateTimeString(),
-                    'updated_at'        => Carbon::now()->toDateTimeString(),
-                    'batch_upload'      => $batch_name,
-                ]);
-                if (!$createAttendanceLog) {
-                    return response()->json([
-                        'status'     => false,
-                        'message'     => $createAttendanceLog
-                    ], 400);
+        foreach($attendances as $attendance){
+            if ($attendance->employee_id) {
+                $new_date = changeDateFormat('Y-m-d', $attendance->attendance_date);
+                $check = Attendance::where('employee_id', '=', $attendance->employee_id)->where('attendance_date', '=', $new_date)->first();
+                if ($check) {
+                    $createAttendanceLog = Attendancelog::create([
+                        'attendance_id'     => $check->id,
+                        'employee_id'       => $attendance->employee_id,
+                        'serial_number'     => $attendance->serial_number,
+                        'device_name'       => $attendance->device_name,
+                        'attendance_area'   => $attendance->attendance_area,
+                        'type'              => strtoupper($attendance->point_name) == 'MASUK' ? 1 : 0,
+                        'attendance_date'   => $attendance->attendance_date,
+                        'created_at'        => Carbon::now()->toDateTimeString(),
+                        'updated_at'        => Carbon::now()->toDateTimeString(),
+                        'batch_upload'      => $batch_name,
+                    ]);
+                    if (!$createAttendanceLog) {
+                        return response()->json([
+                            'status'     => false,
+                            'message'     => $createAttendanceLog
+                        ], 400);
+                    }
+                } else {
+                    $createAttendanceLog = AttendanceLog::create([
+                        'attendance_id'     => null,
+                        'employee_id'       => $attendance->employee_id,
+                        'serial_number'     => $attendance->serial_number,
+                        'device_name'       => $attendance->device_name,
+                        'attendance_area'   => $attendance->attendance_area,
+                        'type'              => strtoupper($attendance->point_name) == 'MASUK' ? 1 : 0,
+                        'attendance_date'   => $attendance->attendance_date,
+                        'created_at'        => Carbon::now()->toDateTimeString(),
+                        'updated_at'        => Carbon::now()->toDateTimeString(),
+                        'batch_upload'      => $batch_name,
+                    ]);
+                    if (!$createAttendanceLog) {
+                        return response()->json([
+                            'status'     => false,
+                            'message'     => $createAttendanceLog
+                        ], 400);
+                    }
                 }
             }
         }
+        
         if($order == $total){
             sleep(3);
         }

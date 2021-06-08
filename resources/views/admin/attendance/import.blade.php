@@ -174,7 +174,7 @@ Object.size = function(obj) {
           data: {
             _token: "{{ csrf_token() }}",
             order:order,
-            limit:100,
+            limit: 50,
             month: $('#month').val(),
             year: $('#year').val()
           },
@@ -194,14 +194,18 @@ Object.size = function(obj) {
   }
 
   function storeLog(order){
+    var attendance =[];
+    for(i=order;i<=(order+49);order++){
+      attendance.push(items[order]);
+    }
     $('#progress').find('#progress-message').text('Insert Log Attendace');
     $.ajax({
         url:"{{route('attendance.storelog')}}",
         type:'POST',
         data: {
           _token: "{{ csrf_token() }}",
-          order:order,
-          attendance: JSON.stringify(items[order]),
+          order:order+(attendance.length),
+          attendance: JSON.stringify(attendance),
           total:Object.size(items)
         },
         dataType: 'json',
