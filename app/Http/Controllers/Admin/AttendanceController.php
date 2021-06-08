@@ -1297,7 +1297,7 @@ class AttendanceController extends Controller
                                     // cek overtime
                                     if ($employee->overtime == 'yes') {
                                         // cek spl
-                                        $ot= $wt_attendance - $min_workhour;
+                                        $ot= $wt_attendance;
 
                                         if ($employee->spl == 'yes') {
                                             $cekspl = Spl::where('spl_date', $adjustment->attendance_date)->where('employee_id',$employee->id)->first();
