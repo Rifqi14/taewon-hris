@@ -335,7 +335,7 @@ if (!function_exists('calculateAttendance')) {
                   }
               } else {
                   //  spl not
-                  $attendance->adj_over_time = $ot;
+                  $attendance->adj_over_time = $totalovertime;
                   $attendance->adj_working_time = $min_workhour;
                   $attendance->code_case  = "A23/BW$breakworkingtime/BO$breakovertime";
                   $attendance->breaktime = $totalbreaktime;
