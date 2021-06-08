@@ -224,18 +224,17 @@ class WarningLetterController extends Controller
                 'from'                  => changeDateFormat('Y-m-d', changeSlash($request->from)),
                 'to'                    => $to_date,
             ]);
+            if($warningletter->to < date("Y-m-d'")){
+                $updateStatus = WarningLetter::where('id', $warningletter->id)->first();
+                $updateStatus->status  = 1;
+                $updateStatus->save(); 
+            }
             $status = WarningLetter::select(DB::raw('sum(case when status = 0 then 1 else 0 end) as aktif, sum(case when status = 1 then 1 else 0 end) as nonaktif'))
                                     ->where('employee_id',$request->employee_id)
                                     ->first();
             $warningletter->sp_active  = $status->aktif;
             $warningletter->sp_non_active  = $status->nonaktif;
             $warningletter->save(); 
-            
-            if($warningletter->to < date("Y-m-d'")){
-                    $updateStatus = WarningLetter::where('id', $warningletter->id)->first();
-                    $updateStatus->status  = 1;
-                    $updateStatus->save(); 
-                }
             if (!$warningletter) {
                 return response()->json([
                     'status' => false,
@@ -331,12 +330,17 @@ class WarningLetterController extends Controller
         $warningletter->from = changeDateFormat('Y-m-d', changeSlash($request->from));
         $warningletter->to = $to_date;
         $warningletter->save();
-        $status = WarningLetter::select(DB::raw('sum(case when status = 0 then 1 else 0 end) as aktif, sum(case when status = 1 then 1 else 0 end) as nonaktif'))
+        if($warningletter->to < date("Y-m-d'")){
+                $updateStatus = WarningLetter::where('id', $warningletter->id)->first();
+                $updateStatus->status  = 1;
+                $updateStatus->save(); 
+            }
+            $status = WarningLetter::select(DB::raw('sum(case when status = 0 then 1 else 0 end) as aktif, sum(case when status = 1 then 1 else 0 end) as nonaktif'))
                                     ->where('employee_id',$request->employee_id)
                                     ->first();
-        $warningletter->sp_active  = $status->aktif;
-        $warningletter->sp_non_active  = $status->nonaktif;
-        $warningletter->save();   
+            $warningletter->sp_active  = $status->aktif;
+            $warningletter->sp_non_active  = $status->nonaktif;
+            $warningletter->save();    
         if (!$warningletter) {
             DB::rollBack();
             return response()->json([
