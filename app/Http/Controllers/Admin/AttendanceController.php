@@ -2451,7 +2451,7 @@ class AttendanceController extends Controller
         // for ($i = 1; $i <= $dates; $i++) {
         //     $amonth[] = $i;
         // }
-        // $employees = Employee::where('status', 1)->get();
+        $employees = Employee::where('status', 1)->get();
         // $employee = Employee::limit(1)->offset($order)->orderBy('id','asc')->first();
         // foreach ($amonth as $key1 => $value) {
         //     $new_date = changeDateFormat('Y-m-d', $year . '-' . $month . '-' . $value);
