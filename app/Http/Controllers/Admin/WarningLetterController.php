@@ -38,7 +38,7 @@ class WarningLetterController extends Controller
         $dir = $request->order[0]['dir'];
         $employee_id = strtoupper(str_replace("'","''",$request->employee_id));
         $nid = $request->nid;
-        $departments = $request->department;
+        $department_ids = $request->department?$request->department:null;
         $position = $request->position;
         $status = $request->status;
 
@@ -66,15 +66,22 @@ class WarningLetterController extends Controller
         if ($nid != '') {
             $query->whereRaw("employees.nid like '%$nid%'");
         }
-        if ($departments != '') {
-            $string = '';
-            foreach ($departments as $department) {
-                $string .= "departments.path like '%$department%'";
-                if (end($departments) != $department) {
-                    $string .= ' or ';
-                }
+        if ($department_ids) {
+        $string = '';
+        $uniqdepartments = [];
+        foreach($department_ids as $dept){
+            if(!in_array($dept,$uniqdepartments)){
+                $uniqdepartments[] = $dept;
             }
-            $query->whereRaw('(' . $string . ')');
+        }
+        $department_ids = $uniqdepartments;
+        foreach ($department_ids as $dept) {
+            $string .= "departments.path like '%$dept%'";
+            if (end($department_ids) != $dept) {
+            $string .= ' or ';
+            }
+        }
+        $query->whereRaw('(' . $string . ')');
         }
         if ($position != '') {
             $query->whereIn('employees.title_id', $position);
@@ -108,15 +115,22 @@ class WarningLetterController extends Controller
         if ($nid != '') {
             $query->whereRaw("employees.nid like '%$nid%'");
         }
-        if ($departments != '') {
-            $string = '';
-            foreach ($departments as $department) {
-                $string .= "departments.path like '%$department%'";
-                if (end($departments) != $department) {
-                    $string .= ' or ';
-                }
+        if ($department_ids) {
+        $string = '';
+        $uniqdepartments = [];
+        foreach($department_ids as $dept){
+            if(!in_array($dept,$uniqdepartments)){
+                $uniqdepartments[] = $dept;
             }
-            $query->whereRaw('(' . $string . ')');
+        }
+        $department_ids = $uniqdepartments;
+        foreach ($department_ids as $dept) {
+            $string .= "departments.path like '%$dept%'";
+            if (end($department_ids) != $dept) {
+            $string .= ' or ';
+            }
+        }
+        $query->whereRaw('(' . $string . ')');
         }
         if ($position != '') {
             $query->whereIn('employees.title_id', $position);
@@ -380,9 +394,9 @@ class WarningLetterController extends Controller
 
     public function export(Request $request)
     {
-        $employee_id = strtoupper(str_replace("'","''",$request->employee_id));
+        $employee_id = strtoupper(str_replace("'","''",$request->employee_name));
         $nid = $request->nid;
-        $departments = $request->department;
+        $department = $request->department;
         $position = $request->position;
         $status = $request->status;
 
@@ -419,39 +433,22 @@ class WarningLetterController extends Controller
         if ($nid != '') {
             $query->whereRaw("employees.nid like '%$nid%'");
         }
-        if ($departments != '') {
-            $string = '';
-            foreach ($departments as $department) {
-                $string .= "departments.path like '%$department%'";
-                if (end($departments) != $department) {
-                    $string .= ' or ';
-                }
+        if ($department) {
+        $string = '';
+        foreach ($department as $dept) {
+            $string .= "departments.path like '%$dept%'";
+            if (end($department) != $dept) {
+            $string .= ' or ';
             }
-            $query->whereRaw('(' . $string . ')');
+        }
+        $query->whereRaw('(' . $string . ')');
         }
         if ($position != '') {
-            $query->whereIn('employees.title_id', $position);
+            $query->whereIn('employees.title_id', [$position]);
         }
         if ($status != '') {
             $query->where('warning_letters.status', $status);
         }
-        $query->groupBy(
-            'employees.name',
-            'employees.title_id',
-            'employees.nid',
-            'employees.nik',
-            'wl.aktif',
-            'wl.nonaktif',
-            'warning_letters.from',
-            'warning_letters.to',
-            'employees.join_date',
-            'titles.name',
-            'departments.name',
-            'warning_letters.status',
-            'warning_letters.notes',
-            'warning_letters.sp_active',
-            'warning_letters.sp_non_active'
-        );
         $warning_latters = $query->get();
 
         // Title Column Excel

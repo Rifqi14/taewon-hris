@@ -4,14 +4,42 @@
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/jquery-ui/jquery-ui.min.css')}}" rel="stylesheet">
-<style>
-	.ui-state-active{
+<style type="text/css">
+    .customcheckbox {
+        width: 22px;
+        height: 22px;
+        background: url("/img/green.png") no-repeat;
+        background-position-x: 0%;
+        background-position-y: 0%;
+        cursor: pointer;
+        margin: 0 auto;
+    }
+
+    .customcheckbox.checked {
+        background-position: -48px 0;
+    }
+
+    .ui-state-active {
         background: #28a745 !important;
         border-color: #28a745 !important;
     }
+
     .ui-menu {
         overflow: auto;
-        height:200px;
+        height: 200px;
+    }
+
+    .customcheckbox input {
+        cursor: pointer;
+        opacity: 0;
+        scale: 1.6;
+        width: 22px;
+        height: 22px;
+        margin: 0;
+    }
+
+    .dataTables_length {
+        display: block !important;
     }
 </style>
 @endsection
@@ -58,7 +86,7 @@
 								<div class="col-md-12">
 								<div class="form-group">
 									<label class="control-label" for="department">{{__('department.dep')}}</label>
-									<select name="department" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('department.dep')}}">
+									<select name="department[]" id="department" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('department.dep')}}">
 										@foreach ($departments as $department)
 										<option value="{{ $department->name }}">{{ $department->path }}</option>
 										@endforeach
@@ -120,8 +148,9 @@
 @endsection
 
 @push('scripts')
-<script src="{{asset('adminlte/component/jquery-ui/jquery-ui.min.js')}}"></script>
 <script src="{{asset('adminlte/component/dataTables/js/datatables.min.js')}}"></script>
+<script src="{{asset('adminlte/component/jquery-ui/jquery-ui.min.js')}}"></script>
+<script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
 <script type="text/javascript">
 	function filter(){
 		$('#add-filter').modal('show');
@@ -197,7 +226,7 @@
 				data:function(data){
 					var employee_id = $('input[name=employee_name]').val();
 					var nid = $('input[name=nik]').val();
-					var department = $('select[name=department]').val();
+					var department = $("select[name='department[]']").val();
 					var position = $('select[name=position]').val();
 					var status = $('select[name=status]').val();
 					data.employee_id = employee_id;
@@ -215,7 +244,7 @@
 				{ className: "text-center", targets: [3,4,5,6,7] },
 				{
                     render: function (data, type, row) {
-                        return `<span>${row.employee_name}</span><br>${row.nik}`;
+                        return `<span>${row.employee_name}</span><br>${row.nid}`;
                     },
                     targets: [1]
                 },
