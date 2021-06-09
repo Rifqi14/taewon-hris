@@ -29,7 +29,7 @@ var options = {
             }
         }
     },
-    colors: ['#28a745', '#ff414d'],
+    colors: ['#263e8a', '#ff414d'],
     plotOptions: {
         bar: {
             horizontal: true,
@@ -82,7 +82,7 @@ var optionsDonut = {
     chart: {
         type: 'donut',
     },
-    colors: ['#28a745', '#ec0101', '#feb019', '#A569BD'],
+    colors: ['#263e8a', '#ec0101', '#feb019', '#A569BD'],
     dataLabels: {
         enabled: true,
         style: {
@@ -134,7 +134,7 @@ var optionsSalary = {
             opacity: 0.7,
         }
     },
-    colors: ['#28a745'],
+    colors: ['#263e8a'],
     plotOptions: {
         bar: {
             horizontal: false,
