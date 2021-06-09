@@ -478,7 +478,7 @@ class AttendanceApprovalController extends Controller
 
         $worktime = WorkingtimeDetail::whereNotNull('min_workhour')->where('workingtime_id', '=', $attendance->workingtime_id)->where('day', '=', $attendance->day)->first();
         if ($worktime) {
-            if (($request->type == 1 and changeDateFormat('Y-m-d H:i:s', $attendance->attendance_in) > changeDateFormat('Y-m-d H:i:s', $request->time)) || $attendance->attendance_in == null) {
+            if (($request->type == 1 && changeDateFormat('Y-m-d H:i:s', $attendance->attendance_in) > changeDateFormat('Y-m-d H:i:s', $request->time)) || $attendance->attendance_in == null) {
                 $attendance->attendance_in = changeDateFormat('Y-m-d H:i:s', $request->time);
                 $attendance->save();
                 calculateAttendance($attendance);
@@ -486,7 +486,7 @@ class AttendanceApprovalController extends Controller
                     calculateOvertime($attendance);
                     calculateAllowance($attendance);
                 }
-            } elseif (($request->type == 0 and changeDateFormat('Y-m-d H:i:s', $attendance->attendance_out) < changeDateFormat('Y-m-d H:i:s', $request->time)) || $attendance->attendance_out == null) {
+            } elseif (($request->type == 0 && changeDateFormat('Y-m-d H:i:s', $attendance->attendance_out) < changeDateFormat('Y-m-d H:i:s', $request->time)) || $attendance->attendance_out == null) {
                 $attendance->attendance_out = changeDateFormat('Y-m-d H:i:s', $request->time);
                 $attendance->save();
                 calculateAttendance($attendance);
