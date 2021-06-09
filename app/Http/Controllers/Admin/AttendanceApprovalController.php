@@ -1987,8 +1987,7 @@ class AttendanceApprovalController extends Controller
                         calculateOvertime($attendance);
                         calculateAllowance($attendance);
                     }
-                }
-                if ($request->type == 0 || $attendance->attendance_out == null) {
+                } else if ($request->type == 0 || $attendance->attendance_out == null) {
                     $attendance->attendance_out = changeDateFormat('Y-m-d H:i:s', $request->time_edit);
                     $attendance->save();
                     calculateAttendance($attendance);
