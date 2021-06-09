@@ -238,7 +238,7 @@ class LeaveReportController extends Controller
             'employees.nid as employee_id',
             'titles.name as title_name',
             'departments.name as department_name',
-            DB::raw("(select remaining_balance from leave_details where leaves.leave_setting_id = leave_details.leavesetting_id and leaves.employee_id = leave_details.employee_id limit 1) as remaining"),
+            DB::raw("(select remaining_balance from leave_details where leaves.leave_setting_id = leave_details.leavesetting_id and leaves.employee_id = leave_details.employee_id limit 1) as remaining_balance"),
             'leave_settings.leave_name as leave_type',
             DB::raw("(SELECT MIN(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as start_date"),
             DB::raw("(SELECT MAX(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as finish_date")
