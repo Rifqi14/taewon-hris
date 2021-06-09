@@ -1,17 +1,504 @@
 <?php
 
+use App\Models\Employee;
+use App\Models\Spl;
+use App\Models\Workingtime;
+use App\Models\OvertimeSchemeList;
+use App\Models\CalendarException;
+use App\Models\WorkingtimeDetail;
+use App\Models\CalendarShiftSwitch;
 use App\Models\EmployeeAllowance;
 use App\Models\EmployeeDetailAllowance;
 use App\Models\EmployeeSalary;
 use App\Models\Overtime;
 use App\Models\Config;
-use App\Models\OvertimeSchemeList;
 use App\Models\OvertimeScheme;
 use App\Models\OvertimeAllowance;
 use App\Models\LogHistory;
 use App\Models\SalaryIncreases;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+
+if (!function_exists('calculateAttendance')) {
+  function calculateAttendance($attendance){
+    $employee = Employee::find($attendance->employee_id);
+    $breaktimes = listBreaktime($employee->department_id);
+    if (!$breaktimes) {
+        return response()->json([
+            'status'     => false,
+            'message'     => 'Break time for this employee workgroup ' . $employee->workgroup->name . ' not found. Please check master break.'
+        ], 400);
+    }
+    /* Check Working Time*/
+    $switchworkintime = CalendarException::where('calendar_id', $employee->calendar_id)->first();
+    if ($switchworkintime->is_switch_day == 'YES') {
+        $workingtime = checkWorkingtimeSwitch($attendance->workingtime_id, $attendance->day);
+    } else {
+        $workingtime = checkWorkingtime($attendance->workingtime_id, $attendance->day);
+    }
+    if (!$workingtime) {
+        return response()->json([
+            'status'     => false,
+            'message'     => 'Working shift for employee name ' . $employee->name . ' and attendance date ' . $attendance->attendance_date . ' and this day ' . $attendance->day . ' not found. Please check master shift.'
+        ], 400);
+    }
+    $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out);
+    /*Get Min Workhour*/
+    $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance->attendance_in) . ' ' . $workingtime->start);
+    //$cek_minworkhour = roundedTime(countWorkingTime($start_shift, $attendance->attendance_out));
+    $min_workhour = $workingtime->min_workhour;
+
+    
+    
+    /*End Get Workhour*/
+    $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime); //Count Breaktime Worktime
+    $breakovertime = getBreaktimeOvertime($breaktimes, $attendance_hour, $workingtime); //Count Breaktime Overtime
+    $breakall = getAllBreaktime($breaktimes, $attendance_hour); //Count Breaktime All
+    // if($cek_minworkhour >= $min_workhour){
+    //     $min_workhour = $workingtime->min_workhour;
+    // }else{
+    //     $min_workhour = $cek_minworkhour - $breakworkingtime;
+    // }
+    if ($attendance->attendance_in) {
+      if (($workingtime->start >= changeDateFormat('H:i:s', $attendance->attendance_in)) && (changeDateFormat('H:i:s', $attendance->attendance_in) >= $workingtime->min_in)) {
+          $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance->attendance_in) . ' ' . $workingtime->start);
+          $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($start_shift);
+      } else {
+          $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
+      }
+      //$totalbreaktime = $breakworkingtime + $breakovertime;
+      $totalbreaktime = $breakall;
+      $totalworkingtime = $totalattendance - $totalbreaktime;
+      
+      /* 
+        Day = Off
+        Timeout = Yes
+        Attendance In = True
+        Attendance Out = True
+      */
+      if($attendance->day == 'Off' && $employee->timeout == 'yes'  && $attendance->attendance_in && $attendance->attendance_out){
+        if ($employee->overtime == 'yes') {
+            $totalovertime = $totalworkingtime;
+            if ($employee->spl == 'yes') {
+                $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id',$employee->id)->first();
+                // ketika ada spl
+                if ($existspl) {
+
+                    if($existspl->duration < $ot ){
+                        $attendance->adj_over_time = $existspl->duration;
+                    }else{
+                        $attendance->adj_over_time = $totalovertime;
+                    }
+                    $attendance->adj_working_time = 0;
+                    $attendance->code_case  = "A01/BW$breakworkingtime/BO$breakovertime";
+                    $attendance->breaktime = $totalbreaktime;
+                } else {
+                    $attendance->adj_over_time = 0;
+                    $attendance->adj_working_time = 0;
+                    $attendance->code_case  = "A02/BW$breakworkingtime/BO$breakovertime";
+                    $attendance->breaktime = $totalbreaktime;
+                }
+            } else {
+                //  spl not
+                $attendance->adj_over_time = $totalovertime;
+                $attendance->adj_working_time = 0;
+                $attendance->code_case  = "A03/BW$breakworkingtime/BO$breakovertime";
+                $attendance->breaktime = $totalbreaktime;
+            }
+        } else {
+            // overtime no
+            $attendance->adj_over_time = 0;
+            $attendance->adj_working_time = 0;
+            $attendance->code_case  = "A04/BW$breakworkingtime/BO$breakovertime";
+            $attendance->breaktime = $totalbreaktime;  
+        }
+      }
+      /* End If*/
+
+      /* 
+        Day = Off
+        Timeout = Yes
+        Attendance In = True
+        Attendance Out = False
+      */
+      if($attendance->day == 'Off' && $employee->timeout == 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
+          $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
+          $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
+          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $attendance_out = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
+
+          $totalattendance = Carbon::parse($attendance_out)->diffInHours($attendance->attendance_in);
+          $totalbreaktime = $breakworkingtime;
+          $totalworkingtime = $totalattendance - $totalbreaktime;
+          if ($employee->overtime == 'yes') {
+              $totalovertime = $totalworkingtime - $min_workhour;
+              if ($employee->spl == 'yes') {
+                  $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
+                  if ($existspl) {
+                      if ($existspl->duration < $totalovertime) {
+                          $attendance->adj_over_time = $existspl->duration;
+                      } else {
+                          $attendance->adj_over_time = $totalovertime;
+                      }
+                      $attendance->adj_working_time = 0;
+                      $attendance->code_case  = "A05/BW$breakworkingtime/BO$breakovertime";
+                      $attendance->breaktime = $totalbreaktime;
+                  } else {
+                      $attendance->adj_over_time = 0;
+                      $attendance->adj_working_time = 0;
+                      $attendance->code_case  = "A06/BW$breakworkingtime/BO$breakovertime";
+                      $attendance->breaktime = $totalbreaktime;
+                  }
+              } else {
+                  $attendance->adj_over_time = 0;
+                  $attendance->adj_working_time = 0;
+                  $attendance->code_case  = "A07/BW$breakworkingtime/BO$breakovertime";
+                  $attendance->breaktime = $totalbreaktime;
+              }
+          } else {
+              $attendance->adj_over_time = 0;
+              $attendance->adj_working_time = 0;
+              $attendance->code_case  = "A08/BW$breakworkingtime/BO$breakovertime";
+              $attendance->breaktime = $totalbreaktime;
+          }
+      }
+      /* End If*/
+
+      /* 
+        Day = Off
+        Timeout = No
+        Attendance In = True
+        Attendance Out = True
+      */
+      if($attendance->day == 'Off' && $employee->timeout != 'yes'  && $attendance->attendance_in && $attendance->attendance_out){
+          if ($employee->overtime == 'yes') {
+            $totalovertime = $totalworkingtime - $min_workhour;
+            if ($employee->spl == 'yes') {
+                $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
+                if ($existspl) {
+                    if ($existspl->duration < $totalovertime) {
+                        $attendance->adj_over_time = $existspl->duration;
+                    } else {
+                        $attendance->adj_over_time = $totalovertime;
+                    }
+
+                    $attendance->adj_working_time = 0;
+                    $attendance->code_case  = "A09/BW$breakworkingtime/BO$breakovertime";
+                    $attendance->breaktime = $totalbreaktime;
+                } else {
+                    $attendance->adj_over_time = 0;
+                    $attendance->adj_working_time = 0;
+                    $attendance->code_case  = "A10/BW$breakworkingtime/BO$breakovertime";
+                    $attendance->breaktime = $totalbreaktime;
+                }
+            } else {
+                $attendance->adj_over_time = $totalovertime;
+                $attendance->adj_working_time = 0;
+                $attendance->code_case  = "A11/BW$breakworkingtime/BO$breakovertime";
+                $attendance->breaktime = $totalbreaktime;
+            }
+        } else {
+            $attendance->adj_over_time = 0;
+            $attendance->adj_working_time = 0;
+            $attendance->code_case  = "A12/BW$breakworkingtime/BO$breakovertime";
+            $attendance->breaktime = $totalbreaktime;
+        }
+      }
+      /* End If*/
+
+      /* 
+        Day = Off
+        Timeout = No
+        Attendance In = True
+        Attendance Out = False
+      */
+      if($attendance->day == 'Off' && $employee->timeout != 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
+          $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
+          $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
+          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $attendance->attendance_out = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
+
+          $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
+          $totalbreaktime = $breakworkingtime;
+          $totalworkingtime = $totalattendance - $breakworkingtime;
+
+          if ($employee->overtime == 'yes') {
+              $totalovertime = $totalworkingtime - $min_workhour;
+
+              if ($employee->spl == 'yes') {
+                  $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
+                  // ketika ada spl dan adjustment
+                  if ($existspl) {
+
+                      if ($existspl->duration < $totalovertime) {
+                          $attendance->adj_over_time = $existspl->duration;
+                      } else {
+                          $attendance->adj_over_time = $totalovertime;
+                      }
+                      $attendance->adj_working_time = 0;
+                      $attendance->code_case  = "A13/BW$breakworkingtime/BO$breakovertime";
+                      $attendance->breaktime = $totalbreaktime;
+                  } else {
+                      $attendance->adj_over_time = 0;
+                      $attendance->adj_working_time = 0;
+                      $attendance->code_case  = "A14/BW$breakworkingtime/BO$breakovertime";
+                      $attendance->breaktime = $totalbreaktime;
+                  }
+              } else {
+                  //  spl not
+                  $attendance->adj_over_time = $totalovertime;
+                  $attendance->adj_working_time = 0;
+                  $attendance->code_case  = "A15/BW$breakworkingtime/BO$breakovertime";
+                  $attendance->breaktime = $totalbreaktime;
+              }
+          } else {
+              $attendance->adj_over_time = 0;
+              $attendance->adj_working_time = 0;
+              $attendance->code_case  = "A16/BW$breakworkingtime/BO$breakovertime";
+              $attendance->breaktime = $totalbreaktime;
+          }
+      }
+      /* End If*/
+
+      /* 
+        Day = Weekday
+        Timeout = Yes
+        Attendance In = True
+        Attendance Out = True
+      */
+      if($attendance->day != 'Off' && $employee->timeout == 'yes'  && $attendance->attendance_in && $attendance->attendance_out){
+        if ($employee->overtime == 'yes') {
+            if($totalworkingtime < $min_workhour){
+                $totalovertime = 0;
+            }
+            else{
+                $totalovertime = $totalworkingtime - $min_workhour;
+            }
+            if ($employee->spl == 'yes') {
+                $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
+                if ($existspl) {
+                    if ($existspl->duration < $totalovertime) {
+                        $attendance->adj_over_time = $existspl->duration;
+                    } else {
+                        $attendance->adj_over_time = $totalovertime;
+                    }
+
+                    $attendance->adj_working_time = $min_workhour;
+                    $attendance->code_case  = "A17/BW$breakworkingtime/BO$breakovertime";
+                    $attendance->breaktime = $totalbreaktime;
+                    
+                } else {
+                    $attendance->adj_over_time = 0;
+                    $attendance->adj_working_time = $totalworkingtime;
+                    $attendance->code_case  = "A18/BW$breakworkingtime/BO$breakovertime";
+                    $attendance->breaktime = $totalbreaktime;
+                }
+            } else {
+                $attendance->adj_over_time = $totalovertime;
+                $attendance->adj_working_time = $totalworkingtime;
+                $attendance->code_case  = "A19/BW$breakworkingtime/BO$breakovertime";
+                $attendance->note = json_encode(array(
+                   'totalattendance'=>$totalattendance,
+                   'totalworkingtime'=>$totalworkingtime,
+                   'totalovertime'=>$totalovertime,
+                   'totalbreaktime'=>$totalbreaktime,
+
+                ));
+                $attendance->breaktime = $totalbreaktime;
+            }
+        } else {
+            $attendance->adj_over_time = 0;
+            $attendance->adj_working_time = $totalattendance;
+            $attendance->code_case  = "A20/BW$breakworkingtime/BO$breakovertime";
+            $attendance->breaktime = $totalbreaktime;
+        }
+      }
+      /* End If*/
+
+      /* 
+        Day = Weekday
+        Timeout = Yes
+        Attendance In = True
+        Attendance Out = False
+      */
+      if($attendance->day != 'Off' && $employee->timeout == 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
+          $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
+          $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
+          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $attendance_out  = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
+          $totalattendance = Carbon::parse($attendance_out)->diffInHours($attendance->attendance_in);
+          $totalbreaktime = $breakworkingtime;
+          $totalworkingtime = $totalattendance - $totalbreaktime;
+
+          if ($employee->overtime == 'yes') {
+              $totalovertime = $totalworkingtime - $min_workhour;
+              if ($employee->spl == 'yes') {
+                  $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
+                  if ($existspl) {
+
+                      if ($existspl->duration < $totalovertime) {
+                          $attendance->adj_over_time = $existspl->duration;
+                      } else {
+                          $attendance->adj_over_time = $totalovertime;
+                      }
+                      $attendance->adj_working_time = $min_workhour;
+                      $attendance->code_case  = "A21/BW$breakworkingtime/BO$breakovertime";
+                      $attendance->breaktime = $totalbreaktime;
+                  } else {
+                      $attendance->adj_over_time = 0;
+                      $attendance->adj_working_time = $min_workhour;
+                      $attendance->code_case  = "A22/BW$breakworkingtime/BO$breakovertime";
+                      $attendance->breaktime = $totalbreaktime;
+                  }
+              } else {
+                  //  spl not
+                  $attendance->adj_over_time = 0;
+                  $attendance->adj_working_time = 0;
+                  $attendance->code_case  = "A23/BW$breakworkingtime/BO$breakovertime";
+                  $attendance->breaktime = $totalbreaktime;
+              }
+          } else {
+              $attendance->adj_over_time = 0;
+              $attendance->adj_working_time = 0;
+              $attendance->code_case  = "A24/BW$breakworkingtime/BO$breakovertime";
+              $attendance->breaktime = $totalbreaktime;
+          }
+      }
+      /* End If*/
+
+      /* 
+        Day = Weekday
+        Timeout = No
+        Attendance In = True
+        Attendance Out = True
+      */
+      if($attendance->day != 'Off' && $employee->timeout != 'yes'  && $attendance->attendance_in && $attendance->attendance_out){
+        if ($employee->overtime == 'yes') {
+            $totalovertime = $totalworkingtime - $min_workhour;
+            if ($employee->spl == 'yes') {
+                $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
+                if ($existspl) {
+
+                    if ($existspl->duration < $totalovertime) {
+                        $attendance->adj_over_time = $existspl->duration;
+                    } else {
+                        $attendance->adj_over_time = $totalovertime;
+                    }
+
+                    $attendance->adj_working_time = $min_workhour;
+                    $attendance->code_case  = "A25/BW$breakworkingtime/BO$breakovertime";
+                    $attendance->breaktime = $totalbreaktime;
+                } else {
+                    $attendance->adj_over_time = 0;
+                    $attendance->adj_working_time = $min_workhour;
+                    $attendance->code_case  = "A26/BW$breakworkingtime/BO$breakovertime";
+                    $attendance->breaktime = $totalbreaktime;
+                }
+            } else {
+                $attendance->adj_over_time = $totalovertime;
+                $attendance->adj_working_time = $min_workhour;
+                $attendance->code_case  = "A27/BW$breakworkingtime/BO$breakovertime";
+                $attendance->breaktime = $totalbreaktime;
+            }
+        } else {
+            $adjustment->adj_over_time = 0;
+            $adjustment->adj_working_time = $totalattendance;
+            $adjustment->code_case  = "A28/BW$breakworkingtime/BO$breakovertime";
+            $adjustment->breaktime = $totalbreaktime;
+        }
+      }
+      /* End If*/
+
+      /* 
+        Day = Weekday
+        Timeout = No
+        Attendance In = True
+        Attendance Out = False
+      */
+      if($attendance->day != 'Off' && $employee->timeout != 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
+          $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
+          $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
+          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $attendance->attendance_out = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
+
+          $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
+
+          $totalbreaktime = $breakworkingtime;
+          $totalworkingtime = $totalattendance - $breakworkingtime;
+
+          if ($employee->overtime == 'yes') {
+              $totalovertime = $totalworkingtime - $min_workhour;
+              if ($employee->spl == 'yes') {
+                  $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
+                  if ($existspl) {
+                      if ($existspl->duration < $totalovertime) {
+                          $attendance->adj_over_time = $existspl->duration;
+                      } else {
+                          $attendance->adj_over_time = $totalovertime;
+                      }
+                      $attendance->adj_working_time = $min_workhour;
+                      $attendance->code_case  = "A29/BW$breakworkingtime/BO$breakovertime";
+                      $attendance->breaktime = $totalbreaktime;
+                  } else {
+                      $attendance->adj_over_time = 0;
+                      $attendance->adj_working_time = $min_workhour;
+                      $attendance->code_case  = "A30/BW$breakworkingtime/BO$breakovertime";
+                      $attendance->breaktime = $totalbreaktime;
+                  }
+              } else {   
+                  $attendance->adj_over_time = $totalovertime;
+                  $attendance->adj_working_time = $min_workhour;
+                  $attendance->code_case  = "A31/BW$breakworkingtime/BO$breakovertime";
+                  $attendance->breaktime = $totalbreaktime;
+              }
+          } else {
+              $attendance->adj_over_time = 0;
+              $attendance->adj_working_time = $totalworkingtime;
+              $attendance->code_case  = "A32/BW$breakworkingtime/BO$breakovertime";
+              $attendance->breaktime = $totalbreaktime;
+          }
+      }
+      /* End If*/
+      $attendance->save();
+      if (!$attendance) {
+          DB::rollBack();
+          return response()->json([
+              'status'     => false,
+              'message'     => $attendance
+          ], 400);
+      }
+    }
+    /*End Check Working Time*/
+  }
+}
+
+if (!function_exists('listBreaktime')) {
+  function listBreaktime($workgroup)
+  {
+    $query = DB::table('break_times');
+    $query->select('break_times.*');
+    $query->leftJoin('breaktime_departments', 'breaktime_departments.breaktime_id', '=', 'break_times.id');
+    $query->where('breaktime_departments.department_id', '=', $workgroup);
+    return $query->get();
+  }
+}
+
+if (!function_exists('checkWorkingtimeSwitch')) {
+  function checkWorkingtimeSwitch($id, $day)
+  {
+    $query = CalendarShiftSwitch::whereNotNull('min_workhour')->where('workingtime_id', $id)->where('day', $day);
+    return $query->first();
+  }
+}
+
+if (!function_exists('checkWorkingtime')) {
+  function checkWorkingtime($id, $day)
+  {
+    $query = WorkingtimeDetail::whereNotNull('min_workhour')->where('workingtime_id', $id)->where('day', $day);
+    return $query->first();
+  }
+}
+
 
 if (!function_exists('findShift')) {
   function findShift($array, $hour)
@@ -322,6 +809,47 @@ if (!function_exists('getBreaktimeWorkingtime')) {
         $diffIn = Carbon::parse($datetime_in)->diffInHours(Carbon::parse($start_break));
         if ($diffIn >= 2) {
           if (((($datetime_in <= $start_break) && ($finish_break <= $finishShift)))) {
+            $between[] = $break;
+          } else {
+            continue;
+          }
+        }
+      }
+    }
+
+    foreach ($between as $value) {
+      $breaktime += $value->breaktime;
+    }
+    return $breaktime;
+  }
+}
+
+if (!function_exists('getAllBreaktime')) {
+  function getAllBreaktime($array, $hour)
+  {
+    $datetime_in = changeDateFormat('Y-m-d H:i:s', $hour['attendance_in']);
+    $datetime_out = changeDateFormat('Y-m-d H:i:s', $hour['attendance_out']);
+    $time_in = changeDateFormat('H:i:s', $hour['attendance_in']);
+    $time_out = changeDateFormat('H:i:s', $hour['attendance_out']);
+
+    $between = array();
+    $breaktime = 0;
+    $nextDay = Carbon::parse($datetime_in)->addDays(1);
+    $finishNow = changeDateFormat('Y-m-d H:i:s', Carbon::parse($datetime_in)->toDateString() . ' ' . $time_out);
+    $finishTomorrow = changeDateFormat('Y-m-d H:i:s', $nextDay->toDateString() . ' ' . $time_out);
+    $finishAttendance = $time_out < $time_in ? $finishTomorrow : $finishNow;
+    $finishAttendance = $finishAttendance > $datetime_out ? $datetime_out : $finishAttendance;
+    foreach ($array as $break) {
+      $dateIn = $time_in > $break->start_time ? $nextDay->toDateString() : ($break->cross_date? $nextDay->toDateString():$datetime_in);
+      $start_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->start_time);
+      $finish_break = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $break->finish_time);
+      $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $dateIn) . ' ' . $time_in);
+      $diff = Carbon::parse($start_shift)->diffInHours(Carbon::parse($start_break));
+      $diffBreak = Carbon::parse($datetime_out)->diffInMinutes(Carbon::parse($finish_break));
+      if ($diff >= 2) {
+        $diffIn = Carbon::parse($datetime_in)->diffInHours(Carbon::parse($start_break));
+        if ($diffIn >= 2) {
+          if (($datetime_in <= $start_break) && ($finish_break <= $finishAttendance) && $diffBreak > 30) {
             $between[] = $break;
           } else {
             continue;

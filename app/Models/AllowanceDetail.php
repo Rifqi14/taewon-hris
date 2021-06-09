@@ -13,7 +13,7 @@ class AllowanceDetail extends Model
         return $this->belongsTo(Allowance::class, 'allowance_id', 'id');
     }
 
-    public function allowancedetail()
+    public function allowance()
     {
         return $this->belongsTo(Allowance::class, 'allowancedetail_id', 'id');
     }
