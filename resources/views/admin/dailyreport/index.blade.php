@@ -922,7 +922,7 @@
       // console.log(data.scheme_name);
       if (data) {
         $('#edit-scheme').modal('show');
-        $('#form-scheme input[name=scheme_id]').attr('value', data.overtime_scheme_id);
+        $('#form-scheme input[name=scheme_id]').attr('value', data.id);
         $("#scheme").select2('data',{id:data.id,text:data.scheme_name}).trigger('change');
         $(document).on("change", "#scheme", function () {
           if (!$.isEmptyObject($('#form-scheme').validate().submitted)) {
