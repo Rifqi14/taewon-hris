@@ -2293,33 +2293,34 @@ class SalaryReportController extends Controller
             }
             if ($deduction) {
               foreach ($deduction as $key => $value) {
-                $decutionvalue = 0;
+                  $decutionvalue = 0;
                   $basic_ammount = $basesalary->amount ;
                   $allowances = $this->get_detail_allowance($view_employee, $request->montly, $request->year,$value->allowance_id );
+                  $totalallowance = 0;
                   foreach($allowances as $allowance){
-                    $deductionvalue = $basic_ammount;
-                    if ($value->bpjs == 'BASIC') {
-                      $decutionvalue = $basic_ammount;
-                    }
-                    if ($value->bpjs == 'ALLOWANCE') {
-                      $decutionvalue = $allowance->value_deduction/100;
-                    }
-                    if ($value->bpjs == 'BASIC & ALLOWANCE') {
-                      $decutionvalue = $basic_ammount + ($allowance->value_deduction/100);
-                    }
+                    $totalallowance += $allowance->value_deduction;
                   }
-                  
+                  $deductionvalue = $basic_ammount;
+                  if ($value->bpjs == 'BASIC') {
+                    $decutionvalue = $basic_ammount;
+                  }
+                  if ($value->bpjs == 'ALLOWANCE') {
+                    $decutionvalue = $totalallowance;
+                  }
+                  if ($value->bpjs == 'BASIC & ALLOWANCE') {
+                    $decutionvalue = $basic_ammount + $totalallowance;
+                  }
                 if ($value->group_allowance_id) {
                   $salaryreportdetail = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $value->group_allowance_id)->first();
                   if ($salaryreportdetail) {
-                    $salaryreportdetail->total =  $salaryreportdetail->total + $decutionvalue;
-                    $salaryreportdetail->save();
+                      $salaryreportdetail->total =  $salaryreportdetail->total + (($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value));
+                      $salaryreportdetail->save();
                   } else {
                     SalaryReportDetail::create([
                       'salary_report_id'  => $id,
                       'employee_id'       => $view_employee,
                       'description'       => $value->description,
-                      'total'             => $decutionvalue,
+                      'total'             => ($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value,
                       'type'              => 0,
                       'status'            => 'Deduction Allowance',
                       'group_allowance_id' => $value->group_allowance_id,
@@ -2331,7 +2332,7 @@ class SalaryReportController extends Controller
                     'salary_report_id'  => $id,
                     'employee_id'       => $view_employee,
                     'description'       => $value->description,
-                    'total'             => $decutionvalue,
+                    'total'             => ($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value,
                     'type'              => 0,
                     'status'            => 'Deduction Allowance',
                     'is_added'          => 'NO'
