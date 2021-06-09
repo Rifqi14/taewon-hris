@@ -321,7 +321,7 @@
 
     function exportsalary() {
         $.ajax({
-            url: "{{ route('salaryreport.exportsalary') }}",
+            url: "{{ route('salaryreport.newexportsalary') }}",
             type: 'POST',
             dataType: 'JSON',
             data: $("#form").serialize(),
