@@ -883,6 +883,7 @@
       if (data) {
         $('#edit-scheme').modal('show');
         $('#form-scheme input[name=scheme_id]').attr('value', data.id);
+        $("#scheme").select2('data',{id:data.overtime_scheme_id,text:data.scheme_name}).trigger('change');
         $(document).on("change", "#scheme", function () {
           if (!$.isEmptyObject($('#form-scheme').validate().submitted)) {
             $('#form-scheme').validate().form();
