@@ -1405,6 +1405,7 @@ class AttendanceApprovalController extends Controller
         if (isset($request->working_shift)) {
             // dd($request->working_shift);
             // Log History Shift
+            $attendance = Attendance::find($request->attendance_id);
             $getworkingtimes = Workingtime::where('id',$request->working_shift)->first();
             $user_id = Auth::user()->id;
             $employee = Employee::where('id',$attendance->employee_id)->first();
@@ -1416,7 +1417,6 @@ class AttendanceApprovalController extends Controller
                 $type_action = "Employee Attendance";
             }
             setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." Shift",$getworkingtimes->description);
-            $attendance = Attendance::find($request->attendance_id);
             $attendance->workingtime_id = $request->working_shift;
             $attendance->save();
             calculateAttendance($attendance);
