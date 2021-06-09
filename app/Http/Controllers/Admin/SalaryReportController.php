@@ -2297,6 +2297,7 @@ class SalaryReportController extends Controller
                   $basic_ammount = $basesalary->amount ;
                   $allowances = $this->get_detail_allowance($view_employee, $request->montly, $request->year,$value->allowance_id );
                   $totalallowance = 0;
+                  dd($allowances);
                   foreach($allowances as $allowance){
                     $totalallowance += $allowance->value_deduction;
                   }
