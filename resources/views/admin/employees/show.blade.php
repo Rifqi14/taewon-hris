@@ -511,7 +511,7 @@
 				orderable: false,targets:[0]
 			},
 			{ className: "text-right", targets: [3,4] },
-			{ className: "text-center", targets: [5] },
+			{ className: "text-center", targets: [0,5] },
 			{
 				render: function (data, type, row) {
 					if (row.status == '0') {
