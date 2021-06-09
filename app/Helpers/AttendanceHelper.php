@@ -45,7 +45,7 @@ if (!function_exists('calculateAttendance')) {
     $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out);
     /*Get Min Workhour*/
     $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance->attendance_in) . ' ' . $workingtime->start);
-    $cek_minworkhour = roundedTime(countWorkingTime($start_shift, $attendance->attendance_out));
+    //$cek_minworkhour = roundedTime(countWorkingTime($start_shift, $attendance->attendance_out));
     $min_workhour = $workingtime->min_workhour;
 
     
@@ -54,11 +54,11 @@ if (!function_exists('calculateAttendance')) {
     $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime); //Count Breaktime Worktime
     $breakovertime = getBreaktimeOvertime($breaktimes, $attendance_hour, $workingtime); //Count Breaktime Overtime
     $breakall = getAllBreaktime($breaktimes, $attendance_hour); //Count Breaktime All
-    if($cek_minworkhour >= $min_workhour){
-        $min_workhour = $workingtime->min_workhour;
-    }else{
-        $min_workhour = $cek_minworkhour - $breakworkingtime;
-    }
+    // if($cek_minworkhour >= $min_workhour){
+    //     $min_workhour = $workingtime->min_workhour;
+    // }else{
+    //     $min_workhour = $cek_minworkhour - $breakworkingtime;
+    // }
     if ($attendance->attendance_in) {
       if (($workingtime->start >= changeDateFormat('H:i:s', $attendance->attendance_in)) && (changeDateFormat('H:i:s', $attendance->attendance_in) >= $workingtime->min_in)) {
           $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance->attendance_in) . ' ' . $workingtime->start);
