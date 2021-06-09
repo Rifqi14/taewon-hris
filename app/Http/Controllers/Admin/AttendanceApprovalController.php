@@ -195,6 +195,13 @@ class AttendanceApprovalController extends Controller
         }
         if ($department) {
             $string = '';
+            $uniqdepartments = [];
+            foreach($department as $dept){
+                if(!in_array($dept,$uniqdepartments)){
+                    $uniqdepartments[] = $dept;
+                }
+            }
+            $department = $uniqdepartments;
             foreach ($department as $dept) {
                 $string .= "departments.path like '%$dept%'";
                 if (end($department) != $dept) {
@@ -258,6 +265,13 @@ class AttendanceApprovalController extends Controller
         }
         if ($department) {
             $string = '';
+            $uniqdepartments = [];
+            foreach($department as $dept){
+                if(!in_array($dept,$uniqdepartments)){
+                    $uniqdepartments[] = $dept;
+                }
+            }
+            $department = $uniqdepartments;
             foreach ($department as $dept) {
                 $string .= "departments.path like '%$dept%'";
                 if (end($department) != $dept) {

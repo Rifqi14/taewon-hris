@@ -138,26 +138,25 @@ class LeaveApprovalController extends Controller
     }
     public function updateapprove(Request $request, $id)
     {
+        DB::beginTransaction();
         $leave = Leave::find($id);
         $leave->status = $request->status;
         $leave->save();
         if ($request->status == "1") {
-            // dd($request->status == "1");
             $leaveSettingType = LeaveSetting::find($leave->leave_setting_id);
             $employee = Employee::find($leave->employee_id);
             $penalty_config = PenaltyConfig::select('penalty_configs.*')->leftJoin('penalty_config_leave_settings', 'penalty_config_leave_settings.penalty_config_id', '=','penalty_configs.id')
             ->where('penalty_config_leave_settings.leave_setting_id', $leaveSettingType->id)->where('workgroup_id', $employee->workgroup_id)->first();
             if (!$penalty_config) {
+                DB::rollBack();
                 return response()->json([
                     'status'     => false,
                     'message'   => "This employee don't have penalty config"
                 ], 400);
             }
-            // dd($penalty_config, $employee->workgroup_id);
             $leaveLogs = LeaveLog::where('leave_id', $leave->id)->get();
             if($leaveSettingType->description == 0){
                 if($penalty_config){
-                    // dd($penalty_config);
                     $allowance_id = [];
                     $penaltyconfigdetails = PenaltyConfigDetail::where('penalty_config_id', $penalty_config->id)->get();
                     foreach($penaltyconfigdetails as $penaltyconfigdetail){
@@ -233,7 +232,7 @@ class LeaveApprovalController extends Controller
                             }
                             $employeeAllowance = EmployeeAllowance::select(DB::raw('coalesce(sum(value::integer),0) as total'))
                             ->where('employee_id', $employee->id)->where('month', $month)->where('year', $year)->whereIn('allowance_id',$allowance_id)->first();
-                            // dd($employeeAllowance);
+                            
                             $deletePenalty = AlphaPenalty::where('employee_id', $leave->employee_id)->where('date', $log->date)->first();
                             if ($deletePenalty) {
                                 $deletePenalty->delete();
@@ -250,6 +249,7 @@ class LeaveApprovalController extends Controller
                                     'month'             => $month
                                 ]);
                                 if (!$alphaPenalty) {
+                                    DB::rollBack();
                                     return response()->json([
                                         'status'    => false,
                                         'message'   => $alphaPenalty
@@ -264,6 +264,7 @@ class LeaveApprovalController extends Controller
                         foreach ($leaveLogs as $key => $log) {
                             $employeeBaseSalary = EmployeeSalary::where('employee_id', $employee->id)->where('created_date', '<', $log->date)->orderBy('created_date', 'desc')->first();
                             if (!$employeeBaseSalary) {
+                                DB::rollBack();
                                 return response()->json([
                                     'status'     => false,
                                     'message'   => "Could not find basic salary for this employee"
@@ -300,6 +301,7 @@ class LeaveApprovalController extends Controller
                                     'month'             => $month
                                 ]);
                                 if (!$alphaPenalty) {
+                                    DB::rollBack();
                                     return response()->json([
                                         'status'    => false,
                                         'message'   => $alphaPenalty
@@ -321,11 +323,13 @@ class LeaveApprovalController extends Controller
             $detail->save();
         }
         if (!$leave) {
+            DB::rollBack();
             return response()->json([
                 'status'    => false,
                 'message'   => $leave
             ], 400);
         }
+        DB::commit();
         return response()->json([
             'status'    => true,
             'results'   => route('leaveapproval.indexapproval')
