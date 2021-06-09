@@ -518,7 +518,7 @@ class SalaryReportController extends Controller
   {
     $query = DB::table('employee_allowances');
     // $query->select('employee_allowances.*', 'allowances.allowance as description', 'allowances.group_allowance_id');
-    $query->selectRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) as value, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id,allowances.id as allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name",);
+    $query->selectRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) as value, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id,allowances.id as allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name, 'allowances.formula_bpjs as bpjs");
     $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
     $query->leftJoin('allowance_categories', 'allowance_categories.key', '=', 'allowances.category');
     $query->leftJoin('group_allowances', 'group_allowances.id', 'allowances.group_allowance_id');
@@ -528,7 +528,7 @@ class SalaryReportController extends Controller
     $query->where('employee_allowances.status', '=', 1);
     $query->where('allowance_categories.type', '=', 'deduction');
     $query->where('employee_allowances.type', '!=', 'automatic');
-    $query->groupBy('group_allowances.name', 'employee_allowances.is_penalty', 'allowances.group_allowance_id', 'employee_allowances.type','allowances.id');
+    $query->groupBy('group_allowances.name', 'employee_allowances.is_penalty', 'allowances.group_allowance_id', 'employee_allowances.type','allowances.id', 'allowances.formula_bpjs');
     $allowances = $query->get();
 
     $data = [];
@@ -2295,7 +2295,6 @@ class SalaryReportController extends Controller
               foreach ($deduction as $key => $value) {
                 $decutionvalue = 0;
                   $basic_ammount = $basesalary->amount ;
-
                   $allowances = $this->get_detail_allowance($view_employee, $request->montly, $request->year,$value->allowance_id );
                   foreach($allowances as $allowance){
                     $deductionvalue = $basic_ammount;
