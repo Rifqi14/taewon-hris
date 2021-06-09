@@ -54,6 +54,7 @@
                     <li class="nav-item"><a class="nav-link" href="#leave" data-toggle="tab">{{__('general.history')}} {{__('employee.leave')}}</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contract" data-toggle="tab">{{__('general.history')}} {{__('employee.contract')}}</a></li>
                     <li class="nav-item"><a class="nav-link" href="#attendance" data-toggle="tab">{{__('general.history')}} {{__('attendancelog.attenlog')}}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#warning-letter" data-toggle="tab">{{__('general.history')}} {{__('warningletter.wl')}}</a></li>
                 </ul>
             </div>
             <div class="tab-content">
@@ -156,6 +157,24 @@
                                     <th width="50">Status</th>
                                 </tr>
                             </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane" id="warning-letter">
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped" style="width:100%" id="table-warning-letter">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center" width="10">No</th>
+                                    <th width="100">{{__('warningletter.from')}}</th>
+                                    <th width="100">{{__('warningletter.to')}}</th>
+                                    <th width="70">{{__('warningletter.total_sp_active')}}</th>
+                                    <th width="80">{{__('warningletter.total_sp_non_active')}}</th>
+                                    <th width="100">{{__('warningletter.status')}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -458,6 +477,60 @@
 			{ data: "leave_name" },
 			{ data: "status" },
 			{ data: "id" },
+		]
+	});
+
+    dataTableWarningLetter = $('#table-warning-letter').DataTable( {
+		stateSave:true,
+		processing: true,
+		serverSide: true,
+		filter:false,
+		info:false,
+		lengthChange:true,
+		responsive: true,
+		order: [[ 4, "asc" ]],
+        language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
+		ajax: {
+			url: "{{route('warningletter.read')}}",
+			type: "GET",
+			data:function(data){
+				var name = $('#form-search').find('input[name=name]').val();
+				data.name = name;
+				data.get_employee_id = {{$employee->id}};
+			}
+		},
+		columnDefs:[
+			{
+				orderable: false,targets:[0]
+			},
+			{ className: "text-right", targets: [3,4] },
+			{ className: "text-center", targets: [5] },
+			{
+				render: function (data, type, row) {
+					if (row.status == '0') {
+						return `<span class="badge badge-success">{{__('general.actv')}}</span>`
+					} else
+					{
+						return `<span class="badge badge-info">{{__('general.noactv')}}</span>`
+					}
+				},
+				targets: [5]
+			},
+		],
+		columns: [
+			{ data: "no" },
+			{ data: "from" },
+			{ data: "to" },
+			{ data: "sp_active"},
+            { data: "sp_non_active"},
+			{ data: "status" },
 		]
 	});
   });
