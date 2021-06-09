@@ -63,8 +63,10 @@ if (!function_exists('calculateAttendance')) {
       if (($workingtime->start >= changeDateFormat('H:i:s', $attendance->attendance_in)) && (changeDateFormat('H:i:s', $attendance->attendance_in) >= $workingtime->min_in)) {
           $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance->attendance_in) . ' ' . $workingtime->start);
           $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($start_shift);
+          //$totalattendance = roundedTime(countWorkingTime($start_shift, $attendance->attendance_out));
       } else {
           $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
+          //$totalattendance = roundedTime(countWorkingTime($attendance->attendance_in, $attendance->attendance_out));
       }
       //$totalbreaktime = $breakworkingtime + $breakovertime;
       $totalbreaktime = $breakall;
@@ -289,13 +291,13 @@ if (!function_exists('calculateAttendance')) {
                     
                 } else {
                     $attendance->adj_over_time = 0;
-                    $attendance->adj_working_time = $totalworkingtime;
+                    $attendance->adj_working_time = $min_workhour;
                     $attendance->code_case  = "A18/BW$breakworkingtime/BO$breakovertime";
                     $attendance->breaktime = $totalbreaktime;
                 }
             } else {
                 $attendance->adj_over_time = $totalovertime;
-                $attendance->adj_working_time = $totalworkingtime;
+                $attendance->adj_working_time = $totalworkingtime - $totalovertime;
                 $attendance->code_case  = "A19/BW$breakworkingtime/BO$breakovertime";
                 $attendance->note = json_encode(array(
                    'totalattendance'=>$totalattendance,
