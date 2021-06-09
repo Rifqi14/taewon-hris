@@ -1538,6 +1538,7 @@ class AttendanceApprovalController extends Controller
             }
             setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." Scheme",$overtime_scheme->scheme_name);
             
+            $attendance->day = $overtime_scheme->working_time?changeDateFormat('D', $attendance->attendance_date):'Off';
             $attendance->overtime_scheme_id = $request->scheme;
             $attendance->save();
             calculateOvertime($attendance);
