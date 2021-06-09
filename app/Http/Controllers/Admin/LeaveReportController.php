@@ -33,18 +33,18 @@ class LeaveReportController extends Controller
 
         $query = DB::table('leaves');
         $query->select(
-            'leaves.*',
+            'leaves.id',
             'employees.name as employee_name',
             'employees.nid as employee_id',
             'titles.name as title_name',
             'departments.name as department_name',
             'leave_settings.leave_name as leave_type',
             'leave_details.remaining_balance as remaining',
+            DB::raw("(select remaining from leave_details where leaves.leave_setting_id = leave_details.leavesetting_id and leaves.employee_id = leave_details.employee_id limit 1) as remaining"),
             DB::raw("(SELECT MIN(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as start_date"),
             DB::raw("(SELECT MAX(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as finish_date")
         );
         $query->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id');
-        $query->leftJoin('leave_details', 'leave_details.leavesetting_id', '=', 'leave_settings.id');
         $query->leftJoin('employees', 'employees.id', '=', 'leaves.employee_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
@@ -65,18 +65,18 @@ class LeaveReportController extends Controller
         // Select Pagination
         $query = DB::table('leaves');
         $query->select(
-            'leaves.*',
+            'leaves.id',
             'employees.name as employee_name',
             'employees.nid as employee_id',
             'titles.name as title_name',
             'departments.name as department_name',
+            DB::raw("(select remaining from leave_details where leaves.leave_setting_id = leave_details.leavesetting_id and leaves.employee_id = leave_details.employee_id limit 1) as remaining"),
             'leave_details.remaining_balance as remaining',
             'leave_settings.leave_name as leave_type',
             DB::raw("(SELECT MIN(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as start_date"),
             DB::raw("(SELECT MAX(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as finish_date")
         );
         $query->leftJoin('leave_settings', 'leave_settings.id', '=', 'leaves.leave_setting_id');
-        $query->leftJoin('leave_details', 'leave_details.leavesetting_id', '=', 'leave_settings.id');
         $query->leftJoin('employees', 'employees.id', '=', 'leaves.employee_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
@@ -90,7 +90,7 @@ class LeaveReportController extends Controller
         if ($nik) {
             $query->whereRaw("employees.nid like '%$nik%'");
         }
-        $query->groupBy('leaves.id', 'employees.name', 'employees.nid', 'titles.name', 'departments.name', 'leave_settings.leave_name', 'leave_details.remaining_balance');
+        $query->groupBy('leaves.id', 'employees.name', 'employees.nid', 'titles.name', 'departments.name', 'leave_settings.leave_name');
         $query->whereIn('leaves.status', [1, 2]);
         $query->offset($start);
         $query->limit($length);
