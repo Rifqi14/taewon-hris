@@ -263,7 +263,12 @@ if (!function_exists('calculateAttendance')) {
       */
       if($attendance->day != 'Off' && $employee->timeout == 'yes'  && $attendance->attendance_in && $attendance->attendance_out){
         if ($employee->overtime == 'yes') {
-            $totalovertime = $totalworkingtime - $min_workhour;
+            if($totalworkingtime < $min_workhour){
+                $totalovertime = 0;
+            }
+            else{
+                $totalovertime = $totalworkingtime - $min_workhour;
+            }
             if ($employee->spl == 'yes') {
                 $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
                 if ($existspl) {
@@ -279,7 +284,7 @@ if (!function_exists('calculateAttendance')) {
                     
                 } else {
                     $attendance->adj_over_time = 0;
-                    $attendance->adj_working_time = $min_workhour;
+                    $attendance->adj_working_time = $totalworkingtime;
                     $attendance->code_case  = "A18/BW$breakworkingtime/BO$breakovertime";
                     $attendance->breaktime = $totalbreaktime;
                 }
