@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Allowance;
+use App\Models\AllowanceDetail;
 use App\Models\AllowanceRule;
 use App\Models\AlphaPenalty;
 use App\Models\DeliveryOrder;
@@ -472,6 +473,38 @@ class SalaryReportController extends Controller
     
     return $data;
   }
+  public function get_detail_allowance($id, $month, $year, $allowance)
+  {
+    $allowance_id = [];
+    $allowancedetails = AllowanceDetail::where('allowance_id', $allowance)->get();
+    foreach($allowancedetails as $allowancedetail){
+      array_push($alloawance_id,$allowancedetail->allowancedetail_id);
+    }
+    $query = DB::table('employee_allowances');
+    // $query->select('employee_allowances.*', 'allowances.allowance as description', 'allowances.group_allowance_id');
+    $query->selectRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) as value_deduction, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name");
+    $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
+    $query->leftJoin('allowance_categories', 'allowance_categories.key', '=', 'allowances.category');
+    $query->leftJoin('group_allowances', 'group_allowances.id', 'allowances.group_allowance_id');
+    $query->where('employee_allowances.employee_id', '=', $id);
+    $query->where('employee_allowances.month', '=', $month);
+    $query->where('employee_allowances.year', '=', $year);
+    $query->whereIn('employee_allowances.allowance_id', $allowance_id);
+    $query->where('employee_allowances.status', '=', 1);
+    $query->where('allowance_categories.type', '=', 'additional');
+    $query->where('employee_allowances.type', '!=', 'automatic');
+    $query->groupBy('group_allowances.name', 'employee_allowances.is_penalty', 'allowances.group_allowance_id', 'employee_allowances.type');
+    $query->orderByRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) desc");
+    $allowances = $query->get();
+
+    $data = [];
+    foreach ($allowances as $allowance) {
+      $data[] = $allowance;
+    }
+
+    return $data;
+  }
+  
 
   /**
    * Get employee allowance where is deduction
@@ -485,7 +518,7 @@ class SalaryReportController extends Controller
   {
     $query = DB::table('employee_allowances');
     // $query->select('employee_allowances.*', 'allowances.allowance as description', 'allowances.group_allowance_id');
-    $query->selectRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) as value, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name");
+    $query->selectRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) as value, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id,allowances.id as allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name",);
     $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
     $query->leftJoin('allowance_categories', 'allowance_categories.key', '=', 'allowances.category');
     $query->leftJoin('group_allowances', 'group_allowances.id', 'allowances.group_allowance_id');
@@ -495,7 +528,7 @@ class SalaryReportController extends Controller
     $query->where('employee_allowances.status', '=', 1);
     $query->where('allowance_categories.type', '=', 'deduction');
     $query->where('employee_allowances.type', '!=', 'automatic');
-    $query->groupBy('group_allowances.name', 'employee_allowances.is_penalty', 'allowances.group_allowance_id', 'employee_allowances.type');
+    $query->groupBy('group_allowances.name', 'employee_allowances.is_penalty', 'allowances.group_allowance_id', 'employee_allowances.type','allowances.id');
     $allowances = $query->get();
 
     $data = [];
@@ -579,6 +612,30 @@ class SalaryReportController extends Controller
     $query->where('employee_allowances.month', '=', $month);
     $query->where('employee_allowances.year', '=', $year);
     $query->where('allowances.prorate', '=', 'Yes');
+    $query->where('employee_allowances.status', '=', 1);
+    $query->where('employee_allowances.type', '!=', 'automatic');
+    $query->groupBy('group_allowances.name', 'employee_allowances.is_penalty', 'allowances.group_allowance_id', 'employee_allowances.type');
+    $allowances = $query->get();
+
+    $data = [];
+    foreach ($allowances as $allowance) {
+      $data[] = $allowance;
+    }
+
+    return $data;
+  }
+  public function getAllowanceDetail($id, $month, $year)
+  {
+    $query = DB::table('employee_allowances');
+    // $query->select('employee_allowances.*', 'allowances.allowance as description', 'allowances.group_allowance_id');
+    $query->selectRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) as allowance_value, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name");
+    $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
+    $query->leftJoin('allowance_categories', 'allowance_categories.key', '=', 'allowances.category');
+    $query->leftJoin('group_allowances', 'group_allowances.id', 'allowances.group_allowance_id');
+    $query->where('employee_allowances.employee_id', '=', $id);
+    $query->where('employee_allowances.month', '=', $month);
+    $query->where('employee_allowances.year', '=', $year);
+    // $query->where('allowances.prorate', '=', 'Yes');
     $query->where('employee_allowances.status', '=', 1);
     $query->where('employee_allowances.type', '!=', 'automatic');
     $query->groupBy('group_allowances.name', 'employee_allowances.is_penalty', 'allowances.group_allowance_id', 'employee_allowances.type');
@@ -2236,12 +2293,29 @@ class SalaryReportController extends Controller
             }
             if ($deduction) {
               foreach ($deduction as $key => $value) {
+                $decutionvalue = 0;
+                  $basic_ammount = $basesalary->amount ;
+
+                  $allowances = $this->get_detail_allowance($view_employee, $request->montly, $request->year,$value->allowance_id );
+                  foreach($allowances as $allowance){
+                    $deductionvalue = $basic_ammount;
+                    if ($value->bpjs == 'BASIC') {
+                      $decutionvalue = $basic_ammount;
+                    }
+                    if ($value->bpjs == 'ALLOWANCE') {
+                      $decutionvalue = $allowance->value_deduction/100;
+                    }
+                    if ($value->bpjs == 'BASIC & ALLOWANCE') {
+                      $decutionvalue = $basic_ammount + ($allowance->value_deduction/100);
+                    }
+                  }
+                  
                 if ($value->group_allowance_id) {
                   SalaryReportDetail::create([
                     'salary_report_id'  => $id,
                     'employee_id'       => $view_employee,
                     'description'       => $value->description,
-                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                    'total'             => $decutionvalue,
                     'type'              => 0,
                     'status'            => 'Deduction Allowance',
                     'group_allowance_id'=> $value->group_allowance_id,
@@ -2252,7 +2326,7 @@ class SalaryReportController extends Controller
                     'salary_report_id'  => $id,
                     'employee_id'       => $view_employee,
                     'description'       => $value->description,
-                    'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                    'total'             => $decutionvalue,
                     'type'              => 0,
                     'status'            => 'Deduction Allowance',
                     'is_added'          => 'NO'
@@ -2899,6 +2973,12 @@ class SalaryReportController extends Controller
 
     return $groups;
   }
+  public function getLeaveSetting()
+  {
+    $leavesetting = LeaveSetting::where('status',1)->get();
+
+    return $leavesetting;
+  }
 
   public function getExportData(Request $request)
   {
@@ -2909,12 +2989,16 @@ class SalaryReportController extends Controller
 
     $additionals= $this->getGroupAllowance();
     $deductions = $this->getGroupAllowance('DEDUCTION');
+    $leaveSettings = $this->getLeaveSetting();
     
     $select = '';
-    $select .= "employees.nid as nik, employees.name as name, departments.name as department_name,employees.account_no as account_no,";
+    $select .= "employees.nid as nik, employees.name as name, departments.name as department_name,employees.account_no as account_no,
+    employees.join_date as join_date, employees.ptkp as st, employees.npwp as npwp,";
     $select .= "max(details.basic_salary) as basic_salary,";
     $select .= "attendances.wt as wt,";
     $select .= "max(details.daily_salary) as daily_salary,";
+    $select .= "max(overtimes.ot_1) as ot_1,";
+    $select .= "max(overtimes.otn_1) as otn_1,";
     $select .= "max(overtimes.ot_15) as ot_15,";
     $select .= "max(overtimes.otn_15) as otn_15,";
     $select .= "max(overtimes.ot_20) as ot_20,";
@@ -2947,6 +3031,10 @@ class SalaryReportController extends Controller
       $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $value->name));
       $selectJoin .= "case when description = '$value->name' then total else 0 end as $alias,";
     }
+    // foreach ($leaveSettings as $key => $value) {
+    //   $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $value->name));
+    //   $selectJoin .= "case when leave_name = '$value->leave_name' then duration else 0 end as $alias,";
+    // }
     $selectJoin .= " null";
 
     $salary = SalaryReport::SelectRaw("$select");
@@ -2969,6 +3057,8 @@ class SalaryReportController extends Controller
     });
     $salary->leftJoin(DB::raw("(select 
         employee_id,
+        sum(case when amount = 1 then hour else 0 end) ot_1,
+        sum(case when amount = 1 then final_salary else 0 end) otn_1,
         sum(case when amount = 1.5 then hour else 0 end) ot_15,
         sum(case when amount = 1.5 then final_salary else 0 end) otn_15,
         sum(case when amount = 2 then hour else 0 end) ot_20,
@@ -2978,6 +3068,12 @@ class SalaryReportController extends Controller
         sum(case when amount = 4 then hour else 0 end) ot_40,
         sum(case when amount = 4 then final_salary else 0 end) otn_40
         from overtimes where extract(month from date) = $month and extract(year from date) = $year group by employee_id) overtimes"), 'employees.id', '=', 'overtimes.employee_id');
+    // $salary->leftJoin(DB::raw("(select employee_id, 
+    //   sum(case when leave_setting_id = leave_settings.id then duration else 0 end) as leave_duration 
+    //   from leaves where status = 1) leave"), function($join){
+    //     $join->on('leave.employee_id', '=', 'employees.id');
+    //     $join->on('leave_settings.id', '=', 'leave.leave_setting_id');
+    //   });
     $salary->leftJoin(DB::raw("(select employee_id, sum(adj_working_time) as wt from attendances where status = 1 and extract(month from attendance_date) = $month and extract(year from attendance_date) = $year group by employee_id) as attendances"), 'attendances.employee_id', '=', 'salary_reports.employee_id');
     $salary->leftJoin('work_groups', 'work_groups.id', '=', 'employees.workgroup_id');
     $salary->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
@@ -2997,7 +3093,7 @@ class SalaryReportController extends Controller
     }
     // $salary->where('salary_reports.id', 27692);
     $salary->orderBy('departments.name', 'asc');
-    $salary->groupBy('employees.nid', 'employees.name', 'departments.name', 'attendances.wt', 'employees.account_no');
+    $salary->groupBy('employees.nid', 'employees.name', 'departments.name', 'attendances.wt', 'employees.account_no','employees.join_date', 'employees.ptkp', 'employees.npwp');
     $salary_reports = $salary->get();
 
     return $salary_reports;
@@ -3349,6 +3445,183 @@ class SalaryReportController extends Controller
         'name'        => 'salary-report-' . date('d-m-Y') . '.xlsx',
         'message'    => "Success Download Salary Report Data",
         'file'         => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," . base64_encode($export)
+      ], 200);
+    } else {
+      return response()->json([
+        'status'     => false,
+        'message'    => "Data not found",
+      ], 400);
+    }
+  }
+
+  public function newExport(Request $request)
+  {
+    $object           = new \PHPExcel();
+    $object->getProperties()->setCreator('Taewon');
+    $object->setActiveSheetIndex(0);
+    $sheet            = $object->getActiveSheet();
+
+    $salaries         = $this->getExportData($request);
+    $additionals      = $this->getGroupAllowance();
+    $deductions       = $this->getGroupAllowance('DEDUCTION');
+    $overtimeScheme   = $this->getOvertimeScheme();
+
+    // Header Column Excel
+    $column = 0;
+    $row    = 2;
+    $sheet->mergeCellsByColumnAndRow($column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'No')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'STATUS')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'DEPT.')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'NIK')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'NAMA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TGL.' . "\n" . 'MASUK')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'ST.')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'NO.REK')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'NPWP')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI POKOK')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column + 3, $row)->setCellValueByColumnAndRow($column, $row, 'O.T.')->getStyleByColumnAndRow($column, $row, $column + 1, $row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->setCellValueByColumnAndRow($column, $row + 1, '150%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $sheet->setCellValueByColumnAndRow(++$column, $row + 1, '200%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $sheet->setCellValueByColumnAndRow(++$column, $row + 1, '300%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $sheet->setCellValueByColumnAndRow(++$column, $row + 1, '400%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    // ++$column;
+
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'ACT. JAM O.T')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL JAM O.T')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'O.T / JAM')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL OVERTIME')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI KERJA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI LIBUR')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI CUTI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL CUTI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI IJIN')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI ALPA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL ALPA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI S.D')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TTL S.D')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    ++$column;
+    foreach ($additionals as $key => $value) {
+      $sheet->mergeCellsByColumnAndRow($column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, $value->name)->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+      $column++;
+    }
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TUNJ RITASI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI KOTOR 1')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'ptkp')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'pkp program')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'PPH21 program')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI KOTOR 2')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'jamsostek 1')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'BPJS KET.KARY.(2%)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'T.PENSIUN KARY.(1%)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'BPJS KES.KARY.(1%)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI KOTOR 3')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'PINJ ACC')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI BERSIH')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'jamsostek 2')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'BPJS KET.TAEWON(3,7119%)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'T.PENSIUN TAEWON(2%)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'BPJS KES. TAEWON(4%)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+    
+
+    $column_number  = 0;
+    $row_number     = $row + 2;
+    $number         = 1;
+    $bruto          = 0;
+    $gross          = 0;
+    $net            = 0;
+    $last_col       = 0;
+
+    foreach ($salaries as $key => $value) {
+      $totalOvertime = $value->otn_1 + $value->otn_15 + $value->otn_20 + $value->otn_30 + $value->otn_40;
+      $acttotalJamOt = $value->ot_1 + $value->ot_15 + $value->ot_20 + $value->ot_30 + $value->ot_40;
+      // dd($totalOvertime, $acttotalJamOt); 
+      if($totalOvertime && $acttotalJamOt > 0){
+        $otJam = $totalOvertime / $acttotalJamOt;
+      }else{
+        $otJam = 0;
+      }
+      $totalJamOt = $value->ot_1 + $value->ot_15 * 1.5 + $value->ot_20 * 2 + $value->ot_30 * 3 + $value->ot_40 * 4;
+      $bruto += $totalOvertime + $value->basic_salary + $value->daily_salary;
+      $sheet->setCellValueByColumnAndRow($column_number, $row_number, $number);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->department_name);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->nik);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->name);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->join_date);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ptkp);
+      $sheet->setCellValueExplicitByColumnAndRow(++$column_number, $row_number, $value->account_no, PHPExcel_Cell_DataType::TYPE_STRING);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->npwp ? $value->npwp : '-');
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->basic_salary ? $value->basic_salary : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ot_15 ? $value->ot_15 : 0);
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->otn_15 ? $value->otn_15 : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ot_20 ? $value->ot_20 : 0);
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->otn_20 ? $value->otn_20 : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ot_30 ? $value->ot_30 : 0);
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->otn_30 ? $value->otn_30 : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ot_40 ? $value->ot_40 : 0);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $acttotalJamOt? $acttotalJamOt : 0);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $totalJamOt ? $totalJamOt : 0);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $otJam ? $otJam : 0)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $totalOvertime ? $totalOvertime : 0)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      foreach ($additionals as $key => $additional) {
+        $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $additional->name));
+        $bruto += $value->{$alias};
+        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{$alias} ? $value->{$alias} : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      }
+      // $bruto += $value->alpha_penalty;
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->alpha_penalty ? $value->alpha_penalty : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      // $bruto += $value->add_non_pph;
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->add_non_pph ? $value->add_non_pph : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $bruto ? $bruto : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+
+      // foreach ($deductions as $key => $deduction) {
+      //   $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $deduction->name));
+      //   $gross += $value->{$alias};
+      //   $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{$alias} ? $value->{$alias} : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      // }
+      // $gross += $value->spsi;
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->spsi ? $value->spsi : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      // $gross += $value->de_non_pph;
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->de_non_pph ? $value->de_non_pph : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      // $gross += $value->pph;
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->pph ? $value->pph : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      // $net = $bruto - $gross;
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $net ? $net : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+
+      $bruto = 0;
+      $net  = 0;
+      $gross  = 0;
+      $last_col = $column_number;
+      $column_number = 0;
+      $row_number++;
+      $number++;
+    }
+
+    $sheet->getStyleByColumnAndRow(0, 2, $last_col, 3)->getAlignment()->setWrapText(true);
+    for ($i = 0; $i <= $last_col; $i++) {
+      $sheet->getColumnDimensionByColumn($i)->setAutoSize(true);
+    }
+    $sheet->calculateColumnWidths();
+    for ($i = 0; $i <= $last_col; $i++) {
+      $sheet->getColumnDimensionByColumn($i)->setAutoSize(false);
+    }
+    for ($i = 16; $i <= $last_col; $i++) {
+      $sheet->getColumnDimensionByColumn($i)->setWidth(12);
+    }
+
+    $sheet->getPageSetup()->setFitToWidth(1);
+    $objWriter = \PHPExcel_IOFactory::createWriter($object, 'Excel2007');
+    ob_start();
+    $objWriter->save('php://output');
+    $export = ob_get_contents();
+    ob_end_clean();
+    header('Content-Type: application/json');
+    if ($salaries->count() > 0) {
+      return response()->json([
+        'status'    => true,
+        'name'      => 'salary-report-' . date('d-m-Y') . '.xlsx',
+        'message'   => "Success Download Salary Report Data",
+        'file'      => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," . base64_encode($export)
       ], 200);
     } else {
       return response()->json([

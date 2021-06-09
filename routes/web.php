@@ -388,6 +388,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/overtimescheme/select', 'Admin\OvertimeSchemeController@select')->name('overtimescheme.select');
         Route::resource('/overtimescheme', 'Admin\OvertimeSchemeController')->except(['show']);
         //Route Salary report
+        Route::post('/salaryreport/newexportsalary', 'Admin\SalaryReportController@newExport')->name('salaryreport.newexportsalary');
         Route::post('/salaryreport/exportsalary', 'Admin\SalaryReportController@exportsalary')->name('salaryreport.exportsalary');
         Route::get('/salaryreport/readapproval', 'Admin\SalaryReportController@readapproval')->name('salaryreport.readapproval');
         Route::get('/salaryreport/approval', 'Admin\SalaryReportController@indexapproval')->name('salaryreport.indexapproval');
