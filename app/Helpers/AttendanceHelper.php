@@ -296,7 +296,6 @@ if (!function_exists('calculateAttendance')) {
             } else {
                 $attendance->adj_over_time = $totalovertime;
                 $attendance->adj_working_time = $totalworkingtime;
-                $attendance->note = json_encode($breaktimes);
                 $attendance->code_case  = "A19/BW$breakworkingtime/BO$breakovertime";
                 $attendance->breaktime = $totalbreaktime;
             }
