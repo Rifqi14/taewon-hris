@@ -62,7 +62,7 @@ if (!function_exists('calculateAttendance')) {
     if ($attendance->attendance_in) {
       if (($workingtime->start >= changeDateFormat('H:i:s', $attendance->attendance_in)) && (changeDateFormat('H:i:s', $attendance->attendance_in) >= $workingtime->min_in)) {
           $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance->attendance_in) . ' ' . $workingtime->start);
-          $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours(start_shift);
+          $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($start_shift);
       } else {
           $work_time = roundedTime(countWorkingTime($attendance_in, $attendance_out));
           $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
