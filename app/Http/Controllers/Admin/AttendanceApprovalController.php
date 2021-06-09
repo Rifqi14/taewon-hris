@@ -1979,10 +1979,23 @@ class AttendanceApprovalController extends Controller
 
         if ($history) {
             if ($worktime) {
-                if ($attendance) {
+                if ($request->type_edit == 1 || $attendance->attendance_in == null) {
+                    $attendance->attendance_in = changeDateFormat('Y-m-d H:i:s', $request->time_edit);
+                    $attendance->save();
                     calculateAttendance($attendance);
-                    calculateOvertime($attendance);
-                    calculateAllowance($attendance);
+                    if ($attendance) {
+                        calculateOvertime($attendance);
+                        calculateAllowance($attendance);
+                    }
+                }
+                if ($request->type == 0 || $attendance->attendance_out == null) {
+                    $attendance->attendance_out = changeDateFormat('Y-m-d H:i:s', $request->time_edit);
+                    $attendance->save();
+                    calculateAttendance($attendance);
+                    if ($attendance) {
+                        calculateOvertime($attendance);
+                        calculateAllowance($attendance);
+                    }
                 }
             } else {
                 DB::rollBack();
