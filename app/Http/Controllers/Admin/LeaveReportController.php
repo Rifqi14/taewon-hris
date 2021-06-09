@@ -39,7 +39,6 @@ class LeaveReportController extends Controller
             'titles.name as title_name',
             'departments.name as department_name',
             'leave_settings.leave_name as leave_type',
-            'leave_details.remaining_balance as remaining',
             DB::raw("(select remaining from leave_details where leaves.leave_setting_id = leave_details.leavesetting_id and leaves.employee_id = leave_details.employee_id limit 1) as remaining"),
             DB::raw("(SELECT MIN(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as start_date"),
             DB::raw("(SELECT MAX(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as finish_date")
@@ -58,7 +57,7 @@ class LeaveReportController extends Controller
         if ($nik) {
             $query->whereRaw("employees.nid like '%$nik%'");
         }
-        $query->groupBy('leaves.id', 'employees.name', 'employees.nid', 'titles.name', 'departments.name', 'leave_settings.leave_name', 'leave_details.remaining_balance');
+        $query->groupBy('leaves.id', 'employees.name', 'employees.nid', 'titles.name', 'departments.name', 'leave_settings.leave_name');
         $query->whereIn('leaves.status', [1, 2]);
         $recordsTotal = $query->count();
 
@@ -71,7 +70,6 @@ class LeaveReportController extends Controller
             'titles.name as title_name',
             'departments.name as department_name',
             DB::raw("(select remaining from leave_details where leaves.leave_setting_id = leave_details.leavesetting_id and leaves.employee_id = leave_details.employee_id limit 1) as remaining"),
-            'leave_details.remaining_balance as remaining',
             'leave_settings.leave_name as leave_type',
             DB::raw("(SELECT MIN(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as start_date"),
             DB::raw("(SELECT MAX(leave_logs.date) FROM leave_logs WHERE leave_logs.leave_id = leaves.id) as finish_date")
