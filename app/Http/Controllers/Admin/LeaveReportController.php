@@ -33,7 +33,7 @@ class LeaveReportController extends Controller
 
         $query = DB::table('leaves');
         $query->select(
-            'leaves.id',
+            'leaves.*',
             'employees.name as employee_name',
             'employees.nid as employee_id',
             'titles.name as title_name',
@@ -64,7 +64,7 @@ class LeaveReportController extends Controller
         // Select Pagination
         $query = DB::table('leaves');
         $query->select(
-            'leaves.id',
+            'leaves.*',
             'employees.name as employee_name',
             'employees.nid as employee_id',
             'titles.name as title_name',
