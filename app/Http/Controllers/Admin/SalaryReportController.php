@@ -2302,13 +2302,13 @@ class SalaryReportController extends Controller
                   }
                   $deductionvalue = $basic_ammount;
                   if ($value->bpjs == 'BASIC') {
-                    $decutionvalue = $basic_ammount;
+                    $deductionvalue = $basic_ammount;
                   }
                   if ($value->bpjs == 'ALLOWANCE') {
-                    $decutionvalue = $totalallowance;
+                    $deductionvalue = $totalallowance;
                   }
                   if ($value->bpjs == 'BASIC & ALLOWANCE') {
-                    $decutionvalue = $basic_ammount + $totalallowance;
+                    $deductionvalue = $basic_ammount + $totalallowance;
                   }
                 if ($value->group_allowance_id) {
                   $salaryreportdetail = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $value->group_allowance_id)->first();
