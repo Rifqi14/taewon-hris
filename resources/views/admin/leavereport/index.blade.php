@@ -78,20 +78,6 @@
     </div>
   </div>
 </div>
-<div id="waiting-dialog"class="modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="overflow-y:visible;">
-      <div class="modal-dialog modal-m">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 style="margin:0;">Loading</h5>
-              </div>
-              <div class="modal-body">
-                  <div class="progress">
-                      <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
 @endsection
 
 @push('scripts')
@@ -109,10 +95,10 @@
 			data: $("#form").serialize(),
 			beforeSend:function(){
 				// $('.overlay').removeClass('d-none');
-				$('#waiting-dialog').modal('show');
+				waitingDialog.show('Loading...');
 			}
 		}).done(function(response){
-			$('#waiting-dialog').modal('hide');
+			waitingDialog.hide();
 			if(response.status){
 			$('.overlay').addClass('d-none');
 			$.gritter.add({
@@ -137,7 +123,7 @@
 			});
 			}
 		}).fail(function(response){
-			$('#waiting-dialog').modal('hide');
+			waitingDialog.hide();
 			var response = response.responseJSON;
 			$('.overlay').addClass('d-none');
 			$.gritter.add({

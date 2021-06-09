@@ -1,6 +1,6 @@
 
 var waitingDialog = function (d) {
-    var a = d(`<div class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="overflow-y:visible;">
+    var a = d(`<div class="modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="overflow-y:visible;">
         <div class="modal-dialog modal-m">
             <div class="modal-content">
                 <div class="modal-header">
