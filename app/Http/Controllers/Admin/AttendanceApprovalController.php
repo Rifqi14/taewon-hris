@@ -2052,78 +2052,10 @@ class AttendanceApprovalController extends Controller
 
         if ($history) {
             if ($worktime) {
-                if ($request->type_edit == 1 || $attendance->attendance_in == null) {
-                    $attendance->attendance_in = changeDateFormat('Y-m-d H:i:s', $request->time_edit);
-                    $breaktimes = $this->get_breaktime($attendance->employee->workgroup_id);
-
-                    $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out);
-
-                    $work_time = roundedTime(countWorkingTime($attendance->attendance_in, $attendance->attendance_out));
-                    $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $worktime);
-                    $getbreakovertime = getBreaktimeOvertime($breaktimes, $attendance_hour, $worktime);
-                    $workhour = $worktime->workhour;
-                    $min_workhour = $worktime->min_workhour;
-                    $adj_over_time = roundedTime(countOverTime($worktime->finish, changeDateFormat('H:i:s', $attendance->attendance_out)));
-                    $adj_working_time = $work_time - $adj_over_time;
-
-                    if ($attendance->day == 'Off') {
-                        if ($attendance->employee->overtime == 'yes') {
-                            $attendance->adj_over_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                            $attendance->adj_working_time = 0;
-                        } else {
-                            $attendance->adj_over_time = 0;
-                            $attendance->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                        }
-                    } else {
-                        if ($attendance->employee->overtime == 'yes') {
-                            $attendance->adj_over_time = ($adj_over_time - $getbreakovertime) < 1 ? 0 : $adj_over_time - $getbreakovertime;
-                            $attendance->adj_working_time = $adj_working_time - $getbreakworkingtime;
-                        } else {
-                            $attendance->adj_over_time = 0;
-                            $attendance->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                        }
-                    }
-                    $attendance->save();
-                    if ($attendance) {
-                        $overtime = calculateOvertime($attendance);
-                        $allowance = calculateAllowance($attendance);
-                    }
-                } elseif ($request->type == 0 || $attendance->attendance_out == null) {
-                    $attendance->attendance_out = changeDateFormat('Y-m-d H:i:s', $request->time_edit);
-                    $breaktimes = $this->get_breaktime($attendance->employee->workgroup_id);
-
-                    $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $attendance->attendance_out);
-
-                    $work_time = roundedTime(countWorkingTime($attendance->attendance_in, $attendance->attendance_out));
-                    $getbreakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $worktime);
-                    $getbreakovertime = getBreaktimeOvertime($breaktimes, $attendance_hour, $worktime);
-                    $workhour = $worktime->workhour;
-                    $min_workhour = $worktime->min_workhour;
-                    $adj_over_time = roundedTime(countOverTime($worktime->finish, changeDateFormat('H:i:s', $attendance->attendance_out)));
-                    $adj_working_time = $work_time - $adj_over_time;
-
-                    if ($attendance->day == 'Off') {
-                        if ($attendance->employee->overtime == 'yes') {
-                            $attendance->adj_over_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                            $attendance->adj_working_time = 0;
-                        } else {
-                            $attendance->adj_over_time = 0;
-                            $attendance->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                        }
-                    } else {
-                        if ($attendance->employee->overtime == 'yes') {
-                            $attendance->adj_over_time = ($adj_over_time - $getbreakovertime) < 1 ? 0 : $adj_over_time - $getbreakovertime;
-                            $attendance->adj_working_time = $adj_working_time - $getbreakworkingtime;
-                        } else {
-                            $attendance->adj_over_time = 0;
-                            $attendance->adj_working_time = $work_time - $getbreakworkingtime - $getbreakovertime;
-                        }
-                    }
-                    $attendance->save();
-                    if ($attendance) {
-                        $overtime = calculateOvertime($attendance);
-                        $allowance = calculateAllowance($attendance);
-                    }
+                if ($attendance) {
+                    calculateAttendance($attendance);
+                    calculateOvertime($attendance);
+                    calculateAllowance($attendance);
                 }
             } else {
                 DB::rollBack();
