@@ -2313,16 +2313,16 @@ class SalaryReportController extends Controller
                 if ($value->group_allowance_id) {
                   $salaryreportdetail = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $value->group_allowance_id)->first();
                   if ($salaryreportdetail) {
-                      $salaryreportdetail->total =  $salaryreportdetail->total + (($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value);
-                      //$salaryreportdetail->total =  $salaryreportdetail->total + $totalallowance;
+                     // $salaryreportdetail->total =  $salaryreportdetail->total + (($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value);
+                      $salaryreportdetail->total =  $salaryreportdetail->total + $decutionvalue;
                       $salaryreportdetail->save();
                   } else {
                     SalaryReportDetail::create([
                       'salary_report_id'  => $id,
                       'employee_id'       => $view_employee,
                       'description'       => $value->description,
-                      'total'             => ($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value,
-                      //'total'             => $totalallowance,
+                      //'total'             => ($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value,
+                      'total'             => $decutionvalue,
                       'type'              => 0,
                       'status'            => 'Deduction Allowance',
                       'group_allowance_id' => $value->group_allowance_id,
@@ -2334,8 +2334,8 @@ class SalaryReportController extends Controller
                     'salary_report_id'  => $id,
                     'employee_id'       => $view_employee,
                     'description'       => $value->description,
-                    'total'             => ($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value,
-                    //'total'             => $totalallowance,
+                    //'total'             => ($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value,
+                    'total'             => $decutionvalue,
                     'type'              => 0,
                     'status'            => 'Deduction Allowance',
                     'is_added'          => 'NO'
