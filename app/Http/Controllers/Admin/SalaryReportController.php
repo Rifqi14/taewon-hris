@@ -518,7 +518,7 @@ class SalaryReportController extends Controller
   {
     $query = DB::table('employee_allowances');
     // $query->select('employee_allowances.*', 'allowances.allowance as description', 'allowances.group_allowance_id');
-    $query->selectRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) as value, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id,allowances.id as allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name, 'allowances.formula_bpjs as bpjs");
+    $query->selectRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) as value, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id,allowances.id as allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name, allowances.formula_bpjs as bpjs");
     $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
     $query->leftJoin('allowance_categories', 'allowance_categories.key', '=', 'allowances.category');
     $query->leftJoin('group_allowances', 'group_allowances.id', 'allowances.group_allowance_id');
@@ -2310,16 +2310,22 @@ class SalaryReportController extends Controller
                   }
                   
                 if ($value->group_allowance_id) {
-                  SalaryReportDetail::create([
-                    'salary_report_id'  => $id,
-                    'employee_id'       => $view_employee,
-                    'description'       => $value->description,
-                    'total'             => $decutionvalue,
-                    'type'              => 0,
-                    'status'            => 'Deduction Allowance',
-                    'group_allowance_id'=> $value->group_allowance_id,
-                    'is_added'          => 'NO'
-                  ]);
+                  $salaryreportdetail = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $value->group_allowance_id)->first();
+                  if ($salaryreportdetail) {
+                    $salaryreportdetail->total =  $salaryreportdetail->total + $decutionvalue;
+                    $salaryreportdetail->save();
+                  } else {
+                    SalaryReportDetail::create([
+                      'salary_report_id'  => $id,
+                      'employee_id'       => $view_employee,
+                      'description'       => $value->description,
+                      'total'             => $decutionvalue,
+                      'type'              => 0,
+                      'status'            => 'Deduction Allowance',
+                      'group_allowance_id' => $value->group_allowance_id,
+                      'is_added'          => 'NO'
+                    ]);
+                  }
                 } else {
                   SalaryReportDetail::create([
                     'salary_report_id'  => $id,
