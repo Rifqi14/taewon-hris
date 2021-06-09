@@ -289,13 +289,13 @@ if (!function_exists('calculateAttendance')) {
                     
                 } else {
                     $attendance->adj_over_time = 0;
-                    $attendance->adj_working_time = $totalworkingtime;
+                    $attendance->adj_working_time = $min_workhour;
                     $attendance->code_case  = "A18/BW$breakworkingtime/BO$breakovertime";
                     $attendance->breaktime = $totalbreaktime;
                 }
             } else {
                 $attendance->adj_over_time = $totalovertime;
-                $attendance->adj_working_time = $totalworkingtime;
+                $attendance->adj_working_time = $totalworkingtime - $totalovertime;
                 $attendance->code_case  = "A19/BW$breakworkingtime/BO$breakovertime";
                 $attendance->note = json_encode(array(
                    'totalattendance'=>$totalattendance,
