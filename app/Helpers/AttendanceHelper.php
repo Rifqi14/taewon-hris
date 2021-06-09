@@ -64,10 +64,8 @@ if (!function_exists('calculateAttendance')) {
           $start_shift = changeDateFormat('Y-m-d H:i:s', changeDateFormat('Y-m-d', $attendance->attendance_in) . ' ' . $workingtime->start);
           $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($start_shift);
       } else {
-          $work_time = roundedTime(countWorkingTime($attendance_in, $attendance_out));
           $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
       }
-      $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
       //$totalbreaktime = $breakworkingtime + $breakovertime;
       $totalbreaktime = $breakall;
       $totalworkingtime = $totalattendance - $totalbreaktime;
