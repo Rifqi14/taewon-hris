@@ -37,7 +37,7 @@ class WarningLetterController extends Controller
         $sort = $request->columns[$request->order[0]['column']]['data'];
         $dir = $request->order[0]['dir'];
         $employee_id = strtoupper(str_replace("'","''",$request->employee_id));
-        $get_employee_id = $request->get_employee_id;
+        $get_employee_id = $request->get_employee_id?$request->get_employee_id:null;
         $nid = $request->nid;
         $department_ids = $request->department?$request->department:null;
         $position = $request->position;
@@ -61,7 +61,9 @@ class WarningLetterController extends Controller
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
         $query->leftJoin(DB::Raw('(select employee_id,sum(case when status = 0 then 1 else 0 end) as aktif, sum(case when status = 1 then 1 else 0 end) as nonaktif from warning_letters group by employee_id) as wl'),'wl.employee_id', '=', 'warning_letters.employee_id');
-        $query->where('warning_letters.employee_id', '=', $get_employee_id);
+        if($get_employee_id !=""){
+            $query->where('warning_letters.employee_id', '=', $get_employee_id);
+        }
         if ($employee_id != '') {
             $query->whereRaw("upper(employees.name) like '%$employee_id%'");
         }
@@ -111,7 +113,9 @@ class WarningLetterController extends Controller
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
         $query->leftJoin(DB::Raw('(select employee_id,sum(case when status = 0 then 1 else 0 end) as aktif, sum(case when status = 1 then 1 else 0 end) as nonaktif from warning_letters group by employee_id) as wl'),'wl.employee_id', '=', 'warning_letters.employee_id');
-        $query->where('warning_letters.employee_id', '=', $get_employee_id);
+        if($get_employee_id !=""){
+            $query->where('warning_letters.employee_id', '=', $get_employee_id);
+        }
         if ($employee_id != '') {
             $query->whereRaw("upper(employees.name) like '%$employee_id%'");
         }
