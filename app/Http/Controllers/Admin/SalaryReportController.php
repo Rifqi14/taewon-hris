@@ -478,7 +478,7 @@ class SalaryReportController extends Controller
     $allowance_id = [];
     $allowancedetails = AllowanceDetail::where('allowance_id', $allowance)->get();
     foreach($allowancedetails as $allowancedetail){
-      array_push($alloawance_id,$allowancedetail->allowancedetail_id);
+      $allowance_id[] = $allowancedetail->allowancedetail_id;
     }
     $query = DB::table('employee_allowances');
     // $query->select('employee_allowances.*', 'allowances.allowance as description', 'allowances.group_allowance_id');
