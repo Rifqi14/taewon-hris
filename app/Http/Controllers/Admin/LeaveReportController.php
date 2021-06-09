@@ -57,7 +57,7 @@ class LeaveReportController extends Controller
         if ($nik) {
             $query->whereRaw("employees.nid like '%$nik%'");
         }
-        $query->groupBy('leaves.id', 'employees.name', 'employees.nid', 'titles.name', 'departments.name', 'leave_settings.leave_name', 'leave_details.remaining_balance');
+        $query->groupBy('leaves.id', 'employees.name', 'employees.nid', 'titles.name', 'departments.name', 'leave_settings.leave_name');
         $query->whereIn('leaves.status', [1, 2]);
         $recordsTotal = $query->count();
 
