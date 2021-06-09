@@ -297,13 +297,13 @@ if (!function_exists('calculateAttendance')) {
                 $attendance->adj_over_time = $totalovertime;
                 $attendance->adj_working_time = $totalworkingtime - $totalovertime;
                 $attendance->code_case  = "A19/BW$breakworkingtime/BO$breakovertime";
-                $attendance->note = json_encode(array(
-                   'totalattendance'=>$totalattendance,
-                   'totalworkingtime'=>$totalworkingtime,
-                   'totalovertime'=>$totalovertime,
-                   'totalbreaktime'=>$totalbreaktime,
+                // $attendance->note = json_encode(array(
+                //    'totalattendance'=>$totalattendance,
+                //    'totalworkingtime'=>$totalworkingtime,
+                //    'totalovertime'=>$totalovertime,
+                //    'totalbreaktime'=>$totalbreaktime,
 
-                ));
+                // ));
                 $attendance->breaktime = $totalbreaktime;
             }
         } else {
