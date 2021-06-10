@@ -26,6 +26,7 @@
           <div class="card-body">
             <div class="row">
               <input type="hidden" name="report_id" id="report_id" value="{{ $salary_detail->id }}">
+              <input type="hidden" name="salary_report_id[]" id="salary_report_id" value="{{ $salary_detail->id }}">
               <input type="hidden" name="employee_id" value="{{ $salary_detail->employee_id }}">
               <div class="col-sm-6">
                 <div class="form-group">
@@ -179,7 +180,7 @@
     @if ($salary_detail->status != 1)
     <a href="javascript:void(0)" onclick="waitingapproval()" class="btn btn-{{ config('configs.app_theme') }}"><i class="fa fa-save"></i></a>
     @endif
-    <a href="{{url('admin/salaryreport/pdf', $salary_detail->id)}}" class="btn btn-primary text-white"><i class="fa fa-print"></i></a>
+    <a href="javascript:void(0)" onclick="printmass()" class="btn btn-info text-white"title="{{__('general.print')}}"><i class="fa fa-print"></i></a>
     <a href="javascript:void(0)" onclick="backurl()" class="btn btn-warning text-white"><i class="fa fa-reply"></i></a>
   </div>
 </div>
@@ -224,6 +225,23 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="print-mass" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header no-print">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h4 class="modal-title">{{__('general.print')}}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <iframe id="bodyReplace" scrolling="no" allowtransparency="true"
+                        style="width: 69%; border-width: 0px; position: relative; margin: 0 auto; display: block;"
+                        onload="this.style.height=(this.contentDocument.body.scrollHeight+45) + 'px';"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @push('scripts')
 <script src="{{asset('adminlte/component/validate/jquery.validate.min.js')}}"></script>
@@ -233,6 +251,46 @@
 <script src="{{asset('adminlte/component/dataTables/js/datatables.min.js')}}"></script>
 <script src="{{asset('adminlte/component/jquery-mask/jquery.mask.min.js')}}"></script>
 <script type="text/javascript">
+function printmass() {
+        var ids = [];
+        $('input[name^=salary_report_id]').each(function () {
+          ids.push($(this).val());
+        });
+        // console.log(ids);
+        if (ids.length <= 0) {
+            $.gritter.add({
+                title: 'Warning!',
+                text: 'No data has been selected yet',
+                class_name: 'gritter-error',
+                time: 1000,
+            });
+            return false;
+        }
+        printpreview(ids);
+    }
+
+    function printpreview(ids) {
+        $('.overlay').removeClass('d-none');
+        $.ajax({
+            url: "{{ route('salaryreport.printmass') }}",
+            method: 'GET',
+            data: {
+                id: JSON.stringify(ids)
+            },
+            success: function (response) {
+                $('.overlay').addClass('d-none');
+                dataTable.draw();
+                $('.customcheckbox').removeClass('checked');
+                $('.customcheckbox input').prop('checked', false);
+                var iframe = document.getElementById('bodyReplace');
+                iframe = iframe.contentWindow || (iframe.contentDocument.document || iframe
+                    .contentDocument);
+                iframe.document.open();
+                iframe.document.write(response);
+                iframe.document.close();
+            }
+        });
+    }
   $(document).ready(function(){
   $("#form_deduction").validate({
     errorElement: 'div',

@@ -4,7 +4,7 @@ return[
     'do'          => 'Delivery Order',
     'dolist'      => 'Delivery Order List',
     'policeno'    => 'Police No',
-    'drivernm' => 'Driver Name',
+    'drivernm'    => 'Driver Name',
     'from'        => 'From',
     'to'          => 'To',
     'deptime'     => 'Departure Time',
