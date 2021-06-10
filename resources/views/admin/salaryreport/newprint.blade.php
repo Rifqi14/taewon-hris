@@ -113,7 +113,7 @@
 					</tr>
 					<tr>
 						<th class="text-header" style="width: 5%">No.Peg</th>
-						<th class="text-header" style="width: 25%">: 070296</th>
+						<th class="text-header" style="width: 25%">: {{ $salary->employee->nid }}</th>
 						<th class="text-header" style="width: 5%">Bagian</th>
 						<th class="text-header" style="width: 25%">: {{ $salary->employee->title->name }}</th>
 					</tr>
