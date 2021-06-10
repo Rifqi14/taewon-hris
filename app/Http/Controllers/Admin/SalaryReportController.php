@@ -2259,7 +2259,7 @@ class SalaryReportController extends Controller
                       $deductionvalue = $basic_ammount + $totalallowance;
                     }
                   if ($value->group_allowance_id) {
-                    $salaryreportdetail = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $value->group_allowance_id)->first();
+                    $salaryreportdetail = SalaryReportDetail::where('salary_report_id', $salaryreport->id)->where('group_allowance_id', $value->group_allowance_id)->first();
                     if ($salaryreportdetail) {
                         $salaryreportdetail->total =  $salaryreportdetail->total + (($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value);
                         $salaryreportdetail->save();
