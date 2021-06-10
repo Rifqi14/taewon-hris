@@ -3251,7 +3251,7 @@ class SalaryReportController extends Controller
         $everage_overtime = 0;
       }
       // Basic Salary
-      $basic_salary = SalaryReportDetail::where('description', 'Basic Salary')->orWhere('description', 'Basic Salary + Allowance')->where('salary_report_id', $salary->id)->first();
+      $basic_salary = SalaryReportDetail::whereRaw("(description = 'Basic Salary' or description = 'Basic Salary + Allowance')")->where('salary_report_id', $salary->id)->first();
       $basic_salaries[$salary->id] = $basic_salary;
       
       // coordinate12
