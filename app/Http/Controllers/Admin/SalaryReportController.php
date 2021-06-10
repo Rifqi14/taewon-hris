@@ -3211,8 +3211,16 @@ class SalaryReportController extends Controller
     $coordinate51values = [];
     $coordinate52values = [];
     $coordinate53values = [];
-    $basic_salaries = [];
-    $total_deductions= [];
+    $basic_salaries     = [];
+    $total_deductions   = [];
+    $jumlah_months      = [];
+    $total_jamot        = [];
+    $everage_overtimes  = [];
+    $value_overtimes    = [];
+    $jumlah_pendapatan  = [];
+    $jumlah_potongan    = [];
+    $grand_total        = [];
+    $deduction          = [];
     foreach ($salaries as $salary) {
 
       $overtime = Overtime::selectRaw("
@@ -3238,18 +3246,21 @@ class SalaryReportController extends Controller
       }else{
         $total_jam = 0;
       }
+      $total_jamot[$salary->id] = $total_jam;
       // Total Overtime
       if ($overtimes[$salary->id]) {
         $value_overtime = $overtimes[$salary->id]->value_1 + $overtimes[$salary->id]->value_15 + $overtimes[$salary->id]->value_20 + $overtimes[$salary->id]->value_30 + $overtimes[$salary->id]->value_40;
       } else {
         $value_overtime = 0;
       }
+      $value_overtimes[$salary->id] = $value_overtime;
       // Price Overtime
-      if ($value_overtime > 0) {
-        $everage_overtime = $value_overtime / $total_jam;
+      if ($value_overtimes[$salary->id] > 0) {
+        $everage_overtime = $value_overtimes[$salary->id] / $total_jamot[$salary->id];
       } else {
         $everage_overtime = 0;
       }
+       $everage_overtimes[$salary->id] = $everage_overtime;
       // Basic Salary
       $basic_salary = SalaryReportDetail::whereRaw("(description = 'Basic Salary' or description = 'Basic Salary + Allowance')")->where('salary_report_id', $salary->id)->first();
       $basic_salaries[$salary->id] = $basic_salary;
@@ -3336,13 +3347,14 @@ class SalaryReportController extends Controller
       $coordinate56values[$salary->id] = $coordinate56value;
 
       // deduction
-      $deduction = SalaryReportDetail::where('salary_report_id', $salary->id)->where('status', 'Salary Deduction')->get()->sum('total');
+      $deduction[$salary->id] = SalaryReportDetail::where('salary_report_id', $salary->id)->where('status', 'Salary Deduction')->get()->sum('total');
 
       if ($basic_salaries[$salary->id]) {
         $jumlah_month = $coordinate12values[$salary->id] + $coordinate13values[$salary->id] + $coordinate14values[$salary->id] + $basic_salaries[$salary->id]->total;
       }else{
         $jumlah_month = 0;
       }
+      $jumlah_months[$salary->id] = $jumlah_month;
       // Coordinate33
       if($coordinate33){
         $coordinate33value = Leave::where('leave_setting_id', $coordinate33->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
@@ -3373,11 +3385,12 @@ class SalaryReportController extends Controller
       $coordinate36values[$salary->id] = $coordinate36value;
 
       // Jumlah pendapatan
-      if($jumlah_month){
-        $jumlah_pendapatan = $jumlah_month + $value_overtime + $coordinate43values[$salary->id] + $coordinate44values[$salary->id] + $coordinate45values[$salary->id] + $coordinate46values[$salary->id];
+      if($jumlah_months[$salary->id]){
+        $income = $jumlah_months[$salary->id] + $value_overtimes[$salary->id] + $coordinate43values[$salary->id] + $coordinate44values[$salary->id] + $coordinate45values[$salary->id] + $coordinate46values[$salary->id];
       }else{
-        $jumlah_pendapatan = 0;
+        $income = 0;
       }
+      $jumlah_pendapatan[$salary->id] = $income;
       
       // Coordinate51
       if($coordinate51){
@@ -3433,8 +3446,8 @@ class SalaryReportController extends Controller
       $coordinate53values[$salary->id] = $coordinate53value;
 
       // Jumlah Potongan
-      $jumlah_potongan = $coordinate51values[$salary->id] + $coordinate52values[$salary->id] + $coordinate53values[$salary->id] + $coordinate54values[$salary->id] + $coordinate55values[$salary->id] + $coordinate56values[$salary->id];
-      $grand_total = $jumlah_pendapatan - $jumlah_potongan - $deduction ;
+      $jumlah_potongan[$salary->id] = $coordinate51values[$salary->id] + $coordinate52values[$salary->id] + $coordinate53values[$salary->id] + $coordinate54values[$salary->id] + $coordinate55values[$salary->id] + $coordinate56values[$salary->id];
+      $grand_total[$salary->id] = $jumlah_pendapatan[$salary->id] - $jumlah_potongan[$salary->id] - $deduction[$salary->id] ;
       // dd($coordinate51values[$salary->id]);
     }
     // dd($overtimes);
@@ -3475,7 +3488,7 @@ class SalaryReportController extends Controller
   'coordinate43', 'coordinate44', 'coordinate45', 'coordinate46', 'coordinate54', 'coordinate55' , 'coordinate56', 'coordinate33',
   'coordinate34', 'coordinate35', 'coordinate36', 'coordinate51', 'coordinate52', 'coordinate53', 'coordinate12values',
   'coordinate13values','coordinate14values','coordinate43values','coordinate44values','coordinate45values','coordinate46values',
-  'coordinate54values','coordinate55values','coordinate56values','basic_salaries','jumlah_month', 'total_jam', 'value_overtime', 'everage_overtime',
+  'coordinate54values','coordinate55values','coordinate56values','basic_salaries','jumlah_months', 'total_jamot', 'value_overtimes', 'everage_overtimes',
   'coordinate33values','coordinate34values','coordinate35values','coordinate36values','jumlah_pendapatan','coordinate51values',
   'coordinate52values','coordinate53values','jumlah_potongan', 'grand_total'));
   }
