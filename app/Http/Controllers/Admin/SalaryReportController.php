@@ -2516,7 +2516,7 @@ class SalaryReportController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(){
+  public function store(Request $request){
     if ($request->department && !$request->position && !$request->workgroup_id && !$request->employee_name) {
       DB::beginTransaction();
       $employee = Employee::select('employees.*')->leftJoin('departments', 'departments.id', '=', 'employees.department_id')->where('employees.status', 1);
