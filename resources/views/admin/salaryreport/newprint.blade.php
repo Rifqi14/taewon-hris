@@ -14,6 +14,10 @@
 			}
 		}
 
+		.return-page {
+			page-break-after: always;
+		}
+		
 		body {
 			font-family: Arial, Helvetica, sans-serif;
 		}
