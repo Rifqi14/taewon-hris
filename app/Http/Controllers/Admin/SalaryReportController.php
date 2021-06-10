@@ -2792,7 +2792,7 @@ class SalaryReportController extends Controller
       $coordinate56values[$salary->id] = $coordinate56value;
 
       // deduction
-      $deduction = SalaryReportDetail::where('salary_report_id', $salary->id)->where('type', 0)->get()->sum('total');
+      $deduction = SalaryReportDetail::where('salary_report_id', $salary->id)->where('status', 'Salary Deduction')->get()->sum('total');
 
       if ($basic_salaries[$salary->id]) {
         $jumlah_month = $coordinate12values[$salary->id] + $coordinate13values[$salary->id] + $coordinate14values[$salary->id] + $basic_salaries[$salary->id]->total;
