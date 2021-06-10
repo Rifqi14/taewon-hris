@@ -3303,12 +3303,14 @@ class SalaryReportController extends Controller
       $coordinate45values[$salary->id] = $coordinate45value;
 
       // coordinate46
+      $driverallowance = SalaryReportDetail::where('salary_report_id', $salary->id)->where('description', 'Driver Allowance')->get()->sum('total');
+      $mealallowance = SalaryReportDetail::where('salary_report_id', $salary->id)->where('description', 'Tunjangan Makan')->get()->sum('total');
       if ($coordinate46) {
         $coordinate46value = SalaryReportDetail::where('salary_report_id', $salary->id)->where('group_allowance_id', $coordinate46->id)->get()->sum('total');
       } else {
         $coordinate46value = 0.0;
       }
-      $coordinate46values[$salary->id] = $coordinate46value;
+      $coordinate46values[$salary->id] = $coordinate46value + $driverallowance + $mealallowance;
 
       // coordinate54
       if ($coordinate54) {
@@ -3334,7 +3336,7 @@ class SalaryReportController extends Controller
       $coordinate56values[$salary->id] = $coordinate56value;
 
       // deduction
-      $deduction = SalaryReportDetail::where('salary_report_id', $salary->id)->where('type', 0)->get()->sum('total');
+      $deduction = SalaryReportDetail::where('salary_report_id', $salary->id)->where('status', 'Salary Deduction')->get()->sum('total');
 
       if ($basic_salaries[$salary->id]) {
         $jumlah_month = $coordinate12values[$salary->id] + $coordinate13values[$salary->id] + $coordinate14values[$salary->id] + $basic_salaries[$salary->id]->total;
