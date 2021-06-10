@@ -2049,13 +2049,557 @@ class SalaryReportController extends Controller
     }
   }
 
+  public function generateSalary($month,$year,$employees,$created_by){
+    foreach ($employees as $employee) {
+        $dt            = Carbon::createFromFormat('Y-m', $year . '-' . $month);
+        $checkDate     = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $month . '-' . $year);
+        $exists        = $this->check_periode($month, $year, $employee->id);
+        if ($exists) {
+            $delete = $exists->delete();
+        }
+        if ($employee->join_date <= $checkDate && $employee->status == 1) {
+            $period = changeDateFormat('Y-m-d', 01 . '-' . $month . '-' . $year);
+            $salaryreport = SalaryReport::create([
+              'employee_id'   => $employee->id,
+              'created_by'    => $created_by,
+              'period'        => $period,
+              'status'        => -1
+            ]); 
+            if ($salaryreport) {
+              $basesalary           = $this->get_employee_salary($employee->id);
+              $alphaPenalty         = $this->getAlphaData($employee->id, $month, $year);
+              $allowance            = $this->get_additional_allowance($employee->id, $month, $year);
+              $deduction            = $this->get_deduction($employee->id, $month, $year);
+              $overtime             = $this->get_overtime($employee->id, $month, $year);
+              $driverallowance      = $this->get_driver_allowance($employee->id, $month, $year);
+              $penaltyallowance     = $this->getPenaltyAllowance($employee->id, $month, $year);
+              $ptkp                 = $this->get_pkp($employee->ptkp);
+              $attendance_allowance = $this->get_attendance_allowance($employee->id, $month, $year);
+              $pph                  = $this->getPPhAllowance($employee->id, $month, $year);
+              $allowance_prorates   = $this->getAllowanceProrate($employee->id, $month, $year);
+              $salary_deduction     = $this->get_salarydeduction($employee->id, $month, $year);
+
+              /* Base Salary*/
+              if ($basesalary) {
+                $periode_salary = changeDateFormat('Y-m', $year . '-' . $month);
+                $join_date      = changeDateFormat('Y-m', $employee->join_date);
+                $resign_date    = changeDateFormat('Y-m', $employee->resign_date);
+                $readConfigs = Config::where('option', 'setting_prorate')->first();
+                $prorate_type= Config::where('option', 'type_prorate')->first();
+  
+                /**Jika Config setting prorate sama dengan full */
+                if ($readConfigs->value == 'full') {
+  
+                  $date1 = $employee->join_date;
+                  $date2 = $employee->resign_date;
+  
+                  $diff = abs(strtotime($date2) - strtotime($date1));
+  
+                  $years  = floor($diff / (365 * 60 * 60 * 24));
+                  $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+                  $days   = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+  
+                  /**Jika tipe prorate sama dengan basic_allowance */
+                  if ($prorate_type == 'basic_allowance') {
+                    foreach ($allowance_prorates as $key => $allowance) {
+                      /**Jika Join date sama dengan priode salary  */
+                      if ($join_date == $periode_salary) {
+                        SalaryReportDetail::create([
+                          'salary_report_id' => $salaryreport->id,
+                          'employee_id'      => $employee->id,
+                          'description'      => LABEL_BASIC_ALLOWANCE,
+                          'total'            => $join_date == $periode_salary ? (date("d", strtotime($employee->join_date)) * ($basesalary->amount + $allowance->allowance_value)) / 30 : $basesalary->amount,
+                          'type'             => 1,
+                          'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
+                          'is_added'         => 'NO'
+                        ]);
+                      }
+                      /**End Jika Join date sama dengan priode salary  */
+                      /**Jika join date dan resign date sama dengan priode salary*/
+                      if ($join_date && $resign_date == $periode_salary) {
+                        SalaryReportDetail::create([
+                          'salary_report_id' => $salaryreport->id,
+                          'employee_id'      => $employee->id,
+                          'description'      => LABEL_BASIC_ALLOWANCE,
+                          'total'            => $days > 0 ? (date("d", strtotime($days . '-1 days')) * ($basesalary->amount + $allowance->allowance_value)) / 30 : $basesalary->amount,
+                          'type'             => 1,
+                          'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
+                          'is_added'         => 'NO'
+                        ]);
+                      }
+                      /**End Jika join date dan resign date sama dengan priode salary*/
+                      /** Jika join date dan resign date ada*/
+                      if ($join_date && $resign_date) {
+                        SalaryReportDetail::create([
+                          'salary_report_id' => $salaryreport->id,
+                          'employee_id'      => $employee->id,
+                          'description'      => LABEL_BASIC_ALLOWANCE,
+                          'total'            => $days > 0 ? (date("d", strtotime($days . '-1 days')) * ($basesalary->amount + $allowance->allowance_value)) / 30 : $basesalary->amount,
+                          'type'             => 1,
+                          'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
+                          'is_added'         => 'NO'
+                        ]);
+                      }
+                      /** End Jika join date dan resign date ada*/
+                    }
+                    /**End Jika tipe prorate sama dengan basic_allowance */
+                  } else {
+                    /**Jika join date sama dengan periode_salary*/
+                    if ($join_date == $periode_salary) {
+                      SalaryReportDetail::create([
+                        'salary_report_id' => $salaryreport->id,
+                        'employee_id'      => $employee->id,
+                        'description'      => LABEL_BASIC_SALARY,
+                        'total'            => $join_date == $periode_salary ? (date("d", strtotime($employee->join_date)) * $basesalary->amount) / 30 : $basesalary->amount,
+                        'type'             => 1,
+                        'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
+                        'is_added'         => 'NO'
+                      ]);
+                    }
+                    /**End Jika join date sama dengan periode_salary*/
+                    /** Jika ada join date dan resign date sama dengan priode salary*/
+                    if ($join_date && $resign_date == $periode_salary) {
+                      SalaryReportDetail::create([
+                        'salary_report_id' => $salaryreport->id,
+                        'employee_id'      => $employee->id,
+                        'description'      => LABEL_BASIC_SALARY,
+                        'total'            => $days > 0 ? (date("d", strtotime($days . '-1 days')) * $basesalary->amount) / 30 : $basesalary->amount,
+                        'type'             => 1,
+                        'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
+                        'is_added'         => 'NO'
+                      ]);
+                    }
+                    /**End Jika ada join date dan resign date sama dengan priode salary*/
+                    /** Jika ada join date dan resign date*/
+                    if ($join_date && $resign_date) {
+                      SalaryReportDetail::create([
+                        'salary_report_id' => $salaryreport->id,
+                        'employee_id'      => $employee->id,
+                        'description'      => LABEL_BASIC_SALARY,
+                        'total'            => $days > 0 ? (date("d", strtotime($days . '-1 days')) * $basesalary->amount) / 30 : $basesalary->amount,
+                        'type'             => 1,
+                        'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
+                        'is_added'         => 'NO'
+                      ]);
+                    }
+                    /** End Jika ada join date dan resign date*/
+                  }
+                  /**End Jika Config setting prorate sama dengan full */
+                } else {
+                  SalaryReportDetail::create([
+                    'salary_report_id' => $salaryreport->id,
+                    'employee_id'      => $employee->id,
+                    'description'      => LABEL_BASIC_SALARY,
+                    'total'            => $resign_date == $periode_salary ? (date("d", strtotime($employee->resign_date . '-1 days')) * $basesalary->amount) / 30 : $basesalary->amount,
+                    'type'             => 1,
+                    'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
+                    'is_added'         => 'NO'
+                  ]);
+                }
+                
+                $salaryreport->salary_type = $basesalary->amount == 0 ? 'Hourly' : 'Monthly';
+                $salaryreport->save();
+              } else {
+                DB::rollBack();
+                return response()->json([
+                  'status'    => false,
+                  'message'   => 'Base salary for this employee not found'
+                ], 400);
+              }
+              /*End Base Salary*/
+
+
+              /*Allowance*/
+              if ($allowance) {
+                foreach ($allowance as $key => $value) {
+                  if ($value->group_allowance_id) {
+                    SalaryReportDetail::create([
+                      'salary_report_id'  => $salaryreport->id,
+                      'employee_id'       => $employee->id,
+                      'description'       => $value->description,
+                      'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                      'type'              => 1,
+                      'status'            => 'Additional Allowance',
+                      'group_allowance_id'=> $value->group_allowance_id,
+                      'is_added'          => 'NO'
+                    ]);
+                  } else {
+                    SalaryReportDetail::create([
+                      'salary_report_id'  => $salaryreport->id,
+                      'employee_id'       => $employee->id,
+                      'description'       => $value->allowance_name,
+                      'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                      'type'              => 1,
+                      'status'            => 'Additional Allowance',
+                      'is_added'          => 'NO'
+                    ]);
+                  }
+                }
+              }
+              /*End Allowance*/
+
+              /*Deduction*/
+              if ($deduction) {
+                foreach ($deduction as $key => $value) {
+                    $decutionvalue = 0;
+                    $basic_ammount = $basesalary->amount ;
+                    $allowances = $this->get_detail_allowance($employee->id, $month, $year,$value->allowance_id );
+                    $totalallowance = 0;
+                    foreach($allowances as $allowance){
+                      $totalallowance += $allowance->value_deduction;
+                    }
+                    $deductionvalue = $basic_ammount;
+                    if ($value->bpjs == 'BASIC') {
+                      $deductionvalue = $basic_ammount;
+                    }
+                    if ($value->bpjs == 'ALLOWANCE') {
+                      $deductionvalue = $totalallowance;
+                    }
+                    if ($value->bpjs == 'BASIC & ALLOWANCE') {
+                      $deductionvalue = $basic_ammount + $totalallowance;
+                    }
+                  if ($value->group_allowance_id) {
+                    $salaryreportdetail = SalaryReportDetail::where('salary_report_id', $id)->where('group_allowance_id', $value->group_allowance_id)->first();
+                    if ($salaryreportdetail) {
+                        $salaryreportdetail->total =  $salaryreportdetail->total + (($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value);
+                        $salaryreportdetail->save();
+                    } else {
+                      SalaryReportDetail::create([
+                        'salary_report_id'  => $salaryreport->id,
+                        'employee_id'       => $employee->id,
+                        'description'       => $value->description,
+                        'total'             => ($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value,
+                        'type'              => 0,
+                        'status'            => 'Deduction Allowance',
+                        'group_allowance_id' => $value->group_allowance_id,
+                        'is_added'          => 'NO'
+                      ]);
+                    }
+                  } else {
+                    SalaryReportDetail::create([
+                      'salary_report_id'  => $salaryreport->id,
+                      'employee_id'       => $employee->id,
+                      'description'       => $value->description,
+                      'total'             => ($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value,
+                      'type'              => 0,
+                      'status'            => 'Deduction Allowance',
+                      'is_added'          => 'NO'
+                    ]);
+                  }
+                }
+              }
+              /*End Deduction*/
+
+              /*Salary Deduction*/
+              if ($salary_deduction) {
+                foreach ($salary_deduction as $key => $value) {
+                  SalaryReportDetail::create([
+                    'salary_report_id' => $salaryreport->id,
+                    'employee_id'      => $employee->id,
+                    'description'      => $value->description,
+                    'total'            => $value->nominal,
+                    'type'             => 0,
+                    'status'           => 'Salary Deduction',
+                    'is_added'         => 'NO'
+                  ]);
+                }
+              }
+              /*End Salary Deduction*/
+
+              /*Overtime Yes*/
+              if ($overtime && $employee->overtime == 'yes') {
+                foreach ($overtime as $key => $over) {
+                  SalaryReportDetail::create([
+                    'salary_report_id'  => $salaryreport->id,
+                    'employee_id'       => $employee->id,
+                    'description'       => LABEL_OVERTIME . " " . $over->amount * 100 . "%",
+                    'total'             => $over->final_salary,
+                    'type'              => 1,
+                    'status'            => 'Draft',
+                    'is_added'          => 'NO'
+                  ]);
+                }
+              }
+              /*End Overtime Yes*/
+
+              /*SPSI*/
+              if ($employee->join == 'yes') {
+                $spsi = SalaryReportDetail::create([
+                  'salary_report_id'  => $salaryreport->id,
+                  'employee_id'       => $employee->id,
+                  'description'       => LABEL_SPSI,
+                  'total'             => 20000,
+                  'type'              => 0,
+                  'status'            => 'Draft',
+                  'is_added'          => 'NO'
+                ]);
+
+              }
+              /*SPSI*/
+
+              /*Driver Alllowance*/
+              if ($employee->department->driver == 'yes' && $driverallowance > 0) {
+                $salaryreportdetail = SalaryReportDetail::create([
+                  'salary_report_id'  => $salaryreport->id,
+                  'employee_id'       => $employee->id,
+                  'description'       => LABEL_DRIVER_ALLOWANCE,
+                  'total'             => $driverallowance,
+                  'type'              => 1,
+                  'status'            => 'Draft',
+                  'is_added'          => 'NO'
+                ]);
+                if(!$salaryreportdetail){
+                  DB::rollBack();
+                  return response()->json([
+                    'status'    => false,
+                    'message'   => $salaryreportdetail
+                  ],
+                    400
+                  );
+                } 
+              }
+              /*End Driver Allowance*/
+              
+              /* Alpha Penalty Allowance*/
+              if ($alphaPenalty->sum('penalty') > 0 && $employee->workgroup->penalty == 'Basic') {
+                $alpha_penalty = SalaryReportDetail::create([
+                  'salary_report_id'  => $salaryreport->id,
+                  'employee_id'       => $employee->id,
+                  'description'       => LABEL_ALPHA_PENALTY,
+                  'total'             => -1 * $alphaPenalty->sum('penalty'),
+                  'type'              => 1,
+                  'status'            => 'Draft',
+                  'is_added'          => 'NO'
+                ]);
+              }
+              /*End Alpha Penalty Allowance*/
+
+              /* Attendance Allowance*/
+              if ($attendance_allowance) {
+                SalaryReportDetail::create([
+                  'salary_report_id'  => $salaryreport->id,
+                  'employee_id'       => $employee->id,
+                  'description'       => LABEL_ATTENDANCE_ALLOWANCE,
+                  'total'             => $attendance_allowance,
+                  'type'              => 1,
+                  'status'            => 'Draft',
+                  'is_added'          => 'NO'
+                ]);
+              }
+              /* End Attendance Allowance */
+
+              $salaryreport->gross_salary = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
+              $salaryreport->deduction    = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
+              $salaryreport->net_salary   = $salaryreport->gross_salary - $salaryreport->deduction;
+              $salaryreport->save();
+
+              /* Alpha Penalty*/
+              if ($alphaPenalty->count() > 0 && $employee->workgroup->penalty == 'Gross') {
+                $alpha_penalty = SalaryReportDetail::create([
+                  'salary_report_id'  => $salaryreport->id,
+                  'employee_id'       => $employee->id,
+                  'description'       => LABEL_ALPHA_PENALTY,
+                  'total'             => -1 * ($alphaPenalty->count() * (($salaryreport->gross_salary - $penaltyallowance) / 30)),
+                  'type'              => 1,
+                  'status'            => 'Draft',
+                  'is_added'          => 'NO'
+                ]);
+                $salaryreport->gross_salary = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
+                $salaryreport->net_salary   = $salaryreport->gross_salary - $salaryreport->deduction;
+                $salaryreport->save();
+              }
+              /*End Alpha Penalty*/
+
+              /* PPH True */
+              if ($pph) {
+                if (!$ptkp) {
+                  DB::rollBack();
+                  return response()->json([
+                    'status'    => false,
+                    'message'   => 'PTKP for this employee name ' . $employee->name . ' not found. Please set PTKP or uncheck PPh 21 allowance for this generate month.'
+                  ], 400);
+                }
+                $gross                             = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
+                $deduction                         = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
+                $positionAllowance                 = getPositionAllowance($gross);
+                $grossSalaryAfterPositionAllowance = getGrossSalaryAfterPositionAllowance($gross, $positionAllowance);
+                $multiplierMonth                   = getMultiplierMonth($employee->join_date);
+                $grossSalaryPerYear                = getGrossSalaryPerYear($grossSalaryAfterPositionAllowance, $multiplierMonth);
+                $pkps                              = getPKP($grossSalaryPerYear, $ptkp->value);
+                $pph21Yearly                       = getPPH21Yearly($pkps, $employee->npwp);
+                
+                //PPH Gaji + THR
+                $grossSalaryJoinMonth   = getGrossSalaryJoinMonth($gross, $multiplierMonth);
+                $getThr                 = $this->getThrReport($month, $year, $employee->id);
+                
+                SalaryReportDetail::create([
+                  'salary_report_id'  => $salaryreport->id,
+                  'employee_id'       => $employee->id,
+                  'description'       => LABEL_POSITION_ALLOWANCE,
+                  'total'             => $positionAllowance > 0 ? $positionAllowance : 0,
+                  'type'              => 2,
+                  'status'            => 'Draft',
+                  'is_added'          => 'NO'
+                ]);
+                SalaryReportDetail::create([
+                  'salary_report_id'  => $salaryreport->id,
+                  'employee_id'       => $employee->id,
+                  'description'       => LABEL_NET_SALARY_YEAR,
+                  'total'             => $grossSalaryPerYear > 0 ? $grossSalaryPerYear : 0,
+                  'type'              => 2,
+                  'status'            => 'Draft',
+                  'is_added'          => 'NO'
+                ]);
+                SalaryReportDetail::create([
+                  'salary_report_id'  => $salaryreport->id,
+                  'employee_id'       => $employee->id,
+                  'description'       => LABEL_PPH_YEARLY,
+                  'total'             => ($pph21Yearly) > 0 ? $pph21Yearly : 0,
+                  'type'              => 2,
+                  'status'            => 'Draft',
+                  'is_added'          => 'NO'
+                ]);
+                SalaryReportDetail::create([
+                  'salary_report_id'  => $salaryreport->id,
+                  'employee_id'       => $employee->id,
+                  'description'       => LABEL_PPH_MONTHLY,
+                  'total'             => ($pph21Yearly / $multiplierMonth) > 0 ? $pph21Yearly / $multiplierMonth : 0,
+                  'type'              => 0,
+                  'status'            => 'Draft',
+                  'is_added'          => 'NO'
+                ]);
+                if ($getThr) {
+                  $total                  = getTotal($grossSalaryJoinMonth, $getThr->amount);
+                  $totalPositionAllowance = getTotalPositionAllowance($total);
+                  $netSalaryThr           = getNetSalaryThr($total, $totalPositionAllowance);
+                  $pkpThr                 = getPkpThr($netSalaryThr, $ptkp->value);
+                  $tarifThr               = getTarifThr($pkpThr);
+  
+                  SalaryReportDetail::create([
+                    'salary_report_id'  => $salaryreport->id,
+                    'employee_id'       => $employee->id,
+                    'description'       => LABEL_PPH_THR,
+                    'total'             => $tarifThr > 0 ? $tarifThr - $pph21Yearly : 0,
+                    'type'              => 0,
+                    'status'            => 'Draft',
+                    'is_added'          => 'NO'
+                  ]);
+                }
+                
+              }
+              /*End PPH*/
+
+              $salaryreport->gross_salary = $this->gross_salary($salaryreport->id) ? $this->gross_salary($salaryreport->id) : 0;
+              $salaryreport->deduction    = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
+              $salaryreport->net_salary   = $salaryreport->gross_salary - $salaryreport->deduction;
+              $salaryreport->save();
+            } elseif (!$salaryreport) {
+              DB::rollBack();
+              return response()->json([
+                'status'    => false,
+                'message'   => $salaryreport
+              ], 400);
+            }
+        }
+        else {
+          DB::rollBack();
+          return response()->json([
+            'status'    => false,
+            'message'   => 'This employee join date is greater than generate month and year',
+          ], 400);
+        }
+    }
+  } 
   /**
    * Store a newly created resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public function store(){
+    if ($request->department && !$request->position && !$request->workgroup_id && !$request->employee_name) {
+      DB::beginTransaction();
+      $employee = Employee::select('employees.*')->leftJoin('departments', 'departments.id', '=', 'employees.department_id')->where('employees.status', 1);
+      $string = '';
+      $department = $request->department;
+      $uniqdepartments = [];
+      foreach($department as $dept){
+          if(!in_array($dept,$uniqdepartments)){
+              $uniqdepartments[] = $dept;
+          }
+      }
+      $department = $uniqdepartments;
+      foreach ($department as $dept) {
+        $string .= "departments.path like '%$dept%'";
+        if (end($department) != $dept) {
+          $string .= ' or ';
+        }
+      }
+      $employee->whereRaw('(' . $string . ')');
+      $employees = $employee->get();
+      if (!$employees->isEmpty()) {
+        $this->generateSalary($request->montly,$request->year,$employees,$request->user);
+      }
+      else{
+        return array(
+          'status'    => true,
+          'message'   => "Data not found"
+        );
+      }
+      DB::commit();
+    }elseif (!$request->department && $request->position && !$request->workgroup_id && !$request->employee_name) {
+      DB::beginTransaction();
+      $employees = Employee::select('employees.*')->whereIn('title_id', $request->position)->where('employees.status', 1)->get();
+      if (!$employees->isEmpty()) {
+        $this->generateSalary($request->montly,$request->year,$employees,$request->user);
+      }
+      else{
+        return array(
+          'status'    => false,
+          'message'   => "This position has no employees"
+        );
+      }
+      DB::commit();
+    } elseif (!$request->department && !$request->position && $request->workgroup_id && !$request->employee_name) {
+      DB::beginTransaction();
+      $employees = Employee::select('employees.*')->whereIn('workgroup_id', $request->workgroup_id)->where('employees.status', 1)->get();
+      if (!$employees->isEmpty()) {
+        $this->generateSalary($request->montly,$request->year,$employees,$request->user);
+      }
+      else{
+        return array(
+          'status'    => false,
+          'message'   => "This workgroup has no employees"
+        );
+      }
+      DB::commit();
+    } elseif (!$request->department && !$request->position && !$request->workgroup_id && $request->employee_name) {
+      DB::beginTransaction();
+      $employee_id = [];
+      foreach ($request->employee_name as $view_employee) {
+        $employee_id[] = $view_employee;
+      }
+      if(count($employee_id) >0){
+        $employees = Employee::whereIn('id',$employee_id)->get();
+      }
+      else{
+        $employees = Employee::whereIn('id',[-1])->get();
+      }
+      $this->generateSalary($request->montly,$request->year,$employees,$request->user);
+      DB::commit();
+      return response()->json([
+        'status'    => true,
+        'message'   => 'salary report generated successfully',
+      ], 200);
+    } else {
+      return response()->json([
+        'status'    => false,
+        'message'   => 'Please select one parameter from position, department or workgroup to generate mass'
+      ], 400);
+    }
+  }
+
+  public function store2(Request $request)
   {
     // dd($request->all());
     if ($request->department && !$request->position && !$request->workgroup_id && !$request->employee_name) {
