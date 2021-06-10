@@ -93,7 +93,6 @@
 	$gross = 0;
 	$deduction = 0;
 	@endphp
-	@endforeach
 	<div class="container-fluid pl-5 pr-5" >
 		{{-- <div class="logo"> --}}
 		{{-- <img class="img-logo" src="{{asset('img/logo.png')}}"> --}}
@@ -306,7 +305,7 @@
 		</table> --}}
 	</div>
 	<div class="return-page"></div>
-	{{-- @endforeach --}}
+	@endforeach
 </body>
 <script src="{{asset('adminlte/component/jquery/jquery.min.js')}}"></script>
 <script type="text/javascript">
