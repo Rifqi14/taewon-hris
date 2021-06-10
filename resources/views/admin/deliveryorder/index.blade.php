@@ -52,7 +52,7 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label" for="police_no">{{__('deliveryorfer.policeno')}}</label>
+                  <label class="control-label" for="police_no">{{__('deliveryorder.policeno')}}</label>
                   {{-- <input type="text" name="police_no" id="police_no" class="form-control filter" placeholder="Police No" multiple> --}}
                   <select name="police_no" id="police_no" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple  data-placeholder="{{__('deliveryorfer.policeno')}}">
                     <option value=""></option>
@@ -126,7 +126,7 @@
                 <th width="100">{{__('deliveryorder.arrtime')}}</th>
                 <th width="100">Kloter</th>
                 <th width="130" class="text-left">{{__('deliveryorder.driver')}}</th>
-                <th width="100">{{__('deliveryorfer.policeno')}}</th>
+                <th width="100">{{__('deliveryorder.policeno')}}</th>
                 <th width="100">{{__('customer.cust')}}</th>
                 <th width="10">{{__('general.act')}}</th>
               </tr>
