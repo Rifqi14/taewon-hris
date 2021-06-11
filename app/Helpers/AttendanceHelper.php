@@ -80,7 +80,7 @@ if (!function_exists('calculateAttendance')) {
       */
       if($attendance->day == 'Off' && $employee->timeout == 'yes'  && $attendance->attendance_in && $attendance->attendance_out){
         if ($employee->overtime == 'yes') {
-            $totalovertime = $totalworkingtime;
+            $totalovertime = $totalworkingtime >= 1 ? $totalworkingtime : 0;
             if ($employee->spl == 'yes') {
                 $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id',$employee->id)->first();
                 // ketika ada spl
@@ -133,7 +133,7 @@ if (!function_exists('calculateAttendance')) {
           $totalbreaktime = $breakworkingtime;
           $totalworkingtime = $totalattendance - $totalbreaktime;
           if ($employee->overtime == 'yes') {
-              $totalovertime = $totalworkingtime - $min_workhour;
+              $totalovertime = $totalworkingtime - $min_workhour >= 1? $totalworkingtime - $min_workhour: 0;
               if ($employee->spl == 'yes') {
                   $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
                   if ($existspl) {
@@ -174,7 +174,7 @@ if (!function_exists('calculateAttendance')) {
       */
       if($attendance->day == 'Off' && $employee->timeout != 'yes'  && $attendance->attendance_in && $attendance->attendance_out){
           if ($employee->overtime == 'yes') {
-            $totalovertime = $totalworkingtime - $min_workhour;
+            $totalovertime = $totalworkingtime - $min_workhour >= 1? $totalworkingtime - $min_workhour : 0;
             if ($employee->spl == 'yes') {
                 $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
                 if ($existspl) {
@@ -225,7 +225,7 @@ if (!function_exists('calculateAttendance')) {
           $totalworkingtime = $totalattendance - $breakworkingtime;
 
           if ($employee->overtime == 'yes') {
-              $totalovertime = $totalworkingtime - $min_workhour;
+              $totalovertime = $totalworkingtime - $min_workhour >= 1? $totalworkingtime - $min_workhour :1;
 
               if ($employee->spl == 'yes') {
                   $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
@@ -274,7 +274,7 @@ if (!function_exists('calculateAttendance')) {
                 $totalovertime = 0;
             }
             else{
-                $totalovertime = $totalworkingtime - $min_workhour;
+                $totalovertime = $totalworkingtime - $min_workhour >= 1? $totalworkingtime - $min_workhour :0;
             }
             if ($employee->spl == 'yes') {
                 $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
@@ -333,7 +333,7 @@ if (!function_exists('calculateAttendance')) {
           $totalworkingtime = $totalattendance - $totalbreaktime;
 
           if ($employee->overtime == 'yes') {
-              $totalovertime = $totalworkingtime - $min_workhour;
+              $totalovertime = $totalworkingtime - $min_workhour >= 1? $totalworkingtime - $min_workhour :0;
               if ($employee->spl == 'yes') {
                   $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
                   if ($existspl) {
@@ -376,7 +376,7 @@ if (!function_exists('calculateAttendance')) {
       */
       if($attendance->day != 'Off' && $employee->timeout != 'yes'  && $attendance->attendance_in && $attendance->attendance_out){
         if ($employee->overtime == 'yes') {
-            $totalovertime = $totalworkingtime - $min_workhour;
+            $totalovertime = $totalworkingtime - $min_workhour >= 1 ? $totalworkingtime - $min_workhour : 0;
             if ($employee->spl == 'yes') {
                 $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
                 if ($existspl) {
@@ -429,7 +429,7 @@ if (!function_exists('calculateAttendance')) {
           $totalworkingtime = $totalattendance - $breakworkingtime;
 
           if ($employee->overtime == 'yes') {
-              $totalovertime = $totalworkingtime - $min_workhour;
+              $totalovertime = $totalworkingtime - $min_workhour >= 1? $totalworkingtime - $min_workhour : 0;
               if ($employee->spl == 'yes') {
                   $existspl = Spl::where('spl_date', $attendance->attendance_date)->where('employee_id', $employee->id)->first();
                   if ($existspl) {
