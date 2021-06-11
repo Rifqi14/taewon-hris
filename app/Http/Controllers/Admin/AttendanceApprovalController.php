@@ -1521,7 +1521,6 @@ class AttendanceApprovalController extends Controller
             $attendance->adj_working_time = $request->working_time;
             $attendance->adj_over_time = $request->over_time;
             $attendance->save();
-            calculateAttendance($attendance);
             calculateOvertime($attendance);
             calculateAllowance($attendance);
             if ($attendance->status == -1 && $attendance->attendance_in && $attendance->attendance_out) {
