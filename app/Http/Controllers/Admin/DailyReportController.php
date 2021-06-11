@@ -358,13 +358,13 @@ class DailyReportController extends Controller
             $join->on('attendances.employee_id','=','overtimes.employee_id');
             $join->on('attendances.attendance_date','=','overtimes.date');
         });
-        $query->leftJoin(DB::raw("(select employee_allowances.employee_id, group_allowances.name as desc,employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name,sum(case when lower(allowances.allowance) like '%tunjangan makan%' and employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) tunjanganmakan from employee_allowances
-        left join allowances on allowances.id = employee_allowances.allowance_id
-        left join group_allowances on group_allowances.id = allowances.group_allowance_id
-        group by group_allowances.name,employee_allowances.is_penalty, allowances.group_allowance_id, employee_allowances.type, employee_allowances.employee_id) as employee_allowances"),function($join){
-            $join->on('attendances.employee_id','=', 'employee_allowances.employee_id');
-        });
-        $query->leftJoin(DB::raw("(select employee_id,tanggal_masuk,sum(case when lower(allowances.allowance) like '%makan siang%' then employee_detailallowances.value::numeric else 0 end) makansiang,sum(case when lower(allowances.allowance) like '%makan sore%' then employee_detailallowances.value::numeric else 0 end) makansore,sum(case when lower(allowances.allowance) like '%makan malam%' then employee_detailallowances.value::numeric else 0 end) makanmalam,sum(case when lower(allowances.allowance) like '%transport%' then employee_detailallowances.value::numeric else 0 end) transport from employee_detailallowances
+        // $query->leftJoin(DB::raw("(select employee_allowances.employee_id, group_allowances.name as desc,employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name,sum(case when lower(allowances.allowance) like '%tunjangan makan%' and employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) tunjanganmakan from employee_allowances
+        // left join allowances on allowances.id = employee_allowances.allowance_id
+        // left join group_allowances on group_allowances.id = allowances.group_allowance_id
+        // group by group_allowances.name,employee_allowances.is_penalty, allowances.group_allowance_id, employee_allowances.type, employee_allowances.employee_id) as employee_allowances"),function($join){
+        //     $join->on('attendances.employee_id','=', 'employee_allowances.employee_id');
+        // });
+        $query->leftJoin(DB::raw("(select employee_id,tanggal_masuk,sum(case when lower(allowances.allowance) like '%makan siang%' then employee_detailallowances.value::numeric else 0 end) makansiang,sum(case when lower(allowances.allowance) like '%tunjangan makan%' then employee_detailallowances.value::numeric else 0 end) tunjanganmakan,sum(case when lower(allowances.allowance) like '%makan sore%' then employee_detailallowances.value::numeric else 0 end) makansore,sum(case when lower(allowances.allowance) like '%makan malam%' then employee_detailallowances.value::numeric else 0 end) makanmalam,sum(case when lower(allowances.allowance) like '%transport%' then employee_detailallowances.value::numeric else 0 end) transport from employee_detailallowances
         left join allowances on allowances.id = employee_detailallowances.allowance_id
         group by employee_id,tanggal_masuk) as employee_detailallowances"), function ($join) {
             $join->on('attendances.employee_id', '=', 'employee_detailallowances.employee_id');

@@ -252,12 +252,12 @@ class ThrReportController extends Controller
         $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
         $query->leftJoin('allowance_categories', 'allowance_categories.key', '=', 'allowances.category');
         $query->leftJoin('group_allowances', 'group_allowances.id', 'allowances.group_allowance_id');
-        $query->where('allowances.thr', '=', 'Yes');
+        // $query->where('allowances.thr', '=', 'Yes');
         $query->where('employee_allowances.employee_id', '=', $id);
-        $query->where('employee_allowances.month', '=', $month);
-        $query->where('employee_allowances.year', '=', $year);
-        $query->where('employee_allowances.status', '=', 1);
-        $query->where('allowance_categories.type', '=', 'additional');
+        // $query->where('employee_allowances.month', '=', $month);
+        // $query->where('employee_allowances.year', '=', $year);
+        // $query->where('employee_allowances.status', '=', 1);
+        // $query->where('allowance_categories.type', '=', 'additional');
         $query->where('employee_allowances.type', '!=', 'automatic');
         $query->groupBy('group_allowances.name', 'employee_allowances.is_penalty', 'allowances.group_allowance_id', 'employee_allowances.type');
         $query->orderByRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) desc");
@@ -841,6 +841,7 @@ class ThrReportController extends Controller
                     if($thrreport){
                         $basesalary = $this->get_employee_salary($view_employee);
                         $allowance = $this->get_additional_allowance($view_employee, $request->montly, $request->year);
+                        dd($allowance);
                         $configThr = Config::where('option', 'thr')->first();
                         $employee = Employee::with('department')->with('title')->find($view_employee);
 
@@ -850,6 +851,7 @@ class ThrReportController extends Controller
                                 foreach ($allowance as $key => $value) {
                                    $amount_allowance = $amount_allowance +  $value->value;
                                 }
+                                dd($amount_allowance);
                                 if ($thrreport->period < 12) {
                                     $thrdetail = ThrReportDetail::create([
                                         'thr_report_id'        => $thrreport->id,
