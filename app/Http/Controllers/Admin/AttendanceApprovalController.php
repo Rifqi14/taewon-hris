@@ -172,7 +172,7 @@ class AttendanceApprovalController extends Controller
         if (!$from && $to) {
             $query->where('attendances.attendance_date', '<=', $to);
         }
-        if ($overtime) {
+        if ($overtime != '') {
             $query->where('attendances.adj_over_time', $overtime);
         }
         if ($employee_id) {
@@ -242,7 +242,7 @@ class AttendanceApprovalController extends Controller
         if (!$from && $to) {
             $query->where('attendances.attendance_date', '<=', $to);
         }
-        if ($overtime) {
+        if ($overtime != '') {
             $query->where('attendances.adj_over_time', $overtime);
         }
         if ($employee_id) {
