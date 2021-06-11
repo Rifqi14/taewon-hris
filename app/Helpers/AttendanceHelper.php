@@ -884,7 +884,7 @@ if (!function_exists('calculateOvertime')) {
         $month =  date('m', strtotime($attendance->attendance_date));
         $year =  date('Y', strtotime($attendance->attendance_date));
       }
-      $rules = OvertimeSchemeList::select('hour', 'amount')->where('overtime_scheme_id', '=', $attendance->overtime_scheme_id)->groupBy('hour','amount')->get();
+      $rules = OvertimeSchemeList::select('hour', 'amount')->where('overtime_scheme_id', '=', $attendance->overtime_scheme_id)->groupBy('hour','amount')->orderBy('hour','asc')->get();
        if ($rules) {
         $i = 0;
         $overtimes = $attendance->adj_over_time;
