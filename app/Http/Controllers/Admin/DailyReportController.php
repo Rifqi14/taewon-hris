@@ -416,7 +416,8 @@ class DailyReportController extends Controller
         $sheet->setCellValue('T1', 'Makan Siang');
         $sheet->setCellValue('U1', 'Makan Sore');
         $sheet->setCellValue('V1', 'Makan Malam');
-        $sheet->setCellValue('W1', 'Tunjangan Makan');
+        $sheet->setCellValue('W1', 'Tunjangan Transport');
+        $sheet->setCellValue('X1', 'Tunjangan Makan');
 
         $row_number = 2;
 
