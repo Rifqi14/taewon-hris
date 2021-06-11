@@ -3561,7 +3561,7 @@ class SalaryReportController extends Controller
     
     $select = '';
     $select .= "employees.nid as nik, employees.name as name, departments.name as department_name,employees.account_no as account_no,
-    employees.join_date as join_date, employees.ptkp as st, employees.npwp as npwp,";
+    employees.join_date as join_date, employees.ptkp as st, employees.npwp as npwp, work_groups.name as workgroup_name,";
     $select .= "max(details.basic_salary) as basic_salary,";
     $select .= "attendances.wt as wt,";
     $select .= "max(details.daily_salary) as daily_salary,";
@@ -3661,7 +3661,7 @@ class SalaryReportController extends Controller
     }
     // $salary->where('salary_reports.id', 27692);
     $salary->orderBy('departments.name', 'asc');
-    $salary->groupBy('employees.nid', 'employees.name', 'departments.name', 'attendances.wt', 'employees.account_no','employees.join_date', 'employees.ptkp', 'employees.npwp');
+    $salary->groupBy('employees.nid', 'employees.name', 'departments.name', 'attendances.wt', 'employees.account_no','employees.join_date', 'employees.ptkp', 'employees.npwp' ,'work_groups.name');
     $salary_reports = $salary->get();
 
     return $salary_reports;
@@ -4112,11 +4112,12 @@ class SalaryReportController extends Controller
       $totalJamOt = $value->ot_1 + $value->ot_15 * 1.5 + $value->ot_20 * 2 + $value->ot_30 * 3 + $value->ot_40 * 4;
       $bruto += $totalOvertime + $value->basic_salary + $value->daily_salary;
       $sheet->setCellValueByColumnAndRow($column_number, $row_number, $number);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->workgroup_name ? $value->workgroup_name : '-');
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->department_name);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->nik);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->name);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->join_date);
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ptkp);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->st);
       $sheet->setCellValueExplicitByColumnAndRow(++$column_number, $row_number, $value->account_no, PHPExcel_Cell_DataType::TYPE_STRING);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->npwp ? $value->npwp : '-');
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->basic_salary ? $value->basic_salary : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
@@ -4131,6 +4132,15 @@ class SalaryReportController extends Controller
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $totalJamOt ? $totalJamOt : 0);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $otJam ? $otJam : 0)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $totalOvertime ? $totalOvertime : 0)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Kerja');
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Libur');
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Cuti');
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Total Cuti');
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Ijin');
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Alpa');
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Total Alpa');
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari S.D');
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Ttl S.D');
       foreach ($additionals as $key => $additional) {
         $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $additional->name));
         $bruto += $value->{$alias};
