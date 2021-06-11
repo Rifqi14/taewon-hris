@@ -3560,7 +3560,7 @@ class SalaryReportController extends Controller
     $leaveSettings = $this->getLeaveSetting();
     
     $select = '';
-    $select .= "employees.nid as nik, employees.name as name, departments.name as department_name,employees.account_no as account_no,
+    $select .= "salary_reports.period,employees.id as employee_id,employees.nid as nik, employees.name as name, departments.name as department_name,employees.account_no as account_no,
     employees.join_date as join_date, employees.ptkp as st, employees.npwp as npwp, work_groups.name as workgroup_name,";
     $select .= "max(details.basic_salary) as basic_salary,";
     $select .= "attendances.wt as wt,";
@@ -3661,7 +3661,7 @@ class SalaryReportController extends Controller
     }
     // $salary->where('salary_reports.id', 27692);
     $salary->orderBy('departments.name', 'asc');
-    $salary->groupBy('employees.nid', 'employees.name', 'departments.name', 'attendances.wt', 'employees.account_no','employees.join_date', 'employees.ptkp', 'employees.npwp' ,'work_groups.name');
+    $salary->groupBy('salary_reports.period','employees.id','employees.nid', 'employees.name', 'departments.name', 'attendances.wt', 'employees.account_no','employees.join_date', 'employees.ptkp', 'employees.npwp' ,'work_groups.name');
     $salary_reports = $salary->get();
 
     return $salary_reports;
@@ -4029,6 +4029,7 @@ class SalaryReportController extends Controller
     $object->setActiveSheetIndex(0);
     $sheet            = $object->getActiveSheet();
 
+    $cut_off = Config::where('option', 'cut_off')->first();
     $salaries         = $this->getExportData($request);
     $additionals      = $this->getGroupAllowance();
     $deductions       = $this->getGroupAllowance('DEDUCTION');
@@ -4101,6 +4102,32 @@ class SalaryReportController extends Controller
     $last_col       = 0;
 
     foreach ($salaries as $key => $value) {
+
+      $month = date("m", strtotime($value->period));
+      $year = date("Y", strtotime($value->period));
+      $endofmonthstart = date("t", mktime(0,0,0,$month - 1,1,$year));
+      $endofmonthfinish = date("t", mktime(0,0,0,$month - 1,1,$year));
+      $cutoff = 31;
+      if($endofmonthstart < $cutoff){
+        $startdate = date('Y-m-d',mktime(0,0,0,$month - 1,$endofmonthstart + 1,$year));
+      }
+      else{
+        $startdate = date('Y-m-d',mktime(0,0,0,$month - 1,$cutoff + 1,$year));
+      }
+      if($endofmonthfinish < $cutoff){
+        $finishdate = date('Y-m-d',mktime(0,0,0,$month,$endofmonthfinish,$year));
+      }
+      else{
+        $finishdate = date('Y-m-d',mktime(0,0,0,$month,$cutoff,$year));
+      }
+      $exception_date = $this->employee_calendar($value->employee_id);
+      $days = getDatesFromRange($startdate,$finishdate,'Y-m-d','1 Day');
+      $totaloff = 0;
+      foreach($days as $day){
+        if(in_array($day, $exception_date)){
+          $totaloff++;
+        }
+      }
       $totalOvertime = $value->otn_1 + $value->otn_15 + $value->otn_20 + $value->otn_30 + $value->otn_40;
       $acttotalJamOt = $value->ot_1 + $value->ot_15 + $value->ot_20 + $value->ot_30 + $value->ot_40;
       // dd($totalOvertime, $acttotalJamOt); 
@@ -4132,8 +4159,8 @@ class SalaryReportController extends Controller
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $totalJamOt ? $totalJamOt : 0);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $otJam ? $otJam : 0)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $totalOvertime ? $totalOvertime : 0)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Kerja');
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Libur');
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, count($days) - $totaloff);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $totaloff);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Cuti');
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Total Cuti');
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Ijin');
