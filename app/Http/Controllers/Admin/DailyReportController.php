@@ -88,7 +88,7 @@ class DailyReportController extends Controller
         if ($status) {
             $query->where('attendances.status', $status);
         }
-        if ($overtime) {
+        if ($overtime != '') {
             $query->where('attendances.adj_over_time', $overtime);
         }
         if ($from && $to) {
@@ -152,7 +152,7 @@ class DailyReportController extends Controller
         if ($nid) {
             $query->whereRaw("employees.nid like '%$nid%'");
         }
-        if ($overtime) {
+        if ($overtime != '') {
             $query->where('attendances.adj_over_time', $overtime);
         }
         if ($department) {
