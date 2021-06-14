@@ -95,9 +95,9 @@
 				<td width="30" style="font-weight: bold;">NAMA</td>
 				<td width="10">:</td>
 				<td style="" width="300">{{ $thrReport->employee->name}}</td>
-				<td width="30" style="font-weight: bold;">TGL SK</td>
-				<td width="10">:</td>
-				<td align="right" style="">{{ date("Y-m-d") }}</td>
+				<td width="100" style="font-weight: bold;border:1px solid #000;">TGL SK</td>
+				<td width="">:</td>
+				<td align="left" style="">{{ date("Y-m-d") }}</td>
 			</tr>
 			<tr>
 				<td valign="top" style="font-weight: bold;">NIK</td>
@@ -105,7 +105,7 @@
 				<td valign="top" style="">{{ $thrReport->employee->nid}}</td>
 				<td valign="top" style="font-weight: bold;">BAGIAN</td>
 				<td valign="top" style="">:</td>
-				<td align="right" valign="top" style="">{{ $thrReport->employee->department->name}}</td>
+				<td align="left" valign="top" style="">{{ $thrReport->employee->department->name}}</td>
 			</tr>
 		</table>
 
@@ -142,9 +142,9 @@
 
 			@php $grandTotal = 0; @endphp
 			@foreach($thrReport->thrdetail as $key => $item)
-			@php $grandTotal = $$grandTotal + $item->total + $total; @endphp
+			@php $grandTotal = $grandTotal + $item->total; @endphp
 			<tr>
-				<td align="right" style="border:1px solid #000">{{number_format("$thrReport->amount", 0,',','.')}}</td>
+				<td align="right" style="border:1px solid #000">{{ ($item->description == "Thr" ? number_format("$item->total", 0,',','.') : "-") }}</td>
 				<td align="right" style="border:1px solid #000">{{ ($item->description == "Kebijakan" ? number_format("$item->total", 0,',','.') : "-") }}</td>
 				<td align="right" style="border:1px solid #000">{{ ($item->description == "PPh 21" ? number_format("$item->total", 0,',','.') : "-") }}</td>
 				<td align="right" style="border:1px solid #000">{{number_format("$grandTotal", 0,',','.')}}</td>
