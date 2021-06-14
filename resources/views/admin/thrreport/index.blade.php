@@ -58,6 +58,8 @@
                     <div class="pull-right card-tools">
                         <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}"
                             title="Generate"><i class="fa fa-sync"></i></button>
+                        <a href="javascript:void(0)" onclick="printmass()" class="btn btn-sm btn-info text-white"
+                            title="{{__('general.print')}} Mass"><i class="fa fa-print"></i></a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -321,7 +323,7 @@
     function printpreview(ids) {
         $('.overlay').removeClass('d-none');
         $.ajax({
-            url: "{{ route('salaryreport.printmass') }}",
+            url: "{{ route('thrreport.printmass') }}",
             method: 'GET',
             data: {
                 id: JSON.stringify(ids)
