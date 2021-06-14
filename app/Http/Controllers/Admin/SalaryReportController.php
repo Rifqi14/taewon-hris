@@ -3613,13 +3613,14 @@ class SalaryReportController extends Controller
       $select .= "max(details.$alias) as $alias,";
     }
     $select .= "min(details.alpha_penalty) as alpha_penalty,";
+    $select .= "min(details.pinjaman) as pinjaman,";
     $select .= "max(details.spsi) as spsi,";
     $select .= "max(details.pph) as pph,";
     $select .= "sum(details.de_non_pph) as de_non_pph,";
     $select .= "sum(details.add_non_pph) as add_non_pph,";
     foreach ($deductions as $key => $value) {
       $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $value->name));
-      $select .= "min(details.$alias) as $alias,";
+      $select .= "max(details.$alias) as $alias,";
     }
     foreach ($leaveSettings as $key => $value) {
       $alias = "_leave$value->id";
@@ -3656,6 +3657,7 @@ class SalaryReportController extends Controller
         case when description = 'BPJS Kesehatan' then total else 0 end as bpjs,
         case when description = 'Potongan SPSI' then total else 0 end as spsi,
         case when description = 'Potongan PPh 21' then total else 0 end as pph,
+        case when description = 'Pinjaman Acc' then total else 0 end as pinjaman,
         case when is_added = 'YES' and type = '1' then total else 0 end as add_non_pph,
         case when is_added = 'YES' and type = '0' then total else 0 end as de_non_pph,
         $selectJoin
@@ -4262,8 +4264,8 @@ class SalaryReportController extends Controller
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->jamsostek)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $bruto3 = $bruto2 - $value->jamsostek;
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $bruto3)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->pinjaman_acc)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
-      $netsalary = $bruto3 + $value->pinjaman_acc;
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->pinjaman)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $netsalary = $bruto3 + $value->pinjaman;
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $netsalary)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $jamsostek2 = ($value->bpjstk/2*3.7119)  + ($value->tunjangan_pensiun *2) + ($value->bpjs *4);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->bpjstk/2*3.7119)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
