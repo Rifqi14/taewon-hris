@@ -172,7 +172,7 @@ class AttendanceApprovalController extends Controller
         if (!$from && $to) {
             $query->where('attendances.attendance_date', '<=', $to);
         }
-        if ($overtime) {
+        if ($overtime != '') {
             $query->where('attendances.adj_over_time', $overtime);
         }
         if ($employee_id) {
@@ -242,7 +242,7 @@ class AttendanceApprovalController extends Controller
         if (!$from && $to) {
             $query->where('attendances.attendance_date', '<=', $to);
         }
-        if ($overtime) {
+        if ($overtime != '') {
             $query->where('attendances.adj_over_time', $overtime);
         }
         if ($employee_id) {
@@ -1504,6 +1504,7 @@ class AttendanceApprovalController extends Controller
                 ], 400);
             }
         } elseif ($request->workingtime_id) {
+            $attendance = Attendance::find($request->workingtime_id);
             $employee = Employee::where('id',$attendance->employee_id)->first();
             $user_id = Auth::user()->id;
             if($request->type_action == "approval"){
@@ -1517,11 +1518,9 @@ class AttendanceApprovalController extends Controller
             setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." WT",$request->working_time);
             // Log History OT
             setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." OT",$request->over_time);
-            $attendance = Attendance::find($request->workingtime_id);
             $attendance->adj_working_time = $request->working_time;
             $attendance->adj_over_time = $request->over_time;
             $attendance->save();
-            calculateAttendance($attendance);
             calculateOvertime($attendance);
             calculateAllowance($attendance);
             if ($attendance->status == -1 && $attendance->attendance_in && $attendance->attendance_out) {

@@ -543,56 +543,7 @@
                 }
             })
         });
-        // $( "#pic" ).select2({
-        //     ajax: {
-        //       url: "{{route('employee.select')}}",
-        //       type:'GET',
-        //       dataType: 'json',
-        //       data: function (term,page) {
-        //         return {
-        //           name:term,
-        //           page:page,
-        //           limit:30,
-        //         };
-        //       },
-        //       results: function (data,page) {
-        //         var more = (page * 30) < data.total;
-        //         var option = [];
-        //         $.each(data.rows,function(index,item){
-        //           option.push({
-        //             id:item.name,
-        //             text: `${item.name}`,
-        //             name: `${item.name}`,
-        //             employee_id:`${item.id}`
-        //           });
-        //         });
-        //         return {
-        //           results: option, more: more,
-        //         };
-        //       },
-        //     },
-        //     allowClear: true,
-        // });
-        // @if($asset->employee)
-        // $("#pic").select2('data',{id:'{{$asset->pic}}',text:'{{$asset->pic}}',name:'{{$asset->pic}}',employee_id:'{{$asset->employee->id}}'}).trigger('change');
-        // @endif
-        // $(document).on("change", "#pic", function () {
-        //     var employee_id = $('#pic').select2('data').employee_id;
-        //     var pic         = $('#pic').select2('data').name;
-
-        //     $('#employee_id').val(`${employee_id}`);
-        //     $('#pic').val(`${pic}`);
         
-        //     if (!$.isEmptyObject($('#form').validate().submitted)) {
-        //         $('#form').validate().form();
-        //     }
-        // });
-
-        // $('#pic').on('select2:clear', function () {
-        //     $('#pic').select2('val', '');
-        //     $('#employee_id').val('');
-        // });
-
     });
 </script>
 @endpush

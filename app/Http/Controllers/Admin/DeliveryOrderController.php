@@ -332,7 +332,8 @@ class DeliveryOrderController extends Controller
         }
 
         if($deliveryorder){
-
+            // $do_id = $deliveryorder->id;
+            // dd($do_id);
             $readConfigs = Config::where('option', 'cut_off')->first();
             $cut_off = $readConfigs->value;
             if (date('d', strtotime($departure_date)) > $cut_off) {
@@ -353,7 +354,8 @@ class DeliveryOrderController extends Controller
                 'group'         => $request->kloter,
                 'month'         => $month,
                 'year'          => $year,
-                'total_value'   => 0
+                'total_value'   => 0,
+                'delivery_order_id'=> $deliveryorder->id
             ]);
 
             if(!$driverallowancelist){
@@ -524,6 +526,24 @@ class DeliveryOrderController extends Controller
         try {
             $deliveryorder = DeliveryOrder::find($id);
             $deliveryorder->delete();
+            if($deliveryorder){
+                $checkupdates = Driverallowancelist::where('driver_id', $deliveryorder->driver_id)->where('date', $deliveryorder->date)->where('group', $deliveryorder->group)->orderBy('value', 'desc')->get();
+                foreach ($checkupdates as $key => $checkupdate) {
+                    $rit = $key + 1;
+                    $driverlist = DriverList::where('truck_id', $deliveryorder->truck_id)->where('rit', $rit)->first();
+
+                    if (!$driverlist) {
+                        $driverlist = DriverList::where('truck_id', $deliveryorder->truck_id)->orderBy('rit', 'desc')->first();
+                    }
+
+                    $checkupdate->rit = $driverlist->value;
+                    $checkupdate->total_value = ($checkupdate->value / 100) * $driverlist->value;
+                    $checkupdate->save();
+                }
+                
+           
+            }
+            
         } catch (\Illuminate\Database\QueryException $e) {
             return response()->json([
                 'status'    => false,

@@ -3560,9 +3560,10 @@ class SalaryReportController extends Controller
     $leaveSettings = $this->getLeaveSetting();
     
     $select = '';
-    $select .= "employees.nid as nik, employees.name as name, departments.name as department_name,employees.account_no as account_no,
-    employees.join_date as join_date, employees.ptkp as st, employees.npwp as npwp,";
+    $select .= "salary_reports.period,employees.id as employee_id,employees.nid as nik, employees.name as name, departments.name as department_name,employees.account_no as account_no,
+    employees.join_date as join_date, employees.ptkp as st, employees.npwp as npwp, work_groups.name as workgroup_name,";
     $select .= "max(details.basic_salary) as basic_salary,";
+    $select .= "max(details.driver_allowance) as driver_allowance,";
     $select .= "attendances.wt as wt,";
     $select .= "max(details.daily_salary) as daily_salary,";
     $select .= "max(overtimes.ot_1) as ot_1,";
@@ -3588,6 +3589,12 @@ class SalaryReportController extends Controller
       $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $value->name));
       $select .= "max(details.$alias) as $alias,";
     }
+    foreach ($leaveSettings as $key => $value) {
+      $alias = "_leave$value->id";
+      $select .= "coalesce(max(leaves.$alias),0) as $alias,";
+      $alias = "_tleave$value->id";
+      $select .= "coalesce(max(tleaves.$alias),0) as $alias,";
+    }
     $select .= " null";
 
     $selectJoin = '';
@@ -3599,12 +3606,7 @@ class SalaryReportController extends Controller
       $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $value->name));
       $selectJoin .= "case when description = '$value->name' then total else 0 end as $alias,";
     }
-    // foreach ($leaveSettings as $key => $value) {
-    //   $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $value->name));
-    //   $selectJoin .= "case when leave_name = '$value->leave_name' then duration else 0 end as $alias,";
-    // }
     $selectJoin .= " null";
-
     $salary = SalaryReport::SelectRaw("$select");
     $salary->leftJoin('employees', 'employees.id', '=', 'salary_reports.employee_id');
     $salary->leftJoin(DB::raw("(select
@@ -3612,6 +3614,7 @@ class SalaryReportController extends Controller
         salary_report_id,
         description,
         case when description = 'Basic Salary' then total else 0 end as basic_salary,
+        case when description = '".LABEL_DRIVER_ALLOWANCE."' then total else 0 end as driver_allowance,
         case when description = 'Gaji Harian' then total else 0 end as daily_salary,
         case when description = 'Potongan absen' then total else 0 end as alpha_penalty,
         case when description = 'Potongan SPSI' then total else 0 end as spsi,
@@ -3636,7 +3639,34 @@ class SalaryReportController extends Controller
         sum(case when amount = 4 then hour else 0 end) ot_40,
         sum(case when amount = 4 then final_salary else 0 end) otn_40
         from overtimes where extract(month from date) = $month and extract(year from date) = $year group by employee_id) overtimes"), 'employees.id', '=', 'overtimes.employee_id');
-    // $salary->leftJoin(DB::raw("(select employee_id, 
+        $selectJoin = '';
+      foreach ($leaveSettings as $key => $value) {
+        $alias = "_leave$value->id";
+        $selectJoin .= "case when leave_setting_id = $value->id then 1 else 0 end as $alias,";
+      }
+      $selectJoin .= " null";
+      $salary->leftJoin(DB::raw("(select 
+      alpha_penalties.employee_id,
+      $selectJoin
+      from alpha_penalties 
+      left join leaves on leaves.id = alpha_penalties.leave_id 
+      where alpha_penalties.month = '$month' and alpha_penalties.year = $year 
+      group by alpha_penalties.employee_id,leave_setting_id) leaves"), 'employees.id', '=', 'leaves.employee_id');
+
+      $selectJoin = '';
+      foreach ($leaveSettings as $key => $value) {
+        $alias = "_tleave$value->id";
+        $selectJoin .= "sum(case when leave_setting_id = $value->id then alpha_penalties.penalty else 0 end) as $alias,";
+      }
+      $selectJoin .= " null";
+      $salary->leftJoin(DB::raw("(select 
+      alpha_penalties.employee_id,
+      $selectJoin
+      from alpha_penalties 
+      left join leaves on leaves.id = alpha_penalties.leave_id 
+      where alpha_penalties.month ='$month' and alpha_penalties.year = $year 
+      group by alpha_penalties.employee_id,leave_setting_id) tleaves"), 'employees.id', '=', 'tleaves.employee_id');
+        // $salary->leftJoin(DB::raw("(select employee_id, 
     //   sum(case when leave_setting_id = leave_settings.id then duration else 0 end) as leave_duration 
     //   from leaves where status = 1) leave"), function($join){
     //     $join->on('leave.employee_id', '=', 'employees.id');
@@ -3661,7 +3691,7 @@ class SalaryReportController extends Controller
     }
     // $salary->where('salary_reports.id', 27692);
     $salary->orderBy('departments.name', 'asc');
-    $salary->groupBy('employees.nid', 'employees.name', 'departments.name', 'attendances.wt', 'employees.account_no','employees.join_date', 'employees.ptkp', 'employees.npwp');
+    $salary->groupBy('salary_reports.period','employees.id','employees.nid', 'employees.name', 'departments.name', 'attendances.wt', 'employees.account_no','employees.join_date', 'employees.ptkp', 'employees.npwp' ,'work_groups.name');
     $salary_reports = $salary->get();
 
     return $salary_reports;
@@ -4029,10 +4059,12 @@ class SalaryReportController extends Controller
     $object->setActiveSheetIndex(0);
     $sheet            = $object->getActiveSheet();
 
+    $cut_off = Config::where('option', 'cut_off')->first();
     $salaries         = $this->getExportData($request);
     $additionals      = $this->getGroupAllowance();
     $deductions       = $this->getGroupAllowance('DEDUCTION');
     $overtimeScheme   = $this->getOvertimeScheme();
+    $leaveSettings = LeaveSetting::all();
 
     // Header Column Excel
     $column = 0;
@@ -4059,20 +4091,28 @@ class SalaryReportController extends Controller
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'O.T / JAM')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL OVERTIME')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI KERJA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI LIBUR')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI CUTI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL CUTI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI IJIN')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI ALPA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL ALPA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI S.D')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TTL S.D')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI LIBUR')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);   
     ++$column;
+    foreach ($leaveSettings as $key => $value) {
+      $sheet->mergeCellsByColumnAndRow($column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI '.strtoupper($value->leave_name))->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+      $column++;
+      if($value->description == 0){
+        $sheet->mergeCellsByColumnAndRow($column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL '.strtoupper($value->leave_name))->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $column++;
+      }
+    }
+    // $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI CUTI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    // $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL CUTI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    // $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI IJIN')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    // $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI ALPA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    // $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL ALPA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    // $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI S.D')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    // $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TTL S.D')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     foreach ($additionals as $key => $value) {
       $sheet->mergeCellsByColumnAndRow($column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, $value->name)->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
       $column++;
     }
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TUNJ RITASI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow($column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TUNJ RITASI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI KOTOR 1')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'ptkp')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'pkp program')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
@@ -4101,6 +4141,32 @@ class SalaryReportController extends Controller
     $last_col       = 0;
 
     foreach ($salaries as $key => $value) {
+
+      $month = date("m", strtotime($value->period));
+      $year = date("Y", strtotime($value->period));
+      $endofmonthstart = date("t", mktime(0,0,0,$month - 1,1,$year));
+      $endofmonthfinish = date("t", mktime(0,0,0,$month - 1,1,$year));
+      $cutoff = 31;
+      if($endofmonthstart < $cutoff){
+        $startdate = date('Y-m-d',mktime(0,0,0,$month - 1,$endofmonthstart + 1,$year));
+      }
+      else{
+        $startdate = date('Y-m-d',mktime(0,0,0,$month - 1,$cutoff + 1,$year));
+      }
+      if($endofmonthfinish < $cutoff){
+        $finishdate = date('Y-m-d',mktime(0,0,0,$month,$endofmonthfinish,$year));
+      }
+      else{
+        $finishdate = date('Y-m-d',mktime(0,0,0,$month,$cutoff,$year));
+      }
+      $exception_date = $this->employee_calendar($value->employee_id);
+      $days = getDatesFromRange($startdate,$finishdate,'Y-m-d','1 Day');
+      $totaloff = 0;
+      foreach($days as $day){
+        if(in_array($day, $exception_date)){
+          $totaloff++;
+        }
+      }
       $totalOvertime = $value->otn_1 + $value->otn_15 + $value->otn_20 + $value->otn_30 + $value->otn_40;
       $acttotalJamOt = $value->ot_1 + $value->ot_15 + $value->ot_20 + $value->ot_30 + $value->ot_40;
       // dd($totalOvertime, $acttotalJamOt); 
@@ -4112,11 +4178,12 @@ class SalaryReportController extends Controller
       $totalJamOt = $value->ot_1 + $value->ot_15 * 1.5 + $value->ot_20 * 2 + $value->ot_30 * 3 + $value->ot_40 * 4;
       $bruto += $totalOvertime + $value->basic_salary + $value->daily_salary;
       $sheet->setCellValueByColumnAndRow($column_number, $row_number, $number);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->workgroup_name ? $value->workgroup_name : '-');
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->department_name);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->nik);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->name);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->join_date);
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ptkp);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->st);
       $sheet->setCellValueExplicitByColumnAndRow(++$column_number, $row_number, $value->account_no, PHPExcel_Cell_DataType::TYPE_STRING);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->npwp ? $value->npwp : '-');
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->basic_salary ? $value->basic_salary : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
@@ -4131,11 +4198,20 @@ class SalaryReportController extends Controller
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $totalJamOt ? $totalJamOt : 0);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $otJam ? $otJam : 0)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $totalOvertime ? $totalOvertime : 0)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, count($days) - $totaloff);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $totaloff);
+      foreach ($leaveSettings as $key => $leavesetting) {
+        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{"_leave".$leavesetting->id})->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+        if($leavesetting->description == 0){
+          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{"_tleave".$leavesetting->id})->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+        }
+      }
       foreach ($additionals as $key => $additional) {
         $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $additional->name));
         $bruto += $value->{$alias};
         $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{$alias} ? $value->{$alias} : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       }
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->driver_allowance)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       // $bruto += $value->alpha_penalty;
       // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->alpha_penalty ? $value->alpha_penalty : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       // $bruto += $value->add_non_pph;

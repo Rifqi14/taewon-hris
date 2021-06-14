@@ -92,6 +92,13 @@ class AdjustmentMassController extends Controller
         // }
         if ($department) {
             $string = '';
+            $uniqdepartments = [];
+            foreach($department as $dept){
+                if(!in_array($dept,$uniqdepartments)){
+                    $uniqdepartments[] = $dept;
+                }
+            }
+            $department = $uniqdepartments;
             foreach ($department as $dept) {
                 $string .= "departments.path like '%$dept%'";
                 if (end($department) != $dept) {
@@ -103,7 +110,7 @@ class AdjustmentMassController extends Controller
         if ($workgroup) {
             $query->whereIn('employees.workgroup_id', $workgroup);
         }
-        if ($overtime) {
+        if ($overtime != '') {
             $query->where('attendances.adj_over_time', $overtime);
         }
         if ($checkincheckout == 'checkin') {
@@ -157,6 +164,13 @@ class AdjustmentMassController extends Controller
         }
         if ($department) {
             $string = '';
+            $uniqdepartments = [];
+            foreach($department as $dept){
+                if(!in_array($dept,$uniqdepartments)){
+                    $uniqdepartments[] = $dept;
+                }
+            }
+            $department = $uniqdepartments;
             foreach ($department as $dept) {
                 $string .= "departments.path like '%$dept%'";
                 if (end($department) != $dept) {
@@ -168,7 +182,7 @@ class AdjustmentMassController extends Controller
         if ($workgroup) {
             $query->whereIn('employees.workgroup_id', $workgroup);
         }
-        if ($overtime) {
+        if ($overtime != '') {
             $query->where('attendances.adj_over_time', $overtime);
         }
         if ($checkincheckout == 'checkin') {
