@@ -146,7 +146,7 @@
 			@foreach($thrReport->thrdetail as $key => $item)
 			@php $grandTotal = $grandTotal + $item->total; @endphp
 			<tr>
-				<td align="right" style="border:1px solid #000">{{ ($item->description == "Thr" ? number_format("$item->total", 0,',','.') : "-") }}</td>
+				<td align="right" style="border:1px solid #000">{{ ($item->description == "THR" ? number_format("$item->total", 0,',','.') : "-") }}</td>
 				<td align="right" style="border:1px solid #000">{{ ($item->description == "Kebijakan" ? number_format("$item->total", 0,',','.') : "-") }}</td>
 				<td align="right" style="border:1px solid #000">{{ ($item->description == "PPh 21" ? number_format("$item->total", 0,',','.') : "-") }}</td>
 				<td align="right" style="border:1px solid #000">{{number_format("$grandTotal", 0,',','.')}}</td>
