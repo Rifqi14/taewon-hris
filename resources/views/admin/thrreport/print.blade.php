@@ -108,7 +108,7 @@
 				<td align="left" valign="top" style="">{{ $thrReport->employee->department->name}}</td>
 			</tr>
 		</table>
-
+ 
 		<table class="all" width="100%" border="0">
 			<tr>
 				<th align="left" style="border:1px solid #000;">Masa Kerja</th>
