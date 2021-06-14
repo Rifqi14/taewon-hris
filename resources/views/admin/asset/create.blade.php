@@ -496,49 +496,7 @@
                 }
             })
         });
-        // $( "#pic" ).select2({
-        //     ajax: {
-        //       url: "{{route('employee.select')}}",
-        //       type:'GET',
-        //       dataType: 'json',
-        //       data: function (term,page) {
-        //         return {
-        //           name:term,
-        //           page:page,
-        //           limit:30,
-        //         };
-        //       },
-        //       results: function (data,page) {
-        //         var more = (page * 30) < data.total;
-        //         var option = [];
-        //         $.each(data.rows,function(index,item){
-        //           option.push({
-        //             id:item.id,
-        //             text: `${item.name}`,
-        //             name: `${item.name}`
-        //           });
-        //         });
-        //         return {
-        //           results: option, more: more,
-        //         };
-        //       },
-        //     },
-        //     allowClear: true,
-        // });
-          
-        // $(document).on("change", "#pic", function () {
-
-        //     var employee_id = $('#pic').select2('data').id;
-        //     var pic         = $('#pic').select2('data').name;
-
-        //     $('#employee_id').val(`${employee_id}`);
-        //     $('#pic').val(`${pic}`);
         
-        //     if (!$.isEmptyObject($('#form').validate().submitted)) {
-        //         $('#form').validate().form();
-        //     }
-        // });
-
     });
 </script>
 @endpush
