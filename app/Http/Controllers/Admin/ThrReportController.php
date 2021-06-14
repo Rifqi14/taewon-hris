@@ -899,7 +899,9 @@ class ThrReportController extends Controller
                                 }
                                 // Insert Looping Allowance
                                 $subTotal = 0;
+                                $amount_allowance = 0;
                                 foreach ($allowance_thr as $key => $value) {
+                                    $amount_allowance = $amount_allowance +  $value->value;
                                    if ($thrreport->period < 12) {
                                         $thrdetail = ThrReportDetail::create([
                                             'thr_report_id'        => $thrreport->id,
