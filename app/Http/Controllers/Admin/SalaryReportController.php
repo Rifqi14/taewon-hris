@@ -3591,6 +3591,8 @@ class SalaryReportController extends Controller
     foreach ($leaveSettings as $key => $value) {
       $alias = "_leave$value->id";
       $select .= "coalesce(max(leaves.$alias),0) as $alias,";
+      $alias = "_tleave$value->id";
+      $select .= "coalesce(max(tleaves.$alias),0) as $alias,";
     }
     $select .= " null";
 
@@ -3642,13 +3644,26 @@ class SalaryReportController extends Controller
       }
       $selectJoin .= " null";
       $salary->leftJoin(DB::raw("(select 
-      employee_id,
+      alpha_penalties.employee_id,
       $selectJoin
-      from leave_logs 
-      left join leaves on leaves.id = leave_logs.leave_id 
-      where extract(month from date) = $month and extract(year from date) = $year 
-      and leaves.status = 1
-      group by employee_id,leave_setting_id) leaves"), 'employees.id', '=', 'leaves.employee_id');
+      from alpha_penalties 
+      left join leaves on leaves.id = alpha_penalties.leave_id 
+      where alpha_penalties.month = '$month' and alpha_penalties.year = $year 
+      group by alpha_penalties.employee_id,leave_setting_id) leaves"), 'employees.id', '=', 'leaves.employee_id');
+
+      $selectJoin = '';
+      foreach ($leaveSettings as $key => $value) {
+        $alias = "_tleave$value->id";
+        $selectJoin .= "sum(case when leave_setting_id = $value->id then alpha_penalties.penalty else 0 end) as $alias,";
+      }
+      $selectJoin .= " null";
+      $salary->leftJoin(DB::raw("(select 
+      alpha_penalties.employee_id,
+      $selectJoin
+      from alpha_penalties 
+      left join leaves on leaves.id = alpha_penalties.leave_id 
+      where alpha_penalties.month ='$month' and alpha_penalties.year = $year 
+      group by alpha_penalties.employee_id,leave_setting_id) tleaves"), 'employees.id', '=', 'tleaves.employee_id');
         // $salary->leftJoin(DB::raw("(select employee_id, 
     //   sum(case when leave_setting_id = leave_settings.id then duration else 0 end) as leave_duration 
     //   from leaves where status = 1) leave"), function($join){
@@ -4186,7 +4201,7 @@ class SalaryReportController extends Controller
       foreach ($leaveSettings as $key => $leavesetting) {
         $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{"_leave".$leavesetting->id})->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
         if($leavesetting->description == 0){
-          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{"_leave".$leavesetting->id})->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{"_tleave".$leavesetting->id})->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
         }
       }
       // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Cuti');
