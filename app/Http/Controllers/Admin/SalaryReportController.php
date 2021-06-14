@@ -3563,6 +3563,7 @@ class SalaryReportController extends Controller
     $select .= "salary_reports.period,employees.id as employee_id,employees.nid as nik, employees.name as name, departments.name as department_name,employees.account_no as account_no,
     employees.join_date as join_date, employees.ptkp as st, employees.npwp as npwp, work_groups.name as workgroup_name,";
     $select .= "max(details.basic_salary) as basic_salary,";
+    $select .= "max(details.driver_allowance) as driver_allowance,";
     $select .= "attendances.wt as wt,";
     $select .= "max(details.daily_salary) as daily_salary,";
     $select .= "max(overtimes.ot_1) as ot_1,";
@@ -3613,6 +3614,7 @@ class SalaryReportController extends Controller
         salary_report_id,
         description,
         case when description = 'Basic Salary' then total else 0 end as basic_salary,
+        case when description = '".LABEL_DRIVER_ALLOWANCE."' then total else 0 end as driver_allowance,
         case when description = 'Gaji Harian' then total else 0 end as daily_salary,
         case when description = 'Potongan absen' then total else 0 end as alpha_penalty,
         case when description = 'Potongan SPSI' then total else 0 end as spsi,
@@ -4110,7 +4112,7 @@ class SalaryReportController extends Controller
       $sheet->mergeCellsByColumnAndRow($column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, $value->name)->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
       $column++;
     }
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TUNJ RITASI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow($column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TUNJ RITASI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI KOTOR 1')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'ptkp')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'pkp program')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
@@ -4204,18 +4206,12 @@ class SalaryReportController extends Controller
           $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{"_tleave".$leavesetting->id})->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
         }
       }
-      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Cuti');
-      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Total Cuti');
-      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Ijin');
-      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Alpa');
-      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Total Alpa');
-      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari S.D');
-      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Ttl S.D');
       foreach ($additionals as $key => $additional) {
         $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $additional->name));
         $bruto += $value->{$alias};
         $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{$alias} ? $value->{$alias} : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       }
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->driver_allowance)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       // $bruto += $value->alpha_penalty;
       // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->alpha_penalty ? $value->alpha_penalty : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       // $bruto += $value->add_non_pph;
