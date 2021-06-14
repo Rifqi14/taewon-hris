@@ -904,7 +904,7 @@ class ThrReportController extends Controller
                                         $thrdetail = ThrReportDetail::create([
                                             'thr_report_id'        => $thrreport->id,
                                             'employee_id'          => $employee->id,
-                                            'description'          => $value->allowance,
+                                            'description'          => $value->description,
                                             'total'                => $value->value,
                                             'is_added'             => 'No'
                                         ]);
@@ -923,7 +923,7 @@ class ThrReportController extends Controller
                                         $thrdetail = ThrReportDetail::create([
                                             'thr_report_id'        => $thrreport->id,
                                             'employee_id'          => $employee->id,
-                                            'description'          => $value->allowance,
+                                            'description'          => $value->description,
                                             'total'                => $value->value,
                                             'is_added'             => 'No'
                                         ]);
