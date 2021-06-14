@@ -28,7 +28,7 @@ return [
     'value'       => 'Nilai',
     'percent'     => 'Persentasi',
     'nom'         => 'Nominal',
-    'type'        => 'Type',
+    'type'        => 'Tipe',
     'start_time'  => 'Jam Mulai',
     'finish_time' => 'Jam Selesai',
     'name'        => 'Nama',
