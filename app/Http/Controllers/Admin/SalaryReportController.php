@@ -3588,6 +3588,10 @@ class SalaryReportController extends Controller
       $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $value->name));
       $select .= "max(details.$alias) as $alias,";
     }
+    foreach ($leaveSettings as $key => $value) {
+      $alias = "_leave$value->id";
+      $select .= "coalesce(max(leaves.$alias),0) as $alias,";
+    }
     $select .= " null";
 
     $selectJoin = '';
@@ -3599,12 +3603,7 @@ class SalaryReportController extends Controller
       $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $value->name));
       $selectJoin .= "case when description = '$value->name' then total else 0 end as $alias,";
     }
-    // foreach ($leaveSettings as $key => $value) {
-    //   $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $value->name));
-    //   $selectJoin .= "case when leave_name = '$value->leave_name' then duration else 0 end as $alias,";
-    // }
     $selectJoin .= " null";
-
     $salary = SalaryReport::SelectRaw("$select");
     $salary->leftJoin('employees', 'employees.id', '=', 'salary_reports.employee_id');
     $salary->leftJoin(DB::raw("(select
@@ -3636,7 +3635,21 @@ class SalaryReportController extends Controller
         sum(case when amount = 4 then hour else 0 end) ot_40,
         sum(case when amount = 4 then final_salary else 0 end) otn_40
         from overtimes where extract(month from date) = $month and extract(year from date) = $year group by employee_id) overtimes"), 'employees.id', '=', 'overtimes.employee_id');
-    // $salary->leftJoin(DB::raw("(select employee_id, 
+        $selectJoin = '';
+      foreach ($leaveSettings as $key => $value) {
+        $alias = "_leave$value->id";
+        $selectJoin .= "case when leave_setting_id = $value->id then 1 else 0 end as $alias,";
+      }
+      $selectJoin .= " null";
+      $salary->leftJoin(DB::raw("(select 
+      employee_id,
+      $selectJoin
+      from leave_logs 
+      left join leaves on leaves.id = leave_logs.leave_id 
+      where extract(month from date) = $month and extract(year from date) = $year 
+      and leaves.status = 1
+      group by employee_id,leave_setting_id) leaves"), 'employees.id', '=', 'leaves.employee_id');
+        // $salary->leftJoin(DB::raw("(select employee_id, 
     //   sum(case when leave_setting_id = leave_settings.id then duration else 0 end) as leave_duration 
     //   from leaves where status = 1) leave"), function($join){
     //     $join->on('leave.employee_id', '=', 'employees.id');
@@ -4034,6 +4047,7 @@ class SalaryReportController extends Controller
     $additionals      = $this->getGroupAllowance();
     $deductions       = $this->getGroupAllowance('DEDUCTION');
     $overtimeScheme   = $this->getOvertimeScheme();
+    $leaveSettings = LeaveSetting::all();
 
     // Header Column Excel
     $column = 0;
@@ -4060,14 +4074,23 @@ class SalaryReportController extends Controller
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'O.T / JAM')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL OVERTIME')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI KERJA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI LIBUR')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI CUTI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL CUTI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI IJIN')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI ALPA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL ALPA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI S.D')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TTL S.D')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI LIBUR')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);   
+    ++$column;
+    foreach ($leaveSettings as $key => $value) {
+      $sheet->mergeCellsByColumnAndRow($column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI '.strtoupper($value->leave_name))->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+      $column++;
+      if($value->description == 0){
+        $sheet->mergeCellsByColumnAndRow($column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL '.strtoupper($value->leave_name))->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $column++;
+      }
+    }
+    // $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI CUTI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    // $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL CUTI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    // $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI IJIN')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    // $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI ALPA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    // $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL ALPA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    // $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'HARI S.D')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    // $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TTL S.D')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     ++$column;
     foreach ($additionals as $key => $value) {
       $sheet->mergeCellsByColumnAndRow($column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, $value->name)->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
@@ -4161,13 +4184,19 @@ class SalaryReportController extends Controller
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $totalOvertime ? $totalOvertime : 0)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, count($days) - $totaloff);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $totaloff);
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Cuti');
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Total Cuti');
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Ijin');
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Alpa');
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Total Alpa');
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari S.D');
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Ttl S.D');
+      foreach ($leaveSettings as $key => $leavesetting) {
+        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{"_leave".$leavesetting->id})->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+        if($leavesetting->description == 0){
+          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{"_leave".$leavesetting->id})->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+        }
+      }
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Cuti');
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Total Cuti');
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Ijin');
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari Alpa');
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Total Alpa');
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Hari S.D');
+      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, 'Ttl S.D');
       foreach ($additionals as $key => $additional) {
         $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $additional->name));
         $bruto += $value->{$alias};
