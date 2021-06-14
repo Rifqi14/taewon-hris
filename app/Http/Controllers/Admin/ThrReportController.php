@@ -867,11 +867,7 @@ class ThrReportController extends Controller
                     if($thrreport){
                         $basesalary = $this->get_employee_salary($view_employee);
                         $allowance = $this->get_additional_allowance($view_employee, $request->montly, $request->year);
-<<<<<<< HEAD
                         $allowance_thr = $this->get_allowance_thr($view_employee, $request->montly, $request->year);
-=======
-                        dd($allowance);
->>>>>>> 99eae0c589a460f9a79b496cadc656e0f509b45b
                         $configThr = Config::where('option', 'thr')->first();
                         $employee = Employee::with('department')->with('title')->find($view_employee);
 
@@ -901,7 +897,6 @@ class ThrReportController extends Controller
                                         'message'   => $thrdetail
                                     ], 400);
                                 }
-<<<<<<< HEAD
                                 // Insert Looping Allowance
                                 $subTotal = 0;
                                 foreach ($allowance_thr as $key => $value) {
@@ -943,43 +938,6 @@ class ThrReportController extends Controller
                                                 'message'   => $thrdetail
                                             ], 400);
                                         }
-=======
-                                dd($amount_allowance);
-                                if ($thrreport->period < 12) {
-                                    $thrdetail = ThrReportDetail::create([
-                                        'thr_report_id'        => $thrreport->id,
-                                        'employee_id'          => $employee->id,
-                                        'description'          => 'THR Basic + Allowance',
-                                        'total'                => number_format((float)(($basesalary->amount + $amount_allowance) / 12 * $thrreport->period), 2, '.', ''),
-                                        'is_added'             => 'No'
-                                    ]);
-                                    $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
-                                    $thrreport->save();
-                                    if (!$thrdetail) {
-                                        DB::rollBack();
-                                        return response()->json([
-                                            'status'    => false,
-                                            'message'   => $thrdetail
-                                        ], 400);
-                                    }
-                                } else {
-                                    $thrdetail = ThrReportDetail::create([
-                                        'thr_report_id'        => $thrreport->id,
-                                        'employee_id'          => $employee->id,
-                                        'description'          => 'THR Basic + Allowance',
-                                        'total'                => number_format((float)(($basesalary->amount + $amount_allowance) / 12 * 12), 2, '.', ''),
-                                        'is_added'             => 'No'
-                                    ]);
-                                    $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
-                                    $thrreport->save();
-
-                                    if (!$thrdetail) {
-                                        DB::rollBack();
-                                        return response()->json([
-                                            'status'    => false,
-                                            'message'   => $thrdetail
-                                        ], 400);
->>>>>>> 99eae0c589a460f9a79b496cadc656e0f509b45b
                                     }
                                 }
                                 // End Insert Looping Allowance
