@@ -899,13 +899,15 @@ class ThrReportController extends Controller
                                 }
                                 // Insert Looping Allowance
                                 $subTotal = 0;
+                                $amount_allowance = 0;
                                 foreach ($allowance_thr as $key => $value) {
+                                    $amount_allowance = $amount_allowance +  $value->value;
                                    if ($thrreport->period < 12) {
                                         $thrdetail = ThrReportDetail::create([
                                             'thr_report_id'        => $thrreport->id,
                                             'employee_id'          => $employee->id,
-                                            'description'          => $allowance_thr->allowance,
-                                            'total'                => $allowance_thr->value,
+                                            'description'          => $value->description,
+                                            'total'                => $value->value,
                                             'is_added'             => 'No'
                                         ]);
                                         $subTotal = $subTotal + $basesalary->amount + $amount_allowance;
@@ -923,8 +925,8 @@ class ThrReportController extends Controller
                                         $thrdetail = ThrReportDetail::create([
                                             'thr_report_id'        => $thrreport->id,
                                             'employee_id'          => $employee->id,
-                                            'description'          => $allowance_thr->allowance,
-                                            'total'                => $allowance_thr->value,
+                                            'description'          => $value->description,
+                                            'total'                => $value->value,
                                             'is_added'             => 'No'
                                         ]);
                                         $subTotal = $subTotal + $basesalary->amount + $amount_allowance;
@@ -947,7 +949,7 @@ class ThrReportController extends Controller
                                 $thrdetail = ThrReportDetail::create([
                                     'thr_report_id'        => $thrreport->id,
                                     'employee_id'          => $employee->id,
-                                    'description'          => 'THR Basic',
+                                    'description'          => 'THR',
                                     'total'                => number_format((float)($basesalary->amount / 12 * $thrreport->period), 2, '.', ''),
                                     'is_added'             => 'No'
                                 ]);
