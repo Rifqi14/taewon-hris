@@ -121,17 +121,24 @@
 				<th align="left" style="border:1px solid #000;">Jumlah</th>
 			</tr>
 			@php $total = 0; @endphp
-			@foreach($thrReport->thrdetail as $key => $item)
-			@php $total= $total + $item->total; @endphp
+			{{-- @foreach($thrReport->thrdetail as $key => $item)
+			@php $total= $total + $item->total; @endphp --}}
 			<tr>
 				<td align="right" style="border:1px solid #000">{{ $thrReport->period}}</td>
+				@foreach($thrReport->thrdetail as $key => $item)
+					@php $total= $total + $item->total; @endphp
 				<td align="right" style="border:1px solid #000">{{ ($item->description == "Basic Salary" ? number_format("$item->total", 0,',','.') : "-") }}</td>
 				<td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Jabatan" ? number_format("$item->total", 0,',','.') : "-") }}</td>
 				<td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Sel" ? number_format("$item->total", 0,',','.') : "-") }}</td>
 				<td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Masa Kerja" ? number_format("$item->total", 0,',','.') : "-") }}</td>
+				{{-- <td align="right" style="border:1px solid #000">{{ number_format("$item->total", 0,',','.') }}</td> --}}
+				@endforeach
+				{{-- <td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Jabatan" ? number_format("$item->total", 0,',','.') : "-") }}</td>
+				<td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Sel" ? number_format("$item->total", 0,',','.') : "-") }}</td>
+				<td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Masa Kerja" ? number_format("$item->total", 0,',','.') : "-") }}</td> --}}
 				<td align="right" style="border:1px solid #000">{{number_format("$total", 0,',','.')}}</td>
 			</tr>
-			@endforeach
+			
 		</table>
 		<br>
 		<table class="all" width="100%" border="0">
