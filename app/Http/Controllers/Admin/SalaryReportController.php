@@ -3372,7 +3372,7 @@ class SalaryReportController extends Controller
       } else {
         $coordinate56value = 0.0;
       }
-      $coordinate56values[$salary->id] = $coordinate56value;
+      $coordinate56values[$salary->id] = abs($coordinate56value);
 
       // deduction
       $deduction[$salary->id] = SalaryReportDetail::where('salary_report_id', $salary->id)->where('status', 'Salary Deduction')->get()->sum('total');
@@ -3619,7 +3619,7 @@ class SalaryReportController extends Controller
     $select .= "sum(details.add_non_pph) as add_non_pph,";
     foreach ($deductions as $key => $value) {
       $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $value->name));
-      $select .= "sum(details.$alias) as $alias,";
+      $select .= "min(details.$alias) as $alias,";
     }
     foreach ($leaveSettings as $key => $value) {
       $alias = "_leave$value->id";
