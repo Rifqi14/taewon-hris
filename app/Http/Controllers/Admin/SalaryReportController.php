@@ -4208,13 +4208,13 @@ class SalaryReportController extends Controller
       }
       $totalOvertime = $value->otn_1 + $value->otn_15 + $value->otn_20 + $value->otn_30 + $value->otn_40;
       $acttotalJamOt = $value->ot_1 + $value->ot_15 + $value->ot_20 + $value->ot_30 + $value->ot_40;
+      $totalJamOt = $value->ot_1 + $value->ot_15 * 1.5 + $value->ot_20 * 2 + $value->ot_30 * 3 + $value->ot_40 * 4;
       // dd($totalOvertime, $acttotalJamOt); 
-      if($totalOvertime && $acttotalJamOt > 0){
-        $otJam = $totalOvertime / $acttotalJamOt;
+      if($totalOvertime && $totalJamOt > 0){
+        $otJam = $totalOvertime / $totalJamOt;
       }else{
         $otJam = 0;
       }
-      $totalJamOt = $value->ot_1 + $value->ot_15 * 1.5 + $value->ot_20 * 2 + $value->ot_30 * 3 + $value->ot_40 * 4;
       $bruto += $totalOvertime + $value->basic_salary + $value->daily_salary;
       $sheet->setCellValueByColumnAndRow($column_number, $row_number, $number);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->workgroup_name ? $value->workgroup_name : '-');
