@@ -88,7 +88,7 @@ class DailyReportController extends Controller
         if ($status) {
             $query->where('attendances.status', $status);
         }
-        if ($overtime) {
+        if ($overtime != '') {
             $query->where('attendances.adj_over_time', $overtime);
         }
         if ($from && $to) {
@@ -152,7 +152,7 @@ class DailyReportController extends Controller
         if ($nid) {
             $query->whereRaw("employees.nid like '%$nid%'");
         }
-        if ($overtime) {
+        if ($overtime != '') {
             $query->where('attendances.adj_over_time', $overtime);
         }
         if ($department) {
@@ -336,7 +336,7 @@ class DailyReportController extends Controller
         $object->setActiveSheetIndex(0);
         $sheet = $object->getActiveSheet();
 
-        $query = Attendance::select('attendances.attendance_date','attendances.attendance_in','attendances.attendance_out','attendances.adj_working_time','work_groups.name as workgroup_name', 'departments.name as department_name', 'employees.name as employee_name', 'employees.nid as nik','gross_salary',"ot_15","ot_20","ot_30","ot_40","value_15","value_20","value_30","value_40","makansiang","makansore","makanmalam","transport");
+        $query = Attendance::select('attendances.attendance_date','attendances.attendance_in','attendances.attendance_out','attendances.adj_working_time','work_groups.name as workgroup_name', 'departments.name as department_name', 'employees.name as employee_name', 'employees.nid as nik','gross_salary',"ot_1","ot_15","ot_20","ot_30","ot_40", "value_1", "value_15","value_20","value_30","value_40","makansiang","makansore","makanmalam","transport", "tunjanganmakan");
         $query->leftJoin('employees', 'employees.id', '=', 'attendances.employee_id');
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
         $query->leftJoin('work_groups', 'work_groups.id', '=', 'employees.workgroup_id');
@@ -344,10 +344,12 @@ class DailyReportController extends Controller
             $join->on('attendances.employee_id','=','salary_reports.employee_id');
         });
         $query->leftJoin(DB::raw("(select employee_id,date,
+        sum(case when amount = 1 then hour else 0 end) ot_1,
         sum(case when amount = 1.5 then hour else 0 end) ot_15,
         sum(case when amount = 2 then hour else 0 end) ot_20,
         sum(case when amount = 3 then hour else 0 end) ot_30,
         sum(case when amount = 4 then hour else 0 end) ot_40,
+        sum(case when amount = 1 then final_salary::numeric else 0 end) value_1,
         sum(case when amount = 1.5 then final_salary::numeric else 0 end) value_15,
         sum(case when amount = 2 then final_salary::numeric else 0 end) value_20,
         sum(case when amount = 3 then final_salary::numeric else 0 end) value_30,
@@ -356,11 +358,17 @@ class DailyReportController extends Controller
             $join->on('attendances.employee_id','=','overtimes.employee_id');
             $join->on('attendances.attendance_date','=','overtimes.date');
         });
-        $query->leftJoin(DB::raw("(select employee_id,tanggal_masuk,sum(case when lower(allowances.allowance) like '%makan siang%' then employee_detailallowances.value::numeric else 0 end) makansiang,sum(case when lower(allowances.allowance) like '%makan sore%' then employee_detailallowances.value::numeric else 0 end) makansore,sum(case when lower(allowances.allowance) like '%makan malam%' then employee_detailallowances.value::numeric else 0 end) makanmalam,sum(case when lower(allowances.allowance) like '%transport%' then employee_detailallowances.value::numeric else 0 end) transport from employee_detailallowances
+        // $query->leftJoin(DB::raw("(select employee_allowances.employee_id, group_allowances.name as desc,employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name,sum(case when lower(allowances.allowance) like '%tunjangan makan%' and employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) tunjanganmakan from employee_allowances
+        // left join allowances on allowances.id = employee_allowances.allowance_id
+        // left join group_allowances on group_allowances.id = allowances.group_allowance_id
+        // group by group_allowances.name,employee_allowances.is_penalty, allowances.group_allowance_id, employee_allowances.type, employee_allowances.employee_id) as employee_allowances"),function($join){
+        //     $join->on('attendances.employee_id','=', 'employee_allowances.employee_id');
+        // });
+        $query->leftJoin(DB::raw("(select employee_id,tanggal_masuk,sum(case when lower(allowances.allowance) like '%makan siang%' then employee_detailallowances.value::numeric else 0 end) makansiang,sum(case when lower(allowances.allowance) like '%tunjangan makan%' then employee_detailallowances.value::numeric else 0 end) tunjanganmakan,sum(case when lower(allowances.allowance) like '%makan sore%' then employee_detailallowances.value::numeric else 0 end) makansore,sum(case when lower(allowances.allowance) like '%makan malam%' then employee_detailallowances.value::numeric else 0 end) makanmalam,sum(case when lower(allowances.allowance) like '%transport%' then employee_detailallowances.value::numeric else 0 end) transport from employee_detailallowances
         left join allowances on allowances.id = employee_detailallowances.allowance_id
-        group by employee_id,tanggal_masuk) as employee_detailallowances"),function($join){
-            $join->on('attendances.employee_id','=','employee_detailallowances.employee_id');
-            $join->on('attendances.attendance_date','=','employee_detailallowances.tanggal_masuk');
+        group by employee_id,tanggal_masuk) as employee_detailallowances"), function ($join) {
+            $join->on('attendances.employee_id', '=', 'employee_detailallowances.employee_id');
+            $join->on('attendances.attendance_date', '=', 'employee_detailallowances.tanggal_masuk');
         });
         if ($from && $to) {
             $query->whereBetween('attendances.attendance_date', [$from, $to]);
@@ -395,22 +403,26 @@ class DailyReportController extends Controller
         $sheet->setCellValue('G1', 'Last Out');
         $sheet->setCellValue('H1', 'WT');
         $sheet->setCellValue('I1', 'Gross / Hari');
-        $sheet->setCellValue('J1', 'OT 1,5');
-        $sheet->setCellValue('K1', 'Value 1.5');
-        $sheet->setCellValue('L1', 'OT 2');
-        $sheet->setCellValue('M1', 'Value 2');
-        $sheet->setCellValue('N1', 'OT 3');
-        $sheet->setCellValue('O1', 'Value 3');
-        $sheet->setCellValue('P1', 'OT 4');
-        $sheet->setCellValue('Q1', 'Value 4');
-        $sheet->setCellValue('R1', 'Makan Siang');
-        $sheet->setCellValue('S1', 'Makan Sore');
-        $sheet->setCellValue('T1', 'Makan Malam');
-        $sheet->setCellValue('U1', 'Transport');
+        $sheet->setCellValue('J1', 'OT 1');
+        $sheet->setCellValue('K1', 'Value 1');
+        $sheet->setCellValue('L1', 'OT 1,5');
+        $sheet->setCellValue('M1', 'Value 1.5');
+        $sheet->setCellValue('N1', 'OT 2');
+        $sheet->setCellValue('O1', 'Value 2');
+        $sheet->setCellValue('P1', 'OT 3');
+        $sheet->setCellValue('Q1', 'Value 3');
+        $sheet->setCellValue('R1', 'OT 4');
+        $sheet->setCellValue('S1', 'Value 4');
+        $sheet->setCellValue('T1', 'Makan Siang');
+        $sheet->setCellValue('U1', 'Makan Sore');
+        $sheet->setCellValue('V1', 'Makan Malam');
+        $sheet->setCellValue('W1', 'Tunjangan Transport');
+        $sheet->setCellValue('X1', 'Tunjangan Makan');
 
         $row_number = 2;
 
         foreach ($attendances as $attendance) {
+            // dd($attendance->tunjanganmakan);
             // $ot1 = Overtime::select('date', DB::raw('sum(hour) as hour'), 'employee_id', 'amount')->where('date', $attendance->attendance_date)->where('employee_id', $attendance->employee_id)->where('amount', 1.5)->groupBy('date', 'employee_id', 'amount')->first();
             // $ot2 = Overtime::select('date', DB::raw('sum(hour) as hour'), 'employee_id', 'amount')->where('date', $attendance->attendance_date)->where('employee_id', $attendance->employee_id)->where('amount', 2)->groupBy('date', 'employee_id', 'amount')->first();
             // $ot3 = Overtime::select('date', DB::raw('sum(hour) as hour'), 'employee_id', 'amount')->where('date', $attendance->attendance_date)->where('employee_id', $attendance->employee_id)->where('amount', 3)->groupBy('date', 'employee_id', 'amount')->first();
@@ -429,18 +441,21 @@ class DailyReportController extends Controller
             $sheet->setCellValue('G' . $row_number, changeDateFormat('d-m-Y H:i:s', $attendance->attendance_out));
             $sheet->setCellValue('H' . $row_number, $attendance->adj_working_time);
             $sheet->setCellValue('I' . $row_number, (int)str_replace(",",".", $attendance->gross_salary/30));
-            $sheet->setCellValue('J' . $row_number, $attendance->ot_15?$attendance->ot_15:0);
-            $sheet->setCellValue('K' . $row_number, (int)str_replace(",",".", $attendance->value_15?$attendance->value_15:0));
-            $sheet->setCellValue('L' . $row_number, $attendance->ot_20?$attendance->ot_20:0);
-            $sheet->setCellValue('M' . $row_number, (int)str_replace(",",".", $attendance->value_20?$attendance->value_20:0));
-            $sheet->setCellValue('N' . $row_number, $attendance->ot_30?$attendance->ot_30:0);
-            $sheet->setCellValue('O' . $row_number, (int)str_replace(",",".", $attendance->value_30?$attendance->value_30:0));
-            $sheet->setCellValue('P' . $row_number, $attendance->ot_40?$attendance->ot_40:0);
-            $sheet->setCellValue('Q' . $row_number, (int)str_replace(",",".", $attendance->value_40?$attendance->value_40:0));
-            $sheet->setCellValue('R' . $row_number, $attendance->makansiang?$attendance->makansiang:0);
-            $sheet->setCellValue('S' . $row_number, $attendance->makansore?$attendance->makansore:0);
-            $sheet->setCellValue('T' . $row_number, $attendance->makanmalam?$attendance->makanmalam:0);
-            $sheet->setCellValue('U' . $row_number, $attendance->transport?$attendance->transport:0);
+            $sheet->setCellValue('J' . $row_number, $attendance->ot_1 ? $attendance->ot_1 : 0);
+            $sheet->setCellValue('K' . $row_number, (int)str_replace(",", ".", $attendance->value_1 ? $attendance->value_1 : 0));
+            $sheet->setCellValue('L' . $row_number, $attendance->ot_15?$attendance->ot_15:0);
+            $sheet->setCellValue('M' . $row_number, (int)str_replace(",",".", $attendance->value_15?$attendance->value_15:0));
+            $sheet->setCellValue('N' . $row_number, $attendance->ot_20?$attendance->ot_20:0);
+            $sheet->setCellValue('O' . $row_number, (int)str_replace(",",".", $attendance->value_20?$attendance->value_20:0));
+            $sheet->setCellValue('P' . $row_number, $attendance->ot_30?$attendance->ot_30:0);
+            $sheet->setCellValue('Q' . $row_number, (int)str_replace(",",".", $attendance->value_30?$attendance->value_30:0));
+            $sheet->setCellValue('R' . $row_number, $attendance->ot_40?$attendance->ot_40:0);
+            $sheet->setCellValue('S' . $row_number, (int)str_replace(",",".", $attendance->value_40?$attendance->value_40:0));
+            $sheet->setCellValue('T' . $row_number, $attendance->makansiang?$attendance->makansiang:0);
+            $sheet->setCellValue('U' . $row_number, $attendance->makansore?$attendance->makansore:0);
+            $sheet->setCellValue('V' . $row_number, $attendance->makanmalam?$attendance->makanmalam:0);
+            $sheet->setCellValue('W' . $row_number, $attendance->transport?$attendance->transport:0);
+            $sheet->setCellValue('X' . $row_number, $attendance->tunjanganmakan ? $attendance->tunjanganmakan : 0);
             $row_number++;
         }
         foreach (range('A', 'U') as $column) {

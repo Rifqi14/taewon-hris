@@ -13,7 +13,7 @@
     <div class="col-lg-12">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">{{ __('overtimescheme.otschem') }} {{ __('general.list') }}</h3>
+          <h3 class="card-title">{{ __('overtimescheme.otlist') }}</h3>
           <div class="pull-right card-tools">
             <a href="{{route('overtimescheme.create')}}"
               class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip"

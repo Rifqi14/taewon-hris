@@ -54,7 +54,7 @@
                 <div class="form-group">
                   <label class="control-label" for="police_no">{{__('deliveryorder.policeno')}}</label>
                   {{-- <input type="text" name="police_no" id="police_no" class="form-control filter" placeholder="Police No" multiple> --}}
-                  <select name="police_no" id="police_no" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple  data-placeholder="{{__('deliveryorfer.policeno')}}">
+                  <select name="police_no" id="police_no" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple  data-placeholder="{{__('deliveryorder.policeno')}}">
                     <option value=""></option>
                     @foreach ($police_nomer as $police)
                     <option value="{{ $police->police_no }}">{{ $police->police_no }}</option>
@@ -73,7 +73,7 @@
                             <i class="far fa-calendar-alt"></i>
                           </span>
                         </div>
-                        <input type="text" name="date_from" id="date_from" class="form-control filter" placeholder="{{__('general.date')}}">
+                        <input type="text" name="date_from" id="date_from" class="form-control filter" placeholder="{{__('deliveryorder.from')}}">
                       </div>
                     </div>
                   </div>

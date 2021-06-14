@@ -90,11 +90,11 @@
               <div class="form-row col-md-4">
                 <div class="form-group col-md-6">
                   <label for="from">{{ __('general.from') }}</label>
-                  <input type="text" class="form-control datepicker" id="from" placeholder="{{ __('general.from') }}" name="from">
+                  <input type="text" class="form-control datepicker" id="from" placeholder="{{ __('general.from') }}" name="from" autocomplete="off">
                 </div>
                 <div class="form-group col-md-6">
                   <label for="to">{{ __('general.To') }}</label>
-                  <input type="text" class="form-control datepicker" id="to" placeholder="{{ __('general.To') }}" name="to">
+                  <input type="text" class="form-control datepicker" id="to" placeholder="{{ __('general.To') }}" name="to" autocomplete="off">
                 </div>
               </div>
               <div class="col-md-4">

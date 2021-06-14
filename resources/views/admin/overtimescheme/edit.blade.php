@@ -190,7 +190,7 @@
         </div>
         <div class="tab-pane fade show" id="nav-allowance" role="tabpanel" aria-labelledby="nav-allowance-tab">
               <div class="card-header">
-                <h3 class="card-title">{{ __('allowance.alw') }}</h3>
+                <h3 class="card-title">{{ __('allowance.alwlist') }}</h3>
               </div>
               <div class="card-body">
                 <table class="table table-striped table-bordered datatable" id="allowance-table" style="width: 100%">
