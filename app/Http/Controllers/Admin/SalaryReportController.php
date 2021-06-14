@@ -2263,6 +2263,16 @@ class SalaryReportController extends Controller
                     if ($salaryreportdetail) {
                         $salaryreportdetail->total =  $salaryreportdetail->total + (($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value);
                         $salaryreportdetail->save();
+
+                        SalaryReportDetail::create([
+                          'salary_report_id'  => $salaryreport->id,
+                          'employee_id'       => $employee->id,
+                          'description'       => $value->allowance_name,
+                          'total'             => ($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value,
+                          'type'              => 2,
+                          'status'            => 'Detail Deduction Allowance',
+                          'is_added'          => 'NO'
+                        ]);
                     } else {
                       SalaryReportDetail::create([
                         'salary_report_id'  => $salaryreport->id,
@@ -2274,6 +2284,15 @@ class SalaryReportController extends Controller
                         'group_allowance_id' => $value->group_allowance_id,
                         'is_added'          => 'NO'
                       ]);
+                      SalaryReportDetail::create([
+                        'salary_report_id'  => $salaryreport->id,
+                        'employee_id'       => $employee->id,
+                        'description'       => $value->allowance_name,
+                        'total'             => ($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value,
+                        'type'              => 2,
+                        'status'            => 'Detail Deduction Allowance',
+                        'is_added'          => 'NO'
+                      ]);
                     }
                   } else {
                     SalaryReportDetail::create([
@@ -2283,6 +2302,15 @@ class SalaryReportController extends Controller
                       'total'             => ($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value,
                       'type'              => 0,
                       'status'            => 'Deduction Allowance',
+                      'is_added'          => 'NO'
+                    ]);
+                    SalaryReportDetail::create([
+                      'salary_report_id'  => $salaryreport->id,
+                      'employee_id'       => $employee->id,
+                      'description'       => $value->allowance_name,
+                      'total'             => ($value->type == 'percentage') ? $deductionvalue * ($value->value / 100) : $value->value,
+                      'type'              => 2,
+                      'status'            => 'Detail Deduction Allowance',
                       'is_added'          => 'NO'
                     ]);
                   }
@@ -3561,8 +3589,12 @@ class SalaryReportController extends Controller
     
     $select = '';
     $select .= "salary_reports.period,employees.id as employee_id,employees.nid as nik, employees.name as name, departments.name as department_name,employees.account_no as account_no,
-    employees.join_date as join_date, employees.ptkp as st, employees.npwp as npwp, work_groups.name as workgroup_name,";
+    employees.join_date as join_date, employees.ptkp as st, employees.npwp as npwp,ptkps.value as ptkp, work_groups.name as workgroup_name,";
     $select .= "max(details.basic_salary) as basic_salary,";
+    $select .= "max(details.net_salary) as net_salary,";
+    $select .= "max(details.tunjangan_pensiun) as tunjangan_pensiun,";
+    $select .= "max(details.bpjstk) as bpjstk,";
+    $select .= "max(details.bpjs) as bpjs,";
     $select .= "max(details.driver_allowance) as driver_allowance,";
     $select .= "attendances.wt as wt,";
     $select .= "max(details.daily_salary) as daily_salary,";
@@ -3609,14 +3641,19 @@ class SalaryReportController extends Controller
     $selectJoin .= " null";
     $salary = SalaryReport::SelectRaw("$select");
     $salary->leftJoin('employees', 'employees.id', '=', 'salary_reports.employee_id');
+    $salary->leftJoin('ptkps', 'ptkps.key', '=', 'employees.ptkp');
     $salary->leftJoin(DB::raw("(select
         employee_id,
         salary_report_id,
         description,
         case when description = 'Basic Salary' then total else 0 end as basic_salary,
+        case when description = 'Net Salary (Yearly)' then total else 0 end as net_salary,
         case when description = '".LABEL_DRIVER_ALLOWANCE."' then total else 0 end as driver_allowance,
         case when description = 'Gaji Harian' then total else 0 end as daily_salary,
         case when description = 'Potongan absen' then total else 0 end as alpha_penalty,
+        case when description = 'Tunjangan Pensiun' then total else 0 end as tunjangan_pensiun,
+        case when description = 'BPJS Ketenagakerjaan' then total else 0 end as bpjstk,
+        case when description = 'BPJS Kesehatan' then total else 0 end as bpjs,
         case when description = 'Potongan SPSI' then total else 0 end as spsi,
         case when description = 'Potongan PPh 21' then total else 0 end as pph,
         case when is_added = 'YES' and type = '1' then total else 0 end as add_non_pph,
@@ -3691,7 +3728,7 @@ class SalaryReportController extends Controller
     }
     // $salary->where('salary_reports.id', 27692);
     $salary->orderBy('departments.name', 'asc');
-    $salary->groupBy('salary_reports.period','employees.id','employees.nid', 'employees.name', 'departments.name', 'attendances.wt', 'employees.account_no','employees.join_date', 'employees.ptkp', 'employees.npwp' ,'work_groups.name');
+    $salary->groupBy('salary_reports.period','employees.id','employees.nid', 'employees.name', 'departments.name', 'attendances.wt', 'employees.account_no','employees.join_date', 'employees.ptkp','ptkps.value', 'employees.npwp' ,'work_groups.name');
     $salary_reports = $salary->get();
 
     return $salary_reports;
@@ -4114,21 +4151,21 @@ class SalaryReportController extends Controller
     }
     $sheet->mergeCellsByColumnAndRow($column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TUNJ RITASI')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI KOTOR 1')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'ptkp')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'pkp program')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'PPH21 program')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'PTKP')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'PKP PROGRAM')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'PPH21 PROGRAM')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI KOTOR 2')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'jamsostek 1')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'BPJS KET.KARY.(2%)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'T.PENSIUN KARY.(1%)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'BPJS KES.KARY.(1%)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'JAMSOSTEK 1')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI KOTOR 3')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'PINJ ACC')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI BERSIH')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'jamsostek 2')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'BPJS KET.TAEWON(3,7119%)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'T.PENSIUN TAEWON(2%)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'BPJS KES. TAEWON(4%)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'JAMSOSTEK 2')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
     
 
@@ -4212,8 +4249,28 @@ class SalaryReportController extends Controller
         $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{$alias} ? $value->{$alias} : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       }
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->driver_allowance)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
-      // $bruto += $value->alpha_penalty;
-      // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->alpha_penalty ? $value->alpha_penalty : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $bruto += $value->alpha_penalty;
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $bruto ? $bruto : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ptkp)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->net_salary - $value->ptkp)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->pph)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $bruto2 = $bruto - $value->pph;
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $bruto2)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->bpjstk)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->tunjangan_pensiun)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->bpjs)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->jamsostek)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $bruto3 = $bruto2 - $value->jamsostek;
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $bruto3)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->pinjaman_acc)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $netsalary = $bruto3 + $value->pinjaman_acc;
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $netsalary)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $jamsostek2 = ($value->bpjstk/2*3.7119)  + ($value->tunjangan_pensiun *2) + ($value->bpjs *4);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->bpjstk/2*3.7119)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->tunjangan_pensiun *2)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->bpjs *4)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $jamsostek2)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      ///$sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->alpha_penalty ? $value->alpha_penalty : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       // $bruto += $value->add_non_pph;
       // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->add_non_pph ? $value->add_non_pph : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $bruto ? $bruto : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
