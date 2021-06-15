@@ -1,9 +1,9 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit Vehicle')
+@section('title',__('vehicle.vehicle'))
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('vehicle.index')}}">Vehicle</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item"><a href="{{route('vehicle.index')}}">{{__('vehicle.vehicle')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.edt')}}</li>
 @endpush
 @section('stylesheets')
 <link href="{{asset('adminlte/component/summernote/css/summernote.min.css')}}" rel="stylesheet">
@@ -38,12 +38,12 @@
             {{ method_field('put') }}
             <div class="card card-{{config('configs.app_theme')}} card-outline">
                 <div class="card-header">
-                    <h3 class="card-title">Information Vecile</h3>
+                    <h3 class="card-title">{{__('general.edt')}} {{__('vehicle.vehicle')}}</h3>
                     <!-- tools box -->
                     <div class="pull-right card-tools">
-                        <button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Update"><i
+                        <button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{__('general.save')}}"><i
                                 class="fa fa-save"></i></button>
-                        <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="Back"><i
+                        <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i
                                 class="fa fa-reply"></i></a>
                     </div>
                     <!-- /. tools -->
@@ -52,7 +52,7 @@
                     <input type="text" hidden value="{{ $asset->id }}">
 
                     <div class="form-group row">
-                        <div for="assetcategory_id" class="col-sm-2"><b>Category Vehicle</b> <b
+                        <div for="assetcategory_id" class="col-sm-2"><b>{{__('vehicle.vehcat')}}</b> <b
                                 class="text-danger">*</b></div>
                         <div class="col-sm-6">
                             <div class="text-danger-400"><b><a href="#" onclick="changeCategory()" name="category_name" id="category_name">{{ $asset->assetcategory->path }}</a></b></div>
@@ -60,16 +60,16 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="engine_no" class="col-sm-2 col-form-label">Engine No <b
+                        <label for="engine_no" class="col-sm-2 col-form-label">{{__('vehicle.engine')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="engine_no" name="engine_no" placeholder="Engine No"  value="{{ $asset->engine_no }}" required>
+                            <input type="text" class="form-control" id="engine_no" name="engine_no" placeholder="{{__('vehicle.engine')}}"  value="{{ $asset->engine_no }}" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="license_no" class="col-sm-2 col-form-label">Plat Number <b class="text-danger">*</b></label>
+                        <label for="license_no" class="col-sm-2 col-form-label">{{__('vehicle.platno')}} <b class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="license_no" name="license_no" placeholder="License No"
+                            <input type="text" class="form-control" id="license_no" name="license_no" placeholder="{{__('vehicle.platno')}}"
                                 required value="{{ $asset->license_no }}">
                         </div>
                     </div>
@@ -82,10 +82,10 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="type" class="col-sm-2 col-form-label">Type <b
+                        <label for="type" class="col-sm-2 col-form-label">{{__('vehicle.type')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="type" name="type" placeholder="Type" value="{{ $asset->type }}"
+                            <input type="text" class="form-control" id="type" name="type" placeholder="{{__('vehicle.type')}}" value="{{ $asset->type }}"
                                 required>
                         </div>
                     </div>
@@ -98,26 +98,26 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="manufacture" class="col-sm-2 col-form-label">Manufacture <b
+                        <label for="manufacture" class="col-sm-2 col-form-label">{{__('vehicle.manufac')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="manufacture" name="manufacture" placeholder="Manufacture" value="{{ $asset->manufacture }}"
+                            <input type="text" class="form-control" id="manufacture" name="manufacture" placeholder="{{__('vehicle.manufac')}}" value="{{ $asset->manufacture }}"
                                 required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="engine_capacity" class="col-sm-2 col-form-label">Engine Capacity <b
+                        <label for="engine_capacity" class="col-sm-2 col-form-label">{{__('vehicle.capacity')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="engine_capacity" name="engine_capacity" placeholder="Engine Capacity" value="{{ $asset->engine_capacity }}"
+                            <input type="text" class="form-control" id="engine_capacity" name="engine_capacity" placeholder="{{__('vehicle.capacity')}}" value="{{ $asset->engine_capacity }}"
                                 required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="production_year" class="col-sm-2 col-form-label">Production Year <b
+                        <label for="production_year" class="col-sm-2 col-form-label">{{__('vehicle.prodyear')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="production_year" name="production_year" placeholder="Production Year" value="{{ $asset->production_year }}"
+                            <input type="text" class="form-control" id="production_year" name="production_year" placeholder="{{__('vehicle.prodyear')}}" value="{{ $asset->production_year }}"
                                 required>
                         </div>
                     </div>
@@ -131,27 +131,27 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="pic" class="col-sm-2 col-form-label">Driver <b
+                        <label for="pic" class="col-sm-2 col-form-label">{{__('vehicle.driver')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="driver" name="driver" placeholder="Driver"
+                            <input type="text" class="form-control" id="driver" name="driver" placeholder="{{__('vehicle.driver')}}"
                                 required>
                             <input type="hidden" class="form-control" id="driver_id" name="driver_id" value="{{ $asset->driver_id }}">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="location" class="col-sm-2 col-form-label">Location <b
+                        <label for="location" class="col-sm-2 col-form-label">{{__('vehicle.loc')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="location" name="location" value="{{ $asset->location }}" placeholder="Lokasi"
+                            <input type="text" class="form-control" id="location" name="location" value="{{ $asset->location }}" placeholder="{{__('vehicle.loc')}}"
                                 required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="buy_price" class="col-sm-2 col-form-label">Buy Price <b
+                        <label for="buy_price" class="col-sm-2 col-form-label">{{__('vehicle.buyprice')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="buy_price" value="{{ $asset->buy_price }}" name="buy_price" placeholder="Buy Price"
+                            <input type="text" class="form-control" id="buy_price" value="{{ $asset->buy_price }}" name="buy_price" placeholder="{{__('vehicle.buyprice')}}"
                                 required>
                         </div>
                     </div>
@@ -164,17 +164,17 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="buy_date" class="col-sm-2 col-form-label">Buy Date <b
+                        <label for="buy_date" class="col-sm-2 col-form-label">{{__('vehicle.buydate')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control datepicker" id="buy_date" value="{{ $asset->buy_date }}"  name="buy_date" placeholder="Buy Date"
+                            <input type="text" class="form-control datepicker" id="buy_date" value="{{ $asset->buy_date }}"  name="buy_date" placeholder="{{__('vehicle.buydate')}}"
                                 required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="note" class="col-sm-2 col-form-label">Note / Guarantee</label>
+                        <label for="note" class="col-sm-2 col-form-label">{{__('vehicle.note')}}</label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="note" name="note" value="{{ $asset->note }}"  placeholder="Note / Guarantee">
+                            <input type="text" class="form-control" id="note" name="note" value="{{ $asset->note }}"  placeholder="{{__('vehicle.note')}}">
                         </div>
                     </div>
                 </div>
@@ -186,11 +186,11 @@
 
             <div class="card card-{{config('configs.app_theme')}} card-outline">
                 <div class="card-header">
-                    <h3 class="card-title">Document</h3>
+                    <h3 class="card-title">{{__('vehicle.document')}}</h3>
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
-                        <label for="image" class="col-sm-2 col-form-label">Vehicle Foto</label>
+                        <label for="image" class="col-sm-2 col-form-label">{{__('vehicle.photo')}}</label>
                         <div class="col-sm-6">
                             <input type="file" class="form-control" name="image" id="image" accept="image/*" />
                         </div>
@@ -213,7 +213,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content" id="form-pick">
             <div class="modal-header">
-                <h4 class="modal-title">Choose Category</h4>
+                <h4 class="modal-title">{{__('general.chs')}} {{__('general.category')}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -245,7 +245,7 @@
                     </div>
                 </div>
                 <div class="form-group row mt-2">
-					<div class="col-md-2 col-xs-12" for="catname">Choosen</div>
+					<div class="col-md-2 col-xs-12" for="catname">{{__('general.chs')}} {{__('general.category')}}</div>
 					<div class="col-sm-9 controls">
                         <div class="text-danger"><b name="category_select" id="category_select">{{ $asset->assetcategory->name }}</b></div>
                         <input type="hidden" name="asset_category_id" value="{{ $asset->assetcategory->id }}">
@@ -255,7 +255,7 @@
             <div class="modal-footer">
                 {{-- <input type="hidden" name="asset_category_id"> --}}
                 <button class="btn btn-danger pull-right btn-sm" data-style="slide-down"
-                    type="submit" disabled onclick="gantiCat()">Change</button>
+                    type="submit" disabled onclick="gantiCat()">{{__('general.save')}}</button>
                 <div class="clearfix"></div>
             </div>
         </div>

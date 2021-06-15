@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Consume Oil')
+@section('title',__('consumeoil.consume'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Consume Oil</li>
+<li class="breadcrumb-item active">{{__('consumeoil.consume')}}</li>
 @endpush
 
 @section('content')
@@ -16,12 +16,12 @@
         <div class="col-lg-12">
             <div class="card ">
                 <div class="card-header">
-                    <h3 class="card-title">Consume Oil List</h3>
+                    <h3 class="card-title">{{__('consumeoil.conslist')}}</h3>
                     <!-- tools box -->
                     <div class="pull-right card-tools">
                         <a href="{{route('consumeoil.create')}}"
                             class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip"
-                            title="Tambah">
+                            title="{{__('general.crt')}}">
                             <i class="fa fa-plus"></i>
                         </a>
                     </div>
@@ -31,20 +31,20 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                            <label class="control-label" for="vehicle">Vehicle</label>
-                            <input type="text" name="vehicle" id="vehicle" class="form-control filter" placeholder="Vehicle">
+                            <label class="control-label" for="vehicle">{{__('consumeoil.vehicle')}}</label>
+                            <input type="text" name="vehicle" id="vehicle" class="form-control filter" placeholder="{{__('consumeoil.vehicle')}}">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                            <label class="control-label" for="license_no">Vehicle No</label>
-                            <input type="text" name="license_no" id="" class="form-control filter" placeholder="Vehicle No">
+                            <label class="control-label" for="license_no">{{__('consumeoil.vehicno')}}</label>
+                            <input type="text" name="license_no" id="" class="form-control filter" placeholder="{{__('consumeoil.vehicno')}}">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                            <label class="control-label" for="driver">Driver</label>
-                            <input type="text" name="driver" id="driver" class="form-control filter" placeholder="Driver">
+                            <label class="control-label" for="driver">{{__('consumeoil.driver')}}</label>
+                            <input type="text" name="driver" id="driver" class="form-control filter" placeholder="{{__('consumeoil.driver')}}">
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -57,7 +57,7 @@
                         <div class="form-row col-md-4">
                             <div class="col-md-6">
                             <div class="form-group">
-                                <label class="control-label" for="date_from">From</label>
+                                <label class="control-label" for="date_from">{{__('general.from')}}</label>
                                 <div class="controls">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
@@ -72,7 +72,7 @@
                             </div>
                             <div class="col-md-6">
                             <div class="form-group">
-                            <label class="control-label" for="date_to">To</label>
+                            <label class="control-label" for="date_to">{{__('asset.to')}}</label>
                             <div class="controls">
                                 <div class="input-group">
                                 <div class="input-group-prepend">
@@ -92,13 +92,13 @@
                         <thead>
                             <tr>
                                 <th width="10">#</th>
-                                <th width="100">Vehicle</th>
-                                <th width="100">Driver</th>
+                                <th width="100">{{__('consumeoil.vehicle')}}</th>
+                                <th width="100">{{__('consumeoil.driver')}}</th>
                                 <th width="100">Oil</th>
-                                <th width="50">Consume Oil</th>
-                                <th width="50">Used Type</th>
+                                <th width="50">{{__('consumeoil.consume')}}</th>
+                                <th width="50">{{__('consumeoil.usedtype')}}</th>
                                 <th width="50">Km</th>
-                                <th width="50">Date</th>
+                                <th width="50">{{__('general.date')}}</th>
                                 <th width="50">Status</th>
                                 <th width="50">#</th>
                             </tr>

@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Asset')
+@section('title',__('asset.asset'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
@@ -20,19 +20,19 @@
 </style>
 @endsection
 @push('breadcrump')
-<li class="breadcrumb-item active">Asset</li>
+<li class="breadcrumb-item active">{{__('asset.asset')}}</li>
 @endpush
 @section('content')
 <div class="row">
     <div class="col-lg-12">
         <div class="card card-{{config('configs.app_theme')}} card-outline">
             <div class="card-header">
-                <h3 class="card-title">Data Asset</h3>
+                <h3 class="card-title">{{__('asset.asetdata')}}</h3>
                 <!-- tools box -->
                 <div class="pull-right card-tools">
-                    <a href="{{route('asset.draft')}}" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="Create"><i class="fa fa-plus"></i></a>
-                    <a href="{{route('asset.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="Import" style="cursor: pointer;"><i class="fa fa-file-import"></i></a>
-                    <a href="javascript:void(0)" onclick="exportasset()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="Export" style="cursor: pointer;"><i class="fa fa-download"></i></a>
+                    <a href="{{route('asset.draft')}}" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="{{__('general.crt')}}"><i class="fa fa-plus"></i></a>
+                    <a href="{{route('asset.import')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm" data-toggle="tooltip" title="{{__('general.imp')}}" style="cursor: pointer;"><i class="fa fa-file-import"></i></a>
+                    <a href="javascript:void(0)" onclick="exportasset()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="{{__('general.exp')}}" style="cursor: pointer;"><i class="fa fa-download"></i></a>
                 </div>
                 <!-- /. tools -->
             </div>
@@ -42,8 +42,8 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="control-label" for="name">Searching For</label>
-                                <input type="text" name="asset_name" id="asset_name" class="form-control filter" placeholder="Asset Name">
+                                <label class="control-label" for="name">{{__('asset.search')}}</label>
+                                <input type="text" name="asset_name" id="asset_name" class="form-control filter" placeholder="{{__('asset.assetname')}}">
                                 
                                 {{-- <select name="asset_name" id="asset_name" class="form-control select2" style="width: 100%" aria-hidden="true" data-placeholder="Asset Name">
                                     <option value=""></option>
@@ -68,9 +68,9 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="control-label" for="location">Location</label>
+                                <label class="control-label" for="location">{{__('asset.loc')}}</label>
                                 {{-- <input type="text" name="location" id="location" class="form-control filter" placeholder="Location"> --}}
-                                <select name="location" id="location" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="Location">
+                                <select name="location" id="location" class="form-control select2" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('asset.loc')}}">
                                     <option value=""></option>
                                     @foreach ($locations as $lokal)
                                     <option value="{{ $lokal->location }}">{{ $lokal->location }}</option>
@@ -92,9 +92,9 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="control-label" for="category">Asset Category</label>
+                                <label class="control-label" for="category">{{__('assetcat.assetcat')}}</label>
                                 {{-- <input type="text" name="category[]" id="category" class="form-control filter" placeholder="Category"> --}}
-                                  <select name="category" id="category" class="form-control option1" style="width: 100%" aria-hidden="true" multiple data-placeholder="Select Category">
+                                  <select name="category" id="category" class="form-control option1" style="width: 100%" aria-hidden="true" multiple data-placeholder="{{__('general.chs')}} {{__('assetcat.assetcat')}}">
                                     @foreach ($categories as $key => $category)
                                     {{-- <option value="{{ $category->name }}">{{ $category->path }}</option> --}}
                                     <option value="{{ $category->name }}" data-key="{{ $key }}" data-stock="{{ $category->stok }}">{{ $category->path }}</option>
@@ -104,19 +104,19 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="code">Code</label>
-                                <input type="text" class="form-control filter" id="code" name="code" placeholder="Code">
+                                <label for="code">{{__('asset.code')}}</label>
+                                <input type="text" class="form-control filter" id="code" name="code" placeholder="{{__('asset.code')}}">
                             </div>
                             <div class="code-container"></div>
                         </div>
                         <div class="form-row col-md-4">
                             <div class="form-group col-md-6">
-                                <label for="from">From</label>
-                                <input type="text" class="form-control datepicker filter" id="date_from" placeholder="From" name="date_from">
+                                <label for="from">{{__('general.from')}}</label>
+                                <input type="text" class="form-control datepicker filter" id="date_from" placeholder="{{__('general.from')}}" name="date_from">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="to">To</label>
-                                <input type="text" class="form-control datepicker filter" id="date_to" placeholder="To" name="date_to">
+                                <label for="to">{{__('asset.to')}}</label>
+                                <input type="text" class="form-control datepicker filter" id="date_to" placeholder="{{__('asset.to')}}" name="date_to">
                             </div>
                         </div>
                     </div>
@@ -125,13 +125,13 @@
                     <thead>
                         <tr>
                             <th width="10">#</th>
-                            <th width="250">Name</th>
+                            <th width="250">{{__('general.name')}}</th>
                             <th width="100">PIC</th>
-                            <th width="100">Location</th>
-                            <th width="100">Buy Price</th>
+                            <th width="100">{{__('asset.loc')}}</th>
+                            <th width="100">{{__('asset.buyprice')}}</th>
                             <th width="100">Vendor</th>
-                            <th width="100">Buy Date</th>
-                            <th width="50">Stock</th>
+                            <th width="100">{{__('asset.buydate')}}</th>
+                            <th width="50">{{__('asset.stock')}}</th>
                             <th width="10">#</th>
                         </tr>
                     </thead>
@@ -175,7 +175,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Change Stock</h4>
+          <h4 class="modal-title">{{__('general.edt')}} {{__('asset.stock')}}</h4>
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         </div>
         <div class="modal-body">
@@ -186,9 +186,9 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
-                  <label class="control-label" for="stock">Stock</label>
+                  <label class="control-label" for="stock">{{__('asset.stock')}}</label>
                   <input type="number" class="form-control" name="stock" id="stock"
-                    placeholder="Stock">
+                    placeholder="{{__('asset.stock')}}">
                 </div>
               </div>
             </div>
@@ -294,6 +294,14 @@
             order: [
                 [4, "asc"]
             ],
+            language: {
+                lengthMenu: `{{ __('general.showent') }}`,
+                processing: `{{ __('general.process') }}`,
+                paginate: {
+                    previous: `{{ __('general.prev') }}`,
+                    next: `{{ __('general.next') }}`,
+                }
+            },
             lengthMenu: [ 50, 100, 250, 500, 1000, 2000 ],
             pageLength: 50,
             ajax: {

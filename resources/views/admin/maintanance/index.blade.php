@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Maintenance')
+@section('title',__('maintenance.mainten'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Maintenance</li>
+<li class="breadcrumb-item active">{{__('maintenance.mainten')}}</li>
 @endpush
 
 @section('content')
@@ -16,12 +16,12 @@
         <div class="col-lg-12">
             <div class="card ">
                 <div class="card-header">
-                    <h3 class="card-title">Maintenance List</h3>
+                    <h3 class="card-title">{{__('maintenance.mainlist')}}</h3>
                     <!-- tools box -->
                     <div class="pull-right card-tools">
                         <a href="{{route('maintenance.create')}}"
                             class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip"
-                            title="Tambah">
+                            title="{{__('general.crt')}}">
                             <i class="fa fa-plus"></i>
                         </a>
                         <a href="javascript:void(0)" onclick="exportmaintenance()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="Export" style="cursor: pointer;"><i class="fa fa-download"></i></a>
@@ -34,23 +34,23 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="control-label" for="vehicle_name">Vehicle</label>
+                                    <label class="control-label" for="vehicle_name">{{__('maintenance.vehicle')}}</label>
                                     <input type="text" name="vehicle_name" id="vehicle_name" class="form-control filter"
-                                        placeholder="Vehicle">
+                                        placeholder="{{__('maintenance.vehicle')}}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="control-label" for="vehicle_no">Vehicle No</label>
+                                    <label class="control-label" for="vehicle_no">{{__('maintenance.vehicno')}}</label>
                                     <input type="text" name="vehicle_no" id="vehicle_no" class="form-control filter"
-                                        placeholder="Vehicle No">
+                                        placeholder="{{__('maintenance.vehicno')}}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="control-label" for="vehicle_category">Vehicle Category</label>
+                                    <label class="control-label" for="vehicle_category">{{__('maintenance.vehicat')}}</label>
                                     <input type="text" name="vehicle_category" id="vehicle_category"
-                                        class="form-control filter" placeholder="Vehicle Category">
+                                        class="form-control filter" placeholder="{{__('maintenance.vehicat')}}">
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -62,16 +62,16 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="control-label" for="driver">Driver</label>
+                                    <label class="control-label" for="driver">{{__('maintenance.driver')}}</label>
                                     <input type="text" name="driver" id="driver" class="form-control filter"
-                                        placeholder="Driver">
+                                        placeholder="{{__('maintenance.driver')}}">
                                 </div>
                             </div>
 
                             <div class="form-row col-md-4">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="control-label" for="date_from">From</label>
+                                        <label class="control-label" for="date_from">{{__('general.from')}}</label>
                                         <div class="controls">
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
@@ -80,14 +80,14 @@
                                                     </span>
                                                 </div>
                                                 <input type="text" name="date_from" id="date_from"
-                                                    class="form-control datepicker filter" placeholder="Date">
+                                                    class="form-control datepicker filter" placeholder="{{__('general.date')}}">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="control-label" for="date_to">To</label>
+                                        <label class="control-label" for="date_to">{{__('maintenance.to')}}</label>
                                         <div class="controls">
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
@@ -96,7 +96,7 @@
                                                     </span>
                                                 </div>
                                                 <input type="text" name="date_to" id="date_to"
-                                                    class="form-control datepicker filter" placeholder="Date">
+                                                    class="form-control datepicker filter" placeholder="{{__('general.date')}}">
                                             </div>
                                         </div>
                                     </div>
@@ -109,12 +109,12 @@
                         <thead>
                             <tr>
                                 <th width="10">#</th>
-                                <th width="100">Vehicle</th>
-                                <th width="50">Date</th>
+                                <th width="100">{{__('maintenance.vehicle')}}</th>
+                                <th width="50">{{__('general.date')}}</th>
                                 <th width="50">Km</th>
-                                <th width="100">Driver</th>
+                                <th width="100">{{__('maintenance.driver')}}</th>
                                 <th class="text-right" width="50">Total</th>
-                                <th width="50">Image</th>
+                                <th width="50">{{__('maintenance.image')}}</th>
                                 <th width="50">Status</th>
                                 <th width="50">#</th>
                             </tr>
@@ -260,7 +260,7 @@ $(function(){
                                     <i class="fa fa-bars"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a class="dropdown-item" href="{{url('admin/maintenance')}}/${row.id}"><i class="fas fa-info mr-2"></i> Detail</a></li>
+                                    <li><a class="dropdown-item" href="{{url('admin/maintenance')}}/${row.id}"><i class="fas fa-info mr-2"></i> {{__('general.dtl')}}</a></li>
                                 </ul></div>`
                        
                     }else{
@@ -269,9 +269,9 @@ $(function(){
                                     <i class="fa fa-bars"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a class="dropdown-item" href="{{url('admin/maintenance')}}/${row.id}"><i class="fas fa-info mr-2"></i> Detail</a></li>
-                                    <li><a class="dropdown-item" href="{{url('admin/maintenance')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-                                    <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+                                    <li><a class="dropdown-item" href="{{url('admin/maintenance')}}/${row.id}"><i class="fas fa-info mr-2"></i> {{__('general.dtl')}}</a></li>
+                                    <li><a class="dropdown-item" href="{{url('admin/maintenance')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{__('general.edt')}}</a></li>
+                                    <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{__('general.dlt')}}</a></li>
                                 </ul></div>`
                     }
                 

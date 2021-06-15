@@ -21,10 +21,10 @@
                 <!-- tools box -->
                 <div class="pull-right card-tools">
                     <a href="{{route('oil.create')}}" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip"
-                        title="Create">
+                        title="{{__('general.crt')}}">
                         <i class="fa fa-plus"></i>
                     </a>
-                    <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
+                    <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="{{__('general.srch')}}">
                         <i class="fa fa-search"></i>
                     </a>
                 </div>
@@ -35,13 +35,13 @@
                     <thead>
                         <tr>
                             <th width="10">#</th>
-                            <th width="250">Name</th>
+                            <th width="250">{{__('general.name')}}</th>
                             <th width="100">PIC</th>
-                            <th width="100">Location</th>
-                            <th width="100">Buy Price</th>
+                            <th width="100">{{__('oil.location')}}</th>
+                            <th width="100">{{__('oil.buyprice')}}</th>
                             <th width="100">Vendor</th>
-                            <th width="100">Buy Date</th>
-                            <th width="50">Stock</th>
+                            <th width="100">{{__('oil.buydate')}}</th>
+                            <th width="50">{{__('oil.stock')}}</th>
                             <th width="10">#</th>
                         </tr>
                     </thead>
@@ -58,7 +58,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Search</h4>
+                <h4 class="modal-title">{{__('general.srch')}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -68,8 +68,8 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label class="control-label" for="name">Name</label>
-                                <input type="text" name="name" class="form-control" placeholder="Name">
+                                <label class="control-label" for="name">{{__('general.name')}}</label>
+                                <input type="text" name="name" class="form-control" placeholder="{{__('general.name')}}">
                             </div>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Change Stock</h4>
+          <h4 class="modal-title">{{__('general.edt')}} {{__('oil.stock')}}</h4>
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         </div>
         <div class="modal-body">
@@ -99,9 +99,9 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
-                  <label class="control-label" for="stock">Stock</label>
+                  <label class="control-label" for="stock">{{__('oil.stock')}}</label>
                   <input type="number" class="form-control" name="stock" id="stock"
-                    placeholder="Stock">
+                    placeholder="{{__('oil.stock')}}">
                 </div>
               </div>
             </div>

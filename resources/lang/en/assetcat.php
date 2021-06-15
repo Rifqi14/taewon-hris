@@ -1,0 +1,20 @@
+<?php
+return[
+    'assetcat' => 'Asset Category',
+    'active'   => 'Active',
+    'archive'  => 'Archive',
+    'asetdata' => 'Asset Category Data',
+    'name'     => 'Name',
+    'stock'    => 'Stock',
+    'created'  => 'Created',
+    'create'   => 'Create Asset Category',
+    'parent'   => 'Category Parent',
+    'namecat'  => 'Category Name',
+    'tipecat'  => 'Category Type',
+    'desc'     => 'Description',
+    'display'  => 'Display',
+    'photo'    => 'Photo',
+    'browse'   => 'Browse',
+    'asset'    => 'Asset',
+    'vehicle'  => 'Vehicle',
+];

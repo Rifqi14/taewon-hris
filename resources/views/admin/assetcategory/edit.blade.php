@@ -1,9 +1,9 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit Asset Category')
+@section('title',__('assetcat.assetcat'))
 @push('breadcrump')
-    <li class="breadcrumb-item"><a href="{{route('assetcategory.index')}}">Asset Category</a></li>
-    <li class="breadcrumb-item active">Edit</li>
+    <li class="breadcrumb-item"><a href="{{route('assetcategory.index')}}">{{__('assetcat.assetcat')}}</a></li>
+    <li class="breadcrumb-item active">{{__('general.edt')}}</li>
 @endpush
 @section('stylesheets')
 <link rel="stylesheet" href="{{asset('adminlte/component/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}">
@@ -15,11 +15,11 @@
     <div class="col-lg-12">
     <div class="card card-{{config('configs.app_theme')}} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Edit Asset Category</h3>
+          <h3 class="card-title">{{__('general.edt')}} {{__('assetcat.assetcat')}}</h3>
           <!-- tools box -->
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}}" title="Update"><i class="fa fa-save"></i></button>
-            <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="Back"><i class="fa fa-reply"></i></a>
+            <button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}}" title="{{__('general.save')}}"><i class="fa fa-save"></i></button>
+            <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i class="fa fa-reply"></i></a>
           </div>
           <!-- /. tools -->
         </div>
@@ -29,43 +29,43 @@
                {{ method_field('put') }}
                <div class="well well-sm">
                  <div class="form-group row">
-                    <label for="name" class="col-sm-2 control-label">Category Parent</label>
+                    <label for="name" class="col-sm-2 control-label">{{__('assetcat.parent')}}</label>
                     <div class="col-sm-6">
-                    <input type="text" class="form-control" id="parent_id" name="parent_id" data-placeholder="Choose Category Parent" readonly>
+                    <input type="text" class="form-control" id="parent_id" name="parent_id" data-placeholder="{{__('general.chs')}} {{__('assetcat.parent')}}" readonly>
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="name" class="col-sm-2 control-label">Category Name <b class="text-danger">*</b></label>
+                    <label for="name" class="col-sm-2 control-label">{{__('assetcat.namecat')}} <b class="text-danger">*</b></label>
                     <div class="col-sm-6">
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Category Name" value="{{$assetcategory->name}}" required>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="{{__('assetcat.namecat')}}" value="{{$assetcategory->name}}" required>
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="name" class="col-sm-2 control-label">Category Name <b class="text-danger">*</b></label>
+                    <label for="name" class="col-sm-2 control-label">{{__('assetcat.tipecat')}} <b class="text-danger">*</b></label>
                     <div class="col-sm-6">
-                    <select name="type" id="type" class="form-control select2" placeholder="Category Type">
+                    <select name="type" id="type" class="form-control select2" placeholder="{{__('assetcat.tipecat')}}">
                       <option value=""></option>
-                      <option value="asset" @if($assetcategory->type == 'asset') selected @endif>Asset</option>
-                      <option value="vehicle" @if($assetcategory->type == 'vehicle') selected @endif>Vehicle</option>
+                      <option value="asset" @if($assetcategory->type == 'asset') selected @endif>{{__('assetcat.asset')}}</option>
+                      <option value="vehicle" @if($assetcategory->type == 'vehicle') selected @endif>{{__('assetcat.vehicle')}}</option>
                     </select>
                     </div>
                   </div>
                 </div>
                 <div class="well well-sm">
                   <div class="form-group row">
-                    <label for="name" class="col-sm-2 control-label">Description <b class="text-danger">*</b></label>
+                    <label for="name" class="col-sm-2 control-label">{{__('assetcat.desc')}} <b class="text-danger">*</b></label>
                     <div class="col-sm-6">
-                    <textarea name="description" id="description" class="form-control" placeholder="Description" required>{{$assetcategory->description}}</textarea>
+                    <textarea name="description" id="description" class="form-control" placeholder="{{__('assetcat.desc')}}" required>{{$assetcategory->description}}</textarea>
                     </div>
                   </div>
                   <div class="form-group row">
-                      <label class="col-sm-2 control-label">Display</label>
+                      <label class="col-sm-2 control-label">{{__('assetcat.display')}}</label>
                       <div class="col-sm-6">
                         <label><input class="form-control" type="checkbox" name="display" @if($assetcategory->display) checked @endif> <i></i></label>
                     </div>
                   </div>
                   <div class="form-group row">
-                      <label for="app_logo" class="col-sm-2 control-label">Image</label>
+                      <label for="app_logo" class="col-sm-2 control-label">{{__('assetcat.photo')}}</label>
                       <div class="col-sm-6">
                       <input type="file" class="form-control" name="picture" id="picture" value="{{$assetcategory->picture}}" accept="image/*"/>
                       </div>

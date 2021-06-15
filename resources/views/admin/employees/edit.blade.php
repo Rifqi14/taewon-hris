@@ -382,7 +382,7 @@
 											</div>
 											<div class="col-sm-12">
 												<div class="form-group">
-													<label>{{ __('general.to') }} <b class="text-danger">*</b></label>
+													<label>{{ __('employee.to') }} <b class="text-danger">*</b></label>
 													<select id="timeout" class="form-control select2" name="timeout" data-placeholder="{{ __('general.to') }}">
 														<option value=""></option>
 														<option @if($employee->timeout == "yes") selected @endif value="yes">{{ __('general.yes') }}</option>
@@ -403,7 +403,7 @@
 											</div>
 											<div class="col-sm-12">
 												<div class="form-group">
-													<label>{{ __('general.jd') }} <b class="text-danger">*</b></label>
+													<label>{{ __('employee.jd') }} <b class="text-danger">*</b></label>
 													<div class="input-group">
 														<div class="input-group-prepend">
 															<span class="input-group-text">
@@ -416,7 +416,7 @@
 											</div>
 											<div class="col-sm-12">
 												<div class="form-group">
-													<label>{{ __('general.rd') }}</label>
+													<label>{{ __('employee.rd') }}</label>
 													<div class="input-group">
 														<div class="input-group-prepend">
 															<span class="input-group-text">

@@ -1,9 +1,9 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Create Vehicle')
+@section('title',__('vehicle.vehicle'))
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('vehicle.index')}}">Vehicle</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item"><a href="{{route('vehicle.index')}}">{{__('vehicle.vehicle')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.crt')}}</li>
 @endpush
 @section('stylesheets')
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -41,22 +41,22 @@
 
             <div class="card card-{{config('configs.app_theme')}} card-outline">
                 <div class="card-header">
-                    <h3 class="card-title">Vehicle</h3>
+                    <h3 class="card-title">{{__('general.crt')}} {{__('vehicle.vehicle')}}</h3>
                     <!-- tools box -->
                     <div class="pull-right card-tools">
-                        <button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Save"><i
+                        <button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{__('general.save')}}"><i
                                 class="fa fa-save"></i></button>
-                        <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="Back"><i
+                        <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i
                                 class="fa fa-reply"></i></a>
                     </div>
                     <!-- /. tools -->
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
-                        <label for="license_no" class="col-sm-2 col-form-label">Plat Number<b
+                        <label for="license_no" class="col-sm-2 col-form-label">{{__('vehicle.platno')}}<b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="license_no" name="license_no" placeholder="Plat Number" required>
+                            <input type="text" class="form-control" id="license_no" name="license_no" placeholder="{{__('vehicle.platno')}}" required>
                         </div>
                     </div>
 
@@ -111,10 +111,10 @@
 
 
                 <div class="row mt-2">
-                    <div for="category_select" class="col-sm-2"><b>Category Choosen</b> <b
+                    <div for="category_select" class="col-sm-2"><b>{{__('vehicle.vehcat')}}</b> <b
                             class="text-danger">*</b></div>
                     <div class="col-sm-6">
-                        <div class="text-{{config('configs.app_theme')}}"><b id="category_select">No Category Choosen</b></div>
+                        <div class="text-{{config('configs.app_theme')}}"><b id="category_select">{{__('asset.no')}} {{__('vehicle.vehcat')}}</b></div>
                         <input type="hidden" name="asset_category_id">
                         <input type="hidden" name="category_name">
                     </div>
