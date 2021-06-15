@@ -156,7 +156,15 @@
                                     <div class="form-group">
                                         <label class="control-label" for="period">{{__('thrreport.period_thr')}}</label>
                                         <div class="form-row">
-                                            <div class="col-sm-8">
+                                            <div class="col-sm-4">
+                                            <select class="form-control select2" placeholder="Day" multiple name="day" id="day">
+                                                    <option value=""></option>
+                                                    @for ($i = 1; $i <= 31; $i++)
+                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                    @endfor
+                                            </select>
+                                        </div>
+                                            <div class="col-sm-4">
                                                 <select class="form-control select2" name="montly" multiple id="montly" data-placeholder="Month">
                                                     <option value="01" @if (date('m', time()) == "01") selected @endif>{{__('general.jan')}}</option>
                                                     <option value="02" @if (date('m', time()) == "02") selected @endif>{{__('general.feb')}}</option>
