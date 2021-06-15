@@ -86,7 +86,7 @@
 				<td style="text-align:center;font-weight: bold;font-size: 13pt;">SLIP THR</td><br>
 			</tr>
 			<tr>
-				<td style="text-align:center;">(Periode : {{ date("d F Y", strtotime($thrReport->year.'-'.$thrReport->month.'-'.date('d'))) }})</td>
+				<td style="text-align:center;">(Periode : {{ date("F Y", strtotime($thrReport->year.'-'.$thrReport->month)) }})</td>
 			</tr>
 		</table>
 		<br>
@@ -121,21 +121,67 @@
 				<th align="left" style="border:1px solid #000;">Jumlah</th>
 			</tr>
 			@php $total = 0; @endphp
-			{{-- @foreach($thrReport->thrdetail as $key => $item)
-			@php $total= $total + $item->total; @endphp --}}
 			<tr>
 				<td align="right" style="border:1px solid #000">{{ $thrReport->period}}</td>
+				@php $grandTotal = 0; 
+					$a = false;
+				@endphp
 				@foreach($thrReport->thrdetail as $key => $item)
 					@php $total= $total + $item->total; @endphp
-				<td align="right" style="border:1px solid #000">{{ ($item->description == "Basic Salary" ? number_format("$item->total", 0,',','.') : "-") }}</td>
-				<td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Jabatan" ? number_format("$item->total", 0,',','.') : "-") }}</td>
-				<td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Sel" ? number_format("$item->total", 0,',','.') : "-") }}</td>
-				<td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Masa Kerja" ? number_format("$item->total", 0,',','.') : "-") }}</td>
-				{{-- <td align="right" style="border:1px solid #000">{{ number_format("$item->total", 0,',','.') }}</td> --}}
+					@if ($item->description == "Basic Salary")
+					@php
+						$a = true;
+					@endphp
+						<td align="right" style="border:1px solid #000">{{ ($item->description == "Basic Salary" ? number_format("$item->total", 0,',','.') : "-") }}</td>		
+					@endif
 				@endforeach
-				{{-- <td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Jabatan" ? number_format("$item->total", 0,',','.') : "-") }}</td>
-				<td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Sel" ? number_format("$item->total", 0,',','.') : "-") }}</td>
-				<td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Masa Kerja" ? number_format("$item->total", 0,',','.') : "-") }}</td> --}}
+				@if (!$a)
+					<td align="right" style="border:1px solid #000">{{ "-" }}</td>
+				@endif
+
+				@php $grandTotal = 0; 
+					$a = false;
+				@endphp
+				@foreach($thrReport->thrdetail as $key => $item)
+					@if ($item->description == "Tunjangan Jabatan")
+					@php
+						$a = true;
+					@endphp
+						<td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Jabatan" ? number_format("$item->total", 0,',','.') : "-") }}</td>		
+					@endif
+				@endforeach
+				@if (!$a)
+					<td align="right" style="border:1px solid #000">{{ "-" }}</td>
+				@endif
+
+				@php $grandTotal = 0; 
+					$a = false;
+				@endphp
+				@foreach($thrReport->thrdetail as $key => $item)
+					@if ($item->description == "Tunjangan Sel")
+					@php
+						$a = true;
+					@endphp
+						<td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Sel" ? number_format("$item->total", 0,',','.') : "-") }}</td>		
+					@endif
+				@endforeach
+				@if (!$a)
+					<td align="right" style="border:1px solid #000">{{ "-" }}</td>
+				@endif
+				@php $grandTotal = 0; 
+					$a = false;
+				@endphp
+				@foreach($thrReport->thrdetail as $key => $item)
+					@if ($item->description == "Tunjangan Masa Kerja")
+					@php
+						$a = true;
+					@endphp
+						<td align="right" style="border:1px solid #000">{{ ($item->description == "Tunjangan Masa Kerja" ? number_format("$item->total", 0,',','.') : "-") }}</td>		
+					@endif
+				@endforeach
+				@if (!$a)
+					<td align="right" style="border:1px solid #000">{{ "-" }}</td>
+				@endif
 				<td align="right" style="border:1px solid #000">{{number_format("$total", 0,',','.')}}</td>
 			</tr>
 			
@@ -148,17 +194,39 @@
 				<th align="center" style="border:1px solid #000">Pph21</th>
 				<th align="center" style="border:1px solid #000">Grand Total</th>
 			</tr>
-
-			@php $grandTotal = 0; @endphp
-			@foreach($thrReport->thrdetail as $key => $item)
-			@php $grandTotal = $grandTotal + $item->total; @endphp
 			<tr>
-				<td align="right" style="border:1px solid #000">{{ ($item->description == "THR" ? number_format("$item->total", 0,',','.') : "-") }}</td>
-				<td align="right" style="border:1px solid #000">{{ ($item->description == "Kebijakan" ? number_format("$item->total", 0,',','.') : "-") }}</td>
-				<td align="right" style="border:1px solid #000">{{ ($item->description == "PPh 21" ? number_format("$item->total", 0,',','.') : "-") }}</td>
-				<td align="right" style="border:1px solid #000">{{number_format("$grandTotal", 0,',','.')}}</td>
-			</tr>
+			<td align="right" style="border:1px solid #000">{{ number_format("$total", 0,',','.')}}</td>	
+			@php $grandTotal = 0; 
+				$a = false;
+			@endphp
+			@foreach($thrReport->thrdetail as $key => $item)
+			{{-- @php $grandTotal = $grandTotal + $item->total; @endphp --}}
+			@if ($item->description == "Kebijakan")
+				@php
+					$a = true;
+				@endphp
+				<td align="right" style="border:1px solid #000">{{ ($item->description == "Kebijakan" ? number_format("$item->total", 0,',','.') : "-" )}}</td>					
+			@endif
 			@endforeach
+			@if (!$a)
+				<td align="right" style="border:1px solid #000">{{ "-" }}</td>
+			@endif
+			@php $grandTotal = 0; 
+				$a = false;
+			@endphp
+			@foreach($thrReport->thrdetail as $key => $item)
+			@if ($item->description == "PPh 21")
+				@php
+					$a = true;
+				@endphp
+				<td align="right" style="border:1px solid #000">{{ ($item->description == "PPh 21" ? number_format("$item->total", 0,',','.') : "-" )}}</td>	
+			@endif
+			@endforeach
+			@if (!$a)
+				<td align="right" style="border:1px solid #000">{{ "-" }}</td>
+			@endif
+			<td align="right" style="border:1px solid #000">{{number_format("$thrReport->amount", 0,',','.')}}</td>
+			</tr>
 		</table>
 		<div class="return-page"></div>
 	@endforeach
