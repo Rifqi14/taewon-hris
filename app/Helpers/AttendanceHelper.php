@@ -490,7 +490,7 @@ if (!function_exists('calculateAttendance')) {
           if($attendance->day == 'Off'){
               $exception_date = employeeCalendar($attendance->employee_id);
               $day = changeDateFormat('D', $attendance->attendance_date);
-              if((in_array($attendance->attendance_date, $exception_date)) && $day = 'Sun'){
+              if((in_array($attendance->attendance_date, $exception_date)) && $day == 'Sun'){
                 $attendance->adj_over_time = 0;
                 $attendance->attendance_in = null;
                 $attendance->attendance_out = null;
