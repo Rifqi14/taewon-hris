@@ -828,17 +828,21 @@ class ThrReportController extends Controller
                     $delete = $exists->delete();
                 }
                 if($checkJoinDate){
-                    $date1 = date("Y-m", strtotime($checkJoinDate->join_date));
+                    $date1 = date("Y-m-d", strtotime($checkJoinDate->join_date));
                     $date1 = $date1."-01";
-                    $date2 = Carbon::createFromFormat('Y-m', $request->year . '-' . $request->montly);
-                    $date2 = $date2 . "-01";
+                    $date2 = Carbon::createFromFormat('Y-m-d', $request->year . '-' . $request->montly.'-' . $request->day);
+                    // $date2 = $date2 . "-01";
 
-                    $diff = abs(strtotime($date2) - strtotime($date1));
+                    // $diff = abs(strtotime($date2) - strtotime($date1));
 
-                    $years = floor($diff / (365 * 60 * 60 * 24));
-                    $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
-                    $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
-                    $total_month = ($years * 12) + $months + 1;
+                    // $years = floor($diff / (365 * 60 * 60 * 24));
+                    // $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+                    // $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+                    // $total_month = ($years * 12) + $months + 1;
+                    $interval = $date2->diff($date1);
+                    $year =  $interval->format('%y');
+                    $month =  $interval->format('%m');
+                    $total_month = $year *12 + $month;
                     // dd($total_month);
                     // dd($date1, $date2,$diff,$months);
                     if($total_month < 12)
