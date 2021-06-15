@@ -136,6 +136,13 @@
           @endforeach
         </select>
       </div>
+      <div class="form-group">
+        <label for="mode">Mode</label>
+        <select name="mode" id="mode" class="form-control select2" placeholder="Choose Mode">
+          <option value="normal" @if (config('configs.mode')== 'normal') selected @endif>Normal</option>
+          <option value="audit" @if (config('configs.mode')== 'audit') selected @endif>Audit</option>
+        </select>
+      </div>
   </div>
 </div>
 </form>
@@ -154,6 +161,13 @@
 <script src="{{asset('adminlte/component/bootstrap-fileinput/themes/explorer-fas/theme.min.js')}}"></script>
 <script>
   $(document).ready(function(){
+    $('#mode').closest('.form-group').hide();
+    $(document).on("keydown", function (e) {
+        if (e.which === 119 && !$(e.target).is("input, textarea")) {
+            e.preventDefault();
+            $('#mode').closest('.form-group').show();
+        }
+    });
     $('.select2').select2();
     $("#app_logo").fileinput({
       browseClass: "btn btn-{{config('configs.app_theme')}}",

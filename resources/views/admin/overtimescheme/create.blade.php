@@ -120,6 +120,7 @@
                       <option value="Thu">{{ __('general.thu') }}</option>
                       <option value="Fri">{{ __('general.fri') }}</option>
                       <option value="Sat">{{ __('general.sat') }}</option>
+                      <option value="Sun">{{ __('general.sun') }}</option>
                       <option value="Off">{{ __('general.day_off') }}</option>
                     </select>
                   </div>

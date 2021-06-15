@@ -19,8 +19,27 @@ use App\Models\SalaryIncreases;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
+if(!function_exists('employeeCalendar')){
+  function employeeCalendar($id)
+  {
+      $query_calendar = DB::table('employees');
+      $query_calendar->select('calendar_exceptions.*');
+      $query_calendar->leftJoin('calendars', 'calendars.id', '=', 'employees.calendar_id');
+      $query_calendar->leftJoin('calendar_exceptions', 'calendar_exceptions.calendar_id', '=', 'calendars.id');
+      $query_calendar->where('employees.id', '=', $id);
+      $query_calendar->whereRaw("coalesce(calendar_exceptions.is_switch_day,'') != 'YES'");
+      $calendar = $query_calendar->get();
+      $exception_date = [];
+      foreach ($calendar as $date) {
+          $exception_date[] = $date->date_exception;
+      }
+
+      return $exception_date;
+  }
+}
 if (!function_exists('calculateAttendance')) {
   function calculateAttendance($attendance){
+    $mode = Config::where('option','mode')->first()?Config::where('option','mode')->first()->value:'normal';
     $employee = Employee::find($attendance->employee_id);
     $breaktimes = listBreaktime($employee->department_id);
     if (!$breaktimes) {
@@ -30,12 +49,18 @@ if (!function_exists('calculateAttendance')) {
         ], 400);
     }
     /* Check Working Time*/
-    $switchworkintime = CalendarException::where('calendar_id', $employee->calendar_id)->first();
-    if ($switchworkintime->is_switch_day == 'YES') {
+    $switchworkintime = CalendarException::where('calendar_id', $employee->calendar_id)->where('date_exception',$attendance->attendance_date)->first();
+    if($switchworkintime){
+      if ($switchworkintime->is_switch_day == 'YES') {
         $workingtime = checkWorkingtimeSwitch($attendance->workingtime_id, $attendance->day);
-    } else {
+      } else {
         $workingtime = checkWorkingtime($attendance->workingtime_id, $attendance->day);
+      }
     }
+    else{
+      $workingtime = checkWorkingtime($attendance->workingtime_id, $attendance->day);
+    }
+   
     if (!$workingtime) {
         return response()->json([
             'status'     => false,
@@ -126,7 +151,7 @@ if (!function_exists('calculateAttendance')) {
       if($attendance->day == 'Off' && $employee->timeout == 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
           $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
           $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
-          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $breakworkingtime = getAllBreaktime($breaktimes, $attendance_hour);
           $attendance_out = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
 
           $totalattendance = Carbon::parse($attendance_out)->diffInHours($attendance->attendance_in);
@@ -217,7 +242,7 @@ if (!function_exists('calculateAttendance')) {
       if($attendance->day == 'Off' && $employee->timeout != 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
           $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
           $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
-          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $breakworkingtime = getAllBreaktime($breaktimes, $attendance_hour);
           $attendance->attendance_out = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
 
           $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
@@ -326,7 +351,7 @@ if (!function_exists('calculateAttendance')) {
       if($attendance->day != 'Off' && $employee->timeout == 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
           $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
           $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
-          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $breakworkingtime = getAllBreaktime($breaktimes, $attendance_hour);
           $attendance_out  = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
           $totalattendance = Carbon::parse($attendance_out)->diffInHours($attendance->attendance_in);
           $totalbreaktime = $breakworkingtime;
@@ -420,7 +445,7 @@ if (!function_exists('calculateAttendance')) {
       if($attendance->day != 'Off' && $employee->timeout != 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
           $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
           $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
-          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $breakworkingtime = getAllBreaktime($breaktimes, $attendance_hour);
           $attendance->attendance_out = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
 
           $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
@@ -461,6 +486,41 @@ if (!function_exists('calculateAttendance')) {
           }
       }
       /* End If*/
+      if($mode == 'audit'){
+          if($attendance->day == 'Off'){
+              $exception_date = employeeCalendar($attendance->employee_id);
+              $day = changeDateFormat('D', $attendance->attendance_date);
+              if((in_array($attendance->attendance_date, $exception_date)) && $day == 'Sun'){
+                $attendance->adj_over_time = 0;
+                $attendance->attendance_in = null;
+                $attendance->attendance_out = null;
+                $attendance->workingtime_id = null;
+                $attendance->overtime_scheme_id = null;
+              }
+              else{
+                $workingtime = checkWorkingtime($attendance->workingtime_id, changeDateFormat('D', $attendance->attendance_date));
+                if($attendance->adj_over_time > $min_workhour){
+                  $attendance->adj_over_time = $min_workhour;
+                  if($attendance->attendance_in && $attendance->attendance_out){
+                   $timeout = Carbon::parse($attendance->attendance_in)->addHours($min_workhour)->toDateTimeString(); 
+                   $attendance->attendance_out = $timeout;
+                  }
+               } 
+              }
+              
+          }
+          else{
+            if($attendance->adj_over_time > 3){
+              $attendance->adj_over_time = 3;
+              if($attendance->attendance_in && $attendance->attendance_out){
+                $timeout = Carbon::parse($attendance->attendance_in)->addHours($min_workhour + 3)->toDateTimeString(); 
+                $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
+                $breakworkingtime = getAllBreaktime($breaktimes, $attendance_hour);
+                $attendance->attendance_out = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
+              }
+            }
+          }
+      }
       $attendance->save();
       if (!$attendance) {
           DB::rollBack();

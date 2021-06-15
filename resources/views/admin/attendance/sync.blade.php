@@ -184,7 +184,16 @@ Object.size = function(obj) {
          else{
            storeHeader(response.order);
          }
-      })
+      }).fail(function(response){
+      $('#progress').modal('hide');
+        var response = response.responseJSON;
+        $.gritter.add({
+            title: 'Error!',
+            text: response.message,
+            class_name: 'gritter-error',
+            time: 1000,
+        });
+    });	
   }
 
   function storeLog(order){
@@ -216,7 +225,16 @@ Object.size = function(obj) {
         else{
           storeLog(response.order);
         }
-    })
+    }).fail(function(response){
+      $('#progress').modal('hide');
+        var response = response.responseJSON;
+        $.gritter.add({
+            title: 'Error!',
+            text: response.message,
+            class_name: 'gritter-error',
+            time: 1000,
+        });
+    });	
     
   }
   function storeUpdateLog(order){
@@ -256,7 +274,16 @@ Object.size = function(obj) {
         else{
           storeUpdateLog(response.order);
         }
-    })
+    }).fail(function(response){
+      $('#progress').modal('hide');
+        var response = response.responseJSON;
+        $.gritter.add({
+            title: 'Error!',
+            text: response.message,
+            class_name: 'gritter-error',
+            time: 1000,
+        });
+    });	
     
   }
   function loadItem(table_item){

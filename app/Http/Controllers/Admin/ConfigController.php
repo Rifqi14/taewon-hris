@@ -26,7 +26,7 @@ class ConfigController extends Controller
         $fields = [
             'app_name', 'app_copyright', 'app_logo', 'app_icon', 'app_theme',
             'company_name', 'company_email', 'company_phone', 'company_address',
-            'email_push', 'language','cut_off', 'setting_prorate', 'type_prorate', 'thr'
+            'email_push', 'language','cut_off', 'setting_prorate', 'type_prorate', 'thr' ,'mode'
         ];
         $validator = Validator::make($request->all(), [
             'app_name'        => 'required',
@@ -41,7 +41,8 @@ class ConfigController extends Controller
             'cut_off'         => 'required',
             'setting_prorate' => 'required',
             'type_prorate'    => 'required',
-            'thr'             => 'required'  
+            'thr'             => 'required', 
+            'mode'            => 'required', 
         ]);
 
         if ($validator->fails()) {

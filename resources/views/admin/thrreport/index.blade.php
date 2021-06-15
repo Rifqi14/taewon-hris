@@ -58,6 +58,8 @@
                     <div class="pull-right card-tools">
                         <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}"
                             title="Generate"><i class="fa fa-sync"></i></button>
+                        <a href="javascript:void(0)" onclick="printmass()" class="btn btn-sm btn-info text-white"
+                            title="{{__('general.print')}} Mass"><i class="fa fa-print"></i></a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -154,7 +156,15 @@
                                     <div class="form-group">
                                         <label class="control-label" for="period">{{__('thrreport.period_thr')}}</label>
                                         <div class="form-row">
-                                            <div class="col-sm-8">
+                                            <div class="col-sm-4">
+                                            <select class="form-control select2" placeholder="Day" multiple name="day" id="day">
+                                                    <option value=""></option>
+                                                    @for ($i = 1; $i <= 31; $i++)
+                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                    @endfor
+                                            </select>
+                                        </div>
+                                            <div class="col-sm-4">
                                                 <select class="form-control select2" name="montly" multiple id="montly" data-placeholder="Month">
                                                     <option value="01" @if (date('m', time()) == "01") selected @endif>{{__('general.jan')}}</option>
                                                     <option value="02" @if (date('m', time()) == "02") selected @endif>{{__('general.feb')}}</option>
@@ -321,7 +331,7 @@
     function printpreview(ids) {
         $('.overlay').removeClass('d-none');
         $.ajax({
-            url: "{{ route('salaryreport.printmass') }}",
+            url: "{{ route('thrreport.printmass') }}",
             method: 'GET',
             data: {
                 id: JSON.stringify(ids)

@@ -45,10 +45,42 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
-    {
-        return parent::render($request, $exception);
+    // public function render($request, Exception $exception)
+    // {
+    //     return parent::render($request, $exception);
+    // }
+    public function render($request, Exception $e)
+{
+    if ($e instanceof ModelNotFoundException) {
+        $e = new NotFoundHttpException($e->getMessage(), $e);
     }
+
+    if ($e instanceof TokenMismatchException) {
+        
+        return redirect(route('login'))->with('message', 'You page session expired. Please try again');
+    }
+
+    return parent::render($request, $e);
+}
+
+    // public function render($request, Exception $e)
+    // {
+    //     if ($e instanceof ModelNotFoundException) {
+    //         $e = new NotFoundHttpException($e->getMessage(), $e);
+    //     }
+
+    //     if ($e instanceof \Illuminate\Session\TokenMismatchException) {    
+
+    //       // flash your message
+
+    //         \Session::flash('flash_message_important', 'Sorry, your session seems to have expired. Please try again.'); 
+
+    //         return redirect('login');
+    //     }
+
+    //     return parent::render($request, $e);
+    // }
+
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
