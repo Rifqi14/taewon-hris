@@ -1,9 +1,9 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Create Asset')
+@section('title',__('asset.asset'))
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('asset.index')}}">Asset</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item"><a href="{{route('asset.index')}}">{{__('asset.asset')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.crt')}}</li>
 @endpush
 @section('stylesheets')
 <link href="{{asset('adminlte/component/summernote/css/summernote.min.css')}}" rel="stylesheet">
@@ -35,12 +35,12 @@
             {{ csrf_field() }}
             <div class="card card-{{config('configs.app_theme')}} card-outline">
                 <div class="card-header">
-                    <h3 class="card-title">Asset Information</h3>
+                    <h3 class="card-title">{{__('asset.asetinfo')}}</h3>
                     <!-- tools box -->
                     <div class="pull-right card-tools">
-                        <button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Save"><i
+                        <button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{__('general.save')}}"><i
                                 class="fa fa-save"></i></button>
-                        <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="Back"><i
+                        <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i
                                 class="fa fa-reply"></i></a>
                     </div>
                     <!-- /. tools -->
@@ -48,7 +48,7 @@
                 <div class="card-body">
 
                     <div class="form-group row">
-                        <div for="assetcategory_id" class="col-sm-2"><b>Category Asset</b> <b
+                        <div for="assetcategory_id" class="col-sm-2"><b>{{__('assetcat.assetcat')}}</b> <b
                                 class="text-danger">*</b></div>
                         <div class="col-sm-6">
                             <div class="text-danger-400"><b><a href="#" onclick="changeCategory()" name="category_name" id="category_name">{{ $category_name }}</a></b></div>
@@ -56,17 +56,17 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="code" class="col-sm-2 col-form-label">Code <b
+                        <label for="code" class="col-sm-2 col-form-label">{{__('asset.code')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="name" name="code" placeholder="Asset Code"required>
+                            <input type="text" class="form-control" id="name" name="code" placeholder="{{__('asset.code')}}"required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="name" class="col-sm-2 col-form-label">Name <b
+                        <label for="name" class="col-sm-2 col-form-label">{{__('general.name')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Asset Name"
+                            <input type="text" class="form-control" id="name" name="name" placeholder="{{__('general.name')}}"
                                 value="{{ $name }}" required>
                         </div>
                     </div>
@@ -80,18 +80,18 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="location" class="col-sm-2 col-form-label">Location <b
+                        <label for="location" class="col-sm-2 col-form-label">{{__('asset.loc')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="location" name="location" placeholder="Location"
+                            <input type="text" class="form-control" id="location" name="location" placeholder="{{__('asset.loc')}}"
                                 required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="buy_price" class="col-sm-2 col-form-label">Buy Price <b
+                        <label for="buy_price" class="col-sm-2 col-form-label">{{__('asset.buyprice')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="buy_price" name="buy_price" placeholder="Buy Price"
+                            <input type="text" class="form-control" id="buy_price" name="buy_price" placeholder="{{__('asset.buyprice')}}"
                                 required>
                         </div>
                     </div>
@@ -104,24 +104,24 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="buy_date" class="col-sm-2 col-form-label">Buy Date <b
+                        <label for="buy_date" class="col-sm-2 col-form-label">{{__('asset.buydate')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control datepicker" id="buy_date" name="buy_date" placeholder="Buy Date"
+                            <input type="text" class="form-control datepicker" id="buy_date" name="buy_date" placeholder="{{__('asset.buydate')}}"
                                 required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="note" class="col-sm-2 col-form-label">Note / Guarantee</label>
+                        <label for="note" class="col-sm-2 col-form-label">{{__('asset.note')}}</label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="note" name="note" placeholder="Note / Guarantee">
+                            <input type="text" class="form-control" id="note" name="note" placeholder="{{__('asset.note')}}">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="stock" class="col-sm-2 col-form-label">Stock <b
+                        <label for="stock" class="col-sm-2 col-form-label">{{__('asset.stock')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="stock" name="stock" placeholder="Stock"
+                            <input type="text" class="form-control" id="stock" name="stock" placeholder="{{__('asset.stock')}}"
                                 required>
                         </div>
                     </div>
@@ -133,17 +133,17 @@
 
             <div class="card card-{{config('configs.app_theme')}} card-outline">
                 <div class="card-header">
-                    <h3 class="card-title">Document</h3>
+                    <h3 class="card-title">{{__('asset.document')}}</h3>
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
-                        <label for="image" class="col-sm-2 col-form-label">Asset Foto</label>
+                        <label for="image" class="col-sm-2 col-form-label">{{__('asset.photo')}}</label>
                         <div class="col-sm-6">
                             <input type="file" class="form-control" name="image" id="image" accept="image/*" />
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="image" class="col-sm-2 col-form-label">Asset Document</label>
+                        <label for="image" class="col-sm-2 col-form-label">{{__('asset.asetdoc')}}</label>
                         <div class="col-sm-6">
                             <input type="file" class="form-control" name="document" id="document"  />
                         </div>
@@ -162,7 +162,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content" id="form-pick">
             <div class="modal-header">
-                <h4 class="modal-title">Choose Category</h4>
+                <h4 class="modal-title">{{__('general.chs')}} {{__('general.category')}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -194,7 +194,7 @@
                     </div>
                 </div>
                 <div class="form-group row mt-2">
-					<div class="col-md-2 col-xs-12" for="catname">Choosen</div>
+					<div class="col-md-2 col-xs-12" for="catname">{{__('asset.choosen')}}</div>
 					<div class="col-sm-9 controls">
                         <div class="text-{{config('configs.app_theme')}}"><b name="category_select" id="category_select">{{ $category_name }}</b></div>
                         <input type="hidden" name="asset_category_id" value="{{ $asset_category_id }}">
@@ -204,7 +204,7 @@
             <div class="modal-footer">
                 {{-- <input type="hidden" name="asset_category_id"> --}}
                 <button class="btn btn-{{config('configs.app_theme')}} pull-right btn-sm" data-style="slide-down"
-                    type="submit" disabled onclick="gantiCat()">Change</button>
+                    type="submit" disabled onclick="gantiCat()">{{__('general.save')}}</button>
                 <div class="clearfix"></div>
             </div>
         </div>

@@ -1,0 +1,28 @@
+<?php
+return [
+    'vehicle'  => 'Vehicle',
+    'vehdata'  => 'Vehicle Data',
+    'search'   => 'Searching For',
+    'platno'   => 'Plat Number',
+    'driver'   => 'Driver',
+    'loc'      => 'Location',
+    'vehcat'   => 'Vehicle Category',
+    'type'     => 'Type',
+    'lastmain' => 'Last Maintenance',
+    'buyprice' => 'Buy Price',
+    'buydate'  => 'Buy Date',
+    'stock'    => 'Stock',
+    'create'   => 'Create Vehicle',
+    'choosen'  => 'Category Choosen',
+    'prodyear' => 'Production Year',
+    'note'     => 'Note/ Guarantee',
+    'document' => 'Document',
+    'photo'    => 'Vehicle Photo',
+    'browse'   => 'Browse',
+    'info'     => 'Vehicle Information',
+    'engine'   => 'Engine No',
+    'manufac'  => 'Manufacture',
+    'no'       => 'No',
+    'to'       => 'To',
+    'capacity' => 'Engine Capacity'
+];

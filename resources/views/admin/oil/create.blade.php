@@ -1,9 +1,9 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Create Oil')
+@section('title', 'Oil')
 @push('breadcrump')
 <li class="breadcrumb-item"><a href="{{route('oil.index')}}">Oil</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item active">{{__('general.crt')}}</li>
 @endpush
 @section('stylesheets')
 <link href="{{asset('adminlte/component/summernote/css/summernote.min.css')}}" rel="stylesheet">
@@ -35,29 +35,29 @@
             {{ csrf_field() }}
             <div class="card card-{{config('configs.app_theme')}} card-outline">
                 <div class="card-header">
-                    <h3 class="card-title">Oil Information</h3>
+                    <h3 class="card-title">{{__('oil.oilinfo')}}</h3>
                     <!-- tools box -->
                     <div class="pull-right card-tools">
-                        <button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="Save"><i
+                        <button form="form" type="submit" class="btn btn-sm btn-{{config('configs.app_theme')}} text-white" title="{{__('general.save')}}"><i
                                 class="fa fa-save"></i></button>
-                        <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="Back"><i
+                        <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i
                                 class="fa fa-reply"></i></a>
                     </div>
                     <!-- /. tools -->
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
-                        <label for="code" class="col-sm-2 col-form-label">Code <b
+                        <label for="code" class="col-sm-2 col-form-label">{{__('general.code')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="name" name="code" placeholder="Oil Code"required>
+                            <input type="text" class="form-control" id="name" name="code" placeholder="{{__('general.code')}}"required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="name" class="col-sm-2 col-form-label">Name <b
+                        <label for="name" class="col-sm-2 col-form-label">{{__('general.name')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Oil Name"
+                            <input type="text" class="form-control" id="name" name="name" placeholder="{{__('general.name')}}"
                                 value="{{ $name }}" required>
                         </div>
                     </div>
@@ -71,18 +71,18 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="location" class="col-sm-2 col-form-label">Location <b
+                        <label for="location" class="col-sm-2 col-form-label">{{__('oil.location')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="location" name="location" placeholder="Lokasi"
+                            <input type="text" class="form-control" id="location" name="location" placeholder="{{__('oil.location')}}"
                                 required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="buy_price" class="col-sm-2 col-form-label">Buy Price <b
+                        <label for="buy_price" class="col-sm-2 col-form-label">{{__('oil.buyprice')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="buy_price" name="buy_price" placeholder="Buy Price"
+                            <input type="text" class="form-control" id="buy_price" name="buy_price" placeholder="{{__('oil.buyprice')}}"
                                 required>
                         </div>
                     </div>
@@ -95,25 +95,25 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="buy_date" class="col-sm-2 col-form-label">Buy Date <b
+                        <label for="buy_date" class="col-sm-2 col-form-label">{{__('oil.buydate')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control datepicker" id="buy_date" name="buy_date" placeholder="Buy Date"
+                            <input type="text" class="form-control datepicker" id="buy_date" name="buy_date" placeholder="{{__('oil.buydate')}}"
                                 required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="note" class="col-sm-2 col-form-label">Note / Guarantee</label>
+                        <label for="note" class="col-sm-2 col-form-label">{{__('oil.note')}}</label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="note" name="note" placeholder="Note / Guarantee">
+                            <input type="text" class="form-control" id="note" name="note" placeholder="{{__('oil.note')}}">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="stock" class="col-sm-2 col-form-label">Stock <b
+                        <label for="stock" class="col-sm-2 col-form-label">{{__('oil.stock')}} <b
                                 class="text-danger">*</b></label>
                         <div class="col-sm-2">
                             <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="stock" name="stock" placeholder="Stock"
+                            <input type="text" class="form-control" id="stock" name="stock" placeholder="{{__('oil.stock')}}"
                                 required>
                                 <div class="input-group-append">
                                     <span class="input-group-text" >Liter</span>
@@ -129,11 +129,11 @@
 
             <div class="card card-{{config('configs.app_theme')}} card-outline">
                 <div class="card-header">
-                    <h3 class="card-title">Document</h3>
+                    <h3 class="card-title">{{__('oil.document')}}</h3>
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
-                        <label for="image" class="col-sm-2 col-form-label">Oil Foto</label>
+                        <label for="image" class="col-sm-2 col-form-label">{{__('oil.photo')}}</label>
                         <div class="col-sm-6">
                             <input type="file" class="form-control" name="image" id="image" accept="image/*" />
                         </div>

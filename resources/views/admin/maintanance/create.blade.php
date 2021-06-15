@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Create Maintenance')
+@section('title',__('maintenance.mainten'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 <link href="{{asset('adminlte/component/bootstrap-fileinput/css/fileinput.min.css')}}" rel="stylesheet">
@@ -7,8 +7,8 @@
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 @endsection
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{ route('maintenance.index') }}">Maintenance</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item"><a href="{{ route('maintenance.index') }}">{{__('maintenance.mainten')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.crt')}}</li>
 @endpush
 
 @section('content')
@@ -17,11 +17,11 @@
     <div class="col-lg-12">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">List Maintenance</h3>
+          <h3 class="card-title">{{__('general.crt')}} {{__('maintenance.mainten')}}</h3>
            <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{__('general.save')}}"><i
                 class="fa fa-save"></i></button>
-            <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="Kembali"><i
+            <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i
                 class="fa fa-reply"></i></a>
           </div>
         </div>
@@ -98,23 +98,23 @@
                   <div class="row">
                       <div class="col-sm-4">
                           <div class="form-group">
-                              <label>Vehicle</label>
-                              <input type="text" name="vehicle_id" id="vehicle_id" class="form-control" placeholder="Vehicle" required>
+                              <label>{{__('maintenance.vehicle')}}</label>
+                              <input type="text" name="vehicle_id" id="vehicle_id" class="form-control" placeholder="{{__('maintenance.vehicle')}}" required>
                               <input type="hidden" name="vehicle_name" id="vehicle_name" class="form-control" readonly required>
                           </div>
                       </div>
                       <div class="col-sm-4">
                           <!-- text input -->
                           <div class="form-group">
-                            <label for="vendor">Vehicle Category</label>
-                            <input type="text" name="vehicle_category" id="vehicle_category" class="form-control" placeholder="Category" required  readonly/>
+                            <label for="vendor">{{__('maintenance.vehicat')}}</label>
+                            <input type="text" name="vehicle_category" id="vehicle_category" class="form-control" placeholder="{{__('maintenance.vehicat')}}" required  readonly/>
                           </div>
                       </div>
                       <div class="col-sm-4">
                         <!-- text input -->
                         <div class="form-group">
-                          <label for="vendor">License No</label>
-                          <input type="text" name="vehicle_no" id="vehicle_no" class="form-control" placeholder="License No" required readonly/>
+                          <label for="vendor">{{__('maintenance.lisence')}}</label>
+                          <input type="text" name="vehicle_no" id="vehicle_no" class="form-control" placeholder="{{__('maintenance.lisence')}}" required readonly/>
                         </div>
                     </div>
                   </div>
@@ -128,14 +128,14 @@
                       <div class="col-sm-4">
                           <!-- text input -->
                           <div class="form-group">
-                            <label for="license_no">Driver</label>
-                            <input type="text" name="driver" id="driver" class="form-control" placeholder="Driver" required  readonly>
+                            <label for="license_no">{{__('maintenance.driver')}}</label>
+                            <input type="text" name="driver" id="driver" class="form-control" placeholder="{{__('maintenance.driver')}}" required  readonly>
                           </div>
                       </div>
                       <div class="col-sm-4">
                         <div class="form-group">
-                          <label class="col-sm-5 label-controls" for="license_no">Technician <b class="text-danger">*</b></label>
-                          <input type="text" name="technician" id="technician" class="form-control" placeholder="Technician" required>
+                          <label class="col-sm-5 label-controls" for="license_no">{{__('maintenance.tech')}} <b class="text-danger">*</b></label>
+                          <input type="text" name="technician" id="technician" class="form-control" placeholder="{{__('maintenance.tech')}}" required>
                         </div>
                       </div>
                   </div>
@@ -143,14 +143,14 @@
                       <div class="col-sm-4">
                           <!-- text input -->
                           <div class="form-group">
-                            <label class="col-sm-3 label-controls" for="date">Date <b class="text-danger">*</b></label>
+                            <label class="col-sm-4 label-controls" for="date">{{__('general.date')}} <b class="text-danger">*</b></label>
                             <div class="input-group">
                               <div class="input-group-prepend">
                                 <span class="input-group-text">
                                   <i class="far fa-calendar-alt"></i>
                                 </span>
                               </div>
-                              <input type="text" name="date" class="form-control datepicker" placeholder="Date" required />
+                              <input type="text" name="date" class="form-control datepicker" placeholder="{{__('general.date')}}" required />
                             </div>
                           </div>
                       </div>
@@ -165,9 +165,9 @@
                           <label class="col-sm-3 label-controls">Status</label>
                           <div class="col-sm-12 controls">
                               <input class="form-control" type="radio" name="status" value="0" checked> <i></i>
-                              <label class="p-2">Draft</label>
+                              <label class="p-2">{{__('maintenance.draft')}}</label>
                               <input class="form-control" type="radio" name="status" value="1"> <i></i>
-                              <label class="p-2">Publish</label>
+                              <label class="p-2">{{__('maintenance.publish')}}</label>
                           </div>
                         </div>
                     </div>
@@ -178,7 +178,7 @@
                       <div class="col-sm-12">
                           <!-- text input -->
                           <div class="form-group">
-                              <label for="app_logo" class="col-sm-5 control-label">Image</label>
+                              <label for="app_logo" class="col-sm-5 control-label">{{__('maintenance.image')}}</label>
                               <div class="col-sm-12"
                                   style="border:1px solid #bdc3c7; border-radius:5px; height:203px; padding-top:10px;">
                                   <input type="file" class="form-control" name="image" id="picture" accept="image/*" />
@@ -195,17 +195,17 @@
     <div class="col-lg-12">
       <div class="card card-{{ config('configs.app_theme') }} card-outline" style="height:96%;">
         <div class="card-header" style="height:55px">
-          <h3 class="card-title">List Item</h3>
+          <h3 class="card-title">{{__('maintenance.listitem')}}</h3>
         </div>
         <div class="card-body">
           <table class="table table-striped table-bordered datatable" id="table-product" style="width: 100%">
             <thead>
               <tr>
-                <th width="100">Item</th>
+                <th width="100">{{__('maintenance.item')}}</th>
                 <th width="50" style="text-align: center">Qty</th>
-                <th width="100" style="text-align: right">Cost</th>
+                <th width="100" style="text-align: right">{{__('maintenance.cost')}}</th>
                 <th width="100" style="text-align: right">Subtotal</th>
-                <th width="10" class="text-center">Action</th>
+                <th width="10" class="text-center">{{__('general.act')}}</th>
               </tr>
             </thead>
             <tbody>

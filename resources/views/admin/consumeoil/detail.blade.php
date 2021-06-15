@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Consume Oil ')
+@section('title',__('consumeoil.consume'))
 @section('stylesheets')
 <link rel="stylesheet" href="{{asset('adminlte/component/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('consumeoil.index')}}">Consume Oil</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item"><a href="{{route('consumeoil.index')}}">{{__('consumeoil.consume')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.dtl')}}</li>
 @endpush
 
 @section('content')
@@ -18,7 +18,7 @@
     <div class="col-lg-8">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header" style="height: 57px;">
-          <h3 class="card-title">Consume Oil Data</h3>
+          <h3 class="card-title">{{__('general.dtl')}} {{__('consumeoil.consume')}}</h3>
         </div>
         <div class="card-body">
             {{ csrf_field() }}
@@ -26,14 +26,14 @@
               <div class="col-sm-6">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Tanggal</label> <b class="text-danger">*</b></label>
-                <input type="text" class="form-control" name="date" id="date" placeholder="Date" value="{{$consumeoils->date}}" readonly>
+                  <label>{{__('general.date')}}</label> <b class="text-danger">*</b></label>
+                <input type="text" class="form-control" name="date" id="date" placeholder="{{__('general.date')}}" value="{{$consumeoils->date}}" readonly>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Vehicle <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" id="vehicle_id"name="vehicle_id" placeholder="Vehicle" readonly>
+                  <label>{{__('general.vehicle')}} <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" id="vehicle_id"name="vehicle_id" placeholder="{{__('general.vehicle')}}" readonly>
                 </div>
               </div>
             </div>
@@ -46,8 +46,8 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label>Initial Stock<b class="text-danger"></b></label>
-                    <input class="form-control" id="stock" data-placeholder="Stock" name="stock" value="{{$consumeoils->stock}}" readonly>
+                        <label>{{__('consumeoil.initial')}}<b class="text-danger"></b></label>
+                    <input class="form-control" id="stock" data-placeholder="{{__('consumeoil.initial')}}" name="stock" value="{{$consumeoils->stock}}" readonly>
                     </div>
                 </div>
             </div>
@@ -55,8 +55,8 @@
             <div class="d-flex">
                 <div class="col-sm-6">
                     <div class="form-group">
-                    <label>Engine Oil <b class="text-danger">*</b></label>
-                    <input class="form-control engineoil" id="engine_oil" value="{{$consumeoils->engine_oil}}" data-placeholder="Engine Oil" name="engine_oil" readonly>
+                    <label>{{__('consumeoil.engineoil')}} <b class="text-danger">*</b></label>
+                    <input class="form-control engineoil" id="engine_oil" value="{{$consumeoils->engine_oil}}" data-placeholder="{{__('consumeoil.engineoil')}}" name="engine_oil" readonly>
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -70,8 +70,8 @@
               <div class="col-sm-6">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Driver <b class="text-danger">*</b></label>
-                <input class="form-control" id="driver"  value="{{$consumeoils->driver}}"data-placeholder="Driver" name="driver" readonly>
+                  <label>{{__('consumeoil.driver')}} <b class="text-danger">*</b></label>
+                <input class="form-control" id="driver"  value="{{$consumeoils->driver}}"data-placeholder="{{__('consumeoil.driver')}}" name="driver" readonly>
                 </div>
               </div>
             </div>
@@ -86,8 +86,10 @@
     <div class="col-lg-4">
       <div class="card card-{{ config('configs.app_theme') }} card-outline" style="height: 97%">
         <div class="card-header">
-          <h3 class="card-title">Other</h3>
+          <h3 class="card-title">{{__('general.other')}}</h3>
           <div class="pull-right card-tools">
+            <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i
+                class="fa fa-reply"></i></a>
             {{-- <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i
                 class="fa fa-save"></i></button>
             <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
@@ -99,8 +101,8 @@
               <div class="col-sm-12">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Notes</label>
-                <textarea style="width:310px; height:150px;" class="form-control" value="{{$consumeoils->note}}" name="notes" placeholder="Notes" readonly>{{$consumeoils->note}}</textarea>
+                  <label>{{__('general.notes')}}</label>
+                <textarea style="width:310px; height:150px;" class="form-control" value="{{$consumeoils->note}}" name="notes" placeholder="{{__('general.notes')}}" readonly>{{$consumeoils->note}}</textarea>
                 </div>
               </div>
             </div>
@@ -111,9 +113,9 @@
                   <label>Status</label>
                   <div class="col-sm-12">
                     @if($consumeoils->status == 0)
-                      <span class="badge badge-warning">Draft</span>
+                      <span class="badge badge-warning">{{__('consumeoil.draft')}}</span>
                     @else
-                      <span class="badge badge-info">Publish</span>
+                      <span class="badge badge-info">{{__('consumeoil.publish')}}</span>
                     @endif
                  </div>
                 </div>

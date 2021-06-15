@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Consume Oil ')
+@section('title',__('consumeoil.consume'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('consumeoil.index')}}">Consume Oil</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item"><a href="{{route('consumeoil.index')}}">{{__('consumeoil.consume')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.edt')}}</li>
 @endpush
 
 @section('content')
@@ -18,7 +18,7 @@
     <div class="col-lg-8">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header" style="height: 57px;">
-          <h3 class="card-title">Consume Oil Data</h3>
+          <h3 class="card-title">{{__('general.edt')}} {{__('consumeoil.consume')}}</h3>
         </div>
         <div class="card-body">
             {{ csrf_field() }}
@@ -26,7 +26,7 @@
               <div class="col-sm-6">
                 <!-- text input -->
                 <div class="form-group">
-                    <label class="control-label" for="date">Date</label>
+                    <label class="control-label" for="date">{{__('general.date')}}</label>
                     <div class="controls">
                       <div class="input-group">
                         <div class="input-group-prepend">
@@ -34,15 +34,15 @@
                             <i class="far fa-calendar-alt"></i>
                           </span>
                         </div>
-                        <input type="text" name="date" id="date" class="form-control datepicker filter" placeholder="Date">
+                        <input type="text" name="date" id="date" class="form-control datepicker filter" placeholder="{{__('general.date')}}">
                       </div>
                     </div>
                   </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Vehicle <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control" id="vehicle_id"name="vehicle_id" placeholder="Vehicle">
+                  <label>{{__('consumeoil.vehicle')}} <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control" id="vehicle_id"name="vehicle_id" placeholder="{{__('consumeoil.vehicle')}}">
                 </div>
               </div>
             </div>
@@ -55,8 +55,8 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label>Initial Stock<b class="text-danger"></b></label>
-                    <input class="form-control" id="stock" data-placeholder="Stock" name="stock" value="{{$consumeoils->stock}}" readonly>
+                        <label>{{__('consumeoil.initial')}}<b class="text-danger"></b></label>
+                    <input class="form-control" id="stock" data-placeholder="{{__('consumeoil.initial')}}" name="stock" value="{{$consumeoils->stock}}" readonly>
                     </div>
                 </div>
             </div>
@@ -64,8 +64,8 @@
             <div class="d-flex">
                 <div class="col-sm-6">
                     <div class="form-group">
-                    <label>Engine Oil <b class="text-danger">*</b></label>
-                    <input class="form-control engineoil" id="engine_oil" value="{{$consumeoils->engine_oil}}" data-placeholder="Engine Oil" name="engine_oil">
+                    <label>{{__('consumeoil.engineoil')}} <b class="text-danger">*</b></label>
+                    <input class="form-control engineoil" id="engine_oil" value="{{$consumeoils->engine_oil}}" data-placeholder="{{__('consumeoil.engineoil')}}" name="engine_oil">
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -79,17 +79,17 @@
               <div class="col-sm-6">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Driver <b class="text-danger">*</b></label>
-                <input class="form-control" id="driver"  value="{{$consumeoils->driver}}"data-placeholder="Driver" name="driver">
+                  <label>{{__('consumeoil.driver')}} <b class="text-danger">*</b></label>
+                <input class="form-control" id="driver"  value="{{$consumeoils->driver}}"data-placeholder="{{__('consumeoil.driver')}}" name="driver">
                 </div>
               </div>
               <div class="col-sm-6">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Type <b class="text-danger">*</b></label>
-                   <select name="type" id="type" class="form-control select2" data-placeholder="Select Type">
-                        <option value="Add Oil" @if($consumeoils->type == "Add Oil") selected @endif>Add Oil</option>
-                        <option value="Change Oil" @if($consumeoils->type == "Change Oil") selected @endif>Change Oil</option>
+                  <label>{{__('consumeoil.type')}} <b class="text-danger">*</b></label>
+                   <select name="type" id="type" class="form-control select2" data-placeholder="{{__('general.chs')}} {{__('consumeoil.type')}}">
+                        <option value="Add Oil" @if($consumeoils->type == "Add Oil") selected @endif>{{__('consumeoil.addoil')}}</option>
+                        <option value="Change Oil" @if($consumeoils->type == "Change Oil") selected @endif>{{__('consumeoil.change')}}</option>
                     </select>
                 </div>
               </div>
@@ -105,11 +105,11 @@
     <div class="col-lg-4">
       <div class="card card-{{ config('configs.app_theme') }} card-outline" style="height: 97%">
         <div class="card-header">
-          <h3 class="card-title">Other</h3>
+          <h3 class="card-title">{{__('general.other')}}</h3>
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{__('general.save')}}"><i
                 class="fa fa-save"></i></button>
-            <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="Kembali"><i
+            <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i
                 class="fa fa-reply"></i></a>
           </div>
         </div>
@@ -118,8 +118,8 @@
               <div class="col-sm-12">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Notes</label>
-                <textarea style="width:310px; height:150px;" class="form-control" name="note" placeholder="Notes">{{$consumeoils->note}}</textarea>
+                  <label>{{__('general.notes')}}</label>
+                <textarea style="width:310px; height:150px;" class="form-control" name="note" placeholder="{{__('general.notes')}}">{{$consumeoils->note}}</textarea>
                 </div>
               </div>
             </div>
@@ -130,9 +130,9 @@
                   <label>Status</label>
                   <div class="col-sm-12">
                     <input class="form-control" type="radio" name="status" value="0" @if($consumeoils->status == 0) checked @endif> <i></i>
-                    <label class="p-2">Draft</label>
+                    <label class="p-2">{{__('consumeoil.draft')}}</label>
                     <input class="form-control" type="radio" name="status" value="1" @if($consumeoils->status == 1) checked @endif> <i></i>
-                    <label class="p-2">Publish</label>
+                    <label class="p-2">{{__('consumeoil.publish')}}</label>
                  </div>
                 </div>
               </div>

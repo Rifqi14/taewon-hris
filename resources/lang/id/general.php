@@ -87,7 +87,7 @@ return [
     'oct'         => 'Oktober',
     'nov'         => 'November',
     'dec'         => 'Desember',
-    'period'      => 'Period',
+    'period'      => 'Periode',
     'history'     => 'Riwayat',
     'no_phone'    => 'No Telepon',
     'expired'     => 'Kadaluarsa',

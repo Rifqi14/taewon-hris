@@ -1,9 +1,9 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Detail Oil')
+@section('title', 'Oil')
 @push('breadcrump')
 <li class="breadcrumb-item"><a href="{{route('oil.index')}}">Oil</a></li>
-<li class="breadcrumb-item active">Detail</li>
+<li class="breadcrumb-item active">{{__('general.dtl')}}</li>
 @endpush
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
@@ -14,20 +14,20 @@
         <div class="card card-{{config('configs.app_theme')}} card-outline">
             <div class="card-header p-0 border-bottom-0">
                 <ul class="nav nav-tabs">
-                    <li class="nav-item"><a class="nav-link" href="#information" data-toggle="tab">Information</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#history" data-toggle="tab">History</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#consumeoil" data-toggle="tab">Movement</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#consumeoil1" data-toggle="tab">Consume Oil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#information" data-toggle="tab">{{__('oil.info')}}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#history" data-toggle="tab">{{__('asset.history')}}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#consumeoil" data-toggle="tab">{{__('oil.move')}}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#consumeoil1" data-toggle="tab">{{__('consumeoil.consume')}}</a></li>
                 </ul>
             </div>
             <div class="tab-content">
                 <div class="tab-pane active" id="information">
                         <div class="card-header">
-                            <h3 class="card-title">Information Oil</h3>
+                            <h3 class="card-title">{{__('oil.oilinfo')}}</h3>
                                 <h3 class="card-title center"></h3>
                                 <!-- tools box -->
                                 <div class="pull-right card-tools">
-                                    <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="Kembali"><i
+                                    <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="{{__('oil.prvious')}}"><i
                                             class="fa fa-reply"></i></a>
                                 </div>
                                 <!-- /. tools -->
@@ -41,11 +41,11 @@
                             </div>
                             <div class="col-md-8">
                                 <div class="row mb-3">
-                                    <div class="col-md-2"><b>Code</b></div>
+                                    <div class="col-md-2"><b>{{__('general.code')}}</b></div>
                                     <div class="col-md-10">{{ $asset->name }}</div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div class="col-md-2"><b>Name</b></div>
+                                    <div class="col-md-2"><b>{{__('general.name')}}</b></div>
                                     <div class="col-md-10">{{ $asset->name }}</div>
                                 </div>
                                 <div class="row mb-3">
@@ -53,23 +53,23 @@
                                     <div class="col-md-10">{{ $asset->pic }}</div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div class="col-md-2"><b>Location</b></div>
+                                    <div class="col-md-2"><b>{{__('oil.location')}}</b></div>
                                     <div class="col-md-10">{{ $asset->location }}</div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div class="col-md-2"><b>Buy Price</b></div>
+                                    <div class="col-md-2"><b>{{__('oil.buyprice')}}</b></div>
                                     <div class="col-md-10">{{ number_format($asset->buy_price,0,',','.') }}</div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div class="col-md-2"><b>Buy Date</b></div>
+                                    <div class="col-md-2"><b>{{__('oil.buydate')}}</b></div>
                                     <div class="col-md-10">{{ $asset->buy_date }}</div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div class="col-md-2"><b>Note</b></div>
+                                    <div class="col-md-2"><b>{{__('oil.note')}}</b></div>
                                     <div class="col-md-10">{{ $asset->note }}</div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div class="col-md-2"><b>Stock</b></div>
+                                    <div class="col-md-2"><b>{{__('oil.stock')}}</b></div>
                                     <div class="col-md-10">{{ number_format($asset->stock,0,',','.') }}</div>
                                 </div>
                             </div>
@@ -79,7 +79,7 @@
             
                 <div class="tab-pane" id="history">
                     <div class="card-header">
-                        <h3 class="card-title">History</h3>
+                        <h3 class="card-title">{{__('asset.history')}}</h3>
                         <div class="pull-right card-tools">
                             <a href="javascript:void(0)" onclick="exporthistory()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="Export" style="cursor: pointer;"><i class="fa fa-download"></i></a>
                         </div>
@@ -92,34 +92,34 @@
                                 <div class="col-md-4">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label class="control-label" for="period">Period</label>
+                                            <label class="control-label" for="period">{{__('general.period')}}</label>
                                             <div class="form-row">
                                                 <div class="col-sm-8">
                                                     <select class="form-control select2" name="month_histories" id="month_histories">
                                                         <option value="01" @if (date('m', time())=="01" ) selected @endif>
-                                                            January</option>
+                                                            {{__('general.jan')}}</option>
                                                         <option value="02" @if (date('m', time())=="02" ) selected @endif>
-                                                            February</option>
+                                                            {{__('general.feb')}}</option>
                                                         <option value="03" @if (date('m', time())=="03" ) selected @endif>
-                                                            March</option>
+                                                            {{__('general.march')}}</option>
                                                         <option value="04" @if (date('m', time())=="04" ) selected @endif>
-                                                            April</option>
+                                                            {{__('general.apr')}}</option>
                                                         <option value="05" @if (date('m', time())=="05" ) selected @endif>
-                                                            May</option>
+                                                            {{__('general.may')}}</option>
                                                         <option value="06" @if (date('m', time())=="06" ) selected @endif>
-                                                            June</option>
+                                                            {{__('general.jun')}}</option>
                                                         <option value="07" @if (date('m', time())=="07" ) selected @endif>
-                                                            July</option>
+                                                            {{__('general.jul')}}</option>
                                                         <option value="08" @if (date('m', time())=="08" ) selected @endif>
-                                                            August</option>
+                                                            {{__('general.aug')}}</option>
                                                         <option value="09" @if (date('m', time())=="09" ) selected @endif>
-                                                            September</option>
+                                                            {{__('general.sep')}}</option>
                                                         <option value="10" @if (date('m', time())=="10" ) selected @endif>
-                                                            October</option>
+                                                            {{__('general.oct')}}</option>
                                                         <option value="11" @if (date('m', time())=="11" ) selected @endif>
-                                                            November</option>
+                                                            {{__('general.nov')}}</option>
                                                         <option value="12" @if (date('m', time())=="12" ) selected @endif>
-                                                            December</option>
+                                                            {{__('general.dec')}}</option>
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-4">
@@ -144,10 +144,10 @@
                             <thead>
                                     <tr>
                                         <th style="border-top:none">PIC</th>
-                                        <th style="border-top:none">Location</th>
-                                        <th style="border-top:none" class="text-center">Stock</th>
-                                        <th style="border-top:none">Buy Price</th>
-                                        <th style="border-top:none">Date</th>
+                                        <th style="border-top:none">{{__('oil.location')}}</th>
+                                        <th style="border-top:none" class="text-center">{{__('oil.stock')}}</th>
+                                        <th style="border-top:none">{{__('oil.buyprice')}}</th>
+                                        <th style="border-top:none">{{__('general.date')}}</th>
                                     </tr>
                             </thead>
                         </table>
@@ -156,7 +156,7 @@
 
                 <div class="tab-pane" id="consumeoil">
                     <div class="card-header">
-                        <h3 class="card-title">Movement</h3>
+                        <h3 class="card-title">{{__('oil.move')}}</h3>
                         <div class="pull-right card-tools">
                             <a href="javascript:void(0)" onclick="exportoil()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="Export" style="cursor: pointer;"><i class="fa fa-download"></i></a>
                         </div>
@@ -170,34 +170,34 @@
                                     <div class="col-md-4">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label class="control-label" for="period">Period</label>
+                                                <label class="control-label" for="period">{{__('general.period')}}</label>
                                                 <div class="form-row">
                                                     <div class="col-sm-8">
                                                         <select class="form-control select2" name="month_movement" id="month_movement">
                                                             <option value="01" @if (date('m', time())=="01" ) selected @endif>
-                                                                January</option>
+                                                                {{__('general.jan')}}</option>
                                                             <option value="02" @if (date('m', time())=="02" ) selected @endif>
-                                                                February</option>
+                                                                {{__('general.feb')}}</option>
                                                             <option value="03" @if (date('m', time())=="03" ) selected @endif>
-                                                                March</option>
+                                                                {{__('general.march')}}</option>
                                                             <option value="04" @if (date('m', time())=="04" ) selected @endif>
-                                                                April</option>
+                                                                {{__('general.apr')}}</option>
                                                             <option value="05" @if (date('m', time())=="05" ) selected @endif>
-                                                                May</option>
+                                                                {{__('general.may')}}</option>
                                                             <option value="06" @if (date('m', time())=="06" ) selected @endif>
-                                                                June</option>
+                                                                {{__('general.jun')}}</option>
                                                             <option value="07" @if (date('m', time())=="07" ) selected @endif>
-                                                                July</option>
+                                                                {{__('general.jul')}}</option>
                                                             <option value="08" @if (date('m', time())=="08" ) selected @endif>
-                                                                August</option>
+                                                                {{__('general.aug')}}</option>
                                                             <option value="09" @if (date('m', time())=="09" ) selected @endif>
-                                                                September</option>
+                                                                {{__('general.sep')}}</option>
                                                             <option value="10" @if (date('m', time())=="10" ) selected @endif>
-                                                                October</option>
+                                                                {{__('general.oct')}}</option>
                                                             <option value="11" @if (date('m', time())=="11" ) selected @endif>
-                                                                November</option>
+                                                                {{__('general.nov')}}</option>
                                                             <option value="12" @if (date('m', time())=="12" ) selected @endif>
-                                                                December</option>
+                                                                {{__('general.dec')}}</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-sm-4">
@@ -222,10 +222,10 @@
                                 <thead>
                                         <tr>
                                             <th width="10" class="text-center">#</th>
-                                            <th width="100">Note</th>
-                                            <th width="50">Type</th>
+                                            <th width="100">{{__('general.notes')}}</th>
+                                            <th width="50">{{__('general.type')}}</th>
                                             <th width="20" class="text-center">Qty</th>
-                                            <th width="50">Date</th>
+                                            <th width="50">{{__('general.date')}}</th>
                                         </tr>
                                 </thead>
                                 <tbody>
@@ -236,7 +236,7 @@
                 </div>
                 <div class="tab-pane" id="consumeoil1">
                     <div class="card-header">
-                        <h3 class="card-title">Consume Oil</h3>
+                        <h3 class="card-title">{{__('consumeoil.consume')}}</h3>
                         <div class="pull-right card-tools">
                             <a href="javascript:void(0)" onclick="exportconsume()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="Export" style="cursor: pointer;"><i class="fa fa-download"></i></a>
                         </div>
@@ -250,34 +250,34 @@
                                     <div class="col-md-4">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label class="control-label" for="period">Period</label>
+                                                <label class="control-label" for="period">{{__('general.period')}}</label>
                                                 <div class="form-row">
                                                     <div class="col-sm-8">
                                                         <select class="form-control select2" name="month_consume" id="month_consume">
                                                             <option value="01" @if (date('m', time())=="01" ) selected @endif>
-                                                                January</option>
+                                                                {{__('general.jan')}}</option>
                                                             <option value="02" @if (date('m', time())=="02" ) selected @endif>
-                                                                February</option>
+                                                                {{__('general.feb')}}</option>
                                                             <option value="03" @if (date('m', time())=="03" ) selected @endif>
-                                                                March</option>
+                                                                {{__('general.march')}}</option>
                                                             <option value="04" @if (date('m', time())=="04" ) selected @endif>
-                                                                April</option>
+                                                                {{__('general.apr')}}</option>
                                                             <option value="05" @if (date('m', time())=="05" ) selected @endif>
-                                                                May</option>
+                                                                {{__('general.may')}}</option>
                                                             <option value="06" @if (date('m', time())=="06" ) selected @endif>
-                                                                June</option>
+                                                                {{__('general.jun')}}</option>
                                                             <option value="07" @if (date('m', time())=="07" ) selected @endif>
-                                                                July</option>
+                                                                {{__('general.jul')}}</option>
                                                             <option value="08" @if (date('m', time())=="08" ) selected @endif>
-                                                                August</option>
+                                                                {{__('general.aug')}}</option>
                                                             <option value="09" @if (date('m', time())=="09" ) selected @endif>
-                                                                September</option>
+                                                                {{__('general.sep')}}</option>
                                                             <option value="10" @if (date('m', time())=="10" ) selected @endif>
-                                                                October</option>
+                                                                {{__('general.oct')}}</option>
                                                             <option value="11" @if (date('m', time())=="11" ) selected @endif>
-                                                                November</option>
+                                                                {{__('general.nov')}}</option>
                                                             <option value="12" @if (date('m', time())=="12" ) selected @endif>
-                                                                December</option>
+                                                                {{__('general.dec')}}</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-sm-4">
@@ -302,14 +302,14 @@
                                 <thead>
                                     <tr>
                                         <th width="10" class="text-center">#</th>
-                                        <th width="100">Vehicle</th>
-                                        <th width="50">Driver</th>
-                                        <th width="20">Used Type</th>
-                                        <th width="50">Used Oil</th>
+                                        <th width="100">{{__('vehicle.vehicle')}}</th>
+                                        <th width="50">{{__('vehicle.driver')}}</th>
+                                        <th width="20">{{__('consumeoil.usedtype')}}</th>
+                                        <th width="50">{{__('oil.useoil')}}</th>
                                         <th width="50">KM</th>
-                                        <th width="50">Initial Stock</th>
-                                        <th width="50">Stock Left</th>
-                                        <th width="50">Date</th>
+                                        <th width="50">{{__('oil.initial')}}</th>
+                                        <th width="50">{{__('oil.lfstock')}}</th>
+                                        <th width="50">{{__('general.date')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

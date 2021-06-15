@@ -1,11 +1,11 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Asset Category')
+@section('title', __('assetcat.assetcat'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 @push('breadcrump')
-    <li class="breadcrumb-item active">Asset Category</li>
+    <li class="breadcrumb-item active">{{__('assetcat.assetcat')}}</li>
 @endpush
 
 @section('content')
@@ -16,18 +16,18 @@
             <div class="card-header p-0 border-bottom-0">
                 <ul class="nav nav-tabs">
                     <input type="hidden" name="status" value="1"/>
-                    <li class="nav-item"><a class="nav-link active" href="#" data-toggle="pill" onClick="changeTab(1)">Active</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" data-toggle="pill" onClick="changeTab(0)">Archive</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#" data-toggle="pill" onClick="changeTab(1)">{{__('assetcat.active')}}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-toggle="pill" onClick="changeTab(0)">{{__('assetcat.archive')}}</a></li>
                 </ul>
             </div>
             <div class="card-header">
-                <h3 class="card-title">Data Asset Category</h3>
+                <h3 class="card-title">{{__('assetcat.asetdata')}}</h3>
                 <!-- tools box -->
                 <div class="pull-right card-tools">
-                    <a href="{{route('assetcategory.create')}}" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="Create">
+                    <a href="{{route('assetcategory.create')}}" class="btn btn-{{config('configs.app_theme')}} btn-sm text-white" data-toggle="tooltip" title="{{__('general.crt')}}">
                     <i class="fa fa-plus"></i>
                     </a>
-                    <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
+                    <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="{{__('general.srch')}}">
                         <i class="fa fa-search"></i>
                     </a>
                 </div>
@@ -37,9 +37,9 @@
                     <thead>
                         <tr>
                             <th width="10">#</th>
-                            <th width="200">Name</th>
-                            <th width="50">Stock</th>
-                            <th width="40">Created At</th>
+                            <th width="200">{{__('assetcat.name')}}</th>
+                            <th width="50">{{__('assetcat.stock')}}</th>
+                            <th width="40">{{__('assetcat.created')}}</th>
                             <th width="10">#</th>
                         </tr>
                     </thead>
@@ -56,7 +56,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Search</h4>
+                <h4 class="modal-title">{{__('general.srch')}}</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			</div>
             <div class="modal-body">
@@ -64,8 +64,8 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label class="control-label" for="path">Name</label>
-                                <input type="text" name="path" class="form-control" placeholder="Name">
+                                <label class="control-label" for="path">{{__('assetcat.name')}}</label>
+                                <input type="text" name="path" class="form-control" placeholder="{{__('assetcat.name')}}">
                             </div>
                         </div>
                     </div>
@@ -98,6 +98,14 @@ $(function(){
         lengthChange:true,
         responsive: true,
         order: [[ 4, "asc" ]],
+         language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
         ajax: {
             url: "{{route('assetcategory.read')}}",
             type: "GET",
@@ -122,7 +130,7 @@ $(function(){
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li><a class="dropdown-item" href="{{url('admin/assetcategory')}}/${row.id}/edit"><i class="fa fa-edit mr-1"></i> Edit</a></li>
-                        <li><a class="dropdown-item archive" href="#" data-id="${row.id}"><i class="fa fa-file mr-2"></i> Archive</a></li>
+                        <li><a class="dropdown-item archive" href="#" data-id="${row.id}"><i class="fa fa-file mr-2"></i> {{__('assetcat.archive')}}</a></li>
                     </ul>
                     </div>`
                 }
@@ -133,7 +141,7 @@ $(function(){
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li><a class="dropdown-item" href="{{url('admin/assetcategory')}}/${row.id}/edit"><i class="fa fa-edit mr-1"></i> Edit</a></li>
-                        <li><a class="dropdown-item nonarchive" href="#" data-id="${row.id}"><i class="fa fa-file mr-2"></i> Non Arsip</a></li>
+                        <li><a class="dropdown-item nonarchive" href="#" data-id="${row.id}"><i class="fa fa-file mr-2"></i> {{__('assetcat.active')}}</a></li>
                         <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fa fa-trash mr-2"></i> Delete</a></li>
                     </ul>
                     </div>`

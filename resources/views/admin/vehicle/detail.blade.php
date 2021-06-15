@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Detail Vehicle')
+@section('title',__('vehicle.vehicle'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('vehicle.index')}}">Vehicle</a></li>
-<li class="breadcrumb-item active">Detail</li>
+<li class="breadcrumb-item"><a href="{{route('vehicle.index')}}">{{__('vehicle.vehicle')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.dtl')}}</li>
 @endpush
 @section('stylesheets')
 
@@ -18,19 +18,19 @@
         <div class="card card-{{config('configs.app_theme')}} card-outline">
             <div class="card-header p-0 border-bottom-0">
                 <ul class="nav nav-tabs">
-                    <li class="nav-item"><a class="nav-link active" href="#information" data-toggle="tab">Information</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#history" data-toggle="tab">History</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#maintenance" data-toggle="tab">Maintenance</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#information" data-toggle="tab">{{__('oil.info')}}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#history" data-toggle="tab">{{__('asset.history')}}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#maintenance" data-toggle="tab">{{__('maintenance.mainten')}}</a></li>
                 </ul>
             </div>
             <div class="tab-content">
                 <div class="tab-pane active" id="information">
                         <div class="card-header">
-                            <h3 class="card-title">Information Vehicle</h3>
+                            <h3 class="card-title">{{__('oil.info')}} {{__('vehicle.vehicle')}}</h3>
                                 <h3 class="card-title center"></h3>
                                 <!-- tools box -->
                                 <div class="pull-right card-tools">
-                                    <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="Kembali"><i
+                                    <a href="javascript:void(0)" onclick="backurl()" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i
                                             class="fa fa-reply"></i></a>
                                 </div>
                                 <!-- /. tools -->
@@ -46,15 +46,15 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="row mb-3">
-                                            <div class="col-md-4"><b>Category</b></div>
+                                            <div class="col-md-4"><b>{{__('vehicle.vehcat')}}</b></div>
                                             <div class="col-md-8">{{ $asset->assetcategory->name }}</div>
                                         </div>
                                         <div class="row mb-3">
-                                            <div class="col-md-4"><b>Engine No</b></div>
+                                            <div class="col-md-4"><b>{{__('vehicle.engine')}}</b></div>
                                             <div class="col-md-8">{{ $asset->engine_no }}</div>
                                         </div>
                                         <div class="row mb-3">
-                                            <div class="col-md-4"><b>Plat Number</b></div>
+                                            <div class="col-md-4"><b>{{__('vehicle.plano')}}</b></div>
                                             <div class="col-md-8">{{ $asset->license_no }}</div>
                                         </div>
                                         <div class="row mb-3">
@@ -62,7 +62,7 @@
                                             <div class="col-md-8">{{ $asset->merk }}</div>
                                         </div>
                                         <div class="row mb-3">
-                                            <div class="col-md-4"><b>Type</b></div>
+                                            <div class="col-md-4"><b>{{__('vehicle.type')}}</b></div>
                                             <div class="col-md-8">{{ $asset->type }}</div>
                                         </div>
                                         <div class="row mb-3">
@@ -70,15 +70,15 @@
                                             <div class="col-md-8">{{ $asset->model }}</div>
                                         </div>
                                         <div class="row mb-3">
-                                            <div class="col-md-4"><b>Manufacture</b></div>
+                                            <div class="col-md-4"><b>{{__('vehicle.manufac')}}</b></div>
                                             <div class="col-md-8">{{ $asset->manufacture }}</div>
                                         </div>
                                         <div class="row mb-3">
-                                            <div class="col-md-4"><b>Engine Capacity</b></div>
+                                            <div class="col-md-4"><b>{{__('vehicle.capacity')}}</b></div>
                                             <div class="col-md-8">{{ $asset->engine_capacity }}</div>
                                         </div>
                                         <div class="row mb-3">
-                                            <div class="col-md-4"><b>Production Year</b></div>
+                                            <div class="col-md-4"><b>{{__('vehicle.prodyear')}}</b></div>
                                             <div class="col-md-8">{{ $asset->production_year }}</div>
                                         </div>
                                     </div>
@@ -88,19 +88,19 @@
                                             <div class="col-md-8">{{ $asset->pic }}</div>
                                         </div>
                                         <div class="row mb-3">
-                                            <div class="col-md-4"><b>Location</b></div>
+                                            <div class="col-md-4"><b>{{__('vehicle.loc')}}</b></div>
                                             <div class="col-md-8">{{ $asset->location }}</div>
                                         </div>
                                         <div class="row mb-3">
-                                            <div class="col-md-4"><b>Buy Price</b></div>
+                                            <div class="col-md-4"><b>{{__('vehicle.buyprice')}}</b></div>
                                             <div class="col-md-8">{{ number_format($asset->buy_price,0,',','.') }}</div>
                                         </div>
                                         <div class="row mb-3">
-                                            <div class="col-md-4"><b>Buy Date</b></div>
+                                            <div class="col-md-4"><b>{{__('vehicle.buydate')}}</b></div>
                                             <div class="col-md-8">{{ $asset->buy_date }}</div>
                                         </div>
                                         <div class="row mb-3">
-                                            <div class="col-md-4"><b>Note</b></div>
+                                            <div class="col-md-4"><b>{{__('vehicle.note')}}</b></div>
                                             <div class="col-md-8">{{ $asset->note }}</div>
                                         </div>
                                     </div>
@@ -112,7 +112,7 @@
             
                 <div class="tab-pane" id="history">
                     <div class="card-header">
-                        <h3 class="card-title">History</h3>
+                        <h3 class="card-title">{{__('asset.history')}}</h3>
                         <div class="pull-right card-tools">
                             <a href="javascript:void(0)" onclick="exporthistory()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="Export" style="cursor: pointer;"><i class="fa fa-download"></i></a>
                         </div>
@@ -125,34 +125,34 @@
                             <div class="col-md-4">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="period">Period</label>
+                                        <label class="control-label" for="period">{{__('general.period')}}</label>
                                         <div class="form-row">
                                             <div class="col-sm-8">
                                                 <select class="form-control select2" name="month" id="month">
                                                     <option value="01" @if (date('m', time())=="01" ) selected @endif>
-                                                        January</option>
+                                                        {{__('general.jan')}}</option>
                                                     <option value="02" @if (date('m', time())=="02" ) selected @endif>
-                                                        February</option>
+                                                        {{__('general.feb')}}</option>
                                                     <option value="03" @if (date('m', time())=="03" ) selected @endif>
-                                                        March</option>
+                                                        {{__('general.march')}}</option>
                                                     <option value="04" @if (date('m', time())=="04" ) selected @endif>
-                                                        April</option>
+                                                        {{__('general.apr')}}</option>
                                                     <option value="05" @if (date('m', time())=="05" ) selected @endif>
-                                                        May</option>
+                                                        {{__('general.may')}}</option>
                                                     <option value="06" @if (date('m', time())=="06" ) selected @endif>
-                                                        June</option>
+                                                        {{__('general.jun')}}</option>
                                                     <option value="07" @if (date('m', time())=="07" ) selected @endif>
-                                                        July</option>
+                                                        {{__('general.jul')}}</option>
                                                     <option value="08" @if (date('m', time())=="08" ) selected @endif>
-                                                        August</option>
+                                                        {{__('general.aug')}}</option>
                                                     <option value="09" @if (date('m', time())=="09" ) selected @endif>
-                                                        September</option>
+                                                        {{__('general.sep')}}</option>
                                                     <option value="10" @if (date('m', time())=="10" ) selected @endif>
-                                                        October</option>
+                                                        {{__('general.oct')}}</option>
                                                     <option value="11" @if (date('m', time())=="11" ) selected @endif>
-                                                        November</option>
+                                                        {{__('general.nov')}}</option>
                                                     <option value="12" @if (date('m', time())=="12" ) selected @endif>
-                                                        December</option>
+                                                        {{__('general.dec')}}</option>
                                                 </select>
                                             </div>
                                             <div class="col-sm-4">
@@ -176,10 +176,10 @@
                                 <thead>
                                     <tr>
                                         <th width="100">PIC</th>
-                                        <th width="100">Driver</th>
-                                        <th width="100">Location</th>
-                                        <th width="50" class="text-center">Stock</th>
-                                        <th width="50">Date</th>
+                                        <th width="100">{{__('vehicle.driver')}}</th>
+                                        <th width="100">{{__('vehicle.loc')}}</th>
+                                        <th width="50" class="text-center">{{__('oil.stock')}}</th>
+                                        <th width="50">{{__('general.date')}}</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -189,7 +189,7 @@
 
                 <div class="tab-pane" id="maintenance">
                     <div class="card-header">
-                        <h3 class="card-title">History Maintenance</h3>
+                        <h3 class="card-title">History {{__('maintenance.mainten')}}</h3>
                         <div class="pull-right card-tools">
                             <a href="javascript:void(0)" onclick="exportmaintenance()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="Export" style="cursor: pointer;"><i class="fa fa-download"></i></a>
                         </div>
@@ -202,35 +202,35 @@
                                 <div class="col-md-4">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label class="control-label" for="period">Period</label>
+                                            <label class="control-label" for="period">{{__('general.period')}}</label>
                                             <div class="form-row">
                                                 <div class="col-sm-8">
                                                     <select class="form-control select2" name="month_histories"
                                                         id="month_histories">
                                                         <option value="01" @if (date('m', time())=="01" ) selected @endif>
-                                                            January</option>
+                                                            {{__('general.jan')}}</option>
                                                         <option value="02" @if (date('m', time())=="02" ) selected @endif>
-                                                            February</option>
+                                                            {{__('general.feb')}}</option>
                                                         <option value="03" @if (date('m', time())=="03" ) selected @endif>
-                                                            March</option>
+                                                            {{__('general.march')}}</option>
                                                         <option value="04" @if (date('m', time())=="04" ) selected @endif>
-                                                            April</option>
+                                                            {{__('general.apr')}}</option>
                                                         <option value="05" @if (date('m', time())=="05" ) selected @endif>
-                                                            May</option>
+                                                            {{__('general.may')}}</option>
                                                         <option value="06" @if (date('m', time())=="06" ) selected @endif>
-                                                            June</option>
+                                                            {{__('general.jun')}}</option>
                                                         <option value="07" @if (date('m', time())=="07" ) selected @endif>
-                                                            July</option>
+                                                            {{__('general.jul')}}</option>
                                                         <option value="08" @if (date('m', time())=="08" ) selected @endif>
-                                                            August</option>
+                                                            {{__('general.aug')}}</option>
                                                         <option value="09" @if (date('m', time())=="09" ) selected @endif>
-                                                            September</option>
+                                                            {{__('general.sep')}}</option>
                                                         <option value="10" @if (date('m', time())=="10" ) selected @endif>
-                                                            October</option>
+                                                            {{__('general.oct')}}</option>
                                                         <option value="11" @if (date('m', time())=="11" ) selected @endif>
-                                                            November</option>
+                                                            {{__('general.nov')}}</option>
                                                         <option value="12" @if (date('m', time())=="12" ) selected @endif>
-                                                            December</option>
+                                                            {{__('general.dec')}}</option>
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-4">
@@ -255,12 +255,12 @@
                                     <thead>
                                         <tr>
                                             <th width="10">No</th>
-                                            <th width="100">Vehicle</th>
-                                            <th width="100">Date</th>
+                                            <th width="100">{{__('vehicle.vehicle')}}</th>
+                                            <th width="100">{{__('general.date')}}</th>
                                             <th width="100">Km</th>
-                                            <th width="100">Driver</th>
+                                            <th width="100">{{__('vehicle.driver')}}</th>
                                             <th width="50">Total</th>
-                                            <th width="100">File</th>
+                                            <th width="100">{{__('general.file')}}</th>
                                             <th width="50">Status</th>
                                         </tr>
                                     </thead>
