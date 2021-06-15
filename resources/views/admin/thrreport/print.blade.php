@@ -195,7 +195,7 @@
 				<th align="center" style="border:1px solid #000">Grand Total</th>
 			</tr>
 			<tr>
-			<td align="right" style="border:1px solid #000">{{ number_format("$total", 0,',','.')}}</td>	
+			<td align="right" style="border:1px solid #000">{{ number_format("$thrReport->amount", 0,',','.')}}</td>	
 			@php $grandTotal = 0; 
 				$a = false;
 			@endphp
