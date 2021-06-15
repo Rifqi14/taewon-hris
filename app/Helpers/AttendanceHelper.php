@@ -477,7 +477,9 @@ if (!function_exists('calculateAttendance')) {
               $attendance->adj_over_time = 3;
               if($attendance->attendance_in && $attendance->attendance_out){
                 $timeout = Carbon::parse($attendance->attendance_in)->addHours($min_workhour + 3)->toDateTimeString(); 
-                $attendance->attendance_out = $timeout;
+                $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
+                $breakworkingtime = getAllBreaktime($breaktimes, $attendance_hour);
+                $attendance->attendance_out = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
               }
             }
           }
