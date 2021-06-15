@@ -499,10 +499,10 @@ if (!function_exists('calculateAttendance')) {
               }
               else{
                 $workingtime = checkWorkingtime($attendance->workingtime_id, changeDateFormat('D', $attendance->attendance_date));
-                if($attendance->adj_over_time > $min_workhour){
-                  $attendance->adj_over_time = $min_workhour;
+                if($attendance->adj_over_time > $workingtime->min_workhour){
+                  $attendance->adj_over_time = $workingtime->min_workhour;
                   if($attendance->attendance_in && $attendance->attendance_out){
-                   $timeout = Carbon::parse($attendance->attendance_in)->addHours($min_workhour)->toDateTimeString(); 
+                   $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString(); 
                    $attendance->attendance_out = $timeout;
                   }
                } 
