@@ -131,7 +131,7 @@
 								</thead>
 								<tbody>
 									@php
-									($days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Off']);
+									($days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat','Sun', 'Off']);
 									@endphp
 									@foreach ($days as $key => $day)
 									<tr>
