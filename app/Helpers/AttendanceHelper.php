@@ -498,6 +498,7 @@ if (!function_exists('calculateAttendance')) {
                 $attendance->overtime_scheme_id = null;
               }
               else{
+                $workingtime = checkWorkingtime($attendance->workingtime_id, changeDateFormat('D', $attendance->attendance_date));
                 if($attendance->adj_over_time > $min_workhour){
                   $attendance->adj_over_time = $min_workhour;
                   if($attendance->attendance_in && $attendance->attendance_out){
