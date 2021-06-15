@@ -3442,7 +3442,7 @@ class SalaryReportController extends Controller
         $coordinate36value = 0;
       }
       $coordinate36values[$salary->id] = $coordinate36value;
-      $coordinate37values[$salary->id] = $coordinate31values[$salary->id] + $coordinate32values[$salary->id] + $coordinate33values[$salary->id] + $coordinate34values[$salary->id] + $coordinate35values[$salary->id] + $coordinate36values[$salary->id];
+      $coordinate37values[$salary->id] = count($days) - $totaloff - $coordinate33values[$salary->id] - $coordinate34values[$salary->id] - $coordinate35values[$salary->id] - $coordinate36values[$salary->id];
 
       // Jumlah pendapatan
       if($jumlah_months[$salary->id]){
