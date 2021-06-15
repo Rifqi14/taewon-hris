@@ -3412,7 +3412,7 @@ class SalaryReportController extends Controller
           $totaloff++;
         }
       }
-      $coordinate31values[$salary->id] = count($days) + $totaloff;
+      $coordinate31values[$salary->id] = count($days) - $totaloff;
       $coordinate32values[$salary->id] = $totaloff;
       // Coordinate33
       if($coordinate33){
