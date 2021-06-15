@@ -3404,7 +3404,7 @@ class SalaryReportController extends Controller
       else{
         $finishdate = date('Y-m-d',mktime(0,0,0,$month,$cutoff,$year));
       }
-      $exception_date = $this->employee_calendar($value->employee_id);
+      $exception_date = $this->employee_calendar($salary->employee_id);
       $days = getDatesFromRange($startdate,$finishdate,'Y-m-d','1 Day');
       $totaloff = 0;
       foreach($days as $day){
