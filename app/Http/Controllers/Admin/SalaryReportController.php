@@ -3232,10 +3232,13 @@ class SalaryReportController extends Controller
     $coordinate54values = [];
     $coordinate55values = [];
     $coordinate56values = [];
+    $coordinate31values = [];
+    $coordinate32values = [];
     $coordinate33values = [];
     $coordinate34values = [];
     $coordinate35values = [];
     $coordinate36values = [];
+    $coordinate37values = [];
     $coordinate51values = [];
     $coordinate52values = [];
     $coordinate53values = [];
@@ -3383,6 +3386,34 @@ class SalaryReportController extends Controller
         $jumlah_month = 0;
       }
       $jumlah_months[$salary->id] = $jumlah_month;
+      //Hari Kerja
+      $month = date("m", strtotime($salary->period));
+      $year = date("Y", strtotime($salary->period));
+      $endofmonthstart = date("t", mktime(0,0,0,$month - 1,1,$year));
+      $endofmonthfinish = date("t", mktime(0,0,0,$month,1,$year));
+      $cutoff = 31;
+      if($endofmonthstart < $cutoff){
+        $startdate = date('Y-m-d',mktime(0,0,0,$month - 1,$endofmonthstart + 1,$year));
+      }
+      else{
+        $startdate = date('Y-m-d',mktime(0,0,0,$month - 1,$cutoff + 1,$year));
+      }
+      if($endofmonthfinish < $cutoff){
+        $finishdate = date('Y-m-d',mktime(0,0,0,$month,$endofmonthfinish,$year));
+      }
+      else{
+        $finishdate = date('Y-m-d',mktime(0,0,0,$month,$cutoff,$year));
+      }
+      $exception_date = $this->employee_calendar($value->employee_id);
+      $days = getDatesFromRange($startdate,$finishdate,'Y-m-d','1 Day');
+      $totaloff = 0;
+      foreach($days as $day){
+        if(in_array($day, $exception_date)){
+          $totaloff++;
+        }
+      }
+      $coordinate31values[$salary->id] = count($days);
+      $coordinate32values[$salary->id] = $totaloff;
       // Coordinate33
       if($coordinate33){
         $coordinate33value = Leave::where('leave_setting_id', $coordinate33->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
@@ -3411,6 +3442,7 @@ class SalaryReportController extends Controller
         $coordinate36value = 0;
       }
       $coordinate36values[$salary->id] = $coordinate36value;
+      $coordinate37values[$salary->id] = $coordinate31values[$salary->id] + $coordinate32values[$salary->id] + $coordinate33values[$salary->id] + $coordinate34values[$salary->id] + $coordinate35values[$salary->id] + $coordinate36values[$salary->id];
 
       // Jumlah pendapatan
       if($jumlah_months[$salary->id]){
@@ -4184,7 +4216,7 @@ class SalaryReportController extends Controller
       $month = date("m", strtotime($value->period));
       $year = date("Y", strtotime($value->period));
       $endofmonthstart = date("t", mktime(0,0,0,$month - 1,1,$year));
-      $endofmonthfinish = date("t", mktime(0,0,0,$month - 1,1,$year));
+      $endofmonthfinish = date("t", mktime(0,0,0,$month,1,$year));
       $cutoff = 31;
       if($endofmonthstart < $cutoff){
         $startdate = date('Y-m-d',mktime(0,0,0,$month - 1,$endofmonthstart + 1,$year));

@@ -169,7 +169,7 @@
         <table class="table table-bordered">
                 <tr>
                     <th rowspan="2" class="th-first p-0 text-content">Rincian hari kerja</th>
-                    <th class="th-slip p-0 text-content">kerja aktif</th>
+                    <th class="th-slip p-0 text-content">Kerja Aktif</th>
                     <th class="th-slip p-0 text-content">Libur</th>
                     <th class="th-slip p-0 text-content">{{$coordinate33 ? $coordinate33->leave_name : 'Kosong'}}</th>
                     <th class="th-slip p-0 text-content">{{$coordinate34 ? $coordinate34->leave_name : 'Kosong'}}</th>
@@ -179,13 +179,13 @@
                 </tr>
                 <tr>
                     {{-- <td rowspan="1">Month</td> --}}
-                    <td class="p-0 text-right text-content">25</td>
-                    <td class="p-0 text-right text-content">6</td>
+                    <td class="p-0 text-right text-content">{{$coordinate31values[$salary->id]}}</td>
+                    <td class="p-0 text-right text-content">{{$coordinate32values[$salary->id]}}</td>
                     <td class="p-0 text-right text-content">{{$coordinate33values[$salary->id]}}</td>
                     <td class="p-0 text-right text-content">{{$coordinate34values[$salary->id]}}</td>
                     <td class="p-0 text-right text-content">{{$coordinate35values[$salary->id]}}</td>
                     <td class="p-0 text-right text-content">{{$coordinate36values[$salary->id]}}</td>
-                    <td class="p-0 text-right text-content">31</td>
+                    <td class="p-0 text-right text-content">{{$coordinate37values[$salary->id]}}</td>
                 </tr>
         </table>
         <h5 class="text-content"><b>PENDAPATAN</b></h5>
