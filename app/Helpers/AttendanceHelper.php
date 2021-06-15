@@ -19,6 +19,24 @@ use App\Models\SalaryIncreases;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
+if(!function_exists('employeeCalendar')){
+  function employeeCalendar($id)
+  {
+      $query_calendar = DB::table('employees');
+      $query_calendar->select('calendar_exceptions.*');
+      $query_calendar->leftJoin('calendars', 'calendars.id', '=', 'employees.calendar_id');
+      $query_calendar->leftJoin('calendar_exceptions', 'calendar_exceptions.calendar_id', '=', 'calendars.id');
+      $query_calendar->where('employees.id', '=', $id);
+      $query_calendar->whereRaw("coalesce(calendar_exceptions.is_switch_day,'') != 'YES'");
+      $calendar = $query_calendar->get();
+      $exception_date = [];
+      foreach ($calendar as $date) {
+          $exception_date[] = $date->date_exception;
+      }
+
+      return $exception_date;
+  }
+}
 if (!function_exists('calculateAttendance')) {
   function calculateAttendance($attendance){
     $mode = Config::where('option','mode')->first()?Config::where('option','mode')->first()->value:'normal';
@@ -470,13 +488,25 @@ if (!function_exists('calculateAttendance')) {
       /* End If*/
       if($mode == 'audit'){
           if($attendance->day == 'Off'){
-              if($attendance->adj_over_time > $min_workhour){
-                 $attendance->adj_over_time = $min_workhour;
-                 if($attendance->attendance_in && $attendance->attendance_out){
-                  $timeout = Carbon::parse($attendance->attendance_in)->addHours($min_workhour)->toDateTimeString(); 
-                  $attendance->attendance_out = $timeout;
-                 }
-              } 
+              $exception_date = employeeCalendar($attendance->employee_id);
+              $day = changeDateFormat('D', $attendance->attendance_date);
+              if((in_array($attendance->attendance_date, $exception_date)) && $day = 'Sun'){
+                $attendance->adj_over_time = 0;
+                $attendance->attendance_in = null;
+                $attendance->attendance_out = null;
+                $attendance->workingtime_id = null;
+                $attendance->overtime_scheme_id = null;
+              }
+              else{
+                if($attendance->adj_over_time > $min_workhour){
+                  $attendance->adj_over_time = $min_workhour;
+                  if($attendance->attendance_in && $attendance->attendance_out){
+                   $timeout = Carbon::parse($attendance->attendance_in)->addHours($min_workhour)->toDateTimeString(); 
+                   $attendance->attendance_out = $timeout;
+                  }
+               } 
+              }
+              
           }
           else{
             if($attendance->adj_over_time > 3){
