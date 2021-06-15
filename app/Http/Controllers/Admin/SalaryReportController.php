@@ -3372,7 +3372,7 @@ class SalaryReportController extends Controller
       } else {
         $coordinate56value = 0.0;
       }
-      $coordinate56values[$salary->id] = $coordinate56value;
+      $coordinate56values[$salary->id] = abs($coordinate56value);
 
       // deduction
       $deduction[$salary->id] = SalaryReportDetail::where('salary_report_id', $salary->id)->where('status', 'Salary Deduction')->get()->sum('total');
@@ -3613,6 +3613,7 @@ class SalaryReportController extends Controller
       $select .= "max(details.$alias) as $alias,";
     }
     $select .= "min(details.alpha_penalty) as alpha_penalty,";
+    $select .= "min(details.pinjaman) as pinjaman,";
     $select .= "max(details.spsi) as spsi,";
     $select .= "max(details.pph) as pph,";
     $select .= "sum(details.de_non_pph) as de_non_pph,";
@@ -3656,6 +3657,7 @@ class SalaryReportController extends Controller
         case when description = 'BPJS Kesehatan' then total else 0 end as bpjs,
         case when description = 'Potongan SPSI' then total else 0 end as spsi,
         case when description = 'Potongan PPh 21' then total else 0 end as pph,
+        case when description = 'Pinjaman Acc' then total else 0 end as pinjaman,
         case when is_added = 'YES' and type = '1' then total else 0 end as add_non_pph,
         case when is_added = 'YES' and type = '0' then total else 0 end as de_non_pph,
         $selectJoin
@@ -4206,13 +4208,13 @@ class SalaryReportController extends Controller
       }
       $totalOvertime = $value->otn_1 + $value->otn_15 + $value->otn_20 + $value->otn_30 + $value->otn_40;
       $acttotalJamOt = $value->ot_1 + $value->ot_15 + $value->ot_20 + $value->ot_30 + $value->ot_40;
+      $totalJamOt = $value->ot_1 + $value->ot_15 * 1.5 + $value->ot_20 * 2 + $value->ot_30 * 3 + $value->ot_40 * 4;
       // dd($totalOvertime, $acttotalJamOt); 
-      if($totalOvertime && $acttotalJamOt > 0){
-        $otJam = $totalOvertime / $acttotalJamOt;
+      if($totalOvertime && $totalJamOt > 0){
+        $otJam = $totalOvertime / $totalJamOt;
       }else{
         $otJam = 0;
       }
-      $totalJamOt = $value->ot_1 + $value->ot_15 * 1.5 + $value->ot_20 * 2 + $value->ot_30 * 3 + $value->ot_40 * 4;
       $bruto += $totalOvertime + $value->basic_salary + $value->daily_salary;
       $sheet->setCellValueByColumnAndRow($column_number, $row_number, $number);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->workgroup_name ? $value->workgroup_name : '-');
@@ -4222,7 +4224,7 @@ class SalaryReportController extends Controller
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->join_date);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->st);
       $sheet->setCellValueExplicitByColumnAndRow(++$column_number, $row_number, $value->account_no, PHPExcel_Cell_DataType::TYPE_STRING);
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->npwp ? $value->npwp : '-');
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->npwp ? "'".$value->npwp : '-');
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->basic_salary ? $value->basic_salary : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ot_15 ? $value->ot_15 : 0);
       // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->otn_15 ? $value->otn_15 : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
@@ -4262,8 +4264,8 @@ class SalaryReportController extends Controller
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->jamsostek)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $bruto3 = $bruto2 - $value->jamsostek;
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $bruto3)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->pinjaman_acc)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
-      $netsalary = $bruto3 + $value->pinjaman_acc;
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->pinjaman)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $netsalary = $bruto3 + $value->pinjaman;
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $netsalary)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $jamsostek2 = ($value->bpjstk/2*3.7119)  + ($value->tunjangan_pensiun *2) + ($value->bpjs *4);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->bpjstk/2*3.7119)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
