@@ -31,7 +31,7 @@ if (!function_exists('calculateAttendance')) {
         ], 400);
     }
     /* Check Working Time*/
-    $switchworkintime = CalendarException::where('calendar_id', $employee->calendar_id)->first();
+    $switchworkintime = CalendarException::where('calendar_id', $employee->calendar_id)->where('date_exception',$attendance->attendance_date)->first();
     if ($switchworkintime->is_switch_day == 'YES') {
         $workingtime = checkWorkingtimeSwitch($attendance->workingtime_id, $attendance->day);
     } else {
