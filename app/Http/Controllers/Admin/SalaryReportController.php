@@ -3549,7 +3549,7 @@ class SalaryReportController extends Controller
   'coordinate34', 'coordinate35', 'coordinate36', 'coordinate51', 'coordinate52', 'coordinate53', 'coordinate12values',
   'coordinate13values','coordinate14values','coordinate43values','coordinate44values','coordinate45values','coordinate46values',
   'coordinate54values','coordinate55values','coordinate56values','basic_salaries','jumlah_months', 'total_jamot', 'value_overtimes', 'everage_overtimes',
-  'coordinate33values','coordinate34values','coordinate35values','coordinate36values','jumlah_pendapatan','coordinate51values',
+  'coordinate31values','coordinate32values','coordinate33values','coordinate34values','coordinate35values','coordinate36values','coordinate37values','jumlah_pendapatan','coordinate51values',
   'coordinate52values','coordinate53values','jumlah_potongan', 'grand_total'));
   }
 
