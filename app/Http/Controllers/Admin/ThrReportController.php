@@ -877,7 +877,7 @@ class ThrReportController extends Controller
                                 // foreach ($allowance as $key => $value) {
                                 //    $amount_allowance = $amount_allowance +  $value->value;
                                 // }
-                                // Rumus : 'total'                => number_format((float)(($basesalary->amount + $amount_allowance) / 12 * $thrreport->period), 2, '.', ''),
+                                // Rumus : 'total' => number_format((float)(($basesalary->amount + $amount_allowance) / 12 * $thrreport->period), 2, '.', ''),
                                 // Insert Basic Salary
                                 $thrdetail = ThrReportDetail::create([
                                     'thr_report_id'        => $thrreport->id,
@@ -888,7 +888,7 @@ class ThrReportController extends Controller
                                 ]);
                                 // $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
                                 // $thrreport->save();
-                                $thrreport->amount = $basesalary->amount;
+                                $thrreport->amount = ($basesalary->amount /12) * $thrreport->period;
                                 $thrreport->save();
                                 if (!$thrdetail) {
                                     DB::rollBack();
@@ -911,8 +911,7 @@ class ThrReportController extends Controller
                                             'is_added'             => 'No'
                                         ]);
                                         $subTotal = $subTotal + $basesalary->amount + $amount_allowance;
-                                        $grandTotal = ($subTotal / 12) * $thrreport->period;
-                                        $thrreport->amount = $grandTotal;
+                                        $thrreport->amount = ($subTotal / 12) * $thrreport->period;
                                         $thrreport->save();
                                         if (!$thrdetail) {
                                             DB::rollBack();
@@ -930,8 +929,7 @@ class ThrReportController extends Controller
                                             'is_added'             => 'No'
                                         ]);
                                         $subTotal = $subTotal + $basesalary->amount + $amount_allowance;
-                                        $grandTotal = ($subTotal / 12) * 12;
-                                        $thrreport->amount = $grandTotal;
+                                        $thrreport->amount = ($subTotal / 12) * $thrreport->period;
                                         $thrreport->save();
                                         if (!$thrdetail) {
                                             DB::rollBack();
@@ -954,7 +952,9 @@ class ThrReportController extends Controller
                                     'is_added'             => 'No'
                                 ]);
 
-                                $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = ($thrdetail->total / 12) * $thrreport->period;
+                                $thrreport->amount = $thrdetail->total;
                                 $thrreport->save();
 
 
@@ -969,11 +969,13 @@ class ThrReportController extends Controller
                                 $thrdetail = ThrReportDetail::create([
                                     'thr_report_id'        => $thrreport->id,
                                     'employee_id'          => $employee->id,
-                                    'description'          => 'THR Basic',
+                                    'description'          => 'THR',
                                     'total'                => number_format((float)($basesalary->amount / 12 * 12), 2, '.', ''),
                                     'is_added'             => 'No'
                                 ]);
-                                $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = ($thrdetail->total / 12) * $thrreport->period;
+                                $thrreport->amount = $thrdetail->total;
                                 $thrreport->save();
 
                                 if (!$thrdetail) {
@@ -987,6 +989,7 @@ class ThrReportController extends Controller
                         }
                         
                         
+                        
                     }elseif (!$thrreport){
                         DB::rollBack();
                         return response()->json([
@@ -997,7 +1000,11 @@ class ThrReportController extends Controller
                 }
             }
             DB::commit();
-            // dd($thrreport->amount, $thrdetail->total);
+            $total = $basesalary->amount + $amount_allowance;
+            $thrreport->amount = ($total /12) * $thrreport->period;
+            $thrreport->save();
+            // dd($basesalary->amount, $thrreport->amount, $thrdetail->total,$amount_allowance, $thrreport->amount, $thrreport->period);
+            // dd($basesalary->amount, $amount_allowance, $thrreport->period);
             return response()->json([
                 'status'    => true,
                 'message'   => 'salary report generated successfully',
