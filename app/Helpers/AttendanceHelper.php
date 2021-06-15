@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 
 if (!function_exists('calculateAttendance')) {
   function calculateAttendance($attendance){
+    $mode = Config::where('option','mode')->first()?Config::where('option','mode')->first()->value:'normal';
     $employee = Employee::find($attendance->employee_id);
     $breaktimes = listBreaktime($employee->department_id);
     if (!$breaktimes) {
@@ -126,7 +127,7 @@ if (!function_exists('calculateAttendance')) {
       if($attendance->day == 'Off' && $employee->timeout == 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
           $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
           $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
-          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $breakworkingtime = getAllBreaktime($breaktimes, $attendance_hour);
           $attendance_out = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
 
           $totalattendance = Carbon::parse($attendance_out)->diffInHours($attendance->attendance_in);
@@ -217,7 +218,7 @@ if (!function_exists('calculateAttendance')) {
       if($attendance->day == 'Off' && $employee->timeout != 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
           $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
           $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
-          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $breakworkingtime = getAllBreaktime($breaktimes, $attendance_hour);
           $attendance->attendance_out = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
 
           $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
@@ -326,7 +327,7 @@ if (!function_exists('calculateAttendance')) {
       if($attendance->day != 'Off' && $employee->timeout == 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
           $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
           $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
-          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $breakworkingtime = getAllBreaktime($breaktimes, $attendance_hour);
           $attendance_out  = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
           $totalattendance = Carbon::parse($attendance_out)->diffInHours($attendance->attendance_in);
           $totalbreaktime = $breakworkingtime;
@@ -420,7 +421,7 @@ if (!function_exists('calculateAttendance')) {
       if($attendance->day != 'Off' && $employee->timeout != 'yes'  && $attendance->attendance_in && !$attendance->attendance_out){
           $timeout = Carbon::parse($attendance->attendance_in)->addHours($workingtime->min_workhour)->toDateTimeString();
           $attendance_hour = array('attendance_in' => $attendance->attendance_in, 'attendance_out' => $timeout);
-          $breakworkingtime = getBreaktimeWorkingtime($breaktimes, $attendance_hour, $workingtime);
+          $breakworkingtime = getAllBreaktime($breaktimes, $attendance_hour);
           $attendance->attendance_out = Carbon::parse($timeout)->addHours($breakworkingtime)->toDateTimeString();
 
           $totalattendance = Carbon::parse($attendance->attendance_out)->diffInHours($attendance->attendance_in);
@@ -461,6 +462,26 @@ if (!function_exists('calculateAttendance')) {
           }
       }
       /* End If*/
+      if($mode == 'audit'){
+          if($attendance->day == 'Off'){
+              if($attendance->adj_over_time > $min_workhour){
+                 $attendance->adj_over_time = $min_workhour;
+                 if($attendance->attendance_in && $attendance->attendance_out){
+                  $timeout = Carbon::parse($attendance->attendance_in)->addHours($min_workhour)->toDateTimeString(); 
+                  $attendance->attendance_out = $timeout;
+                 }
+              } 
+          }
+          else{
+            if($attendance->adj_over_time > 3){
+              $attendance->adj_over_time = 3;
+              if($attendance->attendance_in && $attendance->attendance_out){
+                $timeout = Carbon::parse($attendance->attendance_in)->addHours($min_workhour + 3)->toDateTimeString(); 
+                $attendance->attendance_out = $timeout;
+              }
+            }
+          }
+      }
       $attendance->save();
       if (!$attendance) {
           DB::rollBack();
