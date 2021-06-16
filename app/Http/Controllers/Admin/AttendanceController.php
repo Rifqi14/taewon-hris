@@ -447,7 +447,7 @@ class AttendanceController extends Controller
         return $query->first();
     }
 
-    public function overtimeSchemeList($department_id, $day)
+    public function overtimeSchemeList($department_id, $day , $dayoff)
     {
         $query = DB::table('overtime_scheme_lists');
         $query->select('overtime_scheme_lists.*');
@@ -455,7 +455,7 @@ class AttendanceController extends Controller
         $query->leftJoin('overtimescheme_departments', 'overtimescheme_departments.overtime_scheme_id', '=', 'overtime_schemes.id');
         $query->where('overtimescheme_departments.department_id', $department_id);
         $query->where('overtime_scheme_lists.recurrence_day', $day);
-        $query->whereRaw("'$day' = ANY(string_to_array(dayoff,','))");
+        $query->whereRaw("'$dayoff' = ANY(string_to_array(dayoff,','))");
         return $query->first();
     }
 
@@ -1748,7 +1748,7 @@ class AttendanceController extends Controller
                     $checkUpdate->attendance_out    = $attendanceOut && $attendanceOut > $attendanceIn ? $attendanceOut : null;
                     $checkUpdate->day               = in_array($checkUpdate->attendance_date, $exception_date) ? 'Off' : changeDateFormat('D', $checkUpdate->attendance_date);
 
-                    $overtime_list = $this->overtimeSchemeList($employee->department_id, $checkUpdate->day);
+                    $overtime_list = $this->overtimeSchemeList($employee->department_id, $checkUpdate->day , changeDateFormat('D', $checkUpdate->attendance_date));
                     if (!$overtime_list) {
                         return response()->json([
                             'status'    => false,
@@ -2653,7 +2653,7 @@ class AttendanceController extends Controller
                 }
 
                 $attendance->day = (in_array($attendance->attendance_date, $exception_date)) ? 'Off' : changeDateFormat('D', $attendance->attendance_date);
-                $overtime_list = $this->overtimeSchemeList($employee->department_id, $attendance->day);
+                $overtime_list = $this->overtimeSchemeList($employee->department_id, $attendance->day,changeDateFormat('D', $attendance->attendance_date));
                 if (!$overtime_list) {
                     return response()->json([
                         'status'    => false,
