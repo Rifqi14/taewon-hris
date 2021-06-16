@@ -455,7 +455,7 @@ class AttendanceController extends Controller
         $query->leftJoin('overtimescheme_departments', 'overtimescheme_departments.overtime_scheme_id', '=', 'overtime_schemes.id');
         $query->where('overtimescheme_departments.department_id', $department_id);
         $query->where('overtime_scheme_lists.recurrence_day', $day);
-        
+        $query->whereRaw("'$day' = ANY(string_to_array(dayoff,','))");
         return $query->first();
     }
 
