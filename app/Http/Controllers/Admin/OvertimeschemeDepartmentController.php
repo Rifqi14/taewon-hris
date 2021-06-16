@@ -43,6 +43,8 @@ class OvertimeschemeDepartmentController extends Controller
                 $q->ByOvertimeScheme($overtimescheme);
             }
         }])->Active();
+        $department->offset($start);
+        $department->limit($length);
         $department->orderBy('path', $dir);
         $departments = $department->get();
 

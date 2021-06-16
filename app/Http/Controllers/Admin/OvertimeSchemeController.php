@@ -119,12 +119,17 @@ class OvertimeSchemeController extends Controller
 
         $id = $this->getLatestId();
         DB::beginTransaction();
+        $dayoff = [];
+        foreach ($request->dayoff as $key => $value) {
+            $dayoff[] = $value;
+        }
         $overtime = OvertimeScheme::create([
             'id'            => $id,
             'scheme_name'   => $request->scheme_name,
             'category'      => $request->category,
             'working_time'  => $request->working_time,
-            'type'          => $request->type
+            'type'          => $request->type,
+            'dayoff'        => implode(',',$dayoff),
         ]);
         if ($overtime) {
             foreach ($request->department_id as $key => $department) {
@@ -246,8 +251,40 @@ class OvertimeSchemeController extends Controller
             }
             $day[] = $value;
         }
+        $dayoff = [];
+        if($overtime->dayoff){
+            foreach (explode(',',$overtime->dayoff) as $key => $value) {
+                $select = new \StdClass();
+                $select->id = $value;
+                switch ($value) {
+                    case 'Mon':
+                        $select->text = 'Monday';
+                        break;
+                    case 'Tue':
+                        $select->text = 'Tuesday';
+                        break;
+                    case 'Wed':
+                        $select->text = 'Wednesday';
+                        break;
+                    case 'Thu':
+                        $select->text = 'Thursday';
+                        break;
+                    case 'Fri':
+                        $select->text = 'Friday';
+                        break;
+                    case 'Sat':
+                        $select->text = 'Saturday';
+                        break;
+    
+                    default:
+                        $select->text = 'Sunday';
+                        break;
+                }
+                $dayoff[] = $select;
+            }
+        }
         if ($overtime) {
-            return view('admin.overtimescheme.edit', compact('overtime', 'list', 'day'));
+            return view('admin.overtimescheme.edit', compact('overtime', 'list', 'day','dayoff'));
         } else {
             abort(404);
         }
@@ -276,11 +313,16 @@ class OvertimeSchemeController extends Controller
         }
 
         DB::beginTransaction();
+        $dayoff = [];
+        foreach ($request->dayoff as $key => $value) {
+            $dayoff[] = $value;
+        }
         $overtime = OvertimeScheme::find($id);
         $overtime->scheme_name  = $request->scheme_name;
         $overtime->category     = $request->category;
         $overtime->working_time = $request->working_time;
         $overtime->type         = $request->type;
+        $overtime->dayoff       = implode(',',$dayoff);
         $overtime->save();
         if ($overtime) {
             $list = OvertimeSchemeList::where('overtime_scheme_id', '=', $id);

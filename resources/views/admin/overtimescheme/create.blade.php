@@ -91,6 +91,20 @@
                 </select>
               </div>
             </div>
+            <div class="form-group row">
+              <label for="dayoff" class="col-sm-2 col-form-label">{{ __('general.day_off') }}</label>
+              <div class="col-sm-6">
+                <select name="dayoff[]" id="dayoff" class="form-control select2" style="width: 100%" multiple="multiple">
+                  <option value="Mon">{{ __('general.mon') }}</option>
+                  <option value="Tue">{{ __('general.tue') }}</option>
+                  <option value="Wed">{{ __('general.wed') }}</option>
+                  <option value="Thu">{{ __('general.thu') }}</option>
+                  <option value="Fri">{{ __('general.fri') }}</option>
+                  <option value="Sat">{{ __('general.sat') }}</option>
+                  <option value="Sun">{{ __('general.sun') }}</option>
+                </select>
+              </div>
+            </div>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -328,10 +342,10 @@
 			serverSide: true,
 			filter: false,
 			info: false,
-			lengtChange: true,
+			lengtChange: false,
 			responsive: true,
 			order: [[1, "asc"]],
-			lengthMenu: [ 100, 250, 500, 1000 ],
+			paginate: false,
       ajax: {
         url: "{{ route('allowance.read') }}",
         type: "GET",
