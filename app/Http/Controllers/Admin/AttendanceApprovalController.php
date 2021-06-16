@@ -642,7 +642,6 @@ class AttendanceApprovalController extends Controller
                         ], 400);
                     } elseif ($approve && $approve->adj_over_time > 0) {
                         calculateOvertime($attendance);
-                        
                     }
                     if ($approve) {
                         calculateAllowance($attendance);
