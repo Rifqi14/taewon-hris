@@ -312,10 +312,10 @@
 			serverSide: true,
 			filter: false,
 			info: false,
-			lengtChange: true,
+      lengtChange: false,
 			responsive: true,
 			order: [[1, "asc"]],
-			lengthMenu: [ 100, 250, 500, 1000 ],
+			paginate: false,
 			ajax: {
 				url: "{{ route('departmentshift.read') }}",
 				type: "GET",
