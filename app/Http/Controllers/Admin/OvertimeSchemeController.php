@@ -120,8 +120,10 @@ class OvertimeSchemeController extends Controller
         $id = $this->getLatestId();
         DB::beginTransaction();
         $dayoff = [];
-        foreach ($request->dayoff as $key => $value) {
-            $dayoff[] = $value;
+        if($request->dayoff){
+            foreach ($request->dayoff as $key => $value) {
+                $dayoff[] = $value;
+            }
         }
         $overtime = OvertimeScheme::create([
             'id'            => $id,
@@ -314,8 +316,10 @@ class OvertimeSchemeController extends Controller
 
         DB::beginTransaction();
         $dayoff = [];
-        foreach ($request->dayoff as $key => $value) {
-            $dayoff[] = $value;
+        if($request->dayoff){
+            foreach ($request->dayoff as $key => $value) {
+                $dayoff[] = $value;
+            }
         }
         $overtime = OvertimeScheme::find($id);
         $overtime->scheme_name  = $request->scheme_name;
