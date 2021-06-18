@@ -832,8 +832,10 @@ class ThrReportController extends Controller
         } elseif (!$request->department && !$request->position && !$request->workgroup_id && $request->employee_name) {
             DB::beginTransaction();
             foreach ($request->employee_name as $view_employee){
-                $dt = Carbon::createFromFormat('Y-m', $request->year . '-' . $request->montly);
-                $checkDate = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $request->montly . '-' . $request->year);
+                // $dt = Carbon::createFromFormat('Y-m', $request->year . '-' . $request->montly);
+                // $checkDate = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $request->montly . '-' . $request->year);
+                // $checkDate = date("Y-m-d", strtotime($request->year . '-' . $request->montly.'-' . $request->day));
+                $checkDate = changeDateFormat('Y-m-d', $request->day . '-' . $request->montly . '-' . $request->year);
                 $checkJoinDate = Employee::select('employees.*')->where('employees.status', 1)->where('employees.join_date', '<=', $checkDate)->find($view_employee);
                 $exists = $this->check_periode($request->montly, $request->year, $view_employee);
                 if ($exists) {
@@ -866,6 +868,7 @@ class ThrReportController extends Controller
                             'period'            => $total_month,
                             'year'              => $request->year,
                             'month'             => $request->montly,
+                            'day'               => $request->day,
                             'status'            => -1
                         ]);
                     }else{
@@ -876,6 +879,7 @@ class ThrReportController extends Controller
                             'period'            => 12,
                             'year'              => $request->year,
                             'month'             => $request->montly,
+                            'day'               => $request->day,
                             'status'            => -1
                         ]);
                     }
@@ -1375,10 +1379,10 @@ class ThrReportController extends Controller
         //     $query->whereRaw("employees.nid like '%$nid%'");
         // }
         if ($year) {
-            $query->whereIn('thr_reports.year', $year);
+            $query->where('thr_reports.year', $year);
         }
         if ($month) {
-            $query->whereIn('thr_reports.month', $month);
+            $query->where('thr_reports.month', $month);
         }
         // if ($department_ids) {
         //     $string = '';
