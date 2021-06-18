@@ -71,8 +71,8 @@
 												<div class="col-sm-6">
 													<!-- text input -->
 													<div class="form-group">
-														<label>NIK Bosung</label>
-														<input type="text" class="form-control" placeholder="NIK Bosung" name="nid" value="{{ $employee->nid}}" readonly>
+														<label>NIK Taewon</label>
+														<input type="text" class="form-control" placeholder="NIK Taewon" name="nid" value="{{ $employee->nid}}" readonly>
 													</div>
 												</div>
 											</div>
