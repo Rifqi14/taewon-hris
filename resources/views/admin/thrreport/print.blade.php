@@ -86,7 +86,7 @@
 				<td style="text-align:center;font-weight: bold;font-size: 13pt;">SLIP THR</td><br>
 			</tr>
 			<tr>
-				<td style="text-align:center;">(Periode : {{ date("F Y", strtotime($thrReport->year.'-'.$thrReport->month)) }})</td>
+				<td style="text-align:center;">(Periode : {{ date("d F Y", strtotime($thrReport->year.'-'.$thrReport->month.'-'.$thrReport->day)) }})</td>
 			</tr>
 		</table>
 		<br>

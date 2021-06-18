@@ -1182,6 +1182,7 @@ class ThrReportController extends Controller
         $id = json_decode($request->id);
         
         $thrReports = ThrReport::with('employee')->with('thrdetail')->whereIn('id', $id)->get();
+        dd($thrReports);
         return view('admin.thrreport.print', compact('thrReports'));
     }
 
@@ -1244,70 +1245,94 @@ class ThrReportController extends Controller
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->employee_name);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->title_name);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->join_date);
-      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->year.'-'.$value->month);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->year.'-'.$value->month.'-'.$value->day);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->st);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->period);
+        $a = false;
+        foreach($value->thr_details as $key => $item){
+            if($item->description == "Basic Salary"){
+                $a = true;	
+                $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Basic Salary" ? number_format("$item->total", 0,',','.') : "-"));
+            }
+        }
+        if(!$a){
+            $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
+        }
+
+        $a = false;
+        foreach($value->thr_details as $key => $item){
+            if($item->description == "Tunjangan Jabatan"){
+                $a = true;	
+                $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Tunjangan Jabatan" ? number_format("$item->total", 0,',','.') : "-"));
+            }
+        }
+        if(!$a){
+            $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
+        }
+
+        $a = false;
+        foreach($value->thr_details as $key => $item){
+            if($item->description == "Tunjangan Sel"){
+                $a = true;	
+                $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Tunjangan Sel" ? number_format("$item->total", 0,',','.') : "-"));
+            }
+        }
+        if(!$a){
+            $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
+        }
+
       $a = false;
-      if($value->description == "Basic Salary"){
-        $a = true;	
-        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Basic Salary" ? number_format("$value->total", 0,',','.') : "-"));
+      foreach($value->thr_details as $key => $item){
+        if($item->description == "Tunjangan Masa Kerja"){
+            $a = true;	
+            $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Tunjangan Masa Kerja" ? number_format("$item->total", 0,',','.') : "-"));
+        }
       }
       if(!$a){
           $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
       }
+
       $a = false;
-      if($value->description == "Tunjangan Jabatan"){
-        $a = true;	
-        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Tunjangan Jabatan" ? number_format("$value->total", 0,',','.') : "-"));
+      foreach($value->thr_details as $key => $item){
+        if($item->description == "Tunjangan Tetap"){
+            $a = true;	
+            $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Tunjangan Tetap" ? number_format("$item->total", 0,',','.') : "-"));
+        }
       }
       if(!$a){
           $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
       }
+
       $a = false;
-      if($value->description == "Tunjangan Sel"){
-        $a = true;	
-        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Tunjangan Sel" ? number_format("$value->total", 0,',','.') : "-"));
+      foreach($value->thr_details as $key => $item){
+        if($item->description == "Gaji Tetap"){
+            $a = true;	
+            $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Gaji Tetap" ? number_format("$item->total", 0,',','.') : "-"));
+        }
       }
       if(!$a){
           $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
       }
-      $a = false;
-      if($value->description == "Tunjangan Masa Kerja"){
-        $a = true;	
-        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Tunjangan Masa Kerja" ? number_format("$value->total", 0,',','.') : "-"));
-      }
-      if(!$a){
-          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
-      }
-      $a = false;
-      if($value->description == "Tunjangan Tetap"){
-        $a = true;	
-        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Tunjangan Tetap" ? number_format("$value->total", 0,',','.') : "-"));
-      }
-      if(!$a){
-          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
-      }
-      $a = false;
-      if($value->description == "Gaji Tetap"){
-        $a = true;	
-        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Gaji Tetap" ? number_format("$value->total", 0,',','.') : "-"));
-      }
-      if(!$a){
-          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
-      }
+      
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number,( $value->amount?$value->amount : "-"));
+
       $a = false;
-      if($value->description == "Kebijakan"){
-        $a = true;	
-        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Kebijakan" ? number_format("$value->total", 0,',','.') : "-"));
+      foreach($value->thr_details as $key => $item){
+        if($item->description == "Kebijakan"){
+            $a = true;	
+            $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Kebijakan" ? number_format("$item->total", 0,',','.') : "-"));
+        }
       }
       if(!$a){
           $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
       }
+
       $a = false;
-      if($value->description == "Pph 21"){
-        $a = true;	
-        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Pph 21" ? number_format("$value->total", 0,',','.') : "-"));
+      foreach($value->thr_details as $key => $item){
+        if($item->description == "Pph 21"){
+            $a = true;	
+            $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Pph 21" ? number_format("$item->total", 0,',','.') : "-"));
+        }
       }
       if(!$a){
           $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
@@ -1336,7 +1361,8 @@ class ThrReportController extends Controller
         $export = ob_get_contents();
         ob_end_clean();
         header('Content-Type: application/json');
-        if ($thrReports->count() > 0) {
+        // if ($thrReports->count() > 0) {
+            if (1 > 0) {
         return response()->json([
             'status'     => true,
             'name'        => 'thr-' . date('d-m-Y') . '.xlsx',
@@ -1367,8 +1393,6 @@ class ThrReportController extends Controller
         $query = DB::table('thr_reports');
         $query->select(
             'thr_reports.*', 
-            'thr_report_details.description',
-            'thr_report_details.total',
             'employees.name as employee_name', 
             'employees.account_no', 
             'employees.nid as nik', 
@@ -1381,7 +1405,7 @@ class ThrReportController extends Controller
             'employees.ptkp as st','employees.ptkp as st',
             'employees.join_date'
         );
-        $query->leftJoin('thr_report_details', 'thr_report_details.thr_report_id', '=', 'thr_reports.id');
+        // $query->leftJoin('thr_report_details', 'thr_report_details.thr_report_id', '=', 'thr_reports.id');
         $query->leftJoin('employees', 'employees.id', '=', 'thr_reports.employee_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
@@ -1421,6 +1445,27 @@ class ThrReportController extends Controller
         //     $query->whereIn('thr_reports.period', $period);
         // }
         $reports = $query->get();
-        return $reports;
+        $data = [];
+        foreach ($reports as $row) {
+            $row->thr_details = $this->thr_detail($row->id);
+            $data[] = $row;
+        }
+
+        // dd($data);
+        return $data;
+    }
+
+    public function thr_detail($id)
+    {
+        $query = DB::table('thr_report_details');
+        $query->select('thr_report_details.*');
+        $query->where('thr_report_details.thr_report_id', '=', $id);
+        $thrDetails = $query->get();
+        $data = [];
+        foreach ($thrDetails as $row) {
+            $data[] = $row;
+        }
+
+        return $data;
     }
 }
