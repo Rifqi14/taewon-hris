@@ -15,6 +15,18 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\PDF as DomPDFPDF;
+use Dompdf\Dompdf;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use PDF;
+use PHPExcel;
+use PHPExcel_Cell;
+use PHPExcel_Cell_DataType;
+use PHPExcel_Style;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Font;
 
 class ThrReportController extends Controller
 {
@@ -1153,5 +1165,244 @@ class ThrReportController extends Controller
         
         $thrReports = ThrReport::with('employee')->with('thrdetail')->whereIn('id', $id)->get();
         return view('admin.thrreport.print', compact('thrReports'));
+    }
+
+    public function exportThr(Request $request)
+    {
+        $id = json_decode($request->id);
+
+        $object = new \PHPExcel();
+        $object->getProperties()->setCreator('Taewon Indonesia');
+        $object->setActiveSheetIndex(0);
+        $sheet = $object->getActiveSheet();
+
+        $thrReports         = $this->getExportData($request);
+
+        // dd($thrReports);
+        
+        // $thrReports = ThrReport::with('employee')->with('thrdetail')->whereIn('id', $id)->get();
+        // $thrReports = $query->get();
+
+        // Header Column Excel
+        $column = 0;
+        $row    = 2;
+        $sheet->mergeCellsByColumnAndRow($column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'No')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'STATUS')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'DEPT.')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'NIK')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'NAMA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'BAGIAN')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TGL.' . "\n" . 'MASUK')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TGL.')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'ST.')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'MASA KERJA (BLN)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI POKOK')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TUNJ.' . "\n" . 'JABATAN')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TUNJ.' . "\n" . 'SEL')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TUNJ.' . "\n" . 'MS.KERJA')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TUNJ.' . "\n" . 'TETAP')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI.' . "\n" . 'TETAP')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'THR')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'KEBIJAKAN')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'PPH.' . "\n" . '21')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'TOTAL.' . "\n" . 'THR')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'NO.REK')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'KETERANGAN')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        
+        // ++$column;
+        $column_number  = 0;
+        $row_number     = $row + 2;
+        $number         = 1;
+        $bruto          = 0;
+        $gross          = 0;
+        $net            = 0;
+        $last_col       = 0;
+
+    foreach ($thrReports as $key => $value) {
+      $sheet->setCellValueByColumnAndRow($column_number, $row_number, $number);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->workgroup_name ? $value->workgroup_name : '-');
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->department_name);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->nik);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->employee_name);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->title_name);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->join_date);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->year.'-'.$value->month);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->st);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->period);
+      $a = false;
+      if($value->description == "Basic Salary"){
+        $a = true;	
+        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Basic Salary" ? number_format("$value->total", 0,',','.') : "-"));
+      }
+      if(!$a){
+          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
+      }
+      $a = false;
+      if($value->description == "Tunjangan Jabatan"){
+        $a = true;	
+        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Tunjangan Jabatan" ? number_format("$value->total", 0,',','.') : "-"));
+      }
+      if(!$a){
+          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
+      }
+      $a = false;
+      if($value->description == "Tunjangan Sel"){
+        $a = true;	
+        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Tunjangan Sel" ? number_format("$value->total", 0,',','.') : "-"));
+      }
+      if(!$a){
+          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
+      }
+      $a = false;
+      if($value->description == "Tunjangan Masa Kerja"){
+        $a = true;	
+        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Tunjangan Masa Kerja" ? number_format("$value->total", 0,',','.') : "-"));
+      }
+      if(!$a){
+          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
+      }
+      $a = false;
+      if($value->description == "Tunjangan Tetap"){
+        $a = true;	
+        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Tunjangan Tetap" ? number_format("$value->total", 0,',','.') : "-"));
+      }
+      if(!$a){
+          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
+      }
+      $a = false;
+      if($value->description == "Gaji Tetap"){
+        $a = true;	
+        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Gaji Tetap" ? number_format("$value->total", 0,',','.') : "-"));
+      }
+      if(!$a){
+          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
+      }
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number,( $value->amount?$value->amount : "-"));
+      $a = false;
+      if($value->description == "Kebijakan"){
+        $a = true;	
+        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Kebijakan" ? number_format("$value->total", 0,',','.') : "-"));
+      }
+      if(!$a){
+          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
+      }
+      $a = false;
+      if($value->description == "Pph 21"){
+        $a = true;	
+        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($value->description == "Pph 21" ? number_format("$value->total", 0,',','.') : "-"));
+      }
+      if(!$a){
+          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
+      }
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number,( $value->amount?$value->amount : "-"));
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "'".$value->account_no,PHPExcel_Cell_DataType::TYPE_STRING);
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
+      $bruto = 0;
+      $net  = 0;
+      $gross  = 0;
+      $last_col = $column_number;
+      $column_number = 0;
+      $row_number++;
+      $number++;
+    }
+    $sheet->getStyleByColumnAndRow(0, 2, $last_col, 3)->getAlignment()->setWrapText(true);
+    for ($i=0; $i <= $last_col; $i++) { 
+      $sheet->getColumnDimensionByColumn($i)->setAutoSize(false);
+    }
+
+
+        $sheet->getPageSetup()->setFitToWidth(1);
+        $objWriter = \PHPExcel_IOFactory::createWriter($object, 'Excel2007');
+        ob_start();
+        $objWriter->save('php://output');
+        $export = ob_get_contents();
+        ob_end_clean();
+        header('Content-Type: application/json');
+        if ($thrReports->count() > 0) {
+        return response()->json([
+            'status'     => true,
+            'name'        => 'thr-' . date('d-m-Y') . '.xlsx',
+            'message'    => "Success Download Thr Data",
+            'file'         => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," . base64_encode($export)
+        ], 200);
+        } else {
+        return response()->json([
+            'status'     => false,
+            'message'    => "Data not found",
+        ], 400);
+        }
+    }
+
+    public function getExportData(Request $request)
+    {
+        $employee_id = $request->employee_id;
+        $department_ids = $request->department_id ? $request->department_id : null;
+        $position = $request->position ? $request->position : null;
+        $workgroup_id = $request->workgroup_id ? $request->workgroup_id : null;
+        $month = $request->month;
+        $year = $request->year;
+        $nid = $request->nid;
+        $status = $request->status;
+        $period = $request->period;
+       
+        //Select Pagination
+        $query = DB::table('thr_reports');
+        $query->select(
+            'thr_reports.*', 
+            'thr_report_details.description',
+            'thr_report_details.total',
+            'employees.name as employee_name', 
+            'employees.account_no', 
+            'employees.nid as nik', 
+            'titles.name as title_name', 
+            'departments.name as department_name', 
+            'work_groups.name as workgroup_name', 
+            'employees.department_id as department_id', 
+            'employees.title_id as title_id', 
+            'employees.workgroup_id as workgroup_id',
+            'employees.ptkp as st','employees.ptkp as st',
+            'employees.join_date'
+        );
+        $query->leftJoin('thr_report_details', 'thr_report_details.thr_report_id', '=', 'thr_reports.id');
+        $query->leftJoin('employees', 'employees.id', '=', 'thr_reports.employee_id');
+        $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
+        $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
+        $query->leftJoin('work_groups', 'work_groups.id', '=', 'employees.workgroup_id');
+        // if ($employee_id) {
+        //     $query->whereIn('thr_reports.employee_id', $employee_id);
+        // }
+        // if ($nid) {
+        //     $query->whereRaw("employees.nid like '%$nid%'");
+        // }
+        if ($year) {
+            $query->whereIn('thr_reports.year', $year);
+        }
+        if ($month) {
+            $query->whereIn('thr_reports.month', $month);
+        }
+        // if ($department_ids) {
+        //     $string = '';
+        //     foreach ($department_ids as $dept) {
+        //         $string .= "departments.path like '%$dept%'";
+        //         if (end($department_ids) != $dept) {
+        //             $string .= ' or ';
+        //         }
+        //     }
+        //     $query->whereRaw('(' . $string . ')');
+        // }
+        // if ($position != "") {
+        //     $query->whereIn('employees.title_id', $position);
+        // }
+        // if ($workgroup_id != "") {
+        //     $query->whereIn('employees.workgroup_id', $workgroup_id);
+        // }
+        // if ($status) {
+        //     $query->whereIn('thr_reports.status', $status);
+        // }
+        // if ($period) {
+        //     $query->whereIn('thr_reports.period', $period);
+        // }
+        $reports = $query->get();
+        return $reports;
     }
 }

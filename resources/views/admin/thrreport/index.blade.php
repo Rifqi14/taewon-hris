@@ -60,6 +60,8 @@
                             title="Generate"><i class="fa fa-sync"></i></button>
                         <a href="javascript:void(0)" onclick="printmass()" class="btn btn-sm btn-info text-white"
                             title="{{__('general.print')}} Mass"><i class="fa fa-print"></i></a>
+                        <a href="#" onclick="exportThr()" class="btn btn-primary btn-sm text-white" title="{{__('general.download')}} Mass"><i
+                                class="fa fa-download"></i></a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -165,7 +167,7 @@
                                             </select>
                                         </div>
                                             <div class="col-sm-4">
-                                                <select class="form-control select2" name="montly" multiple id="montly" data-placeholder="Month">
+                                                <select class="form-control select2" name="montly[]" multiple id="montly" data-placeholder="Month">
                                                     <option value="01" @if (date('m', time()) == "01") selected @endif>{{__('general.jan')}}</option>
                                                     <option value="02" @if (date('m', time()) == "02") selected @endif>{{__('general.feb')}}</option>
                                                     <option value="03" @if (date('m', time()) == "03") selected @endif>{{__('general.march')}}</option>
@@ -182,7 +184,7 @@
                                             </div>
                                             <div class="col-sm-4">
                                                 <div class="input-group">
-                                                    <select name="year" class="form-control select2" multiple id="year"
+                                                    <select name="year[]" class="form-control select2" multiple id="year"
                                                         data-placeholder="{{__('general.year')}}">
                                                         @php
                                                         $thn_skr = date('Y');
@@ -351,9 +353,9 @@
         });
     }
 
-    function exportsalary() {
+    function exportThr() {
         $.ajax({
-            url: "{{ route('salaryreport.exportsalary') }}",
+            url: "{{ route('thrreport.exportthr') }}",
             type: 'POST',
             dataType: 'JSON',
             data: $("#form").serialize(),
@@ -526,7 +528,7 @@
                     var position = $("select[name='position[]']").val();
                     var workgroup_id = $("select[name='workgroup_id[]']").val();
                     var month = $('select[name=montly]').val();
-                    var year = $('select[name=year]').val();
+                    var year = $("select[name='year[]']").val();
                     var period = $('select[name=period]').val();
                     var status = $('select[name=status]').val();
                     var type = $('select[name=type]').val();
