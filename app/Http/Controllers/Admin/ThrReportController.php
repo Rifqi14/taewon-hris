@@ -322,7 +322,7 @@ class ThrReportController extends Controller
 
         return $data;
     }
-    public function generateByDepartment($department, $month, $year, $user)
+    public function generateByDepartment($department, $day , $month, $year, $user)
     {
         $employee = Employee::select('employees.*')->leftJoin('departments', 'departments.id', '=', 'employees.department_id')->where('employees.status', 1);
         $string = '';
@@ -340,24 +340,30 @@ class ThrReportController extends Controller
                 if ($exists) {
                     $delete = $exists->delete();
                 }
-                $dt = Carbon::createFromFormat('Y-m', $year . '-' . $month);
-                $checkDate = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $month . '-' . $year);
+                // $dt = Carbon::createFromFormat('Y-m', $year . '-' . $month);
+                // $checkDate = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $month . '-' . $year);
+                $checkDate = changeDateFormat('Y-m-d', $day . '-' . $month . '-' . $year);
                 $checkJoinDate = Employee::select('employees.*')->where('employees.status', 1)->where('employees.join_date', '<=', $checkDate)->find($employee->id);
                 if ($exists) {
                     $delete = $exists->delete();
                 }
                 if ($checkJoinDate) {
-                    $date1 = date("Y-m", strtotime($checkJoinDate->join_date));
+                    $date1 = date("Y-m-d", strtotime($checkJoinDate->join_date));
                     $date1 = $date1 . "-01";
-                    $date2 = Carbon::createFromFormat('Y-m', $year . '-' . $month);
-                    $date2 = $date2 . "-01";
+                    $date2 = Carbon::createFromFormat('Y-m-d', $year . '-' . $month.'-' . $day);
+                    // $date2 = Carbon::createFromFormat('Y-m', $year . '-' . $month);
+                    // $date2 = $date2 . "-01";
 
-                    $diff = abs(strtotime($date2) - strtotime($date1));
+                    // $diff = abs(strtotime($date2) - strtotime($date1));
 
-                    $years = floor($diff / (365 * 60 * 60 * 24));
-                    $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
-                    $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
-                    $total_month = ($years * 12) + $months + 1;
+                    // $years = floor($diff / (365 * 60 * 60 * 24));
+                    // $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+                    // $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+                    // $total_month = ($years * 12) + $months + 1;
+                    $interval = $date2->diff($date1);
+                    $year =  $interval->format('%y');
+                    $month =  $interval->format('%m');
+                    $total_month = $year *12 + $month;
 
                     if($total_month < 12){
                         $thrreport = ThrReport::create([
@@ -367,6 +373,7 @@ class ThrReportController extends Controller
                             'period'            => $total_month,
                             'year'              => $year,
                             'month'             => $month,
+                            'day'               => $day,
                             'status'            => -1
                         ]);
                     }else{
@@ -377,6 +384,7 @@ class ThrReportController extends Controller
                             'period'            => 12,
                             'year'              => $year,
                             'month'             => $month,
+                            'day'               => $day,
                             'status'            => -1
                         ]);
                     }
@@ -384,57 +392,94 @@ class ThrReportController extends Controller
                     if ($thrreport) {
                         $basesalary = $this->get_employee_salary($employee->id);
                         $allowance = $this->get_additional_allowance($employee->id, $month, $year);
+                        $allowance_thr = $this->get_allowance_thr($employee->id, $month, $year);
+                        $configThr = Config::where('option', 'thr')->first();
                         $employee = Employee::with('department')->with('title')->find($employee->id);
-                        if ($basesalary && $allowance) {
-                            foreach ($allowance as $key => $value) {
-                                if ($thrreport->period < 12) {
-                                    $thrdetail = ThrReportDetail::create([
-                                        'thr_report_id'        => $thrreport->id,
-                                        'employee_id'          => $employee->id,
-                                        'description'          => 'THR Basic + Allowance',
-                                        'total'                => number_format((float)(($basesalary->amount + $value->value) / 12 * $thrreport->period), 2, '.', ''),
-                                        'is_added'             => 'No'
-                                    ]);
-                                    $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
-                                    $thrreport->save();
-                                    if (!$thrdetail) {
-                                        DB::rollBack();
-                                        return response()->json([
-                                            'status'    => false,
-                                            'message'   => $thrdetail
-                                        ], 400);
-                                    }
-                                } else {
-                                    $thrdetail = ThrReportDetail::create([
-                                        'thr_report_id'        => $thrreport->id,
-                                        'employee_id'          => $employee->id,
-                                        'description'          => 'THR Basic + Allowance',
-                                        'total'                => number_format((float)(($basesalary->amount + $value->value) / 12 * 12), 2, '.', ''),
-                                        'is_added'             => 'No'
-                                    ]);
-                                    $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
-                                    $thrreport->save();
-
-                                    if (!$thrdetail) {
-                                        DB::rollBack();
-                                        return response()->json([
-                                            'status'    => false,
-                                            'message'   => $thrdetail
-                                        ], 400);
+                        
+                        if($configThr->value == 'basic_allowance'){
+                            if ($basesalary) {
+                                // $amount_allowance = 0;
+                                // foreach ($allowance as $key => $value) {
+                                //    $amount_allowance = $amount_allowance +  $value->value;
+                                // }
+                                // Rumus : 'total' => number_format((float)(($basesalary->amount + $amount_allowance) / 12 * $thrreport->period), 2, '.', ''),
+                                // Insert Basic Salary
+                                $thrdetail = ThrReportDetail::create([
+                                    'thr_report_id'        => $thrreport->id,
+                                    'employee_id'          => $employee->id,
+                                    'description'          => 'Basic Salary',
+                                    'total'                => $basesalary->amount,
+                                    'is_added'             => 'No'
+                                ]);
+                                // $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->save();
+                                $thrreport->amount = ($basesalary->amount /12) * $thrreport->period;
+                                $thrreport->save();
+                                if (!$thrdetail) {
+                                    DB::rollBack();
+                                    return response()->json([
+                                        'status'    => false,
+                                        'message'   => $thrdetail
+                                    ], 400);
+                                }
+                                // Insert Looping Allowance
+                                $subTotal = 0;
+                                $amount_allowance = 0;
+                                foreach ($allowance_thr as $key => $value) {
+                                    $amount_allowance = $amount_allowance +  $value->value;
+                                   if ($thrreport->period < 12) {
+                                        $thrdetail = ThrReportDetail::create([
+                                            'thr_report_id'        => $thrreport->id,
+                                            'employee_id'          => $employee->id,
+                                            'description'          => $value->description,
+                                            'total'                => $value->value,
+                                            'is_added'             => 'No'
+                                        ]);
+                                        $subTotal = $subTotal + $basesalary->amount + $amount_allowance;
+                                        $thrreport->amount = ($subTotal / 12) * $thrreport->period;
+                                        $thrreport->save();
+                                        if (!$thrdetail) {
+                                            DB::rollBack();
+                                            return response()->json([
+                                                'status'    => false,
+                                                'message'   => $thrdetail
+                                            ], 400);
+                                        }
+                                    } else {
+                                        $thrdetail = ThrReportDetail::create([
+                                            'thr_report_id'        => $thrreport->id,
+                                            'employee_id'          => $employee->id,
+                                            'description'          => $value->description,
+                                            'total'                => $value->value,
+                                            'is_added'             => 'No'
+                                        ]);
+                                        $subTotal = $subTotal + $basesalary->amount + $amount_allowance;
+                                        $thrreport->amount = ($subTotal / 12) * $thrreport->period;
+                                        $thrreport->save();
+                                        if (!$thrdetail) {
+                                            DB::rollBack();
+                                            return response()->json([
+                                                'status'    => false,
+                                                'message'   => $thrdetail
+                                            ], 400);
+                                        }
                                     }
                                 }
+                                // End Insert Looping Allowance
                             }
                         } else {
                             if ($thrreport->period < 12) {
                                 $thrdetail = ThrReportDetail::create([
                                     'thr_report_id'        => $thrreport->id,
                                     'employee_id'          => $employee->id,
-                                    'description'          => 'THR Basic',
+                                    'description'          => 'THR',
                                     'total'                => number_format((float)($basesalary->amount / 12 * $thrreport->period), 2, '.', ''),
                                     'is_added'             => 'No'
                                 ]);
 
-                                $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = ($thrdetail->total / 12) * $thrreport->period;
+                                $thrreport->amount = $thrdetail->total;
                                 $thrreport->save();
 
 
@@ -449,11 +494,13 @@ class ThrReportController extends Controller
                                 $thrdetail = ThrReportDetail::create([
                                     'thr_report_id'        => $thrreport->id,
                                     'employee_id'          => $employee->id,
-                                    'description'          => 'THR Basic',
+                                    'description'          => 'THR',
                                     'total'                => number_format((float)($basesalary->amount / 12 * 12), 2, '.', ''),
                                     'is_added'             => 'No'
                                 ]);
-                                $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = ($thrdetail->total / 12) * $thrreport->period;
+                                $thrreport->amount = $thrdetail->total;
                                 $thrreport->save();
 
                                 if (!$thrdetail) {
@@ -465,6 +512,7 @@ class ThrReportController extends Controller
                                 }
                             }
                         }
+
                     } elseif (!$thrreport) {
                         DB::rollBack();
                         return response()->json([
@@ -474,6 +522,9 @@ class ThrReportController extends Controller
                     }
                 }
             }
+            $total = $basesalary->amount + $amount_allowance;
+            $thrreport->amount = ($total /12) * $thrreport->period;
+            $thrreport->save();
             
         } else {
             return array(
@@ -486,7 +537,7 @@ class ThrReportController extends Controller
             'message'   => "salary report generated by department successfully"
         );
     }
-    public function generateByPosition($position, $month, $year, $user)
+    public function generateByPosition($position, $day, $month, $year, $user)
     {
         $employees = Employee::select('employees.*')->whereIn('title_id', $position)->where('employees.status', 1)->get();
         if(!$employees->isEmpty()){
@@ -495,26 +546,32 @@ class ThrReportController extends Controller
                 if ($exists) {
                     $delete = $exists->delete();
                 }
-                $dt = Carbon::createFromFormat('Y-m', $year . '-' . $month);
-                $checkDate = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $month . '-' . $year);
+                // $dt = Carbon::createFromFormat('Y-m', $year . '-' . $month);
+                // $checkDate = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $month . '-' . $year);
+                $checkDate = changeDateFormat('Y-m-d', $day . '-' . $month . '-' . $year);
                 $checkJoinDate = Employee::select('employees.*')->where('employees.status', 1)->where('employees.join_date', '<=', $checkDate)->find($employee->id);
                 if ($exists) {
                     $delete = $exists->delete();
                 }
                 if ($checkJoinDate) {
-                    $date1 = date("Y-m", strtotime($checkJoinDate->join_date));
+                    $date1 = date("Y-m-d", strtotime($checkJoinDate->join_date));
                     $date1 = $date1 . "-01";
-                    $date2 = Carbon::createFromFormat('Y-m', $year . '-' . $month);
-                    $date2 = $date2 . "-01";
+                    $date2 = Carbon::createFromFormat('Y-m-d', $year . '-' . $month.'-' . $day);
+                    // $date2 = Carbon::createFromFormat('Y-m', $year . '-' . $month);
+                    // $date2 = $date2 . "-01";
 
-                    $diff = abs(strtotime($date2) - strtotime($date1));
+                    // $diff = abs(strtotime($date2) - strtotime($date1));
 
-                    $years = floor($diff / (365 * 60 * 60 * 24));
-                    $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
-                    $months = $months + 1;
-                    $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+                    // $years = floor($diff / (365 * 60 * 60 * 24));
+                    // $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+                    // $months = $months + 1;
+                    // $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
 
-                    $total_month = ($years * 12) + $months + 1;
+                    // $total_month = ($years * 12) + $months + 1;
+                    $interval = $date2->diff($date1);
+                    $year =  $interval->format('%y');
+                    $month =  $interval->format('%m');
+                    $total_month = $year *12 + $month;
 
                     if ($total_month < 12) {
                         $thrreport = ThrReport::create([
@@ -524,6 +581,7 @@ class ThrReportController extends Controller
                             'period'            => $total_month,
                             'year'              => $year,
                             'month'             => $month,
+                            'day'               => $day,
                             'status'            => -1
                         ]);
                     } else {
@@ -534,63 +592,101 @@ class ThrReportController extends Controller
                             'period'            => 12,
                             'year'              => $year,
                             'month'             => $month,
+                            'day'               => $day,
                             'status'            => -1
                         ]);
                     }
                     if ($thrreport) {
                         $basesalary = $this->get_employee_salary($employee->id);
                         $allowance = $this->get_additional_allowance($employee->id, $month, $year);
+                        $allowance_thr = $this->get_allowance_thr($employee->id, $montly, $year);
+                        $configThr = Config::where('option', 'thr')->first();
                         $employee = Employee::with('department')->with('title')->find($employee->id);
-                        if ($basesalary && $allowance) {
-                            foreach ($allowance as $key => $value) {
-                                if ($thrreport->period < 12) {
-                                    $thrdetail = ThrReportDetail::create([
-                                        'thr_report_id'        => $thrreport->id,
-                                        'employee_id'          => $employee->id,
-                                        'description'          => 'THR Basic + Allowance',
-                                        'total'                => number_format((float)(($basesalary->amount + $value->value) / 12 * $thrreport->period), 2, '.', ''),
-                                        'is_added'             => 'No'
-                                    ]);
-                                    $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
-                                    $thrreport->save();
-                                    if (!$thrdetail) {
-                                        DB::rollBack();
-                                        return response()->json([
-                                            'status'    => false,
-                                            'message'   => $thrdetail
-                                        ], 400);
-                                    }
-                                } else {
-                                    $thrdetail = ThrReportDetail::create([
-                                        'thr_report_id'        => $thrreport->id,
-                                        'employee_id'          => $employee->id,
-                                        'description'          => 'THR Basic + Allowance',
-                                        'total'                => number_format((float)(($basesalary->amount + $value->value) / 12 * 12), 2, '.', ''),
-                                        'is_added'             => 'No'
-                                    ]);
-                                    $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
-                                    $thrreport->save();
-
-                                    if (!$thrdetail) {
-                                        DB::rollBack();
-                                        return response()->json([
-                                            'status'    => false,
-                                            'message'   => $thrdetail
-                                        ], 400);
+                        
+                        if($configThr->value == 'basic_allowance'){
+                            if ($basesalary) {
+                                // $amount_allowance = 0;
+                                // foreach ($allowance as $key => $value) {
+                                //    $amount_allowance = $amount_allowance +  $value->value;
+                                // }
+                                // Rumus : 'total' => number_format((float)(($basesalary->amount + $amount_allowance) / 12 * $thrreport->period), 2, '.', ''),
+                                // Insert Basic Salary
+                                $thrdetail = ThrReportDetail::create([
+                                    'thr_report_id'        => $thrreport->id,
+                                    'employee_id'          => $employee->id,
+                                    'description'          => 'Basic Salary',
+                                    'total'                => $basesalary->amount,
+                                    'is_added'             => 'No'
+                                ]);
+                                // $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->save();
+                                $thrreport->amount = ($basesalary->amount /12) * $thrreport->period;
+                                $thrreport->save();
+                                if (!$thrdetail) {
+                                    DB::rollBack();
+                                    return response()->json([
+                                        'status'    => false,
+                                        'message'   => $thrdetail
+                                    ], 400);
+                                }
+                                // Insert Looping Allowance
+                                $subTotal = 0;
+                                $amount_allowance = 0;
+                                foreach ($allowance_thr as $key => $value) {
+                                    $amount_allowance = $amount_allowance +  $value->value;
+                                   if ($thrreport->period < 12) {
+                                        $thrdetail = ThrReportDetail::create([
+                                            'thr_report_id'        => $thrreport->id,
+                                            'employee_id'          => $employee->id,
+                                            'description'          => $value->description,
+                                            'total'                => $value->value,
+                                            'is_added'             => 'No'
+                                        ]);
+                                        $subTotal = $subTotal + $basesalary->amount + $amount_allowance;
+                                        $thrreport->amount = ($subTotal / 12) * $thrreport->period;
+                                        $thrreport->save();
+                                        if (!$thrdetail) {
+                                            DB::rollBack();
+                                            return response()->json([
+                                                'status'    => false,
+                                                'message'   => $thrdetail
+                                            ], 400);
+                                        }
+                                    } else {
+                                        $thrdetail = ThrReportDetail::create([
+                                            'thr_report_id'        => $thrreport->id,
+                                            'employee_id'          => $employee->id,
+                                            'description'          => $value->description,
+                                            'total'                => $value->value,
+                                            'is_added'             => 'No'
+                                        ]);
+                                        $subTotal = $subTotal + $basesalary->amount + $amount_allowance;
+                                        $thrreport->amount = ($subTotal / 12) * $thrreport->period;
+                                        $thrreport->save();
+                                        if (!$thrdetail) {
+                                            DB::rollBack();
+                                            return response()->json([
+                                                'status'    => false,
+                                                'message'   => $thrdetail
+                                            ], 400);
+                                        }
                                     }
                                 }
+                                // End Insert Looping Allowance
                             }
                         } else {
                             if ($thrreport->period < 12) {
                                 $thrdetail = ThrReportDetail::create([
                                     'thr_report_id'        => $thrreport->id,
                                     'employee_id'          => $employee->id,
-                                    'description'          => 'THR Basic',
+                                    'description'          => 'THR',
                                     'total'                => number_format((float)($basesalary->amount / 12 * $thrreport->period), 2, '.', ''),
                                     'is_added'             => 'No'
                                 ]);
 
-                                $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = ($thrdetail->total / 12) * $thrreport->period;
+                                $thrreport->amount = $thrdetail->total;
                                 $thrreport->save();
 
 
@@ -605,11 +701,13 @@ class ThrReportController extends Controller
                                 $thrdetail = ThrReportDetail::create([
                                     'thr_report_id'        => $thrreport->id,
                                     'employee_id'          => $employee->id,
-                                    'description'          => 'THR Basic',
+                                    'description'          => 'THR',
                                     'total'                => number_format((float)($basesalary->amount / 12 * 12), 2, '.', ''),
                                     'is_added'             => 'No'
                                 ]);
-                                $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = ($thrdetail->total / 12) * $thrreport->period;
+                                $thrreport->amount = $thrdetail->total;
                                 $thrreport->save();
 
                                 if (!$thrdetail) {
@@ -621,6 +719,7 @@ class ThrReportController extends Controller
                                 }
                             }
                         }
+
                     } elseif (!$thrreport) {
                         DB::rollBack();
                         return response()->json([
@@ -630,6 +729,9 @@ class ThrReportController extends Controller
                     }
                 }
             }
+            $total = $basesalary->amount + $amount_allowance;
+            $thrreport->amount = ($total /12) * $thrreport->period;
+            $thrreport->save();
             return array(
                 'status'    => true,
                 'message'   => "salary report generated successfully"
@@ -641,7 +743,7 @@ class ThrReportController extends Controller
             );
         }
     }
-    public function generateByWorkgroup($workgroup, $month, $year, $user)
+    public function generateByWorkgroup($workgroup, $day,$month, $year, $user)
     {
         $employees = Employee::select('employees.*')->whereIn('workgroup_id', $workgroup)->where('employees.status', 1)->get();
         if (!$employees->isEmpty()) {
@@ -650,26 +752,32 @@ class ThrReportController extends Controller
                 if ($exists) {
                     $delete = $exists->delete();
                 }
-                $dt = Carbon::createFromFormat('Y-m', $year . '-' . $month);
-                $checkDate = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $month . '-' . $year);
+                // $dt = Carbon::createFromFormat('Y-m', $year . '-' . $month);
+                // $checkDate = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $month . '-' . $year);
+                $checkDate = changeDateFormat('Y-m-d', $day . '-' . $month . '-' . $year);
                 $checkJoinDate = Employee::select('employees.*')->where('employees.status', 1)->where('employees.join_date', '<=', $checkDate)->find($employee->id);
                 if ($exists) {
                     $delete = $exists->delete();
                 }
                 if ($checkJoinDate) {
-                    $date1 = date("Y-m", strtotime($checkJoinDate->join_date));
+                    $date1 = date("Y-m-d", strtotime($checkJoinDate->join_date));
                     $date1 = $date1 . "-01";
-                    $date2 = Carbon::createFromFormat('Y-m', $year . '-' . $month);
-                    $date2 = $date2 . "-01";
+                    $date2 = Carbon::createFromFormat('Y-m-d', $year . '-' . $month.'-' . $day);
+                    // $date2 = Carbon::createFromFormat('Y-m', $year . '-' . $month);
+                    // $date2 = $date2 . "-01";
 
-                    $diff = abs(strtotime($date2) - strtotime($date1));
+                    // $diff = abs(strtotime($date2) - strtotime($date1));
 
-                    $years = floor($diff / (365 * 60 * 60 * 24));
-                    $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
-                    $months = $months + 1;
-                    $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+                    // $years = floor($diff / (365 * 60 * 60 * 24));
+                    // $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+                    // $months = $months + 1;
+                    // $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
 
-                    $total_month = ($years * 12) + $months + 1;
+                    // $total_month = ($years * 12) + $months + 1;
+                    $interval = $date2->diff($date1);
+                    $year =  $interval->format('%y');
+                    $month =  $interval->format('%m');
+                    $total_month = $year *12 + $month;
 
                     if ($total_month < 12) {
                         $thrreport = ThrReport::create([
@@ -679,6 +787,7 @@ class ThrReportController extends Controller
                             'period'            => $total_month,
                             'year'              => $year,
                             'month'             => $month,
+                            'day'               => $day,
                             'status'            => -1
                         ]);
                     } else {
@@ -689,63 +798,101 @@ class ThrReportController extends Controller
                             'period'            => 12,
                             'year'              => $year,
                             'month'             => $month,
+                            'day'               => $day,
                             'status'            => -1
                         ]);
                     }
                     if ($thrreport) {
                         $basesalary = $this->get_employee_salary($employee->id);
                         $allowance = $this->get_additional_allowance($employee->id, $month, $year);
+                        $allowance_thr = $this->get_allowance_thr($employee->id, $montly, $year);
+                        $configThr = Config::where('option', 'thr')->first();
                         $employee = Employee::with('department')->with('title')->find($employee->id);
-                        if ($basesalary && $allowance) {
-                            foreach ($allowance as $key => $value) {
-                                if ($thrreport->period < 12) {
-                                    $thrdetail = ThrReportDetail::create([
-                                        'thr_report_id'        => $thrreport->id,
-                                        'employee_id'          => $employee->id,
-                                        'description'          => 'THR Basic + Allowance',
-                                        'total'                => number_format((float)(($basesalary->amount + $value->value) / 12 * $thrreport->period), 2, '.', ''),
-                                        'is_added'             => 'No'
-                                    ]);
-                                    $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
-                                    $thrreport->save();
-                                    if (!$thrdetail) {
-                                        DB::rollBack();
-                                        return response()->json([
-                                            'status'    => false,
-                                            'message'   => $thrdetail
-                                        ], 400);
-                                    }
-                                } else {
-                                    $thrdetail = ThrReportDetail::create([
-                                        'thr_report_id'        => $thrreport->id,
-                                        'employee_id'          => $employee->id,
-                                        'description'          => 'THR Basic + Allowance 02',
-                                        'total'                => number_format((float)($basesalary->amount + $value->value / 12 * 12), 2, '.', ''),
-                                        'is_added'             => 'No'
-                                    ]);
-                                    $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
-                                    $thrreport->save();
-
-                                    if (!$thrdetail) {
-                                        DB::rollBack();
-                                        return response()->json([
-                                            'status'    => false,
-                                            'message'   => $thrdetail
-                                        ], 400);
+                        
+                        if($configThr->value == 'basic_allowance'){
+                            if ($basesalary) {
+                                // $amount_allowance = 0;
+                                // foreach ($allowance as $key => $value) {
+                                //    $amount_allowance = $amount_allowance +  $value->value;
+                                // }
+                                // Rumus : 'total' => number_format((float)(($basesalary->amount + $amount_allowance) / 12 * $thrreport->period), 2, '.', ''),
+                                // Insert Basic Salary
+                                $thrdetail = ThrReportDetail::create([
+                                    'thr_report_id'        => $thrreport->id,
+                                    'employee_id'          => $employee->id,
+                                    'description'          => 'Basic Salary',
+                                    'total'                => $basesalary->amount,
+                                    'is_added'             => 'No'
+                                ]);
+                                // $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->save();
+                                $thrreport->amount = ($basesalary->amount /12) * $thrreport->period;
+                                $thrreport->save();
+                                if (!$thrdetail) {
+                                    DB::rollBack();
+                                    return response()->json([
+                                        'status'    => false,
+                                        'message'   => $thrdetail
+                                    ], 400);
+                                }
+                                // Insert Looping Allowance
+                                $subTotal = 0;
+                                $amount_allowance = 0;
+                                foreach ($allowance_thr as $key => $value) {
+                                    $amount_allowance = $amount_allowance +  $value->value;
+                                   if ($thrreport->period < 12) {
+                                        $thrdetail = ThrReportDetail::create([
+                                            'thr_report_id'        => $thrreport->id,
+                                            'employee_id'          => $employee->id,
+                                            'description'          => $value->description,
+                                            'total'                => $value->value,
+                                            'is_added'             => 'No'
+                                        ]);
+                                        $subTotal = $subTotal + $basesalary->amount + $amount_allowance;
+                                        $thrreport->amount = ($subTotal / 12) * $thrreport->period;
+                                        $thrreport->save();
+                                        if (!$thrdetail) {
+                                            DB::rollBack();
+                                            return response()->json([
+                                                'status'    => false,
+                                                'message'   => $thrdetail
+                                            ], 400);
+                                        }
+                                    } else {
+                                        $thrdetail = ThrReportDetail::create([
+                                            'thr_report_id'        => $thrreport->id,
+                                            'employee_id'          => $employee->id,
+                                            'description'          => $value->description,
+                                            'total'                => $value->value,
+                                            'is_added'             => 'No'
+                                        ]);
+                                        $subTotal = $subTotal + $basesalary->amount + $amount_allowance;
+                                        $thrreport->amount = ($subTotal / 12) * $thrreport->period;
+                                        $thrreport->save();
+                                        if (!$thrdetail) {
+                                            DB::rollBack();
+                                            return response()->json([
+                                                'status'    => false,
+                                                'message'   => $thrdetail
+                                            ], 400);
+                                        }
                                     }
                                 }
+                                // End Insert Looping Allowance
                             }
                         } else {
                             if ($thrreport->period < 12) {
                                 $thrdetail = ThrReportDetail::create([
                                     'thr_report_id'        => $thrreport->id,
                                     'employee_id'          => $employee->id,
-                                    'description'          => 'THR Basic 03',
+                                    'description'          => 'THR',
                                     'total'                => number_format((float)($basesalary->amount / 12 * $thrreport->period), 2, '.', ''),
                                     'is_added'             => 'No'
                                 ]);
 
-                                $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = ($thrdetail->total / 12) * $thrreport->period;
+                                $thrreport->amount = $thrdetail->total;
                                 $thrreport->save();
 
 
@@ -760,11 +907,13 @@ class ThrReportController extends Controller
                                 $thrdetail = ThrReportDetail::create([
                                     'thr_report_id'        => $thrreport->id,
                                     'employee_id'          => $employee->id,
-                                    'description'          => 'THR Basic 04',
+                                    'description'          => 'THR',
                                     'total'                => number_format((float)($basesalary->amount / 12 * 12), 2, '.', ''),
                                     'is_added'             => 'No'
                                 ]);
-                                $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = number_format((float)($thrdetail->total), 2, '.', '');
+                                // $thrreport->amount = ($thrdetail->total / 12) * $thrreport->period;
+                                $thrreport->amount = $thrdetail->total;
                                 $thrreport->save();
 
                                 if (!$thrdetail) {
@@ -776,6 +925,7 @@ class ThrReportController extends Controller
                                 }
                             }
                         }
+
                     } elseif (!$thrreport) {
                         DB::rollBack();
                         return response()->json([
@@ -785,6 +935,9 @@ class ThrReportController extends Controller
                     }
                 }
             }
+            $total = $basesalary->amount + $amount_allowance;
+            $thrreport->amount = ($total /12) * $thrreport->period;
+            $thrreport->save();
             return array(
                 'status'    => true,
                 'message'   => "salary report generated successfully"
@@ -805,7 +958,7 @@ class ThrReportController extends Controller
     public function store(Request $request)
     {
         if ($request->department && !$request->position && !$request->workgroup_id && !$request->employee_name) {
-            $departments = $this->generateByDepartment($request->department, $request->montly, $request->year, $request->user);
+            $departments = $this->generateByDepartment($request->department, $request->day, $request->montly, $request->year, $request->user);
             if (!$departments['status']) {
                 return response()->json([
                     'status'    => false,
@@ -818,7 +971,7 @@ class ThrReportController extends Controller
                 ], 200);
             }
         } elseif (!$request->department && $request->position && !$request->workgroup_id && !$request->employee_name) {
-            $position = $this->generateByPosition($request->position, $request->montly, $request->year, $request->user);
+            $position = $this->generateByPosition($request->position, $request->day,$request->montly, $request->year, $request->user);
             if (!$position['status']) {
                 return response()->json([
                     'status'    => false,
@@ -831,7 +984,7 @@ class ThrReportController extends Controller
                 ], 200);
             }
         } elseif (!$request->department && !$request->position && $request->workgroup_id && !$request->employee_name) {
-            $workgroup = $this->generateByWorkgroup($request->workgroup_id, $request->montly, $request->year, $request->user);
+            $workgroup = $this->generateByWorkgroup($request->workgroup_id, $request->day,$request->montly, $request->year, $request->user);
             if (!$workgroup['status']) {
                 return response()->json([
                     'status'    => false,
@@ -1182,7 +1335,6 @@ class ThrReportController extends Controller
         $id = json_decode($request->id);
         
         $thrReports = ThrReport::with('employee')->with('thrdetail')->whereIn('id', $id)->get();
-        dd($thrReports);
         return view('admin.thrreport.print', compact('thrReports'));
     }
 
