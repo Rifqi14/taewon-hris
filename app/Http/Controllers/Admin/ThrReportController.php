@@ -1404,10 +1404,12 @@ class ThrReportController extends Controller
         foreach($value->thr_details as $key => $item){
             if($item->description == "Basic Salary"){
                 $a = true;	
+                $totalBasicSalary = $item->total;
                 $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Basic Salary" ? number_format("$item->total", 0,',','.') : "-"));
             }
         }
         if(!$a){
+            $totalBasicSalary = 0;
             $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
         }
 
@@ -1415,10 +1417,12 @@ class ThrReportController extends Controller
         foreach($value->thr_details as $key => $item){
             if($item->description == "Tunjangan Jabatan"){
                 $a = true;	
+                $totalTunJabatan = $item->total;
                 $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Tunjangan Jabatan" ? number_format("$item->total", 0,',','.') : "-"));
             }
         }
         if(!$a){
+            $totalTunSel = 0;
             $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
         }
 
@@ -1426,10 +1430,12 @@ class ThrReportController extends Controller
         foreach($value->thr_details as $key => $item){
             if($item->description == "Tunjangan Sel"){
                 $a = true;	
+                $totalTunSel = $item->total;
                 $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Tunjangan Sel" ? number_format("$item->total", 0,',','.') : "-"));
             }
         }
         if(!$a){
+            $totalTunSel = 0;
             $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
         }
 
@@ -1437,34 +1443,41 @@ class ThrReportController extends Controller
       foreach($value->thr_details as $key => $item){
         if($item->description == "Tunjangan Masa Kerja"){
             $a = true;	
+            $totalTunMasaKerja = $item->total;
             $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Tunjangan Masa Kerja" ? number_format("$item->total", 0,',','.') : "-"));
         }
       }
       if(!$a){
+          $totalTunMasaKerja = 0;
           $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
       }
 
-      $a = false;
-      foreach($value->thr_details as $key => $item){
-        if($item->description == "Tunjangan Tetap"){
-            $a = true;	
-            $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Tunjangan Tetap" ? number_format("$item->total", 0,',','.') : "-"));
-        }
-      }
-      if(!$a){
-          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
-      }
+    //   $a = false;
+    //   foreach($value->thr_details as $key => $item){
+    //     if($item->description == "Tunjangan Tetap"){
+    //         $a = true;	
+    //         $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Tunjangan Tetap" ? number_format("$item->total", 0,',','.') : "-"));
+    //     }
+    //   }
+    //   if(!$a){
+    //       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
+    //   }
+        $totalTunjTetap = $totalTunSel + $totalTunSel + $totalTunMasaKerja;
+        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, number_format("$totalTunjTetap", 0,',','.'));
 
-      $a = false;
-      foreach($value->thr_details as $key => $item){
-        if($item->description == "Gaji Tetap"){
-            $a = true;	
-            $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Gaji Tetap" ? number_format("$item->total", 0,',','.') : "-"));
-        }
-      }
-      if(!$a){
-          $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
-      }
+        $totalGajiTetap = $totalTunjTetap + $totalBasicSalary;
+        $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, number_format("$totalGajiTetap", 0,',','.'));
+
+    //   $a = false;
+    //   foreach($value->thr_details as $key => $item){
+    //     if($item->description == "Gaji Tetap"){
+    //         $a = true;	
+    //         $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, ($item->description == "Gaji Tetap" ? number_format("$item->total", 0,',','.') : "-"));
+    //     }
+    //   }
+    //   if(!$a){
+    //       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
+    //   }
       
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number,( $value->amount?$value->amount : "-"));
 
