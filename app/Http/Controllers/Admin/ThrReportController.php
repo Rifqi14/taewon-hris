@@ -1451,7 +1451,7 @@ class ThrReportController extends Controller
           $totalTunMasaKerja = 0;
           $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
       }
-     $totalTunjTetap = $totalTunSel + $totalTunSel + $totalTunMasaKerja;
+     $totalTunjTetap = $totalTunJabatan + $totalTunSel + $totalTunMasaKerja;
      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $totalTunjTetap)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
 
      $totalGajiTetap = $totalTunjTetap + $totalBasicSalary;
