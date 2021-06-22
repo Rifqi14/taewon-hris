@@ -325,11 +325,25 @@ class ThrReportController extends Controller
     public function generateByDepartment($department, $day , $month, $year, $user)
     {
         $employee = Employee::select('employees.*')->leftJoin('departments', 'departments.id', '=', 'employees.department_id')->where('employees.status', 1);
+        // $string = '';
+        // foreach ($department as $dept) {
+        //     $string .= "departments.path like '%$dept%'";
+        //     if (end($department) != $dept) {
+        //         $string .= ' or ';
+        //     }
+        // }
         $string = '';
+        $uniqdepartments = [];
+        foreach($department as $dept){
+            if(!in_array($dept,$uniqdepartments)){
+                $uniqdepartments[] = $dept;
+            }
+        }
+        $department = $uniqdepartments;
         foreach ($department as $dept) {
             $string .= "departments.path like '%$dept%'";
             if (end($department) != $dept) {
-                $string .= ' or ';
+            $string .= ' or ';
             }
         }
         $employee->whereRaw('(' . $string . ')');
@@ -349,8 +363,9 @@ class ThrReportController extends Controller
                 }
                 if ($checkJoinDate) {
                     $date1 = date("Y-m-d", strtotime($checkJoinDate->join_date));
-                    $date1 = $date1 . "-01";
+                    // $date1 = $date1 . "-01";
                     $date2 = Carbon::createFromFormat('Y-m-d', $year . '-' . $month.'-' . $day);
+                    // dd($date2);
                     // $date2 = Carbon::createFromFormat('Y-m', $year . '-' . $month);
                     // $date2 = $date2 . "-01";
 
@@ -361,9 +376,9 @@ class ThrReportController extends Controller
                     // $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
                     // $total_month = ($years * 12) + $months + 1;
                     $interval = $date2->diff($date1);
-                    $year =  $interval->format('%y');
-                    $month =  $interval->format('%m');
-                    $total_month = $year *12 + $month;
+                    $years =  $interval->format('%y');
+                    $months =  $interval->format('%m');
+                    $total_month = $years *12 + $months;
 
                     if($total_month < 12){
                         $thrreport = ThrReport::create([
@@ -555,7 +570,7 @@ class ThrReportController extends Controller
                 }
                 if ($checkJoinDate) {
                     $date1 = date("Y-m-d", strtotime($checkJoinDate->join_date));
-                    $date1 = $date1 . "-01";
+                    // $date1 = $date1 . "-01";
                     $date2 = Carbon::createFromFormat('Y-m-d', $year . '-' . $month.'-' . $day);
                     // $date2 = Carbon::createFromFormat('Y-m', $year . '-' . $month);
                     // $date2 = $date2 . "-01";
@@ -569,9 +584,9 @@ class ThrReportController extends Controller
 
                     // $total_month = ($years * 12) + $months + 1;
                     $interval = $date2->diff($date1);
-                    $year =  $interval->format('%y');
-                    $month =  $interval->format('%m');
-                    $total_month = $year *12 + $month;
+                    $years =  $interval->format('%y');
+                    $months =  $interval->format('%m');
+                    $total_month = $years *12 + $months;
 
                     if ($total_month < 12) {
                         $thrreport = ThrReport::create([
@@ -761,7 +776,7 @@ class ThrReportController extends Controller
                 }
                 if ($checkJoinDate) {
                     $date1 = date("Y-m-d", strtotime($checkJoinDate->join_date));
-                    $date1 = $date1 . "-01";
+                    // $date1 = $date1 . "-01";
                     $date2 = Carbon::createFromFormat('Y-m-d', $year . '-' . $month.'-' . $day);
                     // $date2 = Carbon::createFromFormat('Y-m', $year . '-' . $month);
                     // $date2 = $date2 . "-01";
@@ -775,9 +790,9 @@ class ThrReportController extends Controller
 
                     // $total_month = ($years * 12) + $months + 1;
                     $interval = $date2->diff($date1);
-                    $year =  $interval->format('%y');
-                    $month =  $interval->format('%m');
-                    $total_month = $year *12 + $month;
+                    $years =  $interval->format('%y');
+                    $months =  $interval->format('%m');
+                    $total_month = $years *12 + $months;
 
                     if ($total_month < 12) {
                         $thrreport = ThrReport::create([
@@ -1010,7 +1025,7 @@ class ThrReportController extends Controller
                 }
                 if($checkJoinDate){
                     $date1 = date("Y-m-d", strtotime($checkJoinDate->join_date));
-                    $date1 = $date1."-01";
+                    // $date1 = $date1."-01";
                     $date2 = Carbon::createFromFormat('Y-m-d', $request->year . '-' . $request->montly.'-' . $request->day);
                     // $date2 = $date2 . "-01";
 
@@ -1021,9 +1036,9 @@ class ThrReportController extends Controller
                     // $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
                     // $total_month = ($years * 12) + $months + 1;
                     $interval = $date2->diff($date1);
-                    $year =  $interval->format('%y');
-                    $month =  $interval->format('%m');
-                    $total_month = $year *12 + $month;
+                    $years =  $interval->format('%y');
+                    $months =  $interval->format('%m');
+                    $total_month = $years *12 + $months;
                     // dd($total_month);
                     // dd($date1, $date2,$diff,$months);
                     if($total_month < 12)
