@@ -1422,7 +1422,7 @@ class ThrReportController extends Controller
             }
         }
         if(!$a){
-            $totalTunSel = 0;
+            $totalTunJabatan = 0;
             $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, "-");
         }
 
