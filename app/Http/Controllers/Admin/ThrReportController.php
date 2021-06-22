@@ -599,7 +599,7 @@ class ThrReportController extends Controller
                     if ($thrreport) {
                         $basesalary = $this->get_employee_salary($employee->id);
                         $allowance = $this->get_additional_allowance($employee->id, $month, $year);
-                        $allowance_thr = $this->get_allowance_thr($employee->id, $montly, $year);
+                        $allowance_thr = $this->get_allowance_thr($employee->id, $month, $year);
                         $configThr = Config::where('option', 'thr')->first();
                         $employee = Employee::with('department')->with('title')->find($employee->id);
                         
@@ -805,7 +805,7 @@ class ThrReportController extends Controller
                     if ($thrreport) {
                         $basesalary = $this->get_employee_salary($employee->id);
                         $allowance = $this->get_additional_allowance($employee->id, $month, $year);
-                        $allowance_thr = $this->get_allowance_thr($employee->id, $montly, $year);
+                        $allowance_thr = $this->get_allowance_thr($employee->id, $month, $year);
                         $configThr = Config::where('option', 'thr')->first();
                         $employee = Employee::with('department')->with('title')->find($employee->id);
                         
@@ -1504,8 +1504,8 @@ class ThrReportController extends Controller
         $export = ob_get_contents();
         ob_end_clean();
         header('Content-Type: application/json');
-        if ($thrReports->count() > 0) {
-            // if (1 > 0) {
+        // if ($thrReports->count() > 0) {
+            if (1 > 0) {
         return response()->json([
             'status'     => true,
             'name'        => 'thr-' . date('d-m-Y') . '.xlsx',
