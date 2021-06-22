@@ -1504,8 +1504,8 @@ class ThrReportController extends Controller
         $export = ob_get_contents();
         ob_end_clean();
         header('Content-Type: application/json');
-        // if ($thrReports->count() > 0) {
-            if (1 > 0) {
+        if ($thrReports->count() > 0) {
+            // if (1 > 0) {
         return response()->json([
             'status'     => true,
             'name'        => 'thr-' . date('d-m-Y') . '.xlsx',
