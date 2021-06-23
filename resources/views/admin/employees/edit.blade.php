@@ -1147,8 +1147,8 @@
 						<input type="hidden" name="employee_id">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label for="amount" class="control-label">{{ __('employee.hour') }} <b class="text-danger">*</b></label>
-								<input type="text" class="form-control" id="hour" name="hour" placeholder="{{ __('employee.hour') }}" required>
+								<label for="amount" class="control-label">{{ __('general.hour') }} <b class="text-danger">*</b></label>
+								<input type="text" class="form-control" id="hour" name="hour" placeholder="{{ __('general.hour') }}" required>
 							</div>
 						</div>
 					</div>
