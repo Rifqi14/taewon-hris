@@ -733,7 +733,7 @@ class AttendanceApprovalController extends Controller
             }else{
                 $type_action = "Employee Attendance";
             }
-            setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." Shift",$getworkingtimes->description);
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d",strtotime($attendance->attendance_date))." Shift",$getworkingtimes->description);
             $attendance->workingtime_id = $request->working_shift;
             $attendance->save();
             calculateAttendance($attendance);
@@ -758,7 +758,7 @@ class AttendanceApprovalController extends Controller
                 }else{
                     $type_action = "Employee Attendance";
                 }
-                setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." Check in",$request->first_in);
+                setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d",strtotime($attendance->attendance_date))." Check in",$request->first_in);
                 $attendance->attendance_in = changeDateFormat('Y-m-d H:i:s', $request->first_in);
                 $attendance->save();
                 calculateAttendance($attendance);
@@ -788,7 +788,7 @@ class AttendanceApprovalController extends Controller
                 }else{
                     $type_action = "Employee Attendance";
                 }
-                setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." Check Out",$request->last_out);
+                setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d",strtotime($attendance->attendance_date))." Check Out",$request->last_out);
                 $attendance->attendance_out = changeDateFormat('Y-m-d H:i:s', $request->last_out);
                 $attendance->save();
                 calculateAttendance($attendance);
@@ -818,9 +818,9 @@ class AttendanceApprovalController extends Controller
                 $type_action = "Employee Attendance";
             }
             // Log History WO
-            setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." WT",$request->working_time);
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d",strtotime($attendance->attendance_date))." WT",$request->working_time);
             // Log History OT
-            setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." OT",$request->over_time);
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d",strtotime($attendance->attendance_date))." OT",$request->over_time);
             $attendance->adj_working_time = $request->working_time;
             $attendance->adj_over_time = $request->over_time;
             $attendance->save();
@@ -853,7 +853,7 @@ class AttendanceApprovalController extends Controller
             }else{
                 $type_action = "Employee Attendance";
             }
-            setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d")." Scheme",$overtime_scheme->scheme_name);
+            setrecordloghistory($user_id,$employee->id,$employee->department_id,$type_action,"Edit",date("Y-m-d",strtotime($attendance->attendance_date))." Scheme",$overtime_scheme->scheme_name);
             
             $attendance->day = $overtime_scheme->working_time?changeDateFormat('D', $attendance->attendance_date):'Off';
             $attendance->overtime_scheme_id = $request->scheme;
