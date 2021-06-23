@@ -946,7 +946,7 @@
 													<th width="150">Rule</th>
 													<th width="150">{{ __('general.hour') }}</th>
 													<th width="150">{{ __('employee.amount') }}</th>
-													<th width="150">{{ __('employee.bscslr') }} / {{ __('general.day') }}</th>
+													<th width="150">{{ __('general.value')}}</th>
 													<th width="150">Total</th>
 													<th width="150">{{ __('general.act') }}</th>
 												</tr>
