@@ -148,7 +148,7 @@
 											<div class="form-group mb-0"><input placeholder="Maximum time Out" name="max_out[]" class="form-control timepicker" value="{{ $item->max_out }}" /></div>
 										</td>
 										<td class="text-center align-middle">
-											<div class="form-group mb-0"><input type="number" placeholder="Minimum Workingtime" name="min_wt[]" class="form-control" value="{{ $item->min_workhour }}" /></div>
+											<div class="form-group mb-0"><input type="number" placeholder="Minimum Workingtime" name="min_wt[]" class="form-control" value="{{ floatval($item->min_workhour) }}" /></div>
 										</td>
 										<td class="text-center align-middle"><input type="checkbox" name="save[]" class="i-checks" @if ($item->status == 1) checked @endif/></td>
 									</tr>
