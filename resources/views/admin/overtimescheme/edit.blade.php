@@ -156,7 +156,7 @@
                       <td class="text-center align-middle number">{{ $key + 1 }}</td>
                       <td class="text-center align-middle">
                         <div class="form-group mb-0"><input type="hidden" name="overtime_rules[{{ $key }}]" /><input type="number" placeholder="{{ __('general.hour') }}"
-                            name="hour[{{ $key }}]" value="{{ $item->hour }}" class="form-control" required /></div>
+                            name="hour[{{ $key }}]" value="{{ floatval($item->hour) }}" class="form-control" required /></div>
                       </td>
                       <td class="text-center align-middle">
                         <div class="form-group mb-0"><input type="number" placeholder="{{ __('overtimescheme.amount') }}" name="amount[{{ $key }}]" step="0.01" class="form-control" value="{{ $item->amount }}" required /></div>
