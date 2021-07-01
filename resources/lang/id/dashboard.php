@@ -24,6 +24,5 @@ return [
     'detail_bydept'=> 'Detail Laporan Kehadiran Kemarin per Departemen',
     'remind_days'  => 'Peringatan(per hari)',
     'see_all'      => 'Lihat Semua',
-    'hour'         => 'Jam'
 
 ];
