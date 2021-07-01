@@ -393,8 +393,7 @@
 											<div class="col-sm-12">
 												<div class="form-group">
 													<label>SPL <b class="text-danger">*</b></label>
-													<select id="spl" class="form-control select2" name="spl"
-														data-placeholder="Select SPL" required>
+													<select id="spl" class="form-control select2" name="spl" data-placeholder="Select SPL" required>
 														<option value=""></option>
 														<option @if($employee->spl == "yes") selected @endif value="yes">{{ __('general.yes') }}</option>
 														<option @if($employee->spl == "no") selected @endif value="no">{{ __('general.no') }}</option>
@@ -722,21 +721,21 @@
 													</select>
 												</div>
 											</div>
-												<table class="table table-striped table-bordered" id="gross-table" style="width: 100%">
-													<thead>
-														<tr>
+											<table class="table table-striped table-bordered" id="gross-table" style="width: 100%">
+												<thead>
+													<tr>
 														<th width="10">No</th>
 														<th width="600">{{ __('general.desc') }}</th>
 														<th width="200">Total</th>
-														</tr>
-													</thead>
-													<tfoot>
-														<tr>
+													</tr>
+												</thead>
+												<tfoot>
+													<tr>
 														<th colspan="2" class="text-right">Total</th>
 														<th id="gross" data-gross="1400"></th>
-														</tr>
-													</tfoot>
-												</table>
+													</tr>
+												</tfoot>
+											</table>
 										</div>
 									</div>
 									<div class="tab-pane fade" id="vert-tabs-profile" role="tabpanel" aria-labelledby="vert-tabs-profile-tab">
@@ -1126,7 +1125,7 @@
 					</form>
 				</div>
 				{{-- .Tab Attendance --}}
-				
+
 			</div>
 		</div>
 	</div>
@@ -6141,6 +6140,9 @@ $(document).ready(function(){
 			{ render: function(data, type, row) {
 				return `${row.date} - ${row.day}`;
 			}, targets:[1]},
+			{ render: function(data, type, row) {
+				return row.scheme_rule.toFixed(1);
+			}, targets:[2]},
 			{ render: function ( data, type, row ) {
 				return `<div class="dropdown">
 					<button type="button" class="btn  btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
