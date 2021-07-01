@@ -6141,7 +6141,8 @@ $(document).ready(function(){
 				return `${row.date} - ${row.day}`;
 			}, targets:[1]},
 			{ render: function(data, type, row) {
-				return row.scheme_rule.toFixed(1);
+				var x = row.scheme_rule;
+				return x.toFixed(1);
 			}, targets:[2]},
 			{ render: function ( data, type, row ) {
 				return `<div class="dropdown">
