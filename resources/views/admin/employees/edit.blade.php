@@ -6142,7 +6142,7 @@ $(document).ready(function(){
 			}, targets:[1]},
 			{ render: function(data, type, row) {
 				var x = row.scheme_rule;
-				return x.toFixed(1);
+				return parseFloat(x);
 			}, targets:[2]},
 			{ render: function ( data, type, row ) {
 				return `<div class="dropdown">
