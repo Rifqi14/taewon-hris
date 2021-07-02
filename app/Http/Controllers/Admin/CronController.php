@@ -274,7 +274,7 @@ class CronController extends Controller
         // dd(Carbon::now()->addYear(1));
         // dd($leavedetails);
         foreach ($leavedetails as $key => $leavedetail) {
-            $checkReset = LeaveDetail::where('year_balance', Carbon::parse($date)->addYear(1)->format('Y'))->first();
+            $checkReset = LeaveDetail::where('year_balance', Carbon::parse($date)->addYear(1)->format('Y'))->where('employee_id', $leavedetail->employee_id)->where('leavesetting_id', $leavedetail->leavesetting_id)->first();
             if (!$checkReset) {
                 $reset = LeaveDetail::create([
                     'leavesetting_id'   => $leavedetail->leavesetting_id,
@@ -297,7 +297,7 @@ class CronController extends Controller
                 }
             }
 
-            $checkResetAYear = LeaveDetail::where('year_balance', Carbon::parse($date)->subYear(1)->format('Y'))->first();
+            $checkResetAYear = LeaveDetail::where('year_balance', Carbon::parse($date)->subYear(1)->format('Y'))->where('employee_id', $leavedetail->employee_id)->where('leavesetting_id', $leavedetail->leavesetting_id)->first();
             if (!$checkResetAYear) {
                 $subAYear = LeaveDetail::create([
                     'leavesetting_id'   => $leavedetail->leavesetting_id,
