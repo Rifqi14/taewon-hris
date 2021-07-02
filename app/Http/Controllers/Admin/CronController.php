@@ -233,6 +233,15 @@ class CronController extends Controller
                 'from_balance'      => Carbon::parse($leavedetail->from_balance)->addYear(),
                 'to_balance'        => Carbon::parse($leavedetail->to_balance)->addYear()
             ]);
+            
+            $subAYear = LeaveDetail::create([
+                'leavesetting_id'   => $leavedetail->leavesetting_id,
+                'employee_id'       => $leavedetail->employee_id,
+                'balance'           => $leavedetail->balance,
+                'year_balance'      => Carbon::now()->subYear(1)->format('Y'),
+                'from_balance'      => Carbon::parse($leavedetail->from_balance)->subYear(),
+                'to_balance'        => Carbon::parse($leavedetail->to_balance)->subYear()
+            ]);
             if ($reset->balance > 0) {
                 $reset->remaining_balance = $leavedetail->over_balance > 0 && $leavedetail->over_balance < $leavedetail->balance ? $leavedetail->balance - $leavedetail->over_balance : $leavedetail->balance;
                 $reset->used_balance = $leavedetail->over_balance > 0 && $leavedetail->over_balance < $leavedetail->balance ? $reset->balance - $reset->remaining_balance : 0;
@@ -243,6 +252,73 @@ class CronController extends Controller
                 $reset->remaining_balance = -1;
                 $reset->over_balance = 0;
                 $reset->save();
+            }
+            
+            if ($subAYear->balance > 0) {
+                $subAYear->remaining_balance = $leavedetail->over_balance > 0 && $leavedetail->over_balance < $leavedetail->balance ? $leavedetail->balance - $leavedetail->over_balance : $leavedetail->balance;
+                $subAYear->used_balance = $leavedetail->over_balance > 0 && $leavedetail->over_balance < $leavedetail->balance ? $subAYear->balance - $subAYear->remaining_balance : 0;
+                $subAYear->over_balance = $leavedetail->over_balance > $leavedetail->balance ? $leavedetail->over_balance - $leavedetail->balance : 0;
+                $subAYear->save();
+            } else {
+                $subAYear->used_balance = 0;
+                $subAYear->remaining_balance = -1;
+                $subAYear->over_balance = 0;
+                $subAYear->save();
+            }
+        }
+    }
+
+    public function specific_reset_leave($date)
+    {
+        $leavedetails = LeaveDetail::where('from_balance', '=', Carbon::parse($date)->format('Y-m-d'))->get();
+        // dd(Carbon::now()->addYear(1));
+        // dd($leavedetails);
+        foreach ($leavedetails as $key => $leavedetail) {
+            $checkReset = LeaveDetail::where('year_balance', Carbon::parse($date)->addYear(1)->format('Y'))->first();
+            if (!$checkReset) {
+                $reset = LeaveDetail::create([
+                    'leavesetting_id'   => $leavedetail->leavesetting_id,
+                    'employee_id'       => $leavedetail->employee_id,
+                    'balance'           => $leavedetail->balance,
+                    'year_balance'      => Carbon::now()->addYear(1)->format('Y'),
+                    'from_balance'      => Carbon::parse($leavedetail->from_balance)->addYear(),
+                    'to_balance'        => Carbon::parse($leavedetail->to_balance)->addYear()
+                ]);
+                if ($reset->balance > 0) {
+                    $reset->remaining_balance = $leavedetail->over_balance > 0 && $leavedetail->over_balance < $leavedetail->balance ? $leavedetail->balance - $leavedetail->over_balance : $leavedetail->balance;
+                    $reset->used_balance = $leavedetail->over_balance > 0 && $leavedetail->over_balance < $leavedetail->balance ? $reset->balance - $reset->remaining_balance : 0;
+                    $reset->over_balance = $leavedetail->over_balance > $leavedetail->balance ? $leavedetail->over_balance - $leavedetail->balance : 0;
+                    $reset->save();
+                } else {
+                    $reset->used_balance = 0;
+                    $reset->remaining_balance = -1;
+                    $reset->over_balance = 0;
+                    $reset->save();
+                }
+            }
+
+            $checkResetAYear = LeaveDetail::where('year_balance', Carbon::parse($date)->subYear(1)->format('Y'))->first();
+            if (!$checkResetAYear) {
+                $subAYear = LeaveDetail::create([
+                    'leavesetting_id'   => $leavedetail->leavesetting_id,
+                    'employee_id'       => $leavedetail->employee_id,
+                    'balance'           => $leavedetail->balance,
+                    'year_balance'      => Carbon::now()->subYear(1)->format('Y'),
+                    'from_balance'      => Carbon::parse($leavedetail->from_balance)->subYear(),
+                    'to_balance'        => Carbon::parse($leavedetail->to_balance)->subYear()
+                ]);
+                
+                if ($subAYear->balance > 0) {
+                    $subAYear->remaining_balance = $leavedetail->over_balance > 0 && $leavedetail->over_balance < $leavedetail->balance ? $leavedetail->balance - $leavedetail->over_balance : $leavedetail->balance;
+                    $subAYear->used_balance = $leavedetail->over_balance > 0 && $leavedetail->over_balance < $leavedetail->balance ? $subAYear->balance - $subAYear->remaining_balance : 0;
+                    $subAYear->over_balance = $leavedetail->over_balance > $leavedetail->balance ? $leavedetail->over_balance - $leavedetail->balance : 0;
+                    $subAYear->save();
+                } else {
+                    $subAYear->used_balance = 0;
+                    $subAYear->remaining_balance = -1;
+                    $subAYear->over_balance = 0;
+                    $subAYear->save();
+                }
             }
         }
     }

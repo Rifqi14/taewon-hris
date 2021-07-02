@@ -34,6 +34,7 @@ Route::get('/employeeallowance/copy', 'Admin\CronController@copy_allowance')->na
 Route::get('/check/document', 'Admin\CronController@check_expired_document')->name('check.document');
 Route::get('/check/contract', 'Admin\CronController@check_expired_contract')->name('check.contract');
 Route::get('/check/reset_leave', 'Admin\CronController@check_reset_leave')->name('check.reset_leave');
+Route::get('/check/specific_leave/{date}', 'Admin\CronController@specific_reset_leave')->name('check.specific_leave');
 //Route Admin
 Route::group(['prefix' => 'admin'], function () {
     Route::get('/', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
