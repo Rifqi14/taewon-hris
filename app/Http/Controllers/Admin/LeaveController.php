@@ -565,33 +565,42 @@ class LeaveController extends Controller
                     $lists = LeaveLog::where('leave_id', '=', $id);
                     $lists->delete();
                     foreach ($request->date as $key => $date) {
-                        $leave_logs = LeaveLog::create([
-                            'leave_id'      => $id,
-                            'date'          => changeDateFormat('Y-m-d', $date),
-                            'start'         => $request->time_start[$key],
-                            'finish'        => $request->time_finish[$key],
-                            'type'          => $request->type[$key],
-                            'reference_id'  => $request->reference_id[$key]
-                        ]);
-                        if ($request->reference_id[$key]) {
-                            $leavesetting = LeaveSetting::find($request->leave_type);
-                            $updateAttend = Attendance::find($request->reference_id[$key]);
-                            if ($leavesetting->leave_name == 'Attendance') {
-                                $workingtime = Workingtime::where('working_time_type', 'Non-Shift')->first();
-                                $updateAttend->attendance_in = changeDateFormat('Y-m-d H:i:s', $date . ' ' . $request->time_start[$key]);
-                                $updateAttend->attendance_out = changeDateFormat('Y-m-d H:i:s', $date . ' ' . $request->time_finish[$key]);
-                                $updateAttend->workingtime_id = $workingtime->id;
-                                $updateAttend->status = 0;
-                            } elseif ($leavesetting->leave_name == 'Switch Day Off') {
-                                $updateAttend->day = 'Off';
+                        $existingBalance = LeaveDetail::where('leavesetting_id', '=', $request->leave_type)->where('employee_id', $request->employee_id)->where('from_balance', '<=', changeDateFormat('Y-m-d', $date))->where('to_balance', '>=', changeDateFormat('Y-m-d', $date))->first();
+                        if ($existingBalance) {
+                            $leave_logs = LeaveLog::create([
+                                'leave_id'      => $id,
+                                'date'          => changeDateFormat('Y-m-d', $date),
+                                'start'         => $request->time_start[$key],
+                                'finish'        => $request->time_finish[$key],
+                                'type'          => $request->type[$key],
+                                'reference_id'  => $request->reference_id[$key]
+                            ]);
+                            if ($request->reference_id[$key]) {
+                                $leavesetting = LeaveSetting::find($request->leave_type);
+                                $updateAttend = Attendance::find($request->reference_id[$key]);
+                                if ($leavesetting->leave_name == 'Attendance') {
+                                    $workingtime = Workingtime::where('working_time_type', 'Non-Shift')->first();
+                                    $updateAttend->attendance_in = changeDateFormat('Y-m-d H:i:s', $date . ' ' . $request->time_start[$key]);
+                                    $updateAttend->attendance_out = changeDateFormat('Y-m-d H:i:s', $date . ' ' . $request->time_finish[$key]);
+                                    $updateAttend->workingtime_id = $workingtime->id;
+                                    $updateAttend->status = 0;
+                                } elseif ($leavesetting->leave_name == 'Switch Day Off') {
+                                    $updateAttend->day = 'Off';
+                                }
+                                $updateAttend->save();
                             }
-                            $updateAttend->save();
-                        }
-                        if (!$leave_logs) {
+                            if (!$leave_logs) {
+                                DB::rollBack();
+                                return response()->json([
+                                    'status'    => false,
+                                    'message'   => $leave_logs
+                                ], 400);
+                            }
+                        } else {
                             DB::rollBack();
                             return response()->json([
                                 'status'    => false,
-                                'message'   => $leave_logs
+                                'message'   => "Leave balance for this employee and this date " . changeDateFormat('Y-m-d', $date) . " not found, please check leave setting."
                             ], 400);
                         }
                     }
