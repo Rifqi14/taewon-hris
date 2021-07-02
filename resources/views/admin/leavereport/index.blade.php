@@ -144,11 +144,11 @@
       lengthChange:true,
       responsive:true,
       order: [[ 2, "asc" ]],
-      lengthMenu: [ 100, 250, 500, 1000, 2000 ],
+      lengthMenu: [ 50, 100, 250, 500, 1000, 2000 ],
       language: {
         url: language_choosen == 'id' ? urlLocaleId : '',
       },
-      pageLength: 500,
+      pageLength: 50,
       ajax: {
         url: "{{route('leavereport.read')}}",
         type: "GET",
