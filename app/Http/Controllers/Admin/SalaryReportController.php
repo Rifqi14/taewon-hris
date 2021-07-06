@@ -2551,6 +2551,7 @@ class SalaryReportController extends Controller
     if ($request->department && !$request->position && !$request->workgroup_id && !$request->employee_name) {
       DB::beginTransaction();
       $employee = Employee::select('employees.*')->leftJoin('departments', 'departments.id', '=', 'employees.department_id')->where('employees.status', 1);
+      dd($employee);
       $string = '';
       $department = $request->department;
       $uniqdepartments = [];
