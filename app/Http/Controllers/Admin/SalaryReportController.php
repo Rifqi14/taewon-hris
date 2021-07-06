@@ -2523,7 +2523,6 @@ class SalaryReportController extends Controller
               $salaryreport->deduction    = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
               $salaryreport->net_salary   = $salaryreport->gross_salary - $salaryreport->deduction;
               $salaryreport->save();
-
             } elseif (!$salaryreport) {
               DB::rollBack();
               return response()->json([
@@ -2540,6 +2539,12 @@ class SalaryReportController extends Controller
           ], 400);
         }
     }
+
+    DB::commit();
+    return response()->json([
+      'status'    => true,
+      'message'   => 'salary report generated successfully'
+    ], 200);
   } 
   /**
    * Store a newly created resource in storage.
@@ -2569,7 +2574,7 @@ class SalaryReportController extends Controller
       $employee->whereRaw('(' . $string . ')');
       $employees = $employee->get();
       if (!$employees->isEmpty()) {
-        $this->generateSalary($request->montly,$request->year,$employees,$request->user);
+        return $this->generateSalary($request->montly,$request->year,$employees,$request->user);
       }
       else{
         return array(
@@ -2577,16 +2582,11 @@ class SalaryReportController extends Controller
           'message'   => "Data not found"
         );
       }
-      DB::commit();
-      return response()->json([
-        'status'    => true,
-        'message'   => 'salary report generated successfully',
-      ], 200);
     }elseif (!$request->department && $request->position && !$request->workgroup_id && !$request->employee_name) {
       DB::beginTransaction();
       $employees = Employee::select('employees.*')->whereIn('title_id', $request->position)->where('employees.status', 1)->get();
       if (!$employees->isEmpty()) {
-        $this->generateSalary($request->montly,$request->year,$employees,$request->user);
+        return $this->generateSalary($request->montly,$request->year,$employees,$request->user);
       }
       else{
         return array(
@@ -2594,16 +2594,11 @@ class SalaryReportController extends Controller
           'message'   => "This position has no employees"
         );
       }
-      DB::commit();
-      return response()->json([
-        'status'    => true,
-        'message'   => 'salary report generated successfully',
-      ], 200);
     } elseif (!$request->department && !$request->position && $request->workgroup_id && !$request->employee_name) {
       DB::beginTransaction();
       $employees = Employee::select('employees.*')->whereIn('workgroup_id', $request->workgroup_id)->where('employees.status', 1)->get();
       if (!$employees->isEmpty()) {
-        $this->generateSalary($request->montly,$request->year,$employees,$request->user);
+        return $this->generateSalary($request->montly,$request->year,$employees,$request->user);
       }
       else{
         return array(
@@ -2611,11 +2606,6 @@ class SalaryReportController extends Controller
           'message'   => "This workgroup has no employees"
         );
       }
-      DB::commit();
-      return response()->json([
-        'status'    => true,
-        'message'   => 'salary report generated successfully',
-      ], 200);
     } elseif (!$request->department && !$request->position && !$request->workgroup_id && $request->employee_name) {
       DB::beginTransaction();
       $employee_id = [];
@@ -2628,12 +2618,7 @@ class SalaryReportController extends Controller
       else{
         $employees = Employee::whereIn('id',[-1])->get();
       }
-      $this->generateSalary($request->montly,$request->year,$employees,$request->user);
-      DB::commit();
-      return response()->json([
-        'status'    => true,
-        'message'   => 'salary report generated successfully',
-      ], 200);
+      return $this->generateSalary($request->montly,$request->year,$employees,$request->user);
     } else {
       return response()->json([
         'status'    => false,
