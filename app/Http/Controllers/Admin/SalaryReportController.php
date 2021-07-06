@@ -2523,11 +2523,6 @@ class SalaryReportController extends Controller
               $salaryreport->deduction    = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
               $salaryreport->net_salary   = $salaryreport->gross_salary - $salaryreport->deduction;
               $salaryreport->save();
-              DB::commit();
-              return response()->json([
-                'status'    => true,
-                'message'   => 'salary report generated successfully'
-              ], 200);
             } elseif (!$salaryreport) {
               DB::rollBack();
               return response()->json([
@@ -2544,6 +2539,12 @@ class SalaryReportController extends Controller
           ], 400);
         }
     }
+
+    DB::commit();
+    return response()->json([
+      'status'    => true,
+      'message'   => 'salary report generated successfully'
+    ], 200);
   } 
   /**
    * Store a newly created resource in storage.
