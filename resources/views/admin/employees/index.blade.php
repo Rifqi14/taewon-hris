@@ -200,6 +200,7 @@
 							<th width="150">{{ __('department.dep') }}</th>
 							<th width="200">{{ __('employee.position') }}</th>
 							<th width="250">{{ __('employee.workcomb') }}</th>
+							<th width="100" data-name="id">{{ __('employee.end_contract') }}</th>
 							<th>
 								<div class="customcheckbox">
 									<input type="checkbox" class="checkall">
@@ -414,10 +415,10 @@
 			},
 			columnDefs:[
 			{
-				orderable: false,targets:[0,6]
+				orderable: false,targets:[0,7]
 			},
 			{ className: "text-right", targets: [0] },
-			{ className: "text-center", targets: [6,7] },
+			{ className: "text-center", targets: [6,7,8] },
 			{
 				render: function ( data, type, row ) {
 					if (row.status == 1) {
@@ -436,12 +437,17 @@
 				},targets: [2]
 			},
 			{
+				render: function ( data, type, row ) {
+				return row.contract ?`${row.contract}` : '';
+				},targets: [6]
+			},
+			{
 				render: function (data, type, row) {
 				return `<label class="customcheckbox">
 				<input data-id="${data}" type="checkbox" name="checksalary[]" value="${row.id}"><span class="checkmark"></span>
 				</label>`
 				},
-				targets: [6]
+				targets: [7]
 			},
 			{ render: function ( data, type, row ) {
 				return `<div class="dropdown">
@@ -452,13 +458,14 @@
 				<li><a class="dropdown-item edit" href="javascript:void(0)" data-id="${row.id}"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
 				<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
 				</ul></div>`
-			},targets: [7]
+			},targets: [8]
 		}
 		],
 		columns: [
 		{ 
 			data: "no" 
 		},
+		
 		{ 
 			data: "nid" 
 		},
@@ -473,6 +480,9 @@
 		},
 		{ 
 			data: "workgroup_name" 
+		},
+		{ 
+			data: "contract"
 		},
 		{ 
 			data: "id" 

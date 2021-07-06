@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\WorkgroupAllowance;
 use App\Models\EmployeeSalary;
+use App\Models\EmployeeContract;
 use App\Models\WorkingtimeDetail;
 use App\Models\EmployeeAllowance;
 use Illuminate\Http\Request;
@@ -488,7 +489,8 @@ class EmployeesController extends Controller
             'departments.name as department_name',
             'titles.name as title_name',
             'work_groups.id as workgroup_id',
-            'work_groups.name as workgroup_name'
+            'work_groups.name as workgroup_name',
+            DB::raw("(select end_date from employee_contracts ec where ec.employee_id = employees.id order by end_date desc limit 1) as contract")
         );
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
@@ -559,7 +561,8 @@ class EmployeesController extends Controller
             'departments.name as department_name',
             'titles.name as title_name',
             'work_groups.id as workgroup_id',
-            'work_groups.name as workgroup_name'
+            'work_groups.name as workgroup_name',
+            DB::raw("(select end_date from employee_contracts ec where ec.employee_id = employees.id order by end_date desc limit 1) as contract")
         );
         $query->leftJoin('departments', 'departments.id', '=', 'employees.department_id');
         $query->leftJoin('titles', 'titles.id', '=', 'employees.title_id');
@@ -628,6 +631,7 @@ class EmployeesController extends Controller
         $data = [];
         foreach ($employees as $employee) {
             $employee->no = ++$start;
+            // $employee->contract = EmployeeContract::where('employee_id', $employee->id)->orderBy('end_date', 'desc')->first('end_date');
             $data[] = $employee;
         }
         return response()->json([
