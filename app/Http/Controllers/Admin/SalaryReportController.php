@@ -2050,13 +2050,12 @@ class SalaryReportController extends Controller
   }
 
   public function generateSalary($month,$year,$employees,$created_by){
-    dd($employees);
     foreach ($employees as $employee) {
         $dt            = Carbon::createFromFormat('Y-m', $year . '-' . $month);
         $checkDate     = changeDateFormat('Y-m-d', $dt->endOfMonth()->toDateString() . '-' . $month . '-' . $year);
         $exists        = $this->check_periode($month, $year, $employee->id);
         if ($exists) {
-            $delete = $exists->delete();
+            $exists->delete();
         }
         if ($employee->join_date <= $checkDate && $employee->status == 1) {
             $period = changeDateFormat('Y-m-d', 01 . '-' . $month . '-' . $year);
