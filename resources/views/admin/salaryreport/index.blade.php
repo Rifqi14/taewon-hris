@@ -792,6 +792,7 @@
                     $('.overlay').removeClass('d-none');
                 }
             }).done(function (response) {
+                console.log(response)
                 $('.overlay').addClass('d-none');
                 if (response.status) {
                     dataTable.draw();

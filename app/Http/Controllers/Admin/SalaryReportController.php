@@ -2524,11 +2524,6 @@ class SalaryReportController extends Controller
               $salaryreport->net_salary   = $salaryreport->gross_salary - $salaryreport->deduction;
               $salaryreport->save();
 
-              return response()->json([
-                'status'   => true,
-                'message'   => 'Success Generate'
-              ], 200);
-              
             } elseif (!$salaryreport) {
               DB::rollBack();
               return response()->json([
@@ -2578,11 +2573,15 @@ class SalaryReportController extends Controller
       }
       else{
         return array(
-          'status'    => true,
+          'status'    => false,
           'message'   => "Data not found"
         );
       }
       DB::commit();
+      return response()->json([
+        'status'    => true,
+        'message'   => 'salary report generated successfully',
+      ], 200);
     }elseif (!$request->department && $request->position && !$request->workgroup_id && !$request->employee_name) {
       DB::beginTransaction();
       $employees = Employee::select('employees.*')->whereIn('title_id', $request->position)->where('employees.status', 1)->get();
@@ -2596,6 +2595,10 @@ class SalaryReportController extends Controller
         );
       }
       DB::commit();
+      return response()->json([
+        'status'    => true,
+        'message'   => 'salary report generated successfully',
+      ], 200);
     } elseif (!$request->department && !$request->position && $request->workgroup_id && !$request->employee_name) {
       DB::beginTransaction();
       $employees = Employee::select('employees.*')->whereIn('workgroup_id', $request->workgroup_id)->where('employees.status', 1)->get();
@@ -2609,6 +2612,10 @@ class SalaryReportController extends Controller
         );
       }
       DB::commit();
+      return response()->json([
+        'status'    => true,
+        'message'   => 'salary report generated successfully',
+      ], 200);
     } elseif (!$request->department && !$request->position && !$request->workgroup_id && $request->employee_name) {
       DB::beginTransaction();
       $employee_id = [];
