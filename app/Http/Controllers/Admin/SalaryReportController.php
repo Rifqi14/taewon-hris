@@ -2059,7 +2059,9 @@ class SalaryReportController extends Controller
         }
         if ($employee->join_date <= $checkDate && $employee->status == 1) {
             $period = changeDateFormat('Y-m-d', 01 . '-' . $month . '-' . $year);
+            $id     = $this->getLatestId();
             $salaryreport = SalaryReport::create([
+              'id'            => $id,
               'employee_id'   => $employee->id,
               'created_by'    => $created_by,
               'period'        => $period,
