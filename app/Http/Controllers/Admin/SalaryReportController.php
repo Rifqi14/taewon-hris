@@ -2523,6 +2523,12 @@ class SalaryReportController extends Controller
               $salaryreport->deduction    = $this->deduction_salary($salaryreport->id) ? $this->deduction_salary($salaryreport->id) : 0;
               $salaryreport->net_salary   = $salaryreport->gross_salary - $salaryreport->deduction;
               $salaryreport->save();
+
+              return response()->json([
+                'status'   => true,
+                'message'   => 'Success Generate'
+              ], 200);
+              
             } elseif (!$salaryreport) {
               DB::rollBack();
               return response()->json([
