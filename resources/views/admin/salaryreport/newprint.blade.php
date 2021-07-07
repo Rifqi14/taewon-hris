@@ -171,10 +171,10 @@
                     <th rowspan="2" class="th-first p-0 text-content">Rincian hari kerja</th>
                     <th class="th-slip p-0 text-content">Kerja Aktif</th>
                     <th class="th-slip p-0 text-content">Libur</th>
-                    <th class="th-slip p-0 text-content">{{$coordinate33 ? $coordinate33->leave_name : 'Kosong'}}</th>
-                    <th class="th-slip p-0 text-content">{{$coordinate34 ? $coordinate34->leave_name : 'Kosong'}}</th>
-                    <th class="th-slip p-0 text-content">{{$coordinate35 ? $coordinate35->leave_name : 'Kosong'}}</th>
-                    <th class="th-slip p-0 text-content">{{$coordinate36 ? $coordinate36->leave_name : 'Kosong'}}</th>
+                    <th class="th-slip p-0 text-content">{{$coordinate33[0] ? $coordinate33[0]->leave_name : 'Kosong'}}</th>
+                    <th class="th-slip p-0 text-content">{{$coordinate34[0] ? $coordinate34[0]->leave_name : 'Kosong'}}</th>
+                    <th class="th-slip p-0 text-content">{{$coordinate35[0] ? $coordinate35[0]->leave_name : 'Kosong'}}</th>
+                    <th class="th-slip p-0 text-content">{{$coordinate36[0] ? $coordinate36[0]->leave_name : 'Kosong'}}</th>
                     <th class="th-slip p-0 text-content">Tot hari</th>
                 </tr>
                 <tr>
