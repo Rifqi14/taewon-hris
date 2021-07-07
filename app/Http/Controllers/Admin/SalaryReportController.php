@@ -4170,8 +4170,9 @@ class SalaryReportController extends Controller
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'NO.REK')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'NPWP')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI POKOK')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column + 3, $row)->setCellValueByColumnAndRow($column, $row, 'O.T.')->getStyleByColumnAndRow($column, $row, $column + 1, $row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->setCellValueByColumnAndRow($column, $row + 1, '150%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column + 4, $row)->setCellValueByColumnAndRow($column, $row, 'O.T.')->getStyleByColumnAndRow($column, $row, $column + 1, $row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->setCellValueByColumnAndRow($column, $row + 1, '100%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $sheet->setCellValueByColumnAndRow(++$column, $row + 1, '150%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
     $sheet->setCellValueByColumnAndRow(++$column, $row + 1, '200%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
     $sheet->setCellValueByColumnAndRow(++$column, $row + 1, '300%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
     $sheet->setCellValueByColumnAndRow(++$column, $row + 1, '400%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -4278,6 +4279,7 @@ class SalaryReportController extends Controller
       $sheet->setCellValueExplicitByColumnAndRow(++$column_number, $row_number, $value->account_no, PHPExcel_Cell_DataType::TYPE_STRING);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->npwp ? "'".$value->npwp : '-');
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->basic_salary ? $value->basic_salary : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ot_1 ? $value->ot_1 : 0);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ot_15 ? $value->ot_15 : 0);
       // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->otn_15 ? $value->otn_15 : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ot_20 ? $value->ot_20 : 0);
