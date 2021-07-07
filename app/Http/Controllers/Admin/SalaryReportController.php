@@ -3449,7 +3449,11 @@ class SalaryReportController extends Controller
       $coordinate35values[$salary->id] = $coordinate35value;
       // Coordinate34
       if ($coordinate36) {
-        $coordinate36value = Leave::where('leave_setting_id', $coordinate36->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
+        $leaveids = [];
+        foreach($coordinate34 as $leaveid){
+          array_push($leaveids,$leaveid->id);
+        }
+        $coordinate36value = Leave::where('leave_setting_id', $leaveids)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       } else {
         $coordinate36value = 0;
       }
