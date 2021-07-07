@@ -133,17 +133,12 @@
             <div class="col-sm-12">
               <div class="form-group">
                 <label class="control-label" for="remaining">{{ __('leave.remain') }}</label>
-                <input type="text" class="form-control" placeholder="{{ __('leave.remain') }}" id="remaining" name="remaining" @if ($leave->leavesetting)
-                @foreach ($leave->leavesetting->leavedetail as $detail)
-                @if ($detail->employee_id == $leave->employee->id)
-                @if ($detail->balance == -1)
+                <input type="text" class="form-control" placeholder="{{ __('leave.remain') }}" id="remaining" name="remaining" @if ($balance->first()->balance == -1)
                 value="∞"
                 @else
-                value="{{ $detail->remaining_balance }}"
+                value="{{ $balance->first()->remaining_balance }}"
                 @endif
-                @endif
-                @endforeach
-                @endif readonly>
+                readonly>
               </div>
             </div>
             <div class="col-sm-12">
