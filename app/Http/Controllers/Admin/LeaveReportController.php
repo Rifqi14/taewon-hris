@@ -59,7 +59,7 @@ class LeaveReportController extends Controller
         }
         $query->groupBy('leaves.id', 'employees.name', 'employees.nid', 'titles.name', 'departments.name', 'leave_settings.leave_name');
         $query->whereIn('leaves.status', [1, 2]);
-        $recordsTotal = $query->count();
+        $recordsTotal = $query->get()->count();
 
         // Select Pagination
         $query = DB::table('leaves');
