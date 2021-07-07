@@ -130,8 +130,9 @@ class LeaveApprovalController extends Controller
     public function editapproval($id)
     {
         $leave = Leave::find($id);
+        $balance = $leave->leavesetting->leavedetail->where('employee_id', $leave->employee_id)->where('from_balance', '<=', date('Y-m-d', strtotime($leave->created_at)))->where('to_balance', '>=', date('Y-m-d', strtotime($leave->created_at)));
         if ($leave) {
-            return view('admin.leaveapproval.editapproval', compact('leave'));
+            return view('admin.leaveapproval.editapproval', compact('leave', 'balance'));
         } else {
             abort(404);
         }
