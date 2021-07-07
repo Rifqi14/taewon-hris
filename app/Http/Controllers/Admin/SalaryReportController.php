@@ -3213,10 +3213,10 @@ class SalaryReportController extends Controller
     $coordinate55 = GroupAllowance::where('coordinate', '5.5')->first();
     $coordinate56 = GroupAllowance::where('coordinate', '5.6')->first();
 
-    $coordinate33 = LeaveSetting::where('coordinate', 'like', '%3.3%')->first();
-    $coordinate34 = LeaveSetting::where('coordinate', 'like', '%3.4%')->first();
-    $coordinate35 = LeaveSetting::where('coordinate', 'like', '%3.5%')->first();
-    $coordinate36 = LeaveSetting::where('coordinate', 'like', '%3.6%')->first();
+    $coordinate33 = LeaveSetting::where('coordinate', 'like', '%3.3%')->get();
+    $coordinate34 = LeaveSetting::where('coordinate', 'like', '%3.4%')->get();
+    $coordinate35 = LeaveSetting::where('coordinate', 'like', '%3.5%')->get();
+    $coordinate36 = LeaveSetting::where('coordinate', 'like', '%3.6%')->get();
     $coordinate51 = LeaveSetting::where('coordinate', 'like', '%5.1%')->get();
     $coordinate52 = LeaveSetting::where('coordinate', 'like', '%5.2%')->get();
     $coordinate53 = LeaveSetting::where('coordinate', 'like', '%5.3%')->get();
@@ -3416,21 +3416,33 @@ class SalaryReportController extends Controller
       $coordinate32values[$salary->id] = $totaloff;
       // Coordinate33
       if($coordinate33){
-        $coordinate33value = Leave::where('leave_setting_id', $coordinate33->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
+        $leaveids = [];
+        foreach($coordinate33 as $leaveid){
+          array_push($leaveids,$leaveid->id);
+        }
+        $coordinate33value = Leave::whereIn('leave_setting_id', $leaveids)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       }else{
         $coordinate33value = 0;
       }
       $coordinate33values[$salary->id] = $coordinate33value;
       // Coordinate34
       if ($coordinate34) {
-        $coordinate34value = Leave::where('leave_setting_id', $coordinate34->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
+        $leaveids = [];
+        foreach($coordinate34 as $leaveid){
+          array_push($leaveids,$leaveid->id);
+        }
+        $coordinate34value = Leave::whereIn('leave_setting_id', $leaveids)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       } else {
         $coordinate34value = 0;
       }
       $coordinate34values[$salary->id] = $coordinate34value;
       // Coordinate35
       if ($coordinate35) {
-        $coordinate35value = Leave::where('leave_setting_id', $coordinate35->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
+        $leaveids = [];
+        foreach($coordinate34 as $leaveid){
+          array_push($leaveids,$leaveid->id);
+        }
+        $coordinate35value = Leave::whereIn('leave_setting_id', $leaveids)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       } else {
         $coordinate35value = 0;
       }
