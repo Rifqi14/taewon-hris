@@ -3713,7 +3713,7 @@ class SalaryReportController extends Controller
         $selectJoin = '';
       foreach ($leaveSettings as $key => $value) {
         $alias = "_leave$value->id";
-        $selectJoin .= "case when leave_setting_id = $value->id then 1 else 0 end as $alias,";
+        $selectJoin .= "sum(case when leave_setting_id = $value->id then 1 else 0 end) as $alias,";
       }
       $selectJoin .= " null";
       $salary->leftJoin(DB::raw("(select 
