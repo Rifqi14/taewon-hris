@@ -99,6 +99,9 @@ class LeaveReportController extends Controller
         foreach ($leaves as $leave) {
             $leave->no      = ++$start;
             $leave->date    = changeDateFormat('d-m-Y', $leave->created_at);
+            $balance = Leave::find($leave->id);
+            $balances = $balance->leavesetting->leavedetail->where('employee_id', $balance->employee_id)->where('from_balance', '<=', date('Y-m-d', strtotime($balance->created_at)))->where('to_balance', '>=', date('Y-m-d', strtotime($balance->created_at)));
+            $leave->remaining = $balances->first()->remaining_balance == -1 ? '∞' : $balances->first()->remaining_balance;
             $data[]         = $leave;
         };
         return response()->json([
