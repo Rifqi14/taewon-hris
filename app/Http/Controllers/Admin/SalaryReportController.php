@@ -3417,6 +3417,7 @@ class SalaryReportController extends Controller
       // Coordinate33
       if($coordinate33){
         $leaveids = [];
+        array_push($leaveids,-1);
         foreach($coordinate33 as $leaveid){
           array_push($leaveids,$leaveid->id);
         }
@@ -3428,6 +3429,7 @@ class SalaryReportController extends Controller
       // Coordinate34
       if ($coordinate34) {
         $leaveids = [];
+        array_push($leaveids,-1);
         foreach($coordinate34 as $leaveid){
           array_push($leaveids,$leaveid->id);
         }
@@ -3439,6 +3441,7 @@ class SalaryReportController extends Controller
       // Coordinate35
       if ($coordinate35) {
         $leaveids = [];
+        array_push($leaveids,-1);
         foreach($coordinate34 as $leaveid){
           array_push($leaveids,$leaveid->id);
         }
@@ -3450,10 +3453,11 @@ class SalaryReportController extends Controller
       // Coordinate34
       if ($coordinate36) {
         $leaveids = [];
+        array_push($leaveids,-1);
         foreach($coordinate34 as $leaveid){
           array_push($leaveids,$leaveid->id);
         }
-        $coordinate36value = Leave::where('leave_setting_id', $leaveids)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
+        $coordinate36value = Leave::whereIn('leave_setting_id', $leaveids)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       } else {
         $coordinate36value = 0;
       }
