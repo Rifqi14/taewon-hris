@@ -498,13 +498,6 @@ class LeaveSettingController extends Controller
                                 $addYear->save();
                             }
                         }
-                        if (!$leavedetail) {
-                            DB::rollBack();
-                            return response()->json([
-                                'status'        => false,
-                                'message'       => $leavedetail
-                            ], 400);
-                        }
                     }
                 }
             } else {
