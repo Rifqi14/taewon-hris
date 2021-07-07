@@ -392,8 +392,8 @@ class LeaveSettingController extends Controller
                 $departments = Department::all();
                 $leave_dept_now = LeaveDepartment::where('leave_setting_id', $id);
                 // $leave_sett_now = LeaveDetail::where('leavesetting_id', $id)->where('from_balance', '<=', date('Y-m-d'))->where('to_balance', '>=', date('Y-m-d'));
-                $leave_sett_now = LeaveDetail::where('leavesetting_id', $id)->where('to_balance', '>=',date('Y').'-12-30');
-                $leave_sett_now->delete();
+                // $leave_sett_now = LeaveDetail::where('leavesetting_id', $id)->where('to_balance', '>=',date('Y').'-12-30');
+                // $leave_sett_now->delete();
                 $leave_dept_now->delete();
                 foreach ($departments as $key => $value) {
                     $leave_department = LeaveDepartment::create([
@@ -510,8 +510,8 @@ class LeaveSettingController extends Controller
             } else {
                 $dept_choose = $request->department ?  explode(',', $request->department) : null;
                 $leave_dept_now = LeaveDepartment::where('leave_setting_id', $id);
-                $leave_sett_now = LeaveDetail::where('leavesetting_id', $id)->where('year_balance', date('Y'));
-                $leave_sett_now->delete();
+                // $leave_sett_now = LeaveDetail::where('leavesetting_id', $id)->where('year_balance', date('Y'));
+                // $leave_sett_now->delete();
                 $leave_dept_now->delete();
                 foreach ($dept_choose as $key => $department) {
                     $leavedepartment = LeaveDepartment::create([
