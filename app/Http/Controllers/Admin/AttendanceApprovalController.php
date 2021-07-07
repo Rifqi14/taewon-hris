@@ -584,7 +584,7 @@ class AttendanceApprovalController extends Controller
     {
         if ($request->approve) {
             $update = $request->approve;
-            // $id = $this->getLatestLeaveId();
+            $leaveid = $this->getLatestLeaveId();
             DB::beginTransaction();
             foreach ($update as $id) {
                 $approve = Attendance::find($id);
@@ -597,6 +597,7 @@ class AttendanceApprovalController extends Controller
                         })->first();
                         if (!$check_alpha) {
                             $leave = Leave::create([
+                                'id'                => $leaveid,
                                 'employee_id'       => $approve->employee_id,
                                 'status'            => -1,
                                 'duration'          => 1
