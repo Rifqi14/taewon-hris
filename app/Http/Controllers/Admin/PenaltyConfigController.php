@@ -63,7 +63,8 @@ class PenaltyConfigController extends Controller
         if ($leaveSettingID) {
             $penaltyConfig->leave()->wherePivot('leave_setting_id', $leaveSettingID);
         }
-        $penaltyConfig->paginate($length);
+        $penaltyConfig->offset($start);
+        $penaltyConfig->limit($length);
         $penaltyConfig->orderBy($sort, $dir);
         $penaltyConfigs     = $penaltyConfig->get();
 
