@@ -4304,6 +4304,7 @@ class SalaryReportController extends Controller
         $bruto += $value->{$alias};
         $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{$alias} ? $value->{$alias} : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       }
+      $bruto += $value->driver_allowance;
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->driver_allowance)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $bruto += $value->alpha_penalty;
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $bruto ? $bruto : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
