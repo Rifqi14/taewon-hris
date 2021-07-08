@@ -278,7 +278,7 @@ class LeaveReportController extends Controller
             $sheet->setCellValue('B' . $row_number, $leave->department_name);
             $sheet->setCellValue('C' . $row_number, $leave->title_name);
             $sheet->setCellValue('D' . $row_number, $leave->employee_name);
-            $sheet->setCellValue('E' . $row_number, $leave->employee_ID);
+            $sheet->setCellValue('E' . $row_number, $leave->employee_id);
             $sheet->setCellValue('F' . $row_number, $leave->leave_type);
             $sheet->setCellValue('G' . $row_number, $leave->duration);
             $sheet->setCellValue('H' . $row_number, $leave->start_date);
