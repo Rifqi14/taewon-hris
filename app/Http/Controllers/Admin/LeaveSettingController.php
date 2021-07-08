@@ -392,8 +392,8 @@ class LeaveSettingController extends Controller
                 $departments = Department::all();
                 $leave_dept_now = LeaveDepartment::where('leave_setting_id', $id);
                 // $leave_sett_now = LeaveDetail::where('leavesetting_id', $id)->where('from_balance', '<=', date('Y-m-d'))->where('to_balance', '>=', date('Y-m-d'));
-                $leave_sett_now = LeaveDetail::where('leavesetting_id', $id)->where('to_balance', '>=',date('Y').'-12-30');
-                $leave_sett_now->delete();
+                // $leave_sett_now = LeaveDetail::where('leavesetting_id', $id)->where('to_balance', '>=',date('Y').'-12-30');
+                // $leave_sett_now->delete();
                 $leave_dept_now->delete();
                 foreach ($departments as $key => $value) {
                     $leave_department = LeaveDepartment::create([
@@ -402,95 +402,8 @@ class LeaveSettingController extends Controller
                     ]);
                     $employees = Employee::where('department_id', $value->id)->get();
                     foreach ($employees as $key => $employee) {
-                        $subYear = LeaveDetail::create([
-                            'leavesetting_id'   => $leavesetting->id,
-                            'employee_id'       => $employee->id,
-                            'balance'           => $request->unlimited ? -1 : $request->balance,
-                            'used_balance'      => 0,
-                            'remaining_balance' => $request->unlimited ? -1 : $request->balance,
-                            'over_balance'      => 0,
-                            'year_balance'      => Carbon::now()->subYear(1)->format('Y'),
-                        ]);
-                        $leavedetail = LeaveDetail::create([
-                            'leavesetting_id'   => $leavesetting->id,
-                            'employee_id'       => $employee->id,
-                            'balance'           => $request->unlimited ? -1 : $request->balance,
-                            'used_balance'      => 0,
-                            'remaining_balance' => $request->unlimited ? -1 : $request->balance,
-                            'over_balance'      => 0,
-                            'year_balance'      => date('Y')
-                        ]);
-                        $addYear = LeaveDetail::create([
-                            'leavesetting_id'   => $leavesetting->id,
-                            'employee_id'       => $employee->id,
-                            'balance'           => $request->unlimited ? -1 : $request->balance,
-                            'used_balance'      => 0,
-                            'remaining_balance' => $request->unlimited ? -1 : $request->balance,
-                            'over_balance'      => 0,
-                            'year_balance'      => Carbon::now()->addYear(1)->format('Y'),
-                        ]);
-                        if ($leavesetting->reset_time == 'beginningyear') {
-                            $subYear->from_balance = Carbon::now()->subYear(1)->startOfYear();
-                            $subYear->to_balance = Carbon::now()->subYear(1)->endOfYear();
-                            $leavedetail->from_balance = Carbon::now()->startOfYear();
-                            $leavedetail->to_balance = Carbon::now()->endOfYear();
-                            $addYear->from_balance = Carbon::now()->addYear(1)->startOfYear();
-                            $addYear->to_balance = Carbon::now()->addYear(1)->endOfYear();
-                            $subYear->save();
-                            $leavedetail->save();
-                            $addYear->save();
-                        } elseif ($leavesetting->reset_time == 'specificdate') {
-                            $dateMonthArray = explode('-', $leavesetting->specific_date);
-                            $date = $dateMonthArray[2];
-                            $month = $dateMonthArray[1];
-                            $subYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->subYear(1);
-                            $leavedetail->from_balance = Carbon::createFromDate(date('Y'), $month, $date);
-                            $addYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->addYear(1);
-                            $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
-                            $subYear->to_balance = Carbon::parse($next_year)->subDay()->subYear(1);
-                            $leavedetail->to_balance = Carbon::parse($next_year)->subDay();
-                            $addYear->to_balance = Carbon::parse($next_year)->subDay()->addYear(1);
-                            $subYear->save();
-                            $leavedetail->save();
-                            $addYear->save();
-                        } else {
-                            $dateMonthArray = explode('-', $employee->join_date);
-                            $date = $dateMonthArray[2];
-                            $month = $dateMonthArray[1];
-                            $subYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->subYear(1);
-                            $leavedetail->from_balance = Carbon::createFromDate(date('Y'), $month, $date);
-                            $addYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->addYear(1);
-                            $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
-                            $subYear->to_balance = Carbon::parse($next_year)->subDay()->subYear(1);
-                            $leavedetail->to_balance = Carbon::parse($next_year)->subDay();
-                            $addYear->to_balance = Carbon::parse($next_year)->subDay()->addYear(1);
-                            $subYear->save();
-                            $leavedetail->save();
-                            $addYear->save();
-                        }
-                        if (!$leavedetail) {
-                            DB::rollBack();
-                            return response()->json([
-                                'status'        => false,
-                                'message'       => $leavedetail
-                            ], 400);
-                        }
-                    }
-                }
-            } else {
-                $dept_choose = $request->department ?  explode(',', $request->department) : null;
-                $leave_dept_now = LeaveDepartment::where('leave_setting_id', $id);
-                $leave_sett_now = LeaveDetail::where('leavesetting_id', $id)->where('year_balance', date('Y'));
-                $leave_sett_now->delete();
-                $leave_dept_now->delete();
-                foreach ($dept_choose as $key => $department) {
-                    $leavedepartment = LeaveDepartment::create([
-                        'leave_setting_id'  => $leavesetting->id,
-                        'department_id'     => $department
-                    ]);
-                    if ($leavedepartment) {
-                        $employees = Employee::where('department_id', $department)->get();
-                        foreach ($employees as $key => $employee) {
+                        $checkResetSubYear = LeaveDetail::where('year_balance', Carbon::now()->subYear(1)->format('Y'))->where('employee_id', $employee->id)->where('leavesetting_id', $leavesetting->id)->first();
+                        if (!$checkResetSubYear) {
                             $subYear = LeaveDetail::create([
                                 'leavesetting_id'   => $leavesetting->id,
                                 'employee_id'       => $employee->id,
@@ -500,6 +413,9 @@ class LeaveSettingController extends Controller
                                 'over_balance'      => 0,
                                 'year_balance'      => Carbon::now()->subYear(1)->format('Y'),
                             ]);
+                        }
+                        $checkResetNow = LeaveDetail::where('year_balance', Carbon::now()->format('Y'))->where('employee_id', $employee->id)->where('leavesetting_id', $leavesetting->id)->first();
+                        if (!$checkResetNow) {
                             $leavedetail = LeaveDetail::create([
                                 'leavesetting_id'   => $leavesetting->id,
                                 'employee_id'       => $employee->id,
@@ -509,6 +425,9 @@ class LeaveSettingController extends Controller
                                 'over_balance'      => 0,
                                 'year_balance'      => date('Y')
                             ]);
+                        }
+                        $checkResetSAddYear = LeaveDetail::where('year_balance', Carbon::now()->addYear(1)->format('Y'))->where('employee_id', $employee->id)->where('leavesetting_id', $leavesetting->id)->first();
+                        if (!$checkResetSAddYear) {
                             $addYear = LeaveDetail::create([
                                 'leavesetting_id'   => $leavesetting->id,
                                 'employee_id'       => $employee->id,
@@ -518,44 +437,179 @@ class LeaveSettingController extends Controller
                                 'over_balance'      => 0,
                                 'year_balance'      => Carbon::now()->addYear(1)->format('Y'),
                             ]);
-                            if ($leavesetting->reset_time == 'beginningyear') {
+                        }
+                        if ($leavesetting->reset_time == 'beginningyear') {
+                            if (!$checkResetSubYear) {
                                 $subYear->from_balance = Carbon::now()->subYear(1)->startOfYear();
                                 $subYear->to_balance = Carbon::now()->subYear(1)->endOfYear();
+                                $subYear->save();
+                            }
+                            if (!$checkResetNow) {
                                 $leavedetail->from_balance = Carbon::now()->startOfYear();
                                 $leavedetail->to_balance = Carbon::now()->endOfYear();
+                                $leavedetail->save();
+                            }
+                            if (!$checkResetSAddYear) {
                                 $addYear->from_balance = Carbon::now()->addYear(1)->startOfYear();
                                 $addYear->to_balance = Carbon::now()->addYear(1)->endOfYear();
-                                $subYear->save();
-                                $leavedetail->save();
                                 $addYear->save();
+                            }
+                        } elseif ($leavesetting->reset_time == 'specificdate') {
+                            $dateMonthArray = explode('-', $leavesetting->specific_date);
+                            $date = $dateMonthArray[2];
+                            $month = $dateMonthArray[1];
+                            if (!$checkResetSubYear && !$checkResetNow) {
+                                $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
+                                $subYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->subYear(1);
+                                $subYear->to_balance = Carbon::parse($next_year)->subDay()->subYear(1);
+                                $subYear->save();
+                            }
+                            if (!$checkResetNow) {
+                                $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
+                                $leavedetail->from_balance = Carbon::createFromDate(date('Y'), $month, $date);
+                                $leavedetail->to_balance = Carbon::parse($next_year)->subDay();
+                                $leavedetail->save();
+                            }
+                            if (!$checkResetSAddYear && !$checkResetNow) {
+                                $addYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->addYear(1);
+                                $addYear->to_balance = Carbon::parse($next_year)->subDay()->addYear(1);
+                                $addYear->save();
+                            }
+                        } else {
+                            $dateMonthArray = explode('-', $employee->join_date);
+                            $date = $dateMonthArray[2];
+                            $month = $dateMonthArray[1];
+                            if (!$checkResetSubYear && !$checkResetNow) {
+                                $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
+                                $subYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->subYear(1);
+                                $subYear->to_balance = Carbon::parse($next_year)->subDay()->subYear(1);
+                                $subYear->save();
+                            }
+                            if (!$checkResetNow) {
+                                $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
+                                $leavedetail->from_balance = Carbon::createFromDate(date('Y'), $month, $date);
+                                $leavedetail->to_balance = Carbon::parse($next_year)->subDay();
+                                $leavedetail->save();
+                            }
+                            if (!$checkResetSAddYear && !$checkResetNow) {
+                                $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
+                                $addYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->addYear(1);
+                                $addYear->to_balance = Carbon::parse($next_year)->subDay()->addYear(1);
+                                $addYear->save();
+                            }
+                        }
+                    }
+                }
+            } else {
+                $dept_choose = $request->department ?  explode(',', $request->department) : null;
+                $leave_dept_now = LeaveDepartment::where('leave_setting_id', $id);
+                // $leave_sett_now = LeaveDetail::where('leavesetting_id', $id)->where('year_balance', date('Y'));
+                // $leave_sett_now->delete();
+                $leave_dept_now->delete();
+                foreach ($dept_choose as $key => $department) {
+                    $leavedepartment = LeaveDepartment::create([
+                        'leave_setting_id'  => $leavesetting->id,
+                        'department_id'     => $department
+                    ]);
+                    if ($leavedepartment) {
+                        $employees = Employee::where('department_id', $department)->get();
+                        foreach ($employees as $key => $employee) {
+                            $checkResetSubYear = LeaveDetail::where('year_balance', Carbon::now()->subYear(1)->format('Y'))->where('employee_id', $employee->id)->where('leavesetting_id', $leavesetting->id)->first();
+                            if (!$checkResetSubYear) {
+                                $subYear = LeaveDetail::create([
+                                    'leavesetting_id'   => $leavesetting->id,
+                                    'employee_id'       => $employee->id,
+                                    'balance'           => $request->unlimited ? -1 : $request->balance,
+                                    'used_balance'      => 0,
+                                    'remaining_balance' => $request->unlimited ? -1 : $request->balance,
+                                    'over_balance'      => 0,
+                                    'year_balance'      => Carbon::now()->subYear(1)->format('Y'),
+                                ]);
+                            }
+                            $checkResetNow = LeaveDetail::where('year_balance', Carbon::now()->format('Y'))->where('employee_id', $employee->id)->where('leavesetting_id', $leavesetting->id)->first();
+                            if (!$checkResetNow) {
+                                $leavedetail = LeaveDetail::create([
+                                    'leavesetting_id'   => $leavesetting->id,
+                                    'employee_id'       => $employee->id,
+                                    'balance'           => $request->unlimited ? -1 : $request->balance,
+                                    'used_balance'      => 0,
+                                    'remaining_balance' => $request->unlimited ? -1 : $request->balance,
+                                    'over_balance'      => 0,
+                                    'year_balance'      => date('Y')
+                                ]);
+                            }
+                            $checkResetSAddYear = LeaveDetail::where('year_balance', Carbon::now()->addYear(1)->format('Y'))->where('employee_id', $employee->id)->where('leavesetting_id', $leavesetting->id)->first();
+                            if (!$checkResetSAddYear) {
+                                $addYear = LeaveDetail::create([
+                                    'leavesetting_id'   => $leavesetting->id,
+                                    'employee_id'       => $employee->id,
+                                    'balance'           => $request->unlimited ? -1 : $request->balance,
+                                    'used_balance'      => 0,
+                                    'remaining_balance' => $request->unlimited ? -1 : $request->balance,
+                                    'over_balance'      => 0,
+                                    'year_balance'      => Carbon::now()->addYear(1)->format('Y'),
+                                ]);
+                            }
+                            if ($leavesetting->reset_time == 'beginningyear') {
+                                if (!$checkResetSubYear) {
+                                    $subYear->from_balance = Carbon::now()->subYear(1)->startOfYear();
+                                    $subYear->to_balance = Carbon::now()->subYear(1)->endOfYear();
+                                    $subYear->save();
+                                }
+                                if (!$checkResetNow) {
+                                    $leavedetail->from_balance = Carbon::now()->startOfYear();
+                                    $leavedetail->to_balance = Carbon::now()->endOfYear();
+                                    $leavedetail->save();
+                                }
+                                if (!$checkResetSAddYear) {
+                                    $addYear->from_balance = Carbon::now()->addYear(1)->startOfYear();
+                                    $addYear->to_balance = Carbon::now()->addYear(1)->endOfYear();
+                                    $addYear->save();
+                                }
                             } elseif ($leavesetting->reset_time == 'specificdate') {
                                 $dateMonthArray = explode('-', $leavesetting->specific_date);
                                 $date = $dateMonthArray[2];
                                 $month = $dateMonthArray[1];
-                                $subYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->subYear(1);
-                                $leavedetail->from_balance = Carbon::createFromDate(date('Y'), $month, $date);
-                                $addYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->addYear(1);
-                                $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
-                                $subYear->to_balance = Carbon::parse($next_year)->subDay()->subYear(1);
-                                $leavedetail->to_balance = Carbon::parse($next_year)->subDay();
-                                $addYear->to_balance = Carbon::parse($next_year)->subDay()->addYear(1);
-                                $subYear->save();
-                                $leavedetail->save();
-                                $addYear->save();
+                                if (!$checkResetSubYear && !$checkResetNow) {
+                                    $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
+                                    $subYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->subYear(1);
+                                    $subYear->to_balance = Carbon::parse($next_year)->subDay()->subYear(1);
+                                    $subYear->save();
+                                }
+                                if (!$checkResetNow) {
+                                    $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
+                                    $leavedetail->from_balance = Carbon::createFromDate(date('Y'), $month, $date);
+                                    $leavedetail->to_balance = Carbon::parse($next_year)->subDay();
+                                    $leavedetail->save();
+                                }
+                                if (!$checkResetSAddYear && !$checkResetNow) {
+                                    $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
+                                    $addYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->addYear(1);
+                                    $addYear->to_balance = Carbon::parse($next_year)->subDay()->addYear(1);
+                                    $addYear->save();
+                                }
                             } else {
                                 $dateMonthArray = explode('-', $employee->join_date);
                                 $date = $dateMonthArray[2];
                                 $month = $dateMonthArray[1];
-                                $subYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->subYear(1);
-                                $leavedetail->from_balance = Carbon::createFromDate(date('Y'), $month, $date);
-                                $addYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->addYear(1);
-                                $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
-                                $subYear->to_balance = Carbon::parse($next_year)->subDay()->subYear(1);
-                                $leavedetail->to_balance = Carbon::parse($next_year)->subDay();
-                                $addYear->to_balance = Carbon::parse($next_year)->subDay()->addYear(1);
-                                $subYear->save();
-                                $leavedetail->save();
-                                $addYear->save();
+                                if (!$checkResetSubYear && !$checkResetNow) {
+                                    $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
+                                    $subYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->subYear(1);
+                                    $subYear->to_balance = Carbon::parse($next_year)->subDay()->subYear(1);
+                                    $subYear->save();
+                                }
+                                if (!$checkResetNow) {
+                                    $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
+                                    $leavedetail->from_balance = Carbon::createFromDate(date('Y'), $month, $date);
+                                    $leavedetail->to_balance = Carbon::parse($next_year)->subDay();
+                                    $leavedetail->save();
+                                }
+                                if (!$checkResetSAddYear && !$checkResetNow) {
+                                    $next_year = Carbon::parse($leavedetail->from_balance)->addYear();
+                                    $addYear->from_balance = Carbon::createFromDate(date('Y'), $month, $date)->addYear(1);
+                                    $addYear->to_balance = Carbon::parse($next_year)->subDay()->addYear(1);
+                                    $addYear->save();
+                                }
                             }
                             if (!$leavedetail) {
                                 DB::rollBack();

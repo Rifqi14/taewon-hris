@@ -3213,10 +3213,10 @@ class SalaryReportController extends Controller
     $coordinate55 = GroupAllowance::where('coordinate', '5.5')->first();
     $coordinate56 = GroupAllowance::where('coordinate', '5.6')->first();
 
-    $coordinate33 = LeaveSetting::where('coordinate', 'like', '%3.3%')->first();
-    $coordinate34 = LeaveSetting::where('coordinate', 'like', '%3.4%')->first();
-    $coordinate35 = LeaveSetting::where('coordinate', 'like', '%3.5%')->first();
-    $coordinate36 = LeaveSetting::where('coordinate', 'like', '%3.6%')->first();
+    $coordinate33 = LeaveSetting::where('coordinate', 'like', '%3.3%')->get();
+    $coordinate34 = LeaveSetting::where('coordinate', 'like', '%3.4%')->get();
+    $coordinate35 = LeaveSetting::where('coordinate', 'like', '%3.5%')->get();
+    $coordinate36 = LeaveSetting::where('coordinate', 'like', '%3.6%')->get();
     $coordinate51 = LeaveSetting::where('coordinate', 'like', '%5.1%')->get();
     $coordinate52 = LeaveSetting::where('coordinate', 'like', '%5.2%')->get();
     $coordinate53 = LeaveSetting::where('coordinate', 'like', '%5.3%')->get();
@@ -3416,28 +3416,48 @@ class SalaryReportController extends Controller
       $coordinate32values[$salary->id] = $totaloff;
       // Coordinate33
       if($coordinate33){
-        $coordinate33value = Leave::where('leave_setting_id', $coordinate33->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
+        $leaveids = [];
+        array_push($leaveids,-1);
+        foreach($coordinate33 as $leaveid){
+          array_push($leaveids,$leaveid->id);
+        }
+        $coordinate33value = Leave::whereIn('leave_setting_id', $leaveids)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       }else{
         $coordinate33value = 0;
       }
       $coordinate33values[$salary->id] = $coordinate33value;
       // Coordinate34
       if ($coordinate34) {
-        $coordinate34value = Leave::where('leave_setting_id', $coordinate34->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
+        $leaveids = [];
+        array_push($leaveids,-1);
+        foreach($coordinate34 as $leaveid){
+          array_push($leaveids,$leaveid->id);
+        }
+        $coordinate34value = Leave::whereIn('leave_setting_id', $leaveids)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       } else {
         $coordinate34value = 0;
       }
       $coordinate34values[$salary->id] = $coordinate34value;
       // Coordinate35
       if ($coordinate35) {
-        $coordinate35value = Leave::where('leave_setting_id', $coordinate35->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
+        $leaveids = [];
+        array_push($leaveids,-1);
+        foreach($coordinate35 as $leaveid){
+          array_push($leaveids,$leaveid->id);
+        }
+        $coordinate35value = Leave::whereIn('leave_setting_id', $leaveids)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       } else {
         $coordinate35value = 0;
       }
       $coordinate35values[$salary->id] = $coordinate35value;
       // Coordinate34
       if ($coordinate36) {
-        $coordinate36value = Leave::where('leave_setting_id', $coordinate36->id)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
+        $leaveids = [];
+        array_push($leaveids,-1);
+        foreach($coordinate36 as $leaveid){
+          array_push($leaveids,$leaveid->id);
+        }
+        $coordinate36value = Leave::whereIn('leave_setting_id', $leaveids)->where('employee_id', $salary->employee_id)->where('status', 1)->get()->sum('duration');
       } else {
         $coordinate36value = 0;
       }
@@ -4150,8 +4170,9 @@ class SalaryReportController extends Controller
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'NO.REK')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'NPWP')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI POKOK')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column + 3, $row)->setCellValueByColumnAndRow($column, $row, 'O.T.')->getStyleByColumnAndRow($column, $row, $column + 1, $row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-    $sheet->setCellValueByColumnAndRow($column, $row + 1, '150%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column + 4, $row)->setCellValueByColumnAndRow($column, $row, 'O.T.')->getStyleByColumnAndRow($column, $row, $column + 1, $row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->setCellValueByColumnAndRow($column, $row + 1, '100%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $sheet->setCellValueByColumnAndRow(++$column, $row + 1, '150%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
     $sheet->setCellValueByColumnAndRow(++$column, $row + 1, '200%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
     $sheet->setCellValueByColumnAndRow(++$column, $row + 1, '300%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
     $sheet->setCellValueByColumnAndRow(++$column, $row + 1, '400%')->getStyleByColumnAndRow($column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -4258,6 +4279,7 @@ class SalaryReportController extends Controller
       $sheet->setCellValueExplicitByColumnAndRow(++$column_number, $row_number, $value->account_no, PHPExcel_Cell_DataType::TYPE_STRING);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->npwp ? "'".$value->npwp : '-');
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->basic_salary ? $value->basic_salary : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ot_1 ? $value->ot_1 : 0);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ot_15 ? $value->ot_15 : 0);
       // $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->otn_15 ? $value->otn_15 : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->ot_20 ? $value->ot_20 : 0);
@@ -4282,6 +4304,7 @@ class SalaryReportController extends Controller
         $bruto += $value->{$alias};
         $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->{$alias} ? $value->{$alias} : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       }
+      $bruto += $value->driver_allowance;
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->driver_allowance)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $bruto += $value->alpha_penalty;
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $bruto ? $bruto : '-')->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");

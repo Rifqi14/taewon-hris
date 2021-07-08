@@ -59,7 +59,7 @@ class LeaveReportController extends Controller
         }
         $query->groupBy('leaves.id', 'employees.name', 'employees.nid', 'titles.name', 'departments.name', 'leave_settings.leave_name');
         $query->whereIn('leaves.status', [1, 2]);
-        $recordsTotal = $query->count();
+        $recordsTotal = $query->get()->count();
 
         // Select Pagination
         $query = DB::table('leaves');
@@ -99,6 +99,9 @@ class LeaveReportController extends Controller
         foreach ($leaves as $leave) {
             $leave->no      = ++$start;
             $leave->date    = changeDateFormat('d-m-Y', $leave->created_at);
+            $balance = Leave::find($leave->id);
+            $balances = $balance->leavesetting->leavedetail->where('employee_id', $balance->employee_id)->where('from_balance', '<=', date('Y-m-d', strtotime($balance->created_at)))->where('to_balance', '>=', date('Y-m-d', strtotime($balance->created_at)));
+            $leave->remaining = $balances->first()->remaining_balance == -1 ? '∞' : $balances->first()->remaining_balance;
             $data[]         = $leave;
         };
         return response()->json([
@@ -153,8 +156,9 @@ class LeaveReportController extends Controller
     public function show($id)
     {
         $leave = Leave::find($id);
+        $balance = $leave->leavesetting->leavedetail->where('employee_id', $leave->employee_id)->where('from_balance', '<=', date('Y-m-d', strtotime($leave->created_at)))->where('to_balance', '>=', date('Y-m-d', strtotime($leave->created_at)));
         if ($leave) {
-            return view('admin.leavereport.detail', compact('leave'));
+            return view('admin.leavereport.detail', compact('leave', 'balance'));
         } else {
             abort(404);
         }
