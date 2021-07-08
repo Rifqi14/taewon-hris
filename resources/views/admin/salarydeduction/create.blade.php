@@ -151,7 +151,7 @@
                   option.push({
                   id:item.id,
                   text: `${item.name}`,
-                  nik: item.nik,
+                  nik: item.nid,
                   department_id: item.department_id,
                   title_id: item.title_id,
                   workgroup_id: item.workgroup_id,

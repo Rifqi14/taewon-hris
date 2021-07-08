@@ -34,6 +34,7 @@
                                 <th width="10">#</th>
                                 <th width="200">Description</th>
                                 <th width="100">Employee</th>
+                                <th width="50">Date</th>
                                 <th width="100">Nominal</th>
                                 <th width="50">#</th>
                             </tr>
@@ -92,7 +93,7 @@ $(function(){
         info:false,
         lengthChange:true,
         responsive: true,
-        order: [[ 4, "asc" ]],
+        order: [[ 5, "asc" ]],
         ajax: {
             url: "{{route('salarydeduction.read')}}",
             type: "GET",
@@ -103,16 +104,16 @@ $(function(){
         },
         columnDefs:[
             {
-                orderable: false,targets:[0,1,2,3]
+                orderable: false,targets:[0,1,2,4]
             },
             { className: "text-right", targets: [0] },
-            { className: "text-center", targets: [4] },
+            { className: "text-center", targets: [3,4,5] },
             {
                 render: function (data, type, row) {
                     return accounting.formatMoney(parseInt(data), '', ',', '.');
                 },
                 className: 'text-right',
-                targets: [3]
+                targets: [4]
             },
             { 
                 render: function ( data, type, row ) {
@@ -124,7 +125,7 @@ $(function(){
                         <li><a class="dropdown-item" href="{{url('admin/salarydeduction')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
                         <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
                     </ul></div>`
-            },targets: [4]
+            },targets: [5]
             }
         ],
         columns: [
@@ -136,6 +137,9 @@ $(function(){
             },
             { 
                 data: "name" 
+            },
+            { 
+                data: "date" 
             },
             { 
                 data: "nominal" 
