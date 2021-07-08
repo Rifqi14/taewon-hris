@@ -258,13 +258,14 @@ class LeaveReportController extends Controller
         $sheet->setCellValue('B1', 'Department');
         $sheet->setCellValue('C1', 'Position');
         $sheet->setCellValue('D1', 'Name');
-        $sheet->setCellValue('E1', 'Leave Name');
-        $sheet->setCellValue('F1', 'Duration');
-        $sheet->setCellValue('G1', 'From');
-        $sheet->setCellValue('H1', 'To');
-        $sheet->setCellValue('I1', 'Remaining Balance');
-        $sheet->setCellValue('J1', 'Status');
-        $sheet->setCellValue('K1', 'Note');
+        $sheet->setCellValue('E1', 'NIK');
+        $sheet->setCellValue('F1', 'Leave Name');
+        $sheet->setCellValue('G1', 'Duration');
+        $sheet->setCellValue('H1', 'From');
+        $sheet->setCellValue('I1', 'To');
+        $sheet->setCellValue('J1', 'Remaining Balance');
+        $sheet->setCellValue('K1', 'Status');
+        $sheet->setCellValue('L1', 'Note');
 
         $row_number = 2;
         foreach ($leaves as $key => $leave) {
@@ -273,13 +274,14 @@ class LeaveReportController extends Controller
             $sheet->setCellValue('B' . $row_number, $leave->department_name);
             $sheet->setCellValue('C' . $row_number, $leave->title_name);
             $sheet->setCellValue('D' . $row_number, $leave->employee_name);
-            $sheet->setCellValue('E' . $row_number, $leave->leave_type);
-            $sheet->setCellValue('F' . $row_number, $leave->duration);
-            $sheet->setCellValue('G' . $row_number, $leave->start_date);
-            $sheet->setCellValue('H' . $row_number, $leave->finish_date);
-            $sheet->setCellValue('I' . $row_number, $leave->remaining_balance);
-            $sheet->setCellValue('J' . $row_number, $leave->status == 1 ? 'Approved' : 'Rejected');
-            $sheet->setCellValue('K' . $row_number, $leave->notes);
+            $sheet->setCellValue('E' . $row_number, $leave->employee_ID);
+            $sheet->setCellValue('F' . $row_number, $leave->leave_type);
+            $sheet->setCellValue('G' . $row_number, $leave->duration);
+            $sheet->setCellValue('H' . $row_number, $leave->start_date);
+            $sheet->setCellValue('I' . $row_number, $leave->finish_date);
+            $sheet->setCellValue('J' . $row_number, $leave->remaining_balance);
+            $sheet->setCellValue('K' . $row_number, $leave->status == 1 ? 'Approved' : 'Rejected');
+            $sheet->setCellValue('L' . $row_number, $leave->notes);
             $row_number++;
         }
         foreach (range('A', 'K') as $column) {
