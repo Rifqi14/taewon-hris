@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Salary Deduction')
+@section('title',__('salarydeduction.slrdeduc'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item"><a href="{{route('salarydeduction.index')}}">Salary Deduction</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item"><a href="{{route('salarydeduction.index')}}">{{__('salarydeduction.slrdeduc')}}</a></li>
+<li class="breadcrumb-item active">{{__('general.edt')}}</li>
 @endpush
 
 @section('content')
@@ -16,7 +16,7 @@
     <div class="col-lg-8">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header" style="height: 57px;">
-          <h3 class="card-title">Salary Deduction Data</h3>
+          <h3 class="card-title">{{__('salarydeduction.slrdeduc')}}</h3>
         </div>
         <div class="card-body">
           <form id="form" action="{{ route('salarydeduction.update', ['id'=>$salarydeduction->id]) }}" method="post" autocomplete="off">
@@ -26,8 +26,8 @@
               <div class="col-sm-6">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Employee Name <b class="text-danger">*</b></label>
-                  <input type="text" class="form-control select2" required name="employee_id" id="employee_id" placeholder="Select Employee">
+                  <label>{{__('employee.empname')}} <b class="text-danger">*</b></label>
+                  <input type="text" class="form-control select2" required name="employee_id" id="employee_id" placeholder="{{__('general.chs')}} {{__('employee.employ')}}">
                 </div>
               </div>
               <div class="col-sm-6">
@@ -41,14 +41,14 @@
               <div class="col-sm-6">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Position <b class="text-danger">*</b></label>
+                  <label>{{__('employee.position')}} <b class="text-danger">*</b></label>
                   <input type="text" class="form-control select2" required name="position" id="position" value="{{$salarydeduction->title->name}}" readonly placeholder="Position">
                   <input type="hidden" id="title_id" name="title_id" value="{{$salarydeduction->title_id}}">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Department <b class="text-danger">*</b></label>
+                  <label>{{__('employee.department')}} <b class="text-danger">*</b></label>
                   <input type="text" class="form-control" name="department" id="department" value="{{$salarydeduction->department->name}}" placeholder="Department" readonly required>
                   <input type="hidden" id="department_id" name="department_id" value="{{$salarydeduction->department_id}}">
                 </div>
@@ -57,7 +57,7 @@
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
-                  <label>Workgroup <b class="text-danger">*</b></label>
+                  <label>{{__('workgroup.workgrp')}} <b class="text-danger">*</b></label>
                   <input type="text" class="form-control" name="workgroup" id="workgroup" value="{{$salarydeduction->workgroup->name}}" placeholder="Workgroup" readonly required>
                   <input type="hidden" id="workgroup_id" name="workgroup_id" value="{{$salarydeduction->workgroup_id}}">
                 </div>
@@ -78,11 +78,11 @@
     <div class="col-lg-4">
       <div class="card card-{{ config('configs.app_theme') }} card-outline">
         <div class="card-header">
-          <h3 class="card-title">Other</h3>
+          <h3 class="card-title">{{__('general.other')}}</h3>
           <div class="pull-right card-tools">
-            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="Simpan"><i
+            <button form="form" type="submit" class="btn btn-sm btn-{{ config('configs.app_theme') }}" title="{{__('general.save')}}"><i
                 class="fa fa-save"></i></button>
-            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="Kembali"><i
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-default" title="{{__('general.prvious')}}"><i
                 class="fa fa-reply"></i></a>
           </div>
         </div>
@@ -92,7 +92,7 @@
               <div class="col-sm-12">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Date<b class="text-danger">*</b></label>
+                  <label>{{__('salarydeduction.date')}}<b class="text-danger">*</b></label>
                   <div class="col-sm-12">
                     <div class="input-group">
                       <div class="input-group-prepend">
@@ -100,7 +100,7 @@
                           <i class="far fa-calendar-alt"></i>
                         </span>
                       </div>
-                      <input type="text" name="date" id="date" class="form-control datepicker" placeholder="Date" value="{{$salarydeduction->date}}" required />
+                      <input type="text" name="date" id="date" class="form-control datepicker" placeholder="{{__('salarydeduction.date')}}" value="{{$salarydeduction->date}}" required />
                     </div>
                   </div>
                 </div>
@@ -110,8 +110,8 @@
               <div class="col-sm-12">
                 <!-- text input -->
                 <div class="form-group">
-                  <label>Description <b class="text-danger">*</b></label>
-                  <textarea class="form-control" name="description" placeholder="Description" value="{{$salarydeduction->description}}" required>{{$salarydeduction->description}}</textarea>
+                  <label>{{__('general.desc')}} <b class="text-danger">*</b></label>
+                  <textarea class="form-control" name="description" placeholder="{{__('general.desc')}}" value="{{$salarydeduction->description}}" required>{{$salarydeduction->description}}</textarea>
                 </div>
               </div>
             </div>

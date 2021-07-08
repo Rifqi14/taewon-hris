@@ -385,6 +385,14 @@
 			lengthChange:true,
 			responsive: true,
 			order: [[ 6, "asc" ]],
+			language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
 			lengthMenu: [ 100, 250, 500, 1000, 2000 ],
       		pageLength: 100,
 			ajax: {
@@ -455,8 +463,8 @@
 				<i class="fa fa-bars"></i>
 				</button>
 				<ul class="dropdown-menu dropdown-menu-right">
-				<li><a class="dropdown-item edit" href="javascript:void(0)" data-id="${row.id}"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-				<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+				<li><a class="dropdown-item edit" href="javascript:void(0)" data-id="${row.id}"><i class="fas fa-pencil-alt mr-2"></i> {{__('general.edt')}}</a></li>
+				<li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{__('general.dlt')}}</a></li>
 				</ul></div>`
 			},targets: [8]
 		}

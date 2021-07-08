@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Salary Deduction')
+@section('title', __('salarydeduction.slrdeduc'))
 @section('stylesheets')
 <link href="{{asset('adminlte/component/dataTables/css/datatables.min.css')}}" rel="stylesheet">
 @endsection
 
 @push('breadcrump')
-<li class="breadcrumb-item active">Salary Deduction</li>
+<li class="breadcrumb-item active">{{__('salarydeduction.slrdeduc')}}</li>
 @endpush
 
 @section('content')
@@ -15,13 +15,13 @@
         <div class="col-lg-12">
             <div class="card ">
                 <div class="card-header">
-                    <h3 class="card-title">Salary Deduction List</h3>
+                    <h3 class="card-title">{{__('salarydeduction.deduclist')}}</h3>
                     <!-- tools box -->
                     <div class="pull-right card-tools">
-                        <a href="{{route('salarydeduction.create')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="Tambah">
+                        <a href="{{route('salarydeduction.create')}}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="{{__('general.crt')}}">
                             <i class="fa fa-plus"></i>
                         </a>
-                        <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="Search">
+                        <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="{{__('general.srch')}}">
                             <i class="fa fa-search"></i>
                         </a>
                     </div>
@@ -32,9 +32,9 @@
                         <thead>
                             <tr>
                                 <th width="10">#</th>
-                                <th width="200">Description</th>
-                                <th width="100">Employee</th>
-                                <th width="50">Date</th>
+                                <th width="200">{{__('general.desc')}}</th>
+                                <th width="100">{{__('employee.employ')}}</th>
+                                <th width="50">{{__('salarydeduction.date')}}</th>
                                 <th width="100">Nominal</th>
                                 <th width="50">#</th>
                             </tr>
@@ -61,8 +61,8 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label class="control-label" for="name">Description</label>
-                                <input type="text" name="description" class="form-control" placeholder="Description">
+                                <label class="control-label" for="name">{{__('general.desc')}}</label>
+                                <input type="text" name="description" class="form-control" placeholder="{{__('general.desc')}}">
                             </div>
                         </div>
                     </div>
@@ -94,6 +94,14 @@ $(function(){
         lengthChange:true,
         responsive: true,
         order: [[ 5, "asc" ]],
+        language: {
+            lengthMenu: `{{ __('general.showent') }}`,
+            processing: `{{ __('general.process') }}`,
+            paginate: {
+                previous: `{{ __('general.prev') }}`,
+                next: `{{ __('general.next') }}`,
+            }
+        },
         ajax: {
             url: "{{route('salarydeduction.read')}}",
             type: "GET",
@@ -122,8 +130,8 @@ $(function(){
                         <i class="fa fa-bars"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" href="{{url('admin/salarydeduction')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> Edit</a></li>
-                        <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> Delete</a></li>
+                        <li><a class="dropdown-item" href="{{url('admin/salarydeduction')}}/${row.id}/edit"><i class="fas fa-pencil-alt mr-2"></i> {{__('general.edt')}}</a></li>
+                        <li><a class="dropdown-item delete" href="#" data-id="${row.id}"><i class="fas fa-trash mr-2"></i> {{__('general.dlt')}}</a></li>
                     </ul></div>`
             },targets: [5]
             }
