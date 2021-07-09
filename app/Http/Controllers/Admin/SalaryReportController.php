@@ -2111,7 +2111,7 @@ class SalaryReportController extends Controller
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
-                        'description'      => LABEL_BASIC_ALLOWANCE,
+                        'description'      => LABEL_BASIC_ALLOWANCE.' 1',
                         'total'            => $join_date == $periode_salary ? (date("d", strtotime($employee->join_date)) * ($basesalary->amount + $allowance_value)) / 30 : $basesalary->amount,
                         'type'             => 1,
                         'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
@@ -2124,7 +2124,7 @@ class SalaryReportController extends Controller
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
-                        'description'      => LABEL_BASIC_ALLOWANCE,
+                        'description'      => LABEL_BASIC_ALLOWANCE.' 2',
                         'total'            => $days > 0 ? (date("d", strtotime($days . '-1 days')) * ($basesalary->amount + $allowance_value)) / 30 : $basesalary->amount,
                         'type'             => 1,
                         'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
@@ -2137,7 +2137,7 @@ class SalaryReportController extends Controller
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
-                        'description'      => LABEL_BASIC_ALLOWANCE,
+                        'description'      => LABEL_BASIC_ALLOWANCE.' 3',
                         'total'            => $days > 0 ? (date("d", strtotime($days . '-1 days')) * ($basesalary->amount + $allowance_value)) / 30 : $basesalary->amount,
                         'type'             => 1,
                         'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
