@@ -3696,7 +3696,7 @@ class SalaryReportController extends Controller
       $select .= "max(details.$alias) as $alias,";
     }
     $select .= "min(details.alpha_penalty) as alpha_penalty,";
-    $select .= "max(details.pinjaman) as pinjaman,";
+    $select .= "min(details.pinjaman) as pinjaman,";
     $select .= "max(details.spsi) as spsi,";
     $select .= "max(details.pph) as pph,";
     $select .= "sum(details.de_non_pph) as de_non_pph,";
