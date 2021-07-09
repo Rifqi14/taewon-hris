@@ -2146,8 +2146,9 @@ class SalaryReportController extends Controller
 
               /*Allowance*/
               if ($allowance) {
+                $prorate_type = Config::where('option', 'type_prorate')->first();
                 foreach ($allowance as $key => $value) {
-                  if($value->prorate == 'Yes' && $prorate_type == 'basic_allowance'){
+                  if($value->prorate == 'Yes' && $prorate_type->value == 'basic_allowance'){
                     if ($readConfigs->value == 'full') {
                       $date1 = $employee->join_date;
                       if($date1 <= date('Y-m-d',strtotime($periode_salary.'-01'))){
