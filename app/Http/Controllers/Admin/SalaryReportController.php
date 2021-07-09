@@ -452,7 +452,7 @@ class SalaryReportController extends Controller
   {
     $query = DB::table('employee_allowances');
     // $query->select('employee_allowances.*', 'allowances.allowance as description', 'allowances.group_allowance_id');
-    $query->selectRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) as value, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id, employee_allowances.type as type, max(allowances.allowance) as allowance_name");
+    $query->selectRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) as value, group_allowances.name as description, employee_allowances.is_penalty as is_penalty, allowances.group_allowance_id as group_allowance_id, employee_allowances.type as type,allowances.prorate, max(allowances.allowance) as allowance_name");
     $query->leftJoin('allowances', 'allowances.id', '=', 'employee_allowances.allowance_id');
     $query->leftJoin('allowance_categories', 'allowance_categories.key', '=', 'allowances.category');
     $query->leftJoin('group_allowances', 'group_allowances.id', 'allowances.group_allowance_id');
@@ -462,7 +462,7 @@ class SalaryReportController extends Controller
     $query->where('employee_allowances.status', '=', 1);
     $query->where('allowance_categories.type', '=', 'additional');
     $query->where('employee_allowances.type', '!=', 'automatic');
-    $query->groupBy('group_allowances.name', 'employee_allowances.is_penalty', 'allowances.group_allowance_id', 'employee_allowances.type');
+    $query->groupBy('group_allowances.name', 'employee_allowances.is_penalty','allowances.prorate', 'allowances.group_allowance_id', 'employee_allowances.type');
     $query->orderByRaw("sum(case when employee_allowances.factor > 0 then employee_allowances.value::numeric * employee_allowances.factor else 0 end) desc");
     $allowances = $query->get();
 
@@ -2098,71 +2098,26 @@ class SalaryReportController extends Controller
                     }
                   }
                   /**Jika tipe prorate sama dengan basic_allowance */
-                  if ($prorate_type == 'basic_allowance') {
-                    foreach ($allowance_prorates as $key => $allowance) {
-                      /**Jika Join date sama dengan priode salary  */
-                      if ($join_date == $periode_salary) {
-                        SalaryReportDetail::create([
-                          'salary_report_id' => $salaryreport->id,
-                          'employee_id'      => $employee->id,
-                          'description'      => LABEL_BASIC_ALLOWANCE,
-                          'total'            => $join_date == $periode_salary ? (date("d", strtotime($employee->join_date)) * ($basesalary->amount + $allowance->allowance_value)) / 30 : $basesalary->amount,
-                          'type'             => 1,
-                          'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
-                          'is_added'         => 'NO'
-                        ]);
-                      }
-                      /**End Jika Join date sama dengan priode salary  */
-                      /**Jika join date dan resign date sama dengan priode salary*/
-                      if ($join_date && $resign_date == $periode_salary) {
-                        SalaryReportDetail::create([
-                          'salary_report_id' => $salaryreport->id,
-                          'employee_id'      => $employee->id,
-                          'description'      => LABEL_BASIC_ALLOWANCE,
-                          'total'            => $days > 0 ? (date("d", strtotime($days . '-1 days')) * ($basesalary->amount + $allowance->allowance_value)) / 30 : $basesalary->amount,
-                          'type'             => 1,
-                          'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
-                          'is_added'         => 'NO'
-                        ]);
-                      }
-                      /**End Jika join date dan resign date sama dengan priode salary*/
-                      /** Jika join date dan resign date ada*/
-                      if ($join_date && $resign_date) {
-                        SalaryReportDetail::create([
-                          'salary_report_id' => $salaryreport->id,
-                          'employee_id'      => $employee->id,
-                          'description'      => LABEL_BASIC_ALLOWANCE,
-                          'total'            => $days > 0 ? (date("d", strtotime($days . '-1 days')) * ($basesalary->amount + $allowance->allowance_value)) / 30 : $basesalary->amount,
-                          'type'             => 1,
-                          'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
-                          'is_added'         => 'NO'
-                        ]);
-                      }
-                      /** End Jika join date dan resign date ada*/
-                    }
-                    /**End Jika tipe prorate sama dengan basic_allowance */
-                  } else {
-                    if ($join_date  == $periode_salary || $resign_date == $periode_salary) {
-                      SalaryReportDetail::create([
-                        'salary_report_id' => $salaryreport->id,
-                        'employee_id'      => $employee->id,
-                        'description'      => LABEL_BASIC_SALARY,
-                        'total'            => $days > 0 ? ($days * $basesalary->amount) / 30 : $basesalary->amount,
-                        'type'             => 1,
-                        'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
-                        'is_added'         => 'NO'
-                      ]);
-                    } else{
-                      SalaryReportDetail::create([
-                        'salary_report_id' => $salaryreport->id,
-                        'employee_id'      => $employee->id,
-                        'description'      => LABEL_BASIC_SALARY,
-                        'total'            => $basesalary->amount,
-                        'type'             => 1,
-                        'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
-                        'is_added'         => 'NO'
-                      ]);
-                    } 
+                  if ($join_date  == $periode_salary || $resign_date == $periode_salary) {
+                    SalaryReportDetail::create([
+                      'salary_report_id' => $salaryreport->id,
+                      'employee_id'      => $employee->id,
+                      'description'      => LABEL_BASIC_SALARY,
+                      'total'            => $days > 0 ? ($days * $basesalary->amount) / 30 : $basesalary->amount,
+                      'type'             => 1,
+                      'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
+                      'is_added'         => 'NO'
+                    ]);
+                  } else{
+                    SalaryReportDetail::create([
+                      'salary_report_id' => $salaryreport->id,
+                      'employee_id'      => $employee->id,
+                      'description'      => LABEL_BASIC_SALARY,
+                      'total'            => $basesalary->amount,
+                      'type'             => 1,
+                      'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
+                      'is_added'         => 'NO'
+                    ]);
                   }
                   /**End Jika Config setting prorate sama dengan full */
                 } else {
@@ -2192,28 +2147,126 @@ class SalaryReportController extends Controller
               /*Allowance*/
               if ($allowance) {
                 foreach ($allowance as $key => $value) {
-                  if ($value->group_allowance_id) {
-                    SalaryReportDetail::create([
-                      'salary_report_id'  => $salaryreport->id,
-                      'employee_id'       => $employee->id,
-                      'description'       => $value->description,
-                      'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
-                      'type'              => 1,
-                      'status'            => 'Additional Allowance',
-                      'group_allowance_id'=> $value->group_allowance_id,
-                      'is_added'          => 'NO'
-                    ]);
-                  } else {
-                    SalaryReportDetail::create([
-                      'salary_report_id'  => $salaryreport->id,
-                      'employee_id'       => $employee->id,
-                      'description'       => $value->allowance_name,
-                      'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
-                      'type'              => 1,
-                      'status'            => 'Additional Allowance',
-                      'is_added'          => 'NO'
-                    ]);
+                  if($value->prorate == 'Yes'){
+                    if ($readConfigs->value == 'full') {
+                      $date1 = $employee->join_date;
+                      if($date1 <= date('Y-m-d',strtotime($periode_salary.'-01'))){
+                        $date1 = date('Y-m-d',strtotime($periode_salary.'-01'));
+                      }
+                      $date1 = new \DateTime($date1);
+                      if($employee->resign_date){
+                        $date2 = new \DateTime($employee->resign_date);
+                        $days = $date2->diff($date1)->format("%a");
+                      }
+                      else{
+                        if($join_date == $periode_salary ){
+                          $date1 = new \DateTime(date('Y-m-d',strtotime($periode_salary.'-01')));
+                          $days = 30 - ((new \DateTime($employee->join_date))->diff($date1)->format("%a"));
+                        }
+                        else{
+                          $days = 30;
+                        }
+                      }
+                      if ($join_date  == $periode_salary || $resign_date == $periode_salary) {
+                        if ($value->group_allowance_id) {
+                          SalaryReportDetail::create([
+                            'salary_report_id'  => $salaryreport->id,
+                            'employee_id'       => $employee->id,
+                            'description'       => $value->description,
+                            'total'             => $days > 0?$days * (($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value)/30:(($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value),
+                            'type'              => 1,
+                            'status'            => 'Additional Allowance',
+                            'group_allowance_id'=> $value->group_allowance_id,
+                            'is_added'          => 'NO'
+                          ]);
+                        } else {
+                          SalaryReportDetail::create([
+                            'salary_report_id'  => $salaryreport->id,
+                            'employee_id'       => $employee->id,
+                            'description'       => $value->allowance_name,
+                            'total'             => $days > 0?$days * (($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value):(($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value),
+                            'type'              => 1,
+                            'status'            => 'Additional Allowance',
+                            'is_added'          => 'NO'
+                          ]);
+                        }
+                      }
+                      else{
+                        if ($value->group_allowance_id) {
+                          SalaryReportDetail::create([
+                            'salary_report_id'  => $salaryreport->id,
+                            'employee_id'       => $employee->id,
+                            'description'       => $value->description,
+                            'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                            'type'              => 1,
+                            'status'            => 'Additional Allowance',
+                            'group_allowance_id'=> $value->group_allowance_id,
+                            'is_added'          => 'NO'
+                          ]);
+                        } else {
+                          SalaryReportDetail::create([
+                            'salary_report_id'  => $salaryreport->id,
+                            'employee_id'       => $employee->id,
+                            'description'       => $value->allowance_name,
+                            'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                            'type'              => 1,
+                            'status'            => 'Additional Allowance',
+                            'is_added'          => 'NO'
+                          ]);
+                        }
+                      }
+                      
+                    }
+                    else{
+                      if ($value->group_allowance_id) {
+                        SalaryReportDetail::create([
+                          'salary_report_id'  => $salaryreport->id,
+                          'employee_id'       => $employee->id,
+                          'description'       => $value->description,
+                          'total'             => $resign_date == $periode_salary ? date("d", strtotime($employee->resign_date . '-1 days')) * (($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value):(($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value),
+                          'type'              => 1,
+                          'status'            => 'Additional Allowance',
+                          'group_allowance_id'=> $value->group_allowance_id,
+                          'is_added'          => 'NO'
+                        ]);
+                      } else {
+                        SalaryReportDetail::create([
+                          'salary_report_id'  => $salaryreport->id,
+                          'employee_id'       => $employee->id,
+                          'description'       => $value->allowance_name,
+                          'total'             => $resign_date == $periode_salary ? date("d", strtotime($employee->resign_date . '-1 days')) *  (($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value)/30:(($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value),
+                          'type'              => 1,
+                          'status'            => 'Additional Allowance',
+                          'is_added'          => 'NO'
+                        ]);
+                      }
+                    }
                   }
+                  else{
+                    if ($value->group_allowance_id) {
+                      SalaryReportDetail::create([
+                        'salary_report_id'  => $salaryreport->id,
+                        'employee_id'       => $employee->id,
+                        'description'       => $value->description,
+                        'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                        'type'              => 1,
+                        'status'            => 'Additional Allowance',
+                        'group_allowance_id'=> $value->group_allowance_id,
+                        'is_added'          => 'NO'
+                      ]);
+                    } else {
+                      SalaryReportDetail::create([
+                        'salary_report_id'  => $salaryreport->id,
+                        'employee_id'       => $employee->id,
+                        'description'       => $value->allowance_name,
+                        'total'             => ($value->type == 'percentage') ? $basesalary->amount * ($value->value / 100) : $value->value,
+                        'type'              => 1,
+                        'status'            => 'Additional Allowance',
+                        'is_added'          => 'NO'
+                      ]);
+                    }
+                  }
+                  
                 }
               }
               /*End Allowance*/
