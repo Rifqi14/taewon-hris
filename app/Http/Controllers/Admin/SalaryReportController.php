@@ -2090,6 +2090,7 @@ class SalaryReportController extends Controller
                   }
                   else{
                     if($join_date == $periode_salary ){
+                      $date1 = new \DateTime(date('Y-m-d',strtotime($periode_salary.'-01')));
                       $days = 30 - ((new \DateTime($employee->join_date))->diff($date1)->format("%a"));
                     }
                     else{
