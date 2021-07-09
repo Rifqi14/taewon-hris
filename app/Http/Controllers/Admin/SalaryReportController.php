@@ -2083,14 +2083,19 @@ class SalaryReportController extends Controller
                   if($date1 <= date('Y-m-d',strtotime($periode_salary.'-01'))){
                     $date1 = date('Y-m-d',strtotime($periode_salary.'-01'));
                   }
-                  $date2 = $employee->resign_date?$employee->resign_date:date('Y-m-t',strtotime($periode_salary));
-
-                  $diff = abs(strtotime($date2) - strtotime($date1));
-
-                  $years  = floor($diff / (365 * 60 * 60 * 24));
-                  $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
-                  $days   = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
-  
+                  $date1 = new DateTime($date1);
+                  if($employee->resign_date){
+                    $date2 = new DateTime($employee->resign_date);
+                    $days = $date2->diff($date1)->format("%a");
+                  }
+                  else{
+                    if($join_date == $periode_salary ){
+                      $days = 30 - ((new DateTime($employee->join_date))->diff($date1)->format("%a"));
+                    }
+                    else{
+                      $days = 30;
+                    }
+                  }
                   /**Jika tipe prorate sama dengan basic_allowance */
                   if ($prorate_type == 'basic_allowance') {
                     foreach ($allowance_prorates as $key => $allowance) {
