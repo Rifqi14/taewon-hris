@@ -2083,14 +2083,14 @@ class SalaryReportController extends Controller
                   if($date1 <= date('Y-m-d',strtotime($periode_salary.'-01'))){
                     $date1 = date('Y-m-d',strtotime($periode_salary.'-01'));
                   }
-                  $date1 = new DateTime($date1);
+                  $date1 = new \DateTime($date1);
                   if($employee->resign_date){
-                    $date2 = new DateTime($employee->resign_date);
+                    $date2 = new \DateTime($employee->resign_date);
                     $days = $date2->diff($date1)->format("%a");
                   }
                   else{
                     if($join_date == $periode_salary ){
-                      $days = 30 - ((new DateTime($employee->join_date))->diff($date1)->format("%a"));
+                      $days = 30 - ((new \DateTime($employee->join_date))->diff($date1)->format("%a"));
                     }
                     else{
                       $days = 30;
