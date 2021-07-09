@@ -4352,7 +4352,7 @@ class SalaryReportController extends Controller
       $bruto3 = $bruto2 - $value->jamsostek;
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $bruto3)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->pinjaman)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
-      $netsalary = $bruto3 + $value->pinjaman;
+      $netsalary = $bruto3 - $value->pinjaman;
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $netsalary)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $jamsostek2 = ($value->bpjstk/2*3.7119)  + ($value->tunjangan_pensiun *2) + ($value->bpjs *4);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->bpjstk/2*3.7119)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
