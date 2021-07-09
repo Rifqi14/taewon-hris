@@ -2117,7 +2117,7 @@ class SalaryReportController extends Controller
                         'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
                         'is_added'         => 'NO'
                       ]);
-                    }
+                    } else 
                     /**End Jika Join date sama dengan priode salary  */
                     /**Jika join date dan resign date sama dengan priode salary*/
                     if ($join_date && $resign_date == $periode_salary) {
@@ -2133,7 +2133,7 @@ class SalaryReportController extends Controller
                     }
                     /**End Jika join date dan resign date sama dengan priode salary*/
                     /** Jika join date dan resign date ada*/
-                    if ($employee->join_date && $employee->resign_date) {
+                    else  {
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
@@ -2160,7 +2160,7 @@ class SalaryReportController extends Controller
                     }
                     /**End Jika join date sama dengan periode_salary*/
                     /** Jika ada join date dan resign date sama dengan priode salary*/
-                    if ($join_date && $resign_date == $periode_salary) {
+                    else if ($join_date && $resign_date == $periode_salary) {
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
@@ -2173,7 +2173,7 @@ class SalaryReportController extends Controller
                     }
                     /**End Jika ada join date dan resign date sama dengan priode salary*/
                     /** Jika ada join date dan resign date*/
-                    if ($employee->join_date && $employee->resign_date) {
+                    else  {
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
