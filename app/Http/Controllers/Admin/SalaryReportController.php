@@ -2147,7 +2147,7 @@ class SalaryReportController extends Controller
               /*Allowance*/
               if ($allowance) {
                 foreach ($allowance as $key => $value) {
-                  if($value->prorate == 'Yes'){
+                  if($value->prorate == 'Yes' && $prorate_type == 'basic_allowance'){
                     if ($readConfigs->value == 'full') {
                       $date1 = $employee->join_date;
                       if($date1 <= date('Y-m-d',strtotime($periode_salary.'-01'))){
