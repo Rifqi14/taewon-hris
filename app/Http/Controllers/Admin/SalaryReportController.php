@@ -2080,10 +2080,13 @@ class SalaryReportController extends Controller
                 if ($readConfigs->value == 'full') {
   
                   $date1 = $employee->join_date;
-                  $date2 = $employee->resign_date;
-  
+                  if($date1 <= date('Y-m-d',strtotime($periode_salary.'-01'))){
+                    $date1 = date('Y-m-d',strtotime($periode_salary.'-01'));
+                  }
+                  $date2 = $employee->resign_date?$employee->resign_date:date('Y-m-t',strtotime($periode_salary));
+
                   $diff = abs(strtotime($date2) - strtotime($date1));
-  
+
                   $years  = floor($diff / (365 * 60 * 60 * 24));
                   $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
                   $days   = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
@@ -2133,45 +2136,27 @@ class SalaryReportController extends Controller
                     }
                     /**End Jika tipe prorate sama dengan basic_allowance */
                   } else {
-                    /**Jika join date sama dengan periode_salary*/
-                    if ($join_date == $periode_salary) {
+                    if ($join_date  == $periode_salary || $resign_date == $periode_salary) {
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
                         'description'      => LABEL_BASIC_SALARY,
-                        'total'            => $join_date == $periode_salary ? (date("d", strtotime($employee->join_date)) * $basesalary->amount) / 30 : $basesalary->amount,
+                        'total'            => $days > 0 ? ($days * $basesalary->amount) / 30 : $basesalary->amount,
                         'type'             => 1,
                         'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
                         'is_added'         => 'NO'
                       ]);
-                    }
-                    /**End Jika join date sama dengan periode_salary*/
-                    /** Jika ada join date dan resign date sama dengan priode salary*/
-                    if ($join_date && $resign_date == $periode_salary) {
+                    } else{
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
                         'description'      => LABEL_BASIC_SALARY,
-                        'total'            => $days > 0 ? (date("d", strtotime($days . '-1 days')) * $basesalary->amount) / 30 : $basesalary->amount,
+                        'total'            => $basesalary->amount,
                         'type'             => 1,
                         'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
                         'is_added'         => 'NO'
                       ]);
-                    }
-                    /**End Jika ada join date dan resign date sama dengan priode salary*/
-                    /** Jika ada join date dan resign date*/
-                    if ($join_date && $resign_date) {
-                      SalaryReportDetail::create([
-                        'salary_report_id' => $salaryreport->id,
-                        'employee_id'      => $employee->id,
-                        'description'      => LABEL_BASIC_SALARY,
-                        'total'            => $days > 0 ? (date("d", strtotime($days . '-1 days')) * $basesalary->amount) / 30 : $basesalary->amount,
-                        'type'             => 1,
-                        'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
-                        'is_added'         => 'NO'
-                      ]);
-                    }
-                    /** End Jika ada join date dan resign date*/
+                    } 
                   }
                   /**End Jika Config setting prorate sama dengan full */
                 } else {
