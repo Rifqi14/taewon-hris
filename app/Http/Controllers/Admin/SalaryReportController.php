@@ -2151,7 +2151,7 @@ class SalaryReportController extends Controller
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
-                        'description'      => LABEL_BASIC_SALARY,
+                        'description'      => LABEL_BASIC_SALARY.' 1',
                         'total'            => $join_date == $periode_salary ? (date("d", strtotime($employee->join_date)) * $basesalary->amount) / 30 : $basesalary->amount,
                         'type'             => 1,
                         'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
@@ -2164,7 +2164,7 @@ class SalaryReportController extends Controller
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
-                        'description'      => LABEL_BASIC_SALARY,
+                        'description'      => LABEL_BASIC_SALARY.' 2',
                         'total'            => $days > 0 ? (date("d", strtotime($days . '-1 days')) * $basesalary->amount) / 30 : $basesalary->amount,
                         'type'             => 1,
                         'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
@@ -2177,7 +2177,7 @@ class SalaryReportController extends Controller
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
-                        'description'      => LABEL_BASIC_SALARY,
+                        'description'      => LABEL_BASIC_SALARY.' 3',
                         'total'            => $days > 0 ? (date("d", strtotime($days . '-1 days')) * $basesalary->amount) / 30 : $basesalary->amount,
                         'type'             => 1,
                         'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
@@ -2191,7 +2191,7 @@ class SalaryReportController extends Controller
                   SalaryReportDetail::create([
                     'salary_report_id' => $salaryreport->id,
                     'employee_id'      => $employee->id,
-                    'description'      => LABEL_BASIC_SALARY,
+                    'description'      => LABEL_BASIC_SALARY.' 4',
                     'total'            => $resign_date == $periode_salary ? (date("d", strtotime($employee->resign_date . '-1 days')) * $basesalary->amount) / 30 : $basesalary->amount,
                     'type'             => 1,
                     'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
