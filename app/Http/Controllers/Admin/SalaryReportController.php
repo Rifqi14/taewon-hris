@@ -2107,12 +2107,12 @@ class SalaryReportController extends Controller
                     foreach ($allowance_prorates as $key => $allowance) {
                       $allowance_value = $allowance_value + $allowance->allowance_value;
                     }
-                    if ($employee->join_date == $periode_salary) {
+                    if ($join_date == $periode_salary) {
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
                         'description'      => LABEL_BASIC_ALLOWANCE,
-                        'total'            => $employee->join_date == $periode_salary ? (date("d", strtotime($employee->join_date)) * ($basesalary->amount + $allowance_value)) / 30 : $basesalary->amount,
+                        'total'            => $join_date == $periode_salary ? (date("d", strtotime($employee->join_date)) * ($basesalary->amount + $allowance_value)) / 30 : $basesalary->amount,
                         'type'             => 1,
                         'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
                         'is_added'         => 'NO'
@@ -2120,7 +2120,7 @@ class SalaryReportController extends Controller
                     }
                     /**End Jika Join date sama dengan priode salary  */
                     /**Jika join date dan resign date sama dengan priode salary*/
-                    if ($employee->join_date && $$employee->resign_date == $periode_salary) {
+                    if ($join_date && $resign_date == $periode_salary) {
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
@@ -2147,12 +2147,12 @@ class SalaryReportController extends Controller
                     /**End Jika tipe prorate sama dengan basic_allowance */
                   } else {
                     /**Jika join date sama dengan periode_salary*/
-                    if ($employee->join_date == $periode_salary) {
+                    if ($join_date == $periode_salary) {
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
                         'description'      => LABEL_BASIC_SALARY,
-                        'total'            => $employee->join_date == $periode_salary ? (date("d", strtotime($employee->join_date)) * $basesalary->amount) / 30 : $basesalary->amount,
+                        'total'            => $join_date == $periode_salary ? (date("d", strtotime($employee->join_date)) * $basesalary->amount) / 30 : $basesalary->amount,
                         'type'             => 1,
                         'status'           => $basesalary->amount == 0 ? 'Hourly' : 'Monthly',
                         'is_added'         => 'NO'
@@ -2160,7 +2160,7 @@ class SalaryReportController extends Controller
                     }
                     /**End Jika join date sama dengan periode_salary*/
                     /** Jika ada join date dan resign date sama dengan priode salary*/
-                    if ($employee->join_date && $employee->resign_date == $periode_salary) {
+                    if ($join_date && $resign_date == $periode_salary) {
                       SalaryReportDetail::create([
                         'salary_report_id' => $salaryreport->id,
                         'employee_id'      => $employee->id,
