@@ -38,6 +38,14 @@
                     <label for="email">Email</label>
                     <input type="text" name="email" value="{{Auth::guard('admin')->user()->email}}"  class="form-control" id="email" readonly />
                   </div>
+                  <div class="form-group">
+                    <label for="email">Language</label>
+                    <select name="language" id="language" class="form-control select2" placeholder="Choose Language">
+                      @foreach (config('enums.languages') as $key => $item)
+                      <option value="{{ $key }}" @if (Auth::guard('admin')->user()->language == $key) selected @endif>{{ $item }}</option>
+                      @endforeach
+                    </select>
+                  </div>
               </div>
               <div class="col-md-6">
                   <div class="form-group">
@@ -71,6 +79,7 @@
 <script src="{{asset('adminlte/component/bootstrap-fileinput/themes/explorer/theme.min.js')}}"></script>
 <script>
   $(document).ready(function(){
+    $('.select2').select2();
       $("#form").validate({
         errorElement: 'span',
         errorClass: 'help-block',

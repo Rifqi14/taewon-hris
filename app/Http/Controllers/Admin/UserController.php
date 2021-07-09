@@ -215,7 +215,7 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->status = $request->status ? 1 : 0;
         $user->save();
-
+        
         if (!$user) {
             return response()->json([
                 'status' => false,
@@ -233,8 +233,9 @@ class UserController extends Controller
 
     public function updatepassword(Request $request, $id)
     {
+        $user = Auth::guard('admin')->user();
+
         if ($request->password) {
-            $user = Auth::guard('admin')->user();
             Validator::extend('passcheck', function ($attribute, $value, $parameters) {
                 return Hash::check($value, $parameters[0]);
             });
@@ -253,8 +254,10 @@ class UserController extends Controller
             }
 
             $user->password = Hash::make($request->newpassword);
+            $user->language = $request->language;
             $user->save();
 
+            
             if (!$user) {
                 return response()->json([
                     'status' => false,
@@ -262,6 +265,10 @@ class UserController extends Controller
                 ], 400);
             }
         }
+        $user->language = $request->language;
+        $user->save();
+        
+        $request->session()->put('locale', $user->language);
         return response()->json([
             'status'     => true,
             'results'     => route('user.info'),
