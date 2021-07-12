@@ -3701,6 +3701,7 @@ class SalaryReportController extends Controller
     $select .= "max(details.spsi) as spsi,";
     $select .= "max(details.pph) as pph,";
     $select .= "sum(details.de_non_pph) as de_non_pph,";
+    $select .= "sum(details.salary_deduction) as de_non_pph,";
     $select .= "sum(details.add_non_pph) as add_non_pph,";
     foreach ($deductions as $key => $value) {
       $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $value->name));
@@ -3744,6 +3745,7 @@ class SalaryReportController extends Controller
         case when description = 'Pinjaman Acc' then total else 0 end as pinjaman,
         case when is_added = 'YES' and type = '1' then total else 0 end as add_non_pph,
         case when is_added = 'YES' and type = '0' then total else 0 end as de_non_pph,
+        case when status = 'Salary Deduction' then total else 0 end as salary_deduction,
         $selectJoin
         from salary_report_details) details"), function($join){
       $join->on('details.employee_id', '=', 'employees.id');
@@ -4248,6 +4250,7 @@ class SalaryReportController extends Controller
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'JAMSOSTEK 1')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI KOTOR 3')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'PINJ ACC')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'POTONGAN')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'GAJI BERSIH')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'BPJS KET.TAEWON(3,7119%)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
     $sheet->mergeCellsByColumnAndRow(++$column, $row, $column, $row + 1)->setCellValueByColumnAndRow($column, $row, 'T.PENSIUN TAEWON(2%)')->getStyleByColumnAndRow($column, $row, $column, $row + 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
@@ -4352,7 +4355,8 @@ class SalaryReportController extends Controller
       $bruto3 = $bruto2 - $value->jamsostek;
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $bruto3)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->pinjaman)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
-      $netsalary = $bruto3 - $value->pinjaman;
+      $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->salary_deduction)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
+      $netsalary = $bruto3 - $value->pinjaman - $value->salary_deduction;
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $netsalary)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
       $jamsostek2 = ($value->bpjstk/2*3.7119)  + ($value->tunjangan_pensiun *2) + ($value->bpjs *4);
       $sheet->setCellValueByColumnAndRow(++$column_number, $row_number, $value->bpjstk/2*3.7119)->getStyleByColumnAndRow($column_number, $row_number)->getNumberFormat()->setFormatCode("#,##0");
