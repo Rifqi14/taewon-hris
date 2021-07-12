@@ -33,105 +33,109 @@
               title="{{__('general.crt')}}">
               <i class="fa fa-plus"></i>
             </a>
+            <a href="javascript:void(0)" onclick="exportdo()" class="btn btn-primary btn-sm text-white" data-toggle="tooltip" title="{{ __('general.exp') }}" style="cursor: pointer;"><i class="fa fa-download"></i></a>
           </div>
         </div>
         <div class="card-body">
-          <div class="row">
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label class="control-label" for="driver_id">{{__('deliveryorder.drivernm')}}</label>
-                  <input type="text" name="driver_id" id="driver_id" class="form-control filter" placeholder="{{__('deliveryorder.drivernm')}}">
-                  {{-- <select name="driver_id" id="driver_id" class="form-control select2 filter" style="width: 100%" aria-hidden="true"  data-placeholder="Driver Name">
-                      <option value=""></option>
-                      @foreach ($employees as $employee)
-                      <option value="{{ $employee->id }}">{{ $employee->name }}</option>
-                      @endforeach
-                  </select> --}}
-                </div>
-				        <div id="driver-container"></div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label class="control-label" for="police_no">{{__('deliveryorder.policeno')}}</label>
-                  {{-- <input type="text" name="police_no" id="police_no" class="form-control filter" placeholder="Police No" multiple> --}}
-                  <select name="police_no" id="police_no" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple  data-placeholder="{{__('deliveryorder.policeno')}}">
-                    <option value=""></option>
-                    @foreach ($police_nomer as $police)
-                    <option value="{{ $police->police_no }}">{{ $police->police_no }}</option>
-                    @endforeach
-                </select>
-                </div>
-              </div>
-              <div class="form-row col-md-4">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label class="control-label" for="date_from">{{__('deliveryorder.from')}}</label>
-                    <div class="controls">
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">
-                            <i class="far fa-calendar-alt"></i>
-                          </span>
+          <form id="form" action="" class="form-horizontal" method="post">
+			        {{ csrf_field() }}
+              <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label" for="driver_id">{{__('deliveryorder.drivernm')}}</label>
+                      <input type="text" name="driver_id" id="driver_id" class="form-control filter" placeholder="{{__('deliveryorder.drivernm')}}">
+                      {{-- <select name="driver_id" id="driver_id" class="form-control select2 filter" style="width: 100%" aria-hidden="true"  data-placeholder="Driver Name">
+                          <option value=""></option>
+                          @foreach ($employees as $employee)
+                          <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                          @endforeach
+                      </select> --}}
+                    </div>
+                    <div id="driver-container"></div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label" for="police_no">{{__('deliveryorder.policeno')}}</label>
+                      {{-- <input type="text" name="police_no" id="police_no" class="form-control filter" placeholder="Police No" multiple> --}}
+                      <select name="police_no" id="police_no" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple  data-placeholder="{{__('deliveryorder.policeno')}}">
+                        <option value=""></option>
+                        @foreach ($police_nomer as $police)
+                        <option value="{{ $police->police_no }}">{{ $police->police_no }}</option>
+                        @endforeach
+                    </select>
+                    </div>
+                  </div>
+                  <div class="form-row col-md-4">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="control-label" for="date_from">{{__('deliveryorder.from')}}</label>
+                        <div class="controls">
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                <i class="far fa-calendar-alt"></i>
+                              </span>
+                            </div>
+                            <input type="text" name="date_from" id="date_from" class="form-control filter" placeholder="{{__('deliveryorder.from')}}">
+                          </div>
                         </div>
-                        <input type="text" name="date_from" id="date_from" class="form-control filter" placeholder="{{__('deliveryorder.from')}}">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label" for="date_to">{{__('deliveryorder.to')}}</label>
+                      <div class="controls">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">
+                              <i class="far fa-calendar-alt"></i>
+                            </span>
+                          </div>
+                          <input type="text" name="date_to" id="date_to" class="form-control datepicker filter" placeholder="Date">
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="col-md-6">
-                <div class="form-group">
-                  <label class="control-label" for="date_to">{{__('deliveryorder.to')}}</label>
-                  <div class="controls">
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">
-                          <i class="far fa-calendar-alt"></i>
-                        </span>
-                      </div>
-                      <input type="text" name="date_to" id="date_to" class="form-control datepicker filter" placeholder="Date">
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label" for="destination">{{__('customer.cust')}}</label>
+                      {{-- <input type="text" name="destination" id="destination" class="form-control filter" placeholder="Destination"> --}}
+                      {{-- <select name="destination" id="destination" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple data-placeholder="Customer">
+                        <option value=""></option>
+                        @foreach ($desti as $tujuan)
+                        <option value="{{ $tujuan->destination }}">{{ $tujuan->destination }}</option>
+                        @endforeach
+                    </select> --}}
                     </div>
                   </div>
+                  {{-- <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label" for="do_number">DO Number</label>
+                      <select name="do_number" id="do_number" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple data-placeholder="DO Number">
+                          <option value=""></option>
+                          @foreach ($donumbers as $donumber)
+                          <option value="{{ $donumber->do_number }}">{{ $donumber->do_number }}</option>
+                          @endforeach
+                      </select>
+                    </div>
+                  </div> --}}
                 </div>
-              </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label class="control-label" for="destination">{{__('customer.cust')}}</label>
-                  {{-- <input type="text" name="destination" id="destination" class="form-control filter" placeholder="Destination"> --}}
-                  {{-- <select name="destination" id="destination" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple data-placeholder="Customer">
-                    <option value=""></option>
-                    @foreach ($desti as $tujuan)
-                    <option value="{{ $tujuan->destination }}">{{ $tujuan->destination }}</option>
-                    @endforeach
-                </select> --}}
-                </div>
-              </div>
-              {{-- <div class="col-md-4">
-                <div class="form-group">
-                  <label class="control-label" for="do_number">DO Number</label>
-                  <select name="do_number" id="do_number" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple data-placeholder="DO Number">
-                      <option value=""></option>
-                      @foreach ($donumbers as $donumber)
-                      <option value="{{ $donumber->do_number }}">{{ $donumber->do_number }}</option>
-                      @endforeach
-                  </select>
-                </div>
-              </div> --}}
-            </div>
-          <table class="table table-striped table-bordered datatable" style="width: 100%">
-            <thead>
-              <tr>
-                <th width="10">No</th>
-                <th width="70">{{__('deliveryorder.deptime')}}</th>
-                <th width="100">{{__('deliveryorder.arrtime')}}</th>
-                <th width="100">Kloter</th>
-                <th width="130" class="text-left">{{__('deliveryorder.driver')}}</th>
-                <th width="100">{{__('deliveryorder.policeno')}}</th>
-                <th width="100">{{__('customer.cust')}}</th>
-                <th width="10">{{__('general.act')}}</th>
-              </tr>
-            </thead>
-          </table>
+              <table class="table table-striped table-bordered datatable" style="width: 100%">
+                <thead>
+                  <tr>
+                    <th width="10">No</th>
+                    <th width="70">{{__('deliveryorder.deptime')}}</th>
+                    <th width="100">{{__('deliveryorder.arrtime')}}</th>
+                    <th width="100">Kloter</th>
+                    <th width="130" class="text-left">{{__('deliveryorder.driver')}}</th>
+                    <th width="100">{{__('deliveryorder.policeno')}}</th>
+                    <th width="100">{{__('customer.cust')}}</th>
+                    <th width="10">{{__('general.act')}}</th>
+                  </tr>
+                </thead>
+              </table>
+            </form>
         </div>
         <div class="overlay d-none">
           <i class="fa fa-2x fa-sync-alt fa-spin"></i>
@@ -399,5 +403,52 @@
       });
     });
   });
+
+  function exportdo() {
+		$.ajax({
+			url: "{{ route('deliveryorder.exportdo') }}",
+			type: 'POST',
+			dataType: 'JSON',
+			data: $("#form").serialize(),
+			beforeSend:function(){
+				waitingDialog.show('Loading...');
+			}
+		}).done(function(response){
+			waitingDialog.hide();
+			if(response.status){
+			$('.overlay').addClass('d-none');
+			$.gritter.add({
+				title: 'Success!',
+				text: response.message,
+				class_name: 'gritter-success',
+				time: 1000,
+			});
+			let download = document.createElement("a");
+			download.href = response.file;
+			document.body.appendChild(download);
+			download.download = response.name;
+			download.click();
+			download.remove();
+			}
+			else{
+			$.gritter.add({
+				title: 'Warning!',
+				text: response.message,
+				class_name: 'gritter-warning',
+				time: 1000,
+			});
+			}
+		}).fail(function(response){
+			waitingDialog.hide();
+			var response = response.responseJSON;
+			$('.overlay').addClass('d-none');
+			$.gritter.add({
+				title: 'Error!',
+				text: response.message,
+				class_name: 'gritter-error',
+				time: 1000,
+			});
+		});
+	}
 </script>
 @endpush

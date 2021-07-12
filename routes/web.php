@@ -360,6 +360,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/deliveryorder/preview', 'Admin\DeliveryOrderController@preview')->name('deliveryorder.preview');
         Route::post('/deliveryorder/storemass', 'Admin\DeliveryOrderController@storemass')->name('deliveryorder.storemass');
         Route::get('/deliveryorder/print/{id}', 'Admin\DeliveryOrderController@print');
+        Route::post('/deliveryorder/exportdo', 'Admin\DeliveryOrderController@exportdo')->name('deliveryorder.exportdo');
         Route::resource('/deliveryorder', 'Admin\DeliveryOrderController')->except(['show']);
         // Route Daily Report Driver
         Route::get('/dailyreportdriver/read', 'Admin\DailyReportDriverController@read')->name('dailyreportdriver.read');

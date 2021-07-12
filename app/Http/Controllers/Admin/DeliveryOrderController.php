@@ -20,6 +20,11 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use PHPExcel;
+use PHPExcel_Cell;
+use PHPExcel_Cell_DataType;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Font;
 
 class DeliveryOrderController extends Controller
 {
@@ -779,5 +784,136 @@ class DeliveryOrderController extends Controller
             'status' => true,
             'results' => route('deliveryorder.index'),
         ], 200);
+    }
+
+    public function exportdo(Request $request)
+    {
+        $driver_id = strtoupper(str_replace("'","''",$request->driver_id));
+        $date_from = $request->date_from;
+        $date_to   = $request->date_to;
+        $police_no = $request->police_no;
+
+        $object = new \PHPExcel();
+        $object->getProperties()->setCreator('Taewon Indonesia');
+        $object->setActiveSheetIndex(0);
+        $sheet = $object->getActiveSheet();
+
+        $query = DB::table('delivery_orders');
+        $query->select(
+            'delivery_orders.*',
+            'driver.name as driver_name',
+            'driver.nid',
+            'partners.name as customer',
+            'partners.rit as rit',
+            'driver.department_id',
+            'driver.workgroup_id',
+            'departments.name as department_name',
+            'work_groups.name as workgroup_name',
+            'trucks.name as truck_name'
+        );
+        $query->leftJoin('employees as driver', 'driver.id', '=', 'delivery_orders.driver_id');
+        $query->leftJoin('departments', 'departments.id', '=', 'driver.department_id');
+        $query->leftJoin('work_groups', 'work_groups.id', '=', 'driver.workgroup_id');
+        $query->leftJoin('partners', 'partners.id', '=', 'delivery_orders.partner_id');
+        $query->leftJoin('trucks', 'trucks.id', '=', 'delivery_orders.truck_id');
+        if ($driver_id != "") {
+            $query->whereRaw("upper(driver.name) like '%$driver_id%'");
+        }
+        if ($police_no) {
+            $query->whereIn('delivery_orders.police_no', $police_no);
+        }
+        if ($date_from && $date_to) {
+            $query->whereRaw("delivery_orders.departure_time >= '$date_from'");
+            $query->whereRaw("delivery_orders.departure_time <= '$date_to'");
+        }
+        $reads = $query->get();
+        $delivery_orders = [];
+        foreach ($reads as $row) {
+            $row->value = $this->get_driver_allowance($row->id);
+            $delivery_orders[] = $row;
+        }
+
+        // Header Columne Excel
+        $column = 0;
+        $row    = 2;
+
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Nama');
+        $sheet->setCellValue('C1', 'NIK');
+        $sheet->setCellValue('D1', 'Work Group');
+        $sheet->setCellValue('E1', 'Tanggal');
+        $sheet->setCellValue('F1', 'No. Polisi');
+        $sheet->setCellValue('G1', 'Ket.');
+        $sheet->setCellValue('H1', 'Customer');
+        $sheet->setCellValue('I1', 'Jam Mobil');
+        $sheet->setCellValue('I2', 'Keluar');
+        $sheet->setCellValue('J2', 'Tiba');
+        $sheet->setCellValue('K1', ' Gaji ');
+        $sheet->mergeCells('A1:A2');
+        $sheet->mergeCells('B1:B2');
+        $sheet->mergeCells('C1:C2');
+        $sheet->mergeCells('D1:D2');
+        $sheet->mergeCells('E1:E2');
+        $sheet->mergeCells('F1:F2');
+        $sheet->mergeCells('G1:G2');
+        $sheet->mergeCells('H1:H2');
+        $sheet->mergeCells('I1:J1');
+        $sheet->mergeCells('K1:K2');
+        $sheet->getStyle('A1:K'.$sheet->getHighestRow())->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1:K'.$sheet->getHighestRow())->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $row_number = 3;
+        $no = 0;
+        foreach ($delivery_orders as $key => $do) {
+            $sheet->setCellValue('A' . $row_number, $do->police_no);
+            $sheet->setCellValue('B' . $row_number, $do->driver_name);
+            $sheet->setCellValue('C' . $row_number, $do->nid);
+            $sheet->setCellValue('D' . $row_number, $do->workgroup_name);
+            $sheet->setCellValue('E' . $row_number, date("d-M",strtotime($do->departure_date)));
+            $sheet->setCellValue('F' . $row_number, $do->police_no);
+            $sheet->setCellValue('G' . $row_number, $do->truck_name);
+            $sheet->setCellValue('H' . $row_number, $do->customer);
+            $sheet->setCellValue('I' . $row_number, $do->departure_time);
+            $sheet->setCellValue('J' . $row_number, $do->arrived_time);
+            $sheet->setCellValue('K' . $row_number, $do->value);
+            $row_number++;
+        }
+
+        
+        // $sheet->mergeCells('B1:C1');
+        // $sheet->mergeCells('B2:C2');
+        foreach (range(0, 9) as $column) {
+        $sheet->getColumnDimensionByColumn($column)->setAutoSize(true);
+        // $sheet->getCellByColumnAndRow($column, 1)->getStyle()->getFont()->setBold(true);
+        // $sheet->getCellByColumnAndRow($column, 2)->getStyle()->getFont()->setBold(true);
+        // $sheet->getCellByColumnAndRow($column, 1)->getStyle()->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        }
+        $sheet->getPageSetup()->setFitToWidth(1);
+        $objWriter = \PHPExcel_IOFactory::createWriter($object, 'Excel2007');
+        ob_start();
+        $objWriter->save('php://output');
+        $export = ob_get_contents();
+        ob_end_clean();
+        header('Content-Type: application/json');
+        if ($reads->count() > 0) {
+        return response()->json([
+            'status'     => true,
+            'name'        => 'delivery-order-' . date('d-m-Y') . '.xlsx',
+            'message'    => "Success Download Delivery Order Data",
+            'file'         => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," . base64_encode($export)
+        ], 200);
+        } else {
+        return response()->json([
+            'status'     => false,
+            'message'    => "Data not found",
+        ], 400);
+        }
+    }
+
+    public function get_driver_allowance($id)
+    {
+        $reads = DriverAllowanceList::where('delivery_order_id', '=',$id)->first();
+        if($reads){
+            return $reads->total_value;
+        }
     }
 }
