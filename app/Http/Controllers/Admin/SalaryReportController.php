@@ -3701,8 +3701,8 @@ class SalaryReportController extends Controller
     $select .= "max(details.spsi) as spsi,";
     $select .= "max(details.pph) as pph,";
     $select .= "sum(details.de_non_pph) as de_non_pph,";
-    $select .= "sum(details.salary_deduction) as de_non_pph,";
     $select .= "sum(details.add_non_pph) as add_non_pph,";
+    $select .= "sum(details.salary_deduction) as salary_deduction,";
     foreach ($deductions as $key => $value) {
       $alias = strtolower(str_replace([" ", "/", "+", "-"], "_", $value->name));
       $select .= "max(details.$alias) as $alias,";
