@@ -17,7 +17,7 @@
         <h3 class="card-title">{{ __('penaltyconfig.pnltycon') }}</h3>
         <div class="pull-right card-tools">
           <a href="{{ route('penaltyconfig.create') }}" class="btn btn-{{ config('configs.app_theme') }} btn-sm text-white" data-toggle="tooltip" title="{{ __('general.crt') }}"><i class="fa fa-plus"></i></a>
-          <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="{{ __('general.filter') }}"><i class="fa fa-search"></i></a>
+          <a href="#" onclick="filter()" class="btn btn-default btn-sm" data-toggle="tooltip" title="{{ __('general.srch') }}"><i class="fa fa-search"></i></a>
         </div>
       </div>
       <div class="card-body">
@@ -44,7 +44,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">{{ __('general.filter') }}</h4>
+        <h4 class="modal-title">{{ __('general.srch') }}</h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
       </div>
       <div class="modal-body">

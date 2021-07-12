@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Config;
 use Closure;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 
 class LocalizationMiddleware
 {
@@ -17,16 +18,14 @@ class LocalizationMiddleware
      */
     public function handle($request, Closure $next)
     {
-        // Cek apakah session 'locale' ada?
-        if ($request->session()->has('locale')) {
-            // Jika ada, maka set App Locale sesuai nilai yang ada di session 'locale'.
-            App::setLocale($request->session()->get('locale'));
-        } else {
-            $language = Config::where('option', 'language')->first();
-            $request->session()->put('locale', $language->value);
+       
+        if(Auth::guard('admin')->check()){
+            $request->session()->put('locale', Auth::guard('admin')->user()->language?Auth::guard('admin')->user()->language:'en');
             App::setLocale($request->session()->get('locale'));
         }
-        
+        else{
+            App::setLocale('en');
+        }
         // Lanjutkan request.
         return $next($request);
     }
