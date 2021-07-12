@@ -47,31 +47,29 @@ class PenaltyConfigController extends Controller
         $type     = $request->type;
 
         // Count Data
-        $penaltyConfig      = PenaltyConfig::with(['allowance', 'leave'=>function($q) use ($leaveSettingID)
-        {
-            if ($leaveSettingID) {
-                 $q->wherePivot('leave_setting_id','=', $leaveSettingID);
-            }
-        }, 'workgroup']);
+        $penaltyConfig      = PenaltyConfig::with(['allowance', 'leave', 'workgroup']);
         if ($workgroupID) {
             $penaltyConfig->ByWorkgroup($workgroupID);
         }
+        if ($leaveSettingID) {
+            $penaltyConfig->leave()->wherePivot('leave_setting_id', $leaveSettingID);
+        }
         if($type){
+
             $penaltyConfig->where('type',$type);
         }
         $recordsTotal       = $penaltyConfig->get()->count();
 
         // Select for pagination
-        $penaltyConfig      = PenaltyConfig::with(['allowance', 'leave'=>function($q) use ($leaveSettingID)
-        {
-            if ($leaveSettingID) {
-                 $q->wherePivot('leave_setting_id','=', $leaveSettingID);
-            }
-        }, 'workgroup']);
+        $penaltyConfig      = PenaltyConfig::with(['allowance', 'leave', 'workgroup']);
         if ($workgroupID) {
             $penaltyConfig->ByWorkgroup($workgroupID);
         }
+        if ($leaveSettingID) {
+            $penaltyConfig->leave()->wherePivot('leave_setting_id', $leaveSettingID);
+        }
         if($type){
+
             $penaltyConfig->where('type',$type);
         }
         $penaltyConfig->offset($start);
