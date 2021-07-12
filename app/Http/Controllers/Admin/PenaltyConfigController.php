@@ -44,6 +44,7 @@ class PenaltyConfigController extends Controller
         $dir                = $request->order[0]['dir'];
         $workgroupID        = $request->workgroupID;
         $leaveSettingID     = $request->leaveSettingID;
+        $type     = $request->type;
 
         // Count Data
         $penaltyConfig      = PenaltyConfig::with(['allowance', 'leave', 'workgroup']);
@@ -52,6 +53,9 @@ class PenaltyConfigController extends Controller
         }
         if ($leaveSettingID) {
             $penaltyConfig->leave()->wherePivot('leave_setting_id', $leaveSettingID);
+        }
+        if($type){
+            $penaltyConfig->where('type',$type);
         }
         $recordsTotal       = $penaltyConfig->get()->count();
 
@@ -62,6 +66,9 @@ class PenaltyConfigController extends Controller
         }
         if ($leaveSettingID) {
             $penaltyConfig->leave()->wherePivot('leave_setting_id', $leaveSettingID);
+        }
+        if($type){
+            $penaltyConfig->where('type',$type);
         }
         $penaltyConfig->offset($start);
         $penaltyConfig->limit($length);
