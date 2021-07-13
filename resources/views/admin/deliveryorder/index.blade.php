@@ -99,15 +99,10 @@
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
-                      <label class="control-label" for="destination">{{__('customer.cust')}}</label>
-                      {{-- <input type="text" name="destination" id="destination" class="form-control filter" placeholder="Destination"> --}}
-                      {{-- <select name="destination" id="destination" class="form-control select2 filter" style="width: 100%" aria-hidden="true" multiple data-placeholder="Customer">
-                        <option value=""></option>
-                        @foreach ($desti as $tujuan)
-                        <option value="{{ $tujuan->destination }}">{{ $tujuan->destination }}</option>
-                        @endforeach
-                    </select> --}}
+                      <label class="control-label" for="customer_id">{{__('customer.cust')}}</label>
+                      <input type="text" name="customer_id" id="customer_id" class="form-control filter" placeholder="{{__('customer.cust')}}">
                     </div>
+                    <div id="customer-container"></div>
                   </div>
                   {{-- <div class="col-md-4">
                     <div class="form-group">
@@ -187,32 +182,61 @@
     });
   }
   $(document).ready(function(){
-			var employees = [
-				@foreach($employees as $employee)
-                	"{!!$employee->name!!}",
-            	@endforeach
-			];
-			$( "input[name=driver_id]" ).autocomplete({
-			source: employees,
-			minLength:0,
-			appendTo: '#driver-container',
-			select: function(event, response) {
-				if(event.preventDefault(), 0 !== response.item.id){
-					$(this).val(response.item.value);
-					dataTable.draw();
-				}
-			}
-			}).focus(function () {
-				$(this).autocomplete("search");
-			});
-			$("input[name=driver_id]").keydown(function(event){
-				if(event.keyCode == 13) {
-					event.preventDefault();
-					$('input[name=driver_id]').autocomplete('close');
-					return false;
-				}
-			});
-		});
+    var employees = [
+      @foreach($employees as $employee)
+                "{!!$employee->name!!}",
+            @endforeach
+    ];
+    $( "input[name=driver_id]" ).autocomplete({
+    source: employees,
+    minLength:0,
+    appendTo: '#driver-container',
+    select: function(event, response) {
+      if(event.preventDefault(), 0 !== response.item.id){
+        $(this).val(response.item.value);
+        dataTable.draw();
+      }
+    }
+    }).focus(function () {
+      $(this).autocomplete("search");
+    });
+    $("input[name=driver_id]").keydown(function(event){
+      if(event.keyCode == 13) {
+        event.preventDefault();
+        $('input[name=driver_id]').autocomplete('close');
+        return false;
+      }
+    });
+  });
+
+  $(document).ready(function(){
+    var partners = [
+      @foreach($partners as $partner)
+                "{!!$partner->name!!}",
+            @endforeach
+    ];
+    $( "input[name=customer_id]" ).autocomplete({
+    source: partners,
+    minLength:0,
+    appendTo: '#customer-container',
+    select: function(event, response) {
+      if(event.preventDefault(), 0 !== response.item.id){
+        $(this).val(response.item.value);
+        dataTable.draw();
+      }
+    }
+    }).focus(function () {
+      $(this).autocomplete("search");
+    });
+    $("input[name=customer_id]").keydown(function(event){
+      if(event.keyCode == 13) {
+        event.preventDefault();
+        $('input[name=customer_id]').autocomplete('close');
+        return false;
+      }
+    });
+  });
+
   $(function() {
     $('.select2').select2({
       allowClear: true
@@ -260,12 +284,13 @@
             }
         },
       lengthMenu: [ 100, 250, 500, 1000, 2000 ],
-      pageLength: 1000,
+      pageLength: 100,
       ajax: {
           url: "{{route('deliveryorder.read')}}",
           type: "GET",
           data:function(data){
             data.driver_id = $('input[name=driver_id]').val();
+            data.customer_id = $('input[name=customer_id]').val();
             data.police_no = $('select[name=police_no]').val();
             data.date_from = $('input[name=date_from]').val();
             data.destination = $('select[name=destination]').val();

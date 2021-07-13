@@ -90,6 +90,7 @@ class DeliveryOrderController extends Controller
         $sort = $request->columns[$request->order[0]['column']]['data'];
         $dir = $request->order[0]['dir'];
         $driver_id = strtoupper(str_replace("'","''",$request->driver_id));
+        $customer_id = strtoupper(str_replace("'","''",$request->customer_id));
         $department_id = $request->department_id;
         $nid = strtoupper($request->nid);
         $workgroup_id = $request->workgroup_id;
@@ -122,6 +123,9 @@ class DeliveryOrderController extends Controller
         if ($driver_id != "") {
             $query->whereRaw("upper(driver.name) like '%$driver_id%'");
         }
+        if ($customer_id != "") {
+            $query->whereRaw("upper(partners.name) like '%$customer_id%'");
+        }
         if ($nid) {
             $query->whereRaw("driver.nid like '%$nid%'");
         }
@@ -145,8 +149,8 @@ class DeliveryOrderController extends Controller
         //     $query->where('date','<=', $date_to);
         // }
         if ($date_from && $date_to) {
-            $query->whereRaw("delivery_orders.departure_time >= '$date_from'");
-            $query->whereRaw("delivery_orders.departure_time <= '$date_to'");
+            $query->whereRaw("delivery_orders.departure_date >= '$date_from'");
+            $query->whereRaw("delivery_orders.departure_date <= '$date_to'");
         }
 
         $recordsTotal = $query->count();
@@ -173,6 +177,9 @@ class DeliveryOrderController extends Controller
         if ($driver_id != "") {
             $query->whereRaw("upper(driver.name) like '%$driver_id%'");
         }
+        if ($customer_id != "") {
+            $query->whereRaw("upper(partners.name) like '%$customer_id%'");
+        }
         if ($nid) {
             $query->whereRaw("driver.nid like '%$nid%'");
         }
@@ -196,8 +203,8 @@ class DeliveryOrderController extends Controller
         //     $query->where('date','<=', $date_to);
         // }
         if ($date_from && $date_to) {
-            $query->whereRaw("delivery_orders.departure_time >= '$date_from'");
-            $query->whereRaw("delivery_orders.departure_time <= '$date_to'");
+            $query->whereRaw("delivery_orders.departure_date >= '$date_from'");
+            $query->whereRaw("delivery_orders.departure_date <= '$date_to'");
         }
 
         $query->offset($start);
@@ -259,9 +266,14 @@ class DeliveryOrderController extends Controller
         $query->where('employees.status', 1);
         $query->whereRaw("upper(departments.path) like '%DRIVER%'");
         $employees = $query->get();
-        // $query = DB::table('delivery_orders');
-        // $query->select('delivery_orders.*');
-        // $donumbers = $query->get();
+        // partners
+        $query = DB::table('partners');
+        $query->select('partners.*');
+        $query->leftJoin('departments', 'departments.id', '=', 'partners.department_id');
+        $query->where('partners.status', 1);
+        // $query->whereRaw("upper(departments.path) like '%DRIVER%'");
+        $partners = $query->get();
+
         $query = DB::table('delivery_orders');
         $query->select('delivery_orders.police_no');
         $query->groupBy('delivery_orders.police_no');
@@ -272,7 +284,7 @@ class DeliveryOrderController extends Controller
         // $query->groupBy('delivery_orders.destination');
         // $query->orderBy('destination', 'asc');
         // $desti = $query->get();
-        return view('admin.deliveryorder.index', compact('employees', 'police_nomer'));
+        return view('admin.deliveryorder.index', compact('employees','partners','police_nomer'));
     }
 
     /**
@@ -337,7 +349,7 @@ class DeliveryOrderController extends Controller
         }
 
         if($deliveryorder){
-            // $do_id = $deliveryorder->id;
+            $do_id = $deliveryorder->id;
             // dd($do_id);
             $readConfigs = Config::where('option', 'cut_off')->first();
             $cut_off = $readConfigs->value;
@@ -360,7 +372,7 @@ class DeliveryOrderController extends Controller
                 'month'         => $month,
                 'year'          => $year,
                 'total_value'   => 0,
-                'delivery_order_id'=> $deliveryorder->id
+                'delivery_order_id'=> $do_id
             ]);
 
             if(!$driverallowancelist){
@@ -789,6 +801,7 @@ class DeliveryOrderController extends Controller
     public function exportdo(Request $request)
     {
         $driver_id = strtoupper(str_replace("'","''",$request->driver_id));
+        $customer_id = strtoupper(str_replace("'","''",$request->customer_id));
         $date_from = $request->date_from;
         $date_to   = $request->date_to;
         $police_no = $request->police_no;
@@ -819,12 +832,15 @@ class DeliveryOrderController extends Controller
         if ($driver_id != "") {
             $query->whereRaw("upper(driver.name) like '%$driver_id%'");
         }
+        if ($customer_id != "") {
+            $query->whereRaw("upper(partners.name) like '%$customer_id%'");
+        }
         if ($police_no) {
             $query->whereIn('delivery_orders.police_no', $police_no);
         }
         if ($date_from && $date_to) {
-            $query->whereRaw("delivery_orders.departure_time >= '$date_from'");
-            $query->whereRaw("delivery_orders.departure_time <= '$date_to'");
+            $query->whereRaw("delivery_orders.departure_date >= '$date_from'");
+            $query->whereRaw("delivery_orders.departure_date <= '$date_to'");
         }
         $reads = $query->get();
         $delivery_orders = [];
@@ -862,9 +878,9 @@ class DeliveryOrderController extends Controller
         $sheet->getStyle('A1:K'.$sheet->getHighestRow())->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('A1:K'.$sheet->getHighestRow())->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
         $row_number = 3;
-        $no = 0;
+        $no = 1;
         foreach ($delivery_orders as $key => $do) {
-            $sheet->setCellValue('A' . $row_number, $do->police_no);
+            $sheet->setCellValue('A' . $row_number, $no++);
             $sheet->setCellValue('B' . $row_number, $do->driver_name);
             $sheet->setCellValue('C' . $row_number, $do->nid);
             $sheet->setCellValue('D' . $row_number, $do->workgroup_name);
